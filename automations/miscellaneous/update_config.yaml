@@ -1,0 +1,9 @@
+id: update_configuration_travis
+alias: Update configuration if travis build is successful
+trigger:
+  - entity_id: sensor.rohankapoorcomhomeassistantconfig_last_build_state
+    platform: state
+    to: 'passed'
+action:
+  - service: shell_command.git_pull
+  - service: homeassistant.restart
