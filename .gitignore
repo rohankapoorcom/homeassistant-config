@@ -8,4 +8,5 @@ entity_registry.yaml
 *.conf
 *.crt
 *.key
+*.pyc
 tts
