@@ -1,4 +1,5 @@
 """
+Source: https://gitlab.com/mindig.marton/ha-emulated_roku
 Support for Roku API emulation.
 
 For more details about this component, please refer to the documentation at
