@@ -1,0 +1,10 @@
+id: bathroom_fan_on
+alias: Turn on the Bathroom Fan
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_158d000228846a
+    value_template: '{{ sensor.humidity_158d000228846a - sensor.humidity_158d0002249e6f }}'
+    above: 5
+action:
+  - service: switch.turn_on
+    entity_id: switch.bathroom_fan

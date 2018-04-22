@@ -1,0 +1,12 @@
+id: bathroom_fan_off
+alias: Turn off the Bathroom Fan
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_158d000228846a
+    value_template: '{{ sensor.humidity_158d000228846a - sensor.humidity_158d0002249e6f }}'
+    below: 5
+    for:
+      minutes: 2
+action:
+  - service: switch.turn_off
+    entity_id: switch.bathroom_fan
