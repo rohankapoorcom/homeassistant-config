@@ -1,0 +1,31 @@
+id: bathroom_light_off
+alias: Turn off the Bathroom Light
+trigger:
+  # Door open for 30 seconds
+  - entity_id: binary_sensor.door_window_sensor_158d0001de6091
+    platform: state
+    to: 'on'
+    for:
+      seconds: 30
+  # No motion detected for 1 minute
+  - entity_id: binary_sensor.motion_sensor_158d0001e51270
+    platform: state
+    to: 'off'
+    for:
+      minutes: 1
+action:
+  - service: switch.turn_off
+    entity_id: switch.bathroom_light
+condition:
+  condition: and
+  conditions:
+    # No motion for 30 seconds
+    - condition: state
+      entity_id: binary_sensor.motion_sensor_158d0001e51270
+      state: 'off'
+      for:
+        seconds: 30
+    # Door open
+    - condition: state
+      entity_id: binary_sensor.door_window_sensor_158d0001de6091
+      state: 'on'
