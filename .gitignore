@@ -10,3 +10,4 @@ entity_registry.yaml
 *.key
 *.pyc
 tts
+__pycache__
