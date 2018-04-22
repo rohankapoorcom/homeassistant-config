@@ -1,0 +1,9 @@
+name: Lights
+entities:
+  - light.couch_accent_white
+  - light.gateway_light_7811dcb2396e
+  - group.kitchen_table
+  - light.kitchen_sink_light
+  - light.living_room_lamp
+  - group.end_tables
+  - switch.server_rack_lights

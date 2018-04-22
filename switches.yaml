@@ -1,0 +1,2 @@
+- platform: template
+  switches: !include_dir_named switches/template 

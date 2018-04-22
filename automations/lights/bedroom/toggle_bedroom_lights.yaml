@@ -1,0 +1,8 @@
+id: bedroom_lights_toggle
+alias: Toggle Bedroom Lights
+trigger:
+  - platform: mqtt
+    topic: cmnd/sonoff-bedroom-lights/POWER1
+action:
+  - entity_id: light.bedroom
+    service: light.toggle

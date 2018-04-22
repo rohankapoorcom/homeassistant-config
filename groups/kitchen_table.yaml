@@ -1,0 +1,5 @@
+name: Kitchen Table
+entities:
+  - light.kitchen_1
+  - light.kitchen_2
+  - light.kitchen_3

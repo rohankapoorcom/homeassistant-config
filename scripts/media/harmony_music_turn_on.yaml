@@ -1,0 +1,6 @@
+alias: Turn on Speakers
+sequence:
+  - service: remote.turn_on
+    data_template:
+      entity_id: "{{ entity_id }}"
+      activity: "{{ 32547827 if entity_id == 'remote.upstairs_hub' else 22851881 }}"

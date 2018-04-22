@@ -1,0 +1,42 @@
+id: closet_light_off
+alias: Turn off the Closet Light
+trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001b7bb38
+    platform: state
+    to: 'off'
+  - entity_id: binary_sensor.motion_sensor_158d0001e51317
+    platform: state
+    to: 'off'
+    for:
+      seconds: 30
+  - entity_id: binary_sensor.motion_sensor_158d0001e51317
+    platform: state
+    to: 'off'
+    for:
+      minutes: 2
+  - entity_id: binary_sensor.door_window_sensor_158d0001b7bb38
+    platform: state
+    to: 'on'
+    for:
+      minutes: 2
+action:
+  - service: light.turn_off
+    entity_id: light.closet
+condition:
+  condition: or
+  conditions:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.motion_sensor_158d0001e51317
+        state: 'off'
+        for:
+          seconds: 30
+      - condition: state
+        entity_id: binary_sensor.door_window_sensor_158d0001b7bb38
+        state: 'off'
+    - condition: state
+      entity_id: binary_sensor.door_window_sensor_158d0001b7bb38
+      state: 'on'
+      for:
+        minutes: 2

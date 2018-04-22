@@ -1,0 +1,96 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret homeassistant.latitude
+  longitude: !secret homeassistant.longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 349
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Los_Angeles
+  customize: !include customize.yaml
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Uncomment this to add a password (recommended!)
+  api_password: !secret http.api_password
+  # Uncomment this if you are using SSL or running in Docker etc
+  base_url: !secret http.base_url
+  use_x_forwarded_for: True
+  trusted_networks: !secret http.trusted_networks
+  ip_ban_enabled: True
+  login_attempts_threshold: 3
+
+# Checks for available updates
+updater:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+# Weather Prediction
+sensor:
+  platform: yr
+
+# Text to speech
+tts:
+  platform: google
+
+mqtt:
+  broker: !secret mqtt.broker
+  port: !secret mqtt.port
+  client_id: !secret mqtt.client_id
+  certificate: /etc/ssl/certs/ca-certificates.crt
+  protocol: 3.1
+  username: !secret mqtt.username
+  password: !secret mqtt.password
+  discovery: true
+
+hue:
+  bridges: !secret hue.bridges
+
+notify:
+  - name: FirebasePush
+    platform: html5
+    gcm_api_key: !secret notify.gcm_api_key
+    gcm_sender_id: !secret notify.gcm_sender_id
+
+emulated_roku:
+  host_ip: !secret emulated_roku.host_ip
+  listen_ports: !secret emulated_roku.listen_ports
+
+xiaomi_aqara:
+  interface: !secret xiaomi_aqara.interface
+  gateways: !secret xiaomi_aqara.gateways
+
+lutron_caseta:
+  host: !secret lutron_caseta.host
+  keyfile: caseta.key
+  certfile: caseta.crt
+  ca_certs: caseta-bridge.crt
+
+automation old: !include_dir_list automations
+automation: !include automations.yaml
+group: !include_dir_named groups
+script: !include_dir_named scripts
+cover: !include covers.yaml 
+switch: !include switches.yaml
+input_number: !include inputs/input_numbers.yaml

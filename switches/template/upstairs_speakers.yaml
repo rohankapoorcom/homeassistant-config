@@ -1,0 +1,11 @@
+friendly_name: "Upstairs Speakers"
+icon_template: mdi:speaker
+value_template: "{{ states.remote.upstairs_hub.attributes.current_activity == 'Listen to Music on Speakers' }}"
+turn_on:
+  service: script.harmony_music_turn_on
+  data:
+    entity_id: remote.upstairs_hub
+turn_off:
+  service: remote.turn_off
+  data:
+    entity_id: remote.upstairs_hub

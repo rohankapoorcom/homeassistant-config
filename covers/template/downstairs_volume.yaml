@@ -1,0 +1,14 @@
+friendly_name: "Downstairs Volume"
+position_template: 50
+icon_template: mdi:speaker
+open_cover:
+  service: script.harmony_volume
+  data_template:
+    vol_up: true
+    increment: "{{ (states('input_number.volume_increment'))|int }}"
+    entity_id: remote.living_room_hub
+close_cover:
+  service: script.harmony_volume
+  data_template:
+    increment: "{{ (states('input_number.volume_increment'))|int }}"
+    entity_id: remote.living_room_hub

@@ -1,0 +1,11 @@
+secrets.yaml
+entity_registry.yaml
+.config_entries.json
+.HA_VERSION
+.uuid
+*.db
+*.log
+*.conf
+*.crt
+*.key
+tts
