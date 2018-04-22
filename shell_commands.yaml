@@ -1,1 +1,1 @@
-git_pull: /etc/homeassistant/bash/git_pull.sh
+git_pull: bash /etc/homeassistant/bash/git_pull.sh
