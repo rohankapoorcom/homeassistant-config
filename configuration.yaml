@@ -102,4 +102,4 @@ script: !include_dir_named scripts
 cover: !include covers.yaml 
 switch: !include switches.yaml
 input_number: !include inputs/input_numbers.yaml
-shell_commands: !include shell_commands.yaml
+shell_command: !include shell_commands.yaml
