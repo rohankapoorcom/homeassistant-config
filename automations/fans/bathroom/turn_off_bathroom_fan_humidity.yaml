@@ -1,10 +1,15 @@
-id: bathroom_fan_on
-alias: Turn on the Bathroom Fan
+id: bathroom_fan_off_humidity
+alias: Turn off the Bathroom Fan (Humidity)
+intial_state: false
 trigger:
   - platform: numeric_state
     entity_id: sensor.humidity_158d000228846a
     value_template: '{{ states.sensor.humidity_158d000228846a.state|float - states.sensor.humidity_158d0002249e6f.state|float }}'
-    above: 5
+    below: 5
+    for:
+      minutes: 2
 action:
-  - service: switch.turn_on
+  - service: switch.turn_off
     entity_id: switch.bathroom_fan
+  - service: automation.turn_off
+    entity_id: automation.bathroom_fan_off_humidity
