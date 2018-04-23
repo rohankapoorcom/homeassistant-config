@@ -1,6 +1,6 @@
 id: bathroom_fan_off_humidity
 alias: Turn off the Bathroom Fan (Humidity)
-intial_state: false
+initial_state: 'off'
 trigger:
   - platform: numeric_state
     entity_id: sensor.humidity_158d000228846a
