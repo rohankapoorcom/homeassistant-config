@@ -41,11 +41,9 @@ condition:
         state: 'on'
         for:
           minutes: 2
-    - condition:
-      conditions:
-      # No Motion for 30 seconds
-      - condition: state
-        entity_id: binary_sensor.motion_sensor_158d0001e51317
-        state: 'off'
-        for:
-          seconds: 30
+    # No Motion for 30 seconds
+    - condition: state
+      entity_id: binary_sensor.motion_sensor_158d0001e51317
+      state: 'off'
+      for:
+        seconds: 30
