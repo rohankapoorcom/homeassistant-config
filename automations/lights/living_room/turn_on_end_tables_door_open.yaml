@@ -24,7 +24,7 @@ condition:
   # Lights already on
   - condition: state
     entity_id: group.end_tables
-    state: 'on'
+    state: 'off'
   - condition: state
     entity_id: light.couch_accent_white
-    state: 'on'
+    state: 'off'
