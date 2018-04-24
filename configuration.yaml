@@ -46,17 +46,7 @@ logbook:
 # Track the sun
 sun:
 
-# Weather Prediction
-sensor:
-  - platform: yr
-  - platform: travisci
-    api_key: !secret sensor.travis.api_key
-    repository:
-      - homeassistant-config
-    branch:
-      - master
-    monitored_conditions:
-      - last_build_state
+sensor: !include_dir_list sensors
 
 # Text to speech
 tts:
@@ -99,7 +89,7 @@ automation old: !include_dir_list automations
 automation: !include automations.yaml
 group: !include_dir_named groups
 script: !include_dir_named scripts
-cover: !include covers.yaml 
+cover: !include covers.yaml
 switch: !include switches.yaml
 input_number: !include inputs/input_numbers.yaml
 shell_command: !include shell_commands.yaml

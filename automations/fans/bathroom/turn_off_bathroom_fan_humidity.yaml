@@ -3,8 +3,7 @@ alias: Turn off the Bathroom Fan (Humidity)
 initial_state: 'off'
 trigger:
   - platform: numeric_state
-    entity_id: sensor.humidity_158d000228846a
-    value_template: '{{ states.sensor.humidity_158d000228846a.state|float - states.sensor.humidity_158d0002249e6f.state|float }}'
+    entity_id: sensor.bathroom_relative_humidity
     below: 5
     for:
       minutes: 2

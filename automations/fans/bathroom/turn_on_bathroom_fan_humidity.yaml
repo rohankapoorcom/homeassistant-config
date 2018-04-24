@@ -2,8 +2,7 @@ id: bathroom_fan_on_humidity
 alias: Turn on the Bathroom Fan (Humidity)
 trigger:
   - platform: numeric_state
-    entity_id: sensor.humidity_158d000228846a
-    value_template: '{{ states.sensor.humidity_158d000228846a.state|float - states.sensor.humidity_158d0002249e6f.state|float }}'
+    entity_id: sensor.bathroom_relative_humidity
     above: 5
 action:
   - service: switch.turn_on
