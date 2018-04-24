@@ -18,13 +18,13 @@ action:
 condition:
   # Dusk
   - condition: numeric_state
-  entity_id: sun
-  value_template: {{ states.sun.sun.attributes.elevation }}
-  below: -2.5
+    entity_id: sun
+    value_template: {{ states.sun.sun.attributes.elevation }}
+    below: -2.5
   # Lights already on
   - condition: state
-  entity_id: group.end_tables
-  state: 'on'
+    entity_id: group.end_tables
+    state: 'on'
   - condition: state
-  entity_id: light.couch_accent_white
-  state: 'on'
+    entity_id: light.couch_accent_white
+    state: 'on'
