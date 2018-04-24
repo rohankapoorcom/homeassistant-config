@@ -46,7 +46,7 @@ logbook:
 # Track the sun
 sun:
 
-sensor: !include_dir_list sensors
+sensor: !include_dir_merge_list sensors
 
 # Text to speech
 tts:
