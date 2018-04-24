@@ -1,0 +1,30 @@
+id: end_tables_turn_on_door_open
+alias: Turn on End Table Lights (Door Open)
+trigger:
+  # Front Door Open
+  - platform: state
+    entity_id: binary_sensor.door_window_sensor_158d000200a9da
+    to: 'on'
+action:
+  - service: homeassistant.turn_on
+    entity_id: group.end_tables
+    data:
+      brightness_pct: 100
+      color_temp: 233
+  - service: light.turn_on
+    entity_id: light.couch_accent_white
+    data:
+      brightness_pct: 100
+condition:
+  # Dusk
+  - condition: numeric_state
+  entity_id: sun
+  value_template: {{ states.sun.sun.attributes.elevation }}
+  below: -2.5
+  # Lights already on
+  - condition: state
+  entity_id: group.end_tables
+  state: 'on'
+  - condition: state
+  entity_id: light.couch_accent_white
+  state: 'on'
