@@ -9,4 +9,4 @@ action:
   - service: switch.turn_on
     entity_id: switch.bathroom_fan
   - service: automation.turn_on
-    entity_id: automation.bathroom_fan_off_humidity
+    entity_id: automation.turn_off_the_bathroom_fan_humidity
