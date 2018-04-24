@@ -18,7 +18,7 @@ action:
 condition:
   # Dusk
   - condition: numeric_state
-    entity_id: sun
+    entity_id: sun.sun
     value_template: {{ states.sun.sun.attributes.elevation }}
     below: -2.5
   # Lights already on
