@@ -1,0 +1,15 @@
+id: turn_on_speakers_if_chromecast_audio_playing
+alias: Turn on Speakers if Chromecast Audio is Playing
+trigger:
+  - entity_id: media_player.all_speakers
+    platform: state
+    to: 'playing'
+action:
+  - service: script.harmony_music_turn_on
+    data_template:
+      entity_id: >
+        {% if is_state('input_select.last_presence_location', 'Downstairs') %}
+          remote.living_room_hub
+        {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
+          remote.upstairs_hub
+        {% endif %}

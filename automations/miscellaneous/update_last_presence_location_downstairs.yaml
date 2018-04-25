@@ -1,0 +1,10 @@
+id: update_last_presence_location_downstairs
+alias: Update Last Presence Location
+trigger:
+  - entity_id: group.downstairs_presence_detectors
+    platform: state
+action:
+  - service: input_select.select_option
+    entity_id: input_select.last_presence_location
+    data:
+      option: "Downstairs"

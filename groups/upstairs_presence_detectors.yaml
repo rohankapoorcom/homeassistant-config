@@ -1,0 +1,7 @@
+name: Upstairs Presence Detectors
+entities:
+  - binary_sensor.door_window_sensor_158d0001b7bb38
+  - binary_sensor.door_window_sensor_158d0001de6091
+  - binary_sensor.motion_sensor_158d0001e50fb5
+  - binary_sensor.motion_sensor_158d0001e51270
+  - binary_sensor.motion_sensor_158d0001e51317
