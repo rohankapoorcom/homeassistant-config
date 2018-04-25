@@ -1,0 +1,4 @@
+name: Downstairs Presence Detectors
+entities:
+  - binary_sensor.door_window_sensor_158d0001ef6cdb
+  - binary_sensor.door_window_sensor_158d000200a9da
