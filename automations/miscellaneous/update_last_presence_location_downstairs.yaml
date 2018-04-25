@@ -6,5 +6,5 @@ trigger:
 action:
   - service: input_select.select_option
     entity_id: input_select.last_presence_location
-    option: "Downstairs"
-
+    data:
+      option: "Downstairs"
