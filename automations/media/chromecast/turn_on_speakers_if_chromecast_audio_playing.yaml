@@ -3,7 +3,7 @@ alias: Turn on Speakers if Chromecast Audio is Playing
 trigger:
   - entity_id: media_player.all_speakers
     platform: state
-    state: 'playing'
+    to: 'playing'
 action:
   - service: script.harmony_music_turn_on
     data_template:
