@@ -31,4 +31,4 @@ condition:
         {% set entity_id = "remote.upstairs_hub" %}
       {% endif %}
       {{ is_state(entity_id, 'off')}}
-    state: false
+    state: 'False'
