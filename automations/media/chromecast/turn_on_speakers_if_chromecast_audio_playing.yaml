@@ -24,11 +24,12 @@ action:
     entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
 condition:
   - condition: state
+    entity_id: group.all_remotes
     value_template: >
       {% if is_state('input_select.last_presence_location', 'Downstairs') %}
-        {% set entity_id = "remote.living_room_hub" %}
+        {% set entity = "remote.living_room_hub" %}
       {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
-        {% set entity_id = "remote.upstairs_hub" %}
+        {% set entity = "remote.upstairs_hub" %}
       {% endif %}
-      {{ is_state(entity_id, 'off')}}
+      {{ is_state(entity, 'off')}}
     state: 'False'
