@@ -16,9 +16,9 @@ action:
   - service: media_player.media_pause
     entity_id: media_player.all_speakers
   - service: automation.turn_off
-    entity_id: turn_on_speakers_if_chromecast_audio_playing
+    entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
   - delay: '00:00:10'
   - service: media_player.media_play
     entity_id: media_player.all_speakers
   - service: automation.turn_on
-    entity_id: turn_on_speakers_if_chromecast_audio_playing
+    entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
