@@ -13,3 +13,8 @@ action:
         {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
           remote.upstairs_hub
         {% endif %}
+  - service: media_player.media_pause
+    entity_id: media_player.all_speakers
+  - delay: '00:00:10'
+  - service: media_player.media_play
+    entity_id: media_player.all_speakers
