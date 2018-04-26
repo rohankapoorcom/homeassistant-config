@@ -1,5 +1,5 @@
 id: update_last_presence_location_downstairs
-alias: Update Last Presence Location
+alias: Update Last Presence Location (Downstairs)
 trigger:
   - entity_id: group.downstairs_presence_detectors
     platform: state
