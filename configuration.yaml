@@ -47,6 +47,7 @@ logbook:
 sun:
 
 sensor: !include_dir_merge_list sensors
+binary_sensor: !include_dir_merge_list binary_sensors
 
 # Text to speech
 tts:
