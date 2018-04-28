@@ -6,7 +6,7 @@ trigger:
     platform: state
     to: 'off'
   # Motion detected
-  - entity_id: binary_sensor.motion_sensor_158d0001e51270
+  - entity_id: group.bathroom_motion
     platform: state
     to: 'on'
 action:

@@ -8,7 +8,7 @@ trigger:
     for:
       seconds: 30
   # No motion detected for 1 minute
-  - entity_id: groups.bathroom_motion
+  - entity_id: group.bathroom_motion
     platform: state
     to: 'off'
     for:
@@ -21,7 +21,7 @@ condition:
   conditions:
     # No motion for 30 seconds
     - condition: state
-      entity_id: groups.bathroom_motion
+      entity_id: group.bathroom_motion
       state: 'off'
       for:
         seconds: 30
