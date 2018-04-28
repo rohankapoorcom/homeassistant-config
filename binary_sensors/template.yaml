@@ -2,5 +2,5 @@
   sensors:
     bathroom_motion:
       friendly_name: 'Motion'
-      device_class: motion
-      value_template: '{{ is_state('group.bathroom_motion', 'on') }}'
+      device_class: 'motion'
+      value_template: "{{ is_state('group.bathroom_motion', 'on') }}"
