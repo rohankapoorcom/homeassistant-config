@@ -37,6 +37,10 @@ discovery:
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
+recorder:
+  db_url: !secret recorder.db_url
+  purge_interval: 0
+
 # Enables support for tracking state changes over time.
 history:
 
