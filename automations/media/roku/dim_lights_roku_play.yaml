@@ -6,10 +6,10 @@ trigger:
     event_data:
       roku_usn: 4t8k7RAjE3TBcfheQvCATZ
       type: keypress
-      key: DirectionUp
+      key: Up
 action:
   - service: homeassistant.turn_off
-    entity_id: group.downstairs_lights
+    entity_id: group.downstairs_non_tv_lights
   - service: homeassistant.turn_on
     entity_id: group.end_tables
     data:
