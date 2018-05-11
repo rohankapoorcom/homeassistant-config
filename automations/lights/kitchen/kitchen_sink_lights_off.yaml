@@ -1,0 +1,11 @@
+id: kitchen_sink_lights_off
+alias: Turn off Kitchen Sink Lights
+trigger:
+  - entity_id: binary_sensor.motion_sensor_158d0001e0a7db
+    for:
+      minutes: 5
+    platform: state
+    to: 'off'
+action:
+  - entity_id: light.kitchen_sink_light
+    service: light.turn_off

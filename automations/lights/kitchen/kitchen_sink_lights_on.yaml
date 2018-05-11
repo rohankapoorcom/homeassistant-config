@@ -1,0 +1,9 @@
+id: kitchen_sink_lights_ofn
+alias: Turn on Kitchen Sink Lights
+trigger:
+  - entity_id: binary_sensor.motion_sensor_158d0001e0a7db
+    platform: state
+    to: 'on'
+action:
+  - entity_id: light.kitchen_sink_light
+    service: light.turn_on
