@@ -1,8 +1,14 @@
 id: update_last_presence_location_upstairs
 alias: Update Last Presence Location (Upstairs)
 trigger:
-  - entity_id: group.upstairs_presence_detectors
+  - entity_id:
+    - binary_sensor.door_window_sensor_158d0001b7bb38
+    - binary_sensor.door_window_sensor_158d0001de6091
+    - binary_sensor.motion_sensor_158d0001e50fb5
+    - binary_sensor.motion_sensor_158d0001e51317
+    - group.bathroom_motion
     platform: state
+    to: 'on'
 action:
   - service: input_select.select_option
     entity_id: input_select.last_presence_location
