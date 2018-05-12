@@ -1,0 +1,9 @@
+id: bathroom_sink_lights_on
+alias: Turn on Bathroom Sink Lights
+trigger:
+  - entity_id: binary_sensor.motion_sensor_158d0001e05978
+    platform: state
+    to: 'on'
+action:
+  - entity_id: switch.sink_lights
+    service: switch.turn_on

@@ -6,6 +6,7 @@ trigger:
     - binary_sensor.door_window_sensor_158d0001de6091
     - binary_sensor.motion_sensor_158d0001e50fb5
     - binary_sensor.motion_sensor_158d0001e51317
+    - binary_sensor.motion_sensor_158d0001e05978
     - group.bathroom_motion
     platform: state
     to: 'on'
