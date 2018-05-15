@@ -91,6 +91,11 @@ lutron_caseta:
   certfile: caseta.crt
   ca_certs: caseta-bridge.crt
 
+august:
+  login_method: !secret august.login_method
+  username: !secret august.username
+  password: !secret august.password
+
 automation old: !include_dir_list automations
 automation: !include automations.yaml
 group: !include_dir_named groups
