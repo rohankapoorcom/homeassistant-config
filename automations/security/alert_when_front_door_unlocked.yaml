@@ -10,3 +10,6 @@ action:
     data:
       entity_id: media_player.notifications
       message: 'Alert - The front door is unlocked'
+  - service: notify.firebasepush_oneplus_5t
+    data:
+      message: 'Alert - Front door unlocked'

@@ -24,3 +24,6 @@ action:
   - service: lock.lock
     data:
       entity_id: lock.front_door
+  - service: notify.firebasepush_oneplus_5t
+    data:
+      message: 'Front door automatically locked'
