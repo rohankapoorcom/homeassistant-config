@@ -5,4 +5,4 @@
   branch:
     - master
   monitored_conditions:
-    - state
+    - last_build_state
