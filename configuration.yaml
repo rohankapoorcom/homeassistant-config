@@ -108,3 +108,4 @@ switch: !include switches.yaml
 input_number: !include inputs/input_numbers.yaml
 input_select: !include inputs/input_selects.yaml
 shell_command: !include shell_commands.yaml
+camera: !include cameras.yaml
