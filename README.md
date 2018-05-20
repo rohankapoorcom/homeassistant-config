@@ -4,4 +4,4 @@ Configuration files for [Rohan's](https://github.com/rohankapoorcom) [HomeAssist
 
 [![Build Status](https://travis-ci.org/rohankapoorcom/homeassistant-config.svg?branch=master)](https://travis-ci.org/rohankapoorcom/homeassistant-config)
 
-Home Assistant is configured to automaticall pull down the configuration and restart when new commits are pushed and the travis build passes.
+Home Assistant is configured to automatically pull down the configuration and restart when new commits are pushed and the travis build passes.

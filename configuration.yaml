@@ -96,6 +96,9 @@ august:
   username: !secret august.username
   password: !secret august.password
 
+zoneminder:
+  host: !secret zoneminder.host
+
 automation old: !include_dir_list automations
 automation: !include automations.yaml
 group: !include_dir_named groups
