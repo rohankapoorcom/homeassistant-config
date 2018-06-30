@@ -2,7 +2,8 @@ view: yes
 icon: mdi:home
 entities:
   - media_player.all_speakers
+  - camera.frontdoor
+  - lock.front_door
   - media_player.denon_avrs720w
   - media_player.living_room
   - group.all_remotes
-  - group.all_automations
