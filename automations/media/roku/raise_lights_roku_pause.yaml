@@ -9,7 +9,7 @@ trigger:
       key: Down
 action:
   - service: homeassistant.turn_on
-    entity_id: group.end_tables
+    entity_id: group.downstairs_tv_lights
     data:
       color_temp: 432
       brightness: 255

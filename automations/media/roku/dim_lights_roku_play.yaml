@@ -11,7 +11,7 @@ action:
   - service: homeassistant.turn_off
     entity_id: group.downstairs_non_tv_lights
   - service: homeassistant.turn_on
-    entity_id: group.end_tables
+    entity_id: group.downstairs_tv_lights
     data:
       color_temp: 432
       brightness: 120
