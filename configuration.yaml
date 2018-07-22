@@ -99,6 +99,10 @@ august:
 zoneminder:
   host: !secret zoneminder.host
 
+media_player:
+  - platform: denonavr
+
+
 automation old: !include_dir_list automations
 automation: !include automations.yaml
 group: !include_dir_named groups
