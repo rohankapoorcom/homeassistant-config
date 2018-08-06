@@ -4,6 +4,7 @@ entities:
   - switch.sink_lights
   - switch.bathroom_light
   - switch.bathroom_fan
+  - timer.bathroom_fan_timer
   - sensor.temperature_158d000228846a
   - sensor.humidity_158d000228846a
   - sensor.pressure_158d000228846a
