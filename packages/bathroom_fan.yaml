@@ -1,0 +1,143 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/05/2018
+#  @package      :  Bathroom Fan
+#  @description  :  Controls the bathroom fan. Includes a timer and humidity
+#                   sensor.
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'bathroom_fan'
+
+      timer_defaults: &timer_defaults
+        duration: 600
+
+    input_boolean.bathroom_fan_started_humidity:
+      <<: *customize
+
+    timer.bathroom_fan_timer:
+      <<: *customize
+
+    automation.activate_bathroom_fan_timer:
+      <<: *customize
+    automation.deactivate_bathroom_fan_timer:
+      <<: *customize
+    automation.deactivate_bathroom_fan_when_timer_finishes:
+      <<: *customize
+    automation.activate_bathroom_fan_humidity:
+      <<: *customize
+    automation.deactivate_bathroom_fan_humidity:
+      <<: *customize
+
+    script.deactivate_bathroom_fan_humidity:
+      <<: *customize
+
+input_boolean:
+  bathroom_fan_started_humidity:
+    name: Indicates that the Bathroom Fan was started by Humidity Sensor
+
+timer:
+  bathroom_fan_timer:
+    name: Bathroom Fan Timer
+    <<: *timer_defaults
+
+################################################
+## Automation
+################################################
+
+automation:
+  ################################################
+  ## Bathroom Fan & Timer
+  ################################################
+
+  - id: activate_bathroom_fan_timer
+    alias: Activate Bathroom Fan Timer
+    trigger:
+      - platform: state
+        entity_id: switch.bathroom_fan
+        to: 'on'
+    action:
+      - service: timer.start
+        entity_id: timer.bathroom_fan_timer
+        data:
+          <<: *timer_defaults
+    condition:
+      - condition: state
+        entity_id: input_boolean.bathroom_fan_started_humidity
+        state: 'off'
+
+  - id: deactivate_bathroom_fan_timer
+    alias: Deactivate Bathroom Fan Timer
+    trigger:
+      - platform: state
+        entity_id: switch.bathroom_fan
+        to: 'off'
+    action:
+      - service: timer.cancel
+        entity_id: timer.bathroom_fan_timer
+
+  - id: deactivate_bathroom_fan_when_timer_finishes
+    alias: Deactivate Bathroom Fan when Timer Finishes
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.bathroom_fan_timer
+    action:
+      - service: switch.turn_off
+        entity_id: switch.bathroom_fan
+    condition:
+      - condition: state
+        entity_id: input_boolean.bathroom_fan_started_humidity
+        state: 'off'
+
+  ################################################
+  ## Humidity Sensor Control
+  ################################################
+
+  - id: activate_bathroom_fan_humidity
+    alias: Activate Bathroom Fan (Humidity)
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.bathroom_relative_humidity
+        above: 5
+    action:
+      - service: switch.turn_on
+        entity_id: switch.bathroom_fan
+      - service: input_boolean.turn_on
+        data:
+          entity_id: input_boolean.bathroom_fan_started_humidity
+
+  - id: deactivate_bathroom_fan_humidity
+    alias: Deactivate Bathroom Fan (Humidity)
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.bathroom_relative_humidity
+        below: 5
+        for:
+          minutes: 2
+    action:
+      - service: script.deactivate_bathroom_fan_humidity
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.bathroom_fan_started_humidity
+
+################################################
+## Script
+################################################
+
+script:
+  deactivate_bathroom_fan_humidity:
+    sequence:
+      - condition: state
+        entity_id: input_boolean.bathroom_fan_started_humidity
+        state: 'on'
+      - service: switch.turn_off
+        entity_id: switch.bathroom_fan
