@@ -3,7 +3,9 @@
 #  @date         :  08/05/2018
 #  @package      :  Bathroom Fan
 #  @description  :  Controls the bathroom fan. Includes humidity, door, and
-#                   motion sensors as well as a timer for delayed shutoff.
+#                   motion sensors as well as a timer for delayed shutoff. The
+#                   timer will not start until all sensors that triggered the
+#                   fan activation have stopped triggering.
 ###############################################################################
 
 homeassistant:
@@ -145,6 +147,9 @@ automation:
     trigger:
       - platform: state
         entity_id: input_number.bathroom_fan_triggers
+      - platform: state
+        entity_id: switch.bathroom_fan
+        to: 'on'
     action:
       - service: timer.start
         entity_id: timer.bathroom_fan_timer
