@@ -2,8 +2,8 @@
 #  @author       :  Rohan Kapoor
 #  @date         :  08/05/2018
 #  @package      :  Bathroom Fan
-#  @description  :  Controls the bathroom fan. Includes a timer and humidity
-#                   sensor.
+#  @description  :  Controls the bathroom fan. Includes humidity, door, and
+#                   motion sensors as well as a timer for delayed shutoff.
 ###############################################################################
 
 homeassistant:
@@ -17,31 +17,36 @@ homeassistant:
         package: 'bathroom_fan'
 
       timer_defaults: &timer_defaults
-        duration: 600
+        duration: 300
 
-    input_boolean.bathroom_fan_started_humidity:
+    input_number.bathroom_fan_triggers:
       <<: *customize
 
     timer.bathroom_fan_timer:
       <<: *customize
 
+    automation.increment_bathroom_fan_triggers:
+      <<: *customize
+    automation.decrement_bathroom_fan_triggers:
+      <<: *customize
+    automation.activate_bathroom_fan:
+      <<: *customize
     automation.activate_bathroom_fan_timer:
       <<: *customize
     automation.deactivate_bathroom_fan_timer:
       <<: *customize
-    automation.deactivate_bathroom_fan_when_timer_finishes:
-      <<: *customize
-    automation.activate_bathroom_fan_humidity:
-      <<: *customize
-    automation.deactivate_bathroom_fan_humidity:
+    automation.deactivate_bathroom_fan:
       <<: *customize
 
-    script.deactivate_bathroom_fan_humidity:
+    script.reset_bathroom_fan_timer:
       <<: *customize
 
-input_boolean:
-  bathroom_fan_started_humidity:
-    name: Indicates that the Bathroom Fan was started by Humidity Sensor
+input_number:
+  bathroom_fan_triggers:
+    name: Bathroom Fan Triggers
+    min: 0
+    max: 3
+    step: 1
 
 timer:
   bathroom_fan_timer:
@@ -53,25 +58,103 @@ timer:
 ################################################
 
 automation:
+
+  ################################################
+  ## Bathroom Humidity, Door, Motion Sensors
+  ################################################
+
+  - id: increment_bathroom_fan_triggers
+    alias: Increment Bathroom Fan Triggers
+    trigger:
+      # Humidity Detected
+      - platform: numeric_state
+        entity_id: sensor.bathroom_relative_humidity
+        above: 5
+      # Door closed
+      - platform: state
+        entity_id: binary_sensor.door_window_sensor_158d0001de6091
+        to: 'off'
+      # Motion detected
+      - platform: state
+        entity_id: group.bathroom_motion
+        to: 'on'
+    action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.bathroom_fan_triggers
+          value: >
+            {% if states.input_number.bathroom_fan_triggers.state | int < states.input_number.bathroom_fan_triggers.attributes.max %}
+              {{ (states.input_number.bathroom_fan_triggers.state | int) + 1 }}
+            {% else %}
+              {{ states.input_number.bathroom_fan_triggers.state | int }}
+            {% endif %}
+
+  - id: decrement_bathroom_fan_triggers
+    alias: Decrement Bathroom Fan Triggers
+    trigger:
+      # Humidity Cleared
+      - platform: numeric_state
+        entity_id: sensor.bathroom_relative_humidity
+        below: 5
+        for:
+          minutes: 2
+      # Door open for 30 seconds
+      - platform: state
+        entity_id: binary_sensor.door_window_sensor_158d0001de6091
+        to: 'on'
+        for:
+          seconds: 30
+      # No motion detected for 1 minute
+      - platform: state
+        entity_id: group.bathroom_motion
+        to: 'off'
+        for:
+          minutes: 1
+    action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.bathroom_fan_triggers
+          value: >
+            {% if states.input_number.bathroom_fan_triggers.state | int > states.input_number.bathroom_fan_triggers.attributes.min %}
+              {{ (states.input_number.bathroom_fan_triggers.state | int) - 1 }}
+            {% else %}
+              {{ states.input_number.bathroom_fan_triggers.state | int }}
+            {% endif %}
+
   ################################################
   ## Bathroom Fan & Timer
   ################################################
+
+  - id: activate_bathroom_fan
+    alias: Activate Bathroom Fan
+    trigger:
+      - platform: state
+        entity_id: input_number.bathroom_fan_triggers
+    action:
+      - service: switch.turn_on
+        entity_id: switch.bathroom_fan
+      - service: script.reset_bathroom_fan_timer
+    condition:
+      - condition: numeric_state
+        entity_id: input_number.bathroom_fan_triggers
+        value_template: '{{ states.input_number.bathroom_fan_triggers.state | int }}'
+        above: 0
 
   - id: activate_bathroom_fan_timer
     alias: Activate Bathroom Fan Timer
     trigger:
       - platform: state
-        entity_id: switch.bathroom_fan
-        to: 'on'
+        entity_id: input_number.bathroom_fan_triggers
     action:
       - service: timer.start
         entity_id: timer.bathroom_fan_timer
         data:
           <<: *timer_defaults
     condition:
-      - condition: state
-        entity_id: input_boolean.bathroom_fan_started_humidity
-        state: 'off'
+      - condition: numeric_state
+        entity_id: input_number.bathroom_fan_triggers
+        value_template: '{{ states.input_number.bathroom_fan_triggers.state | int }}'
+        below: 1
 
   - id: deactivate_bathroom_fan_timer
     alias: Deactivate Bathroom Fan Timer
@@ -80,11 +163,10 @@ automation:
         entity_id: switch.bathroom_fan
         to: 'off'
     action:
-      - service: timer.cancel
-        entity_id: timer.bathroom_fan_timer
+      - service: script.reset_bathroom_fan_timer
 
-  - id: deactivate_bathroom_fan_when_timer_finishes
-    alias: Deactivate Bathroom Fan when Timer Finishes
+  - id: deactivate_bathroom_fan
+    alias: Deactivate Bathroom Fan
     trigger:
       - platform: event
         event_type: timer.finished
@@ -93,51 +175,9 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.bathroom_fan
-    condition:
-      - condition: state
-        entity_id: input_boolean.bathroom_fan_started_humidity
-        state: 'off'
-
-  ################################################
-  ## Humidity Sensor Control
-  ################################################
-
-  - id: activate_bathroom_fan_humidity
-    alias: Activate Bathroom Fan (Humidity)
-    trigger:
-      - platform: numeric_state
-        entity_id: sensor.bathroom_relative_humidity
-        above: 5
-    action:
-      - service: switch.turn_on
-        entity_id: switch.bathroom_fan
-      - service: input_boolean.turn_on
-        data:
-          entity_id: input_boolean.bathroom_fan_started_humidity
-
-  - id: deactivate_bathroom_fan_humidity
-    alias: Deactivate Bathroom Fan (Humidity)
-    trigger:
-      - platform: numeric_state
-        entity_id: sensor.bathroom_relative_humidity
-        below: 5
-        for:
-          minutes: 2
-    action:
-      - service: script.deactivate_bathroom_fan_humidity
-      - service: input_boolean.turn_off
-        data:
-          entity_id: input_boolean.bathroom_fan_started_humidity
-
-################################################
-## Script
-################################################
 
 script:
-  deactivate_bathroom_fan_humidity:
+  reset_bathroom_fan_timer:
     sequence:
-      - condition: state
-        entity_id: input_boolean.bathroom_fan_started_humidity
-        state: 'on'
-      - service: switch.turn_off
-        entity_id: switch.bathroom_fan
+      - service: timer.cancel
+        entity_id: timer.bathroom_fan_timer
