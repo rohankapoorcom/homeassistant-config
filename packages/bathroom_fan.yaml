@@ -100,18 +100,14 @@ automation:
         below: 5
         for:
           minutes: 2
-      # Door open for 30 seconds
+      # Door open
       - platform: state
         entity_id: binary_sensor.door_window_sensor_158d0001de6091
         to: 'on'
-        for:
-          seconds: 30
-      # No motion detected for 1 minute
+      # No motion detected
       - platform: state
         entity_id: group.bathroom_motion
         to: 'off'
-        for:
-          minutes: 1
     action:
       - service: input_number.set_value
         data_template:
@@ -169,6 +165,10 @@ automation:
         to: 'off'
     action:
       - service: script.reset_bathroom_fan_timer
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.bathroom_fan_triggers
+          value: 0
 
   - id: deactivate_bathroom_fan
     alias: Deactivate Bathroom Fan
