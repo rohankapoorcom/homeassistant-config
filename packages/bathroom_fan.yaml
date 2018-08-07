@@ -156,6 +156,9 @@ automation:
         entity_id: input_number.bathroom_fan_triggers
         value_template: '{{ states.input_number.bathroom_fan_triggers.state | int }}'
         below: 1
+      - condition: state
+        entity_id: switch.bathroom_fan
+        state: 'on'
 
   - id: deactivate_bathroom_fan_timer
     alias: Deactivate Bathroom Fan Timer
