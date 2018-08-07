@@ -39,7 +39,7 @@ homeassistant:
       <<: *customize
     automation.deactivate_bathroom_fan:
       <<: *customize
-    automation.deactivate_bathroom_fan_on_shutdown:
+    automation.deactivate_bathroom_fan_on_startup:
       <<: *customize
 
     script.reset_bathroom_fan_timer:
@@ -191,11 +191,11 @@ automation:
   ## Home Assistant Startup/Shutdown
   ################################################
 
-  - id: deactivate_bathroom_fan_on_shutdown
-    alias: Deactivate Bathroom Fan on Shutdown
+  - id: deactivate_bathroom_fan_on_startup
+    alias: Deactivate Bathroom Fan on Startup
     trigger:
       - platform: homeassistant
-        event: shutdown
+        event: start
     action:
       - service: switch.turn_off
         entity_id: switch.bathroom_fan
