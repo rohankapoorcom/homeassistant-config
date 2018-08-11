@@ -1,2 +1,0 @@
-- platform: template
-  covers: !include_dir_named covers/template
