@@ -162,8 +162,6 @@ automation:
         platform: state
         to: 'playing'
     action:
-      - service: media_player.media_pause
-        entity_id: media_player.all_speakers
       - service: script.harmony_music_turn_on
         data_template:
           entity_id: >
@@ -172,21 +170,6 @@ automation:
             {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
               remote.upstairs_hub
             {% endif %}
-      - service: automation.turn_off
-        entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
-      - wait_template: >
-          {% if is_state('input_select.last_presence_location', 'Downstairs') %}
-            {% set entity = "remote.living_room_hub" %}
-          {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
-            {% set entity = "remote.upstairs_hub" %}
-          {% endif %}
-          {{ is_state(entity, 'on')}}
-      - delay:
-          seconds: 7
-      - service: media_player.media_play
-        entity_id: media_player.all_speakers
-      - service: automation.turn_on
-        entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
     condition:
       - condition: template
         value_template: >
@@ -288,10 +271,27 @@ script:
   harmony_music_turn_on:
     alias: Turn on Speakers (Music)
     sequence:
+      - service: media_player.media_pause
+        entity_id: media_player.all_speakers
       - service: remote.turn_on
         data_template:
           entity_id: "{{ entity_id }}"
           activity: "{{ 32547827 if entity_id == 'remote.upstairs_hub' else 22851881 }}"
+      - service: automation.turn_off
+        entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
+      - wait_template: >
+          {% if is_state('input_select.last_presence_location', 'Downstairs') %}
+            {% set entity = "remote.living_room_hub" %}
+          {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
+            {% set entity = "remote.upstairs_hub" %}
+          {% endif %}
+          {{ is_state(entity, 'on')}}
+      - delay:
+          seconds: 4
+      - service: media_player.media_play
+        entity_id: media_player.all_speakers
+      - service: automation.turn_on
+        entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
 
   turn_off_upstairs_speakers:
     alias: Turn off Upstairs Speakers
