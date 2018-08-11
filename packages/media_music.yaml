@@ -23,7 +23,7 @@ homeassistant:
         value_template: "{{ is_state_attr('remote.upstairs_hub', 'current_activity', 'Listen to Music on Speakers') }}"
 
       downstairs_speakers_value_template: &downstairs_speakers_value_template
-        value_template: "{{ is_state_attr('remote.living_room_hub' 'current_activity', 'Listen to Music') }}"
+        value_template: "{{ is_state_attr('remote.living_room_hub', 'current_activity', 'Listen to Music') }}"
 
       cover: &cover
         <<: *speaker
