@@ -174,7 +174,15 @@ automation:
             {% endif %}
       - service: automation.turn_off
         entity_id: automation.turn_on_speakers_if_chromecast_audio_playing
-      - delay: '00:00:10'
+      - wait_template: >
+          {% if is_state('input_select.last_presence_location', 'Downstairs') %}
+            {% set entity = "remote.living_room_hub" %}
+          {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
+            {% set entity = "remote.upstairs_hub" %}
+          {% endif %}
+          {{ is_state(entity, 'on')}}
+      - delay:
+          seconds: 7
       - service: media_player.media_play
         entity_id: media_player.all_speakers
       - service: automation.turn_on
