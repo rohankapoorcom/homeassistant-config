@@ -103,9 +103,7 @@ zoneminder:
 media_player:
   - platform: denonavr
 
-
 automation old: !include_dir_list automations
 group: !include_dir_named groups
-input_select: !include inputs/input_selects.yaml
 shell_command: !include shell_commands.yaml
 camera: !include cameras.yaml

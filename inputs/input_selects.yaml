@@ -1,7 +1,0 @@
-last_presence_location:
-  name: Last Presence Location
-  options:
-    - Upstairs
-    - Downstairs
-  initial: Upstairs
-  icon: mdi:radar
