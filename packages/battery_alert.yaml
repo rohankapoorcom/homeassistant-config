@@ -289,9 +289,9 @@ group:
       - input_text.clear_mqtt_topic
       - automation.battery_notification
       - automation.battery_notification_clear
-      - automation.battery_notification_slack
-      - automation.battery_notification_telegram
-      - automation.battery_notification_pushover
+      # - automation.battery_notification_slack
+      # - automation.battery_notification_telegram
+      # - automation.battery_notification_pushover
       - automation.battery_sensor_from_attributes
       - automation.update_battery_status_group_members
       - automation.clear_mqtt_topic
