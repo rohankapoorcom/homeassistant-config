@@ -52,7 +52,6 @@ logbook:
 # Track the sun
 sun:
 
-sensor: !include_dir_merge_list sensors
 binary_sensor: !include_dir_merge_list binary_sensors
 
 # Text to speech
@@ -105,5 +104,4 @@ media_player:
 
 automation old: !include_dir_list automations
 group: !include_dir_named groups
-shell_command: !include shell_commands.yaml
 camera: !include cameras.yaml

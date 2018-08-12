@@ -1,0 +1,70 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/11/2018
+#  @package      :  HA System
+#  @description  :  Manages aspects of the home assistant system
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'ha_system'
+
+    sensor.rohankapoorcomhomeassistantconfig_last_build_state:
+      <<: *customize
+
+    automation.update_configuration_if_travis_build_is_successful:
+      <<: *customize
+
+    shell_command.git_pull:
+      <<: *customize
+
+    script.pull_and_restart_homeassistant:
+      <<: *customize
+
+sensor:
+  - platform: travisci
+    api_key: !secret sensor.travis.api_key
+    repository:
+      - homeassistant-config
+    branch:
+      - master
+    monitored_conditions:
+      - last_build_state
+
+################################################
+## Automation
+################################################
+
+automation:
+
+  - id: update_configuration_if_travis_build_is_successful
+    alias: Update configuration if travis build is successful
+    trigger:
+      - entity_id: sensor.rohankapoorcomhomeassistantconfig_last_build_state
+        platform: state
+        to: 'passed'
+    action:
+      - service: script.pull_and_restart_homeassistant
+
+################################################
+## Shell Command
+################################################
+
+shell_command:
+  git_pull: "/usr/bin/git -C /etc/homeassistant/ pull"
+
+################################################
+## Script
+################################################
+
+script:
+  pull_and_restart_homeassistant:
+    sequence:
+      - service: shell_command.git_pull
+      - service: homeassistant.restart

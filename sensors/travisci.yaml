@@ -1,8 +1,0 @@
-- platform: travisci
-  api_key: !secret sensor.travis.api_key
-  repository:
-    - homeassistant-config
-  branch:
-    - master
-  monitored_conditions:
-    - last_build_state
