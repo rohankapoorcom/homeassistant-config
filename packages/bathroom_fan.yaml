@@ -27,6 +27,9 @@ homeassistant:
     timer.bathroom_fan_timer:
       <<: *customize
 
+    sensor.bathroom_relative_humidity:
+      <<: *customize
+
     automation.increment_bathroom_fan_triggers:
       <<: *customize
     automation.decrement_bathroom_fan_triggers:
@@ -57,6 +60,14 @@ timer:
   bathroom_fan_timer:
     name: Bathroom Fan Timer
     <<: *timer_defaults
+
+sensor:
+  - platform: template
+    sensors:
+      bathroom_relative_humidity:
+        friendly_name: 'Relative Humidity'
+        unit_of_measurement: '%'
+        value_template: '{{ states.sensor.humidity_158d000228846a.state|float - states.sensor.humidity_158d0002249e6f.state|float }}'
 
 ################################################
 ## Automation

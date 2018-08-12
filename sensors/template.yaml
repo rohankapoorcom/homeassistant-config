@@ -1,6 +1,0 @@
-- platform: template
-  sensors:
-    bathroom_relative_humidity:
-      friendly_name: 'Relative Humidity'
-      unit_of_measurement: '%'
-      value_template: '{{ states.sensor.humidity_158d000228846a.state|float - states.sensor.humidity_158d0002249e6f.state|float }}'
