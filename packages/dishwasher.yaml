@@ -1,0 +1,41 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/13/2018
+#  @package      :  Dishwasher
+#  @description  :  Controls the dishwasher
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'dishwasher'
+
+      sensor_defaults: &sensor_defaults
+        platform: mqtt
+        state_topic: 'tele/sonoff-dishwasher/SENSOR'
+
+################################################
+## Sensor
+################################################
+sensor:
+  - name: "Dishwasher Energy"
+    <<: *sensor_defaults
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    unit_of_measurement: "kWh"
+  - name: "Dishwasher Power"
+    <<: *sensor_defaults
+    value_template: '{{ value_json["ENERGY"]["Power"] }}'
+    unit_of_measurement: "W"
+  - name: "Dishwasher Voltage"
+    <<: *sensor_defaults
+    value_template: '{{ value_json["ENERGY"]["Voltage"] }}'
+    unit_of_measurement: "V"
+  - name: "Dishwasher Current"
+    <<: *sensor_defaults
+    value_template: '{{ value_json["ENERGY"]["Current"] }}'
+    unit_of_measurement: "A"
