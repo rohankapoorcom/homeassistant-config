@@ -2,7 +2,13 @@
 #  @author       :  Rohan Kapoor
 #  @date         :  08/13/2018
 #  @package      :  Dishwasher
-#  @description  :  Controls the dishwasher
+#  @description  :  Controls the dishwasher. When the button is single clicked
+#                   it enables the dishwasher automatically when the
+#                   dishwasher time window begins.
+#
+#                   @TODO: It sets a persistent
+#                   notification when it is complete and then turns off power
+#                   to the dishwasher.
 ###############################################################################
 
 homeassistant:
@@ -16,8 +22,23 @@ homeassistant:
         package: 'dishwasher'
 
       sensor_defaults: &sensor_defaults
+        <<: *customize
         platform: mqtt
         state_topic: 'tele/sonoff-dishwasher/SENSOR'
+        force_update: true
+
+    input_datetime.dishwasher_start_time:
+      <<: *customize
+
+    input_boolean.dishwasher_enabled:
+      <<: *customize
+
+    automation.enable_dishwasher_when_kitchen_button_pressed:
+      <<: *customize
+    automation.Disable_dishwasher_when_kitchen_button_double_pressed:
+      <<: *customize
+    automation.start_dishwasher_at_dishwasher_start_time_if_enabled:
+      <<: *customize
 
 ################################################
 ## Sensor
@@ -39,3 +60,64 @@ sensor:
     <<: *sensor_defaults
     value_template: '{{ value_json["ENERGY"]["Current"] }}'
     unit_of_measurement: "A"
+
+################################################
+## Input Datetime
+################################################
+input_datetime:
+  dishwasher_start_time:
+    name: Dishwasher Start Time
+    has_date: false
+    has_time: true
+    initial: '10:00'
+    icon: mdi:clock
+
+################################################
+## Input Boolean
+################################################
+input_boolean:
+  dishwasher_enabled:
+    name: Dishwasher Enabled
+    icon: mdi:washing-machine
+
+################################################
+## Automation
+################################################
+automation:
+
+  - id: enable_dishwasher_when_kitchen_button_pressed
+    alias: Enable Dishwasher when Kitchen Button Pressed
+    trigger:
+      - platform: event
+        event_type: click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e59abe
+    action:
+      - service: input_boolean.turn_on
+        data:
+          entity_id: input_boolean.dishwasher_enabled
+
+  - id: Disable_dishwasher_when_kitchen_button_double_pressed
+    alias: Disable Dishwasher when Kitchen Button Double Pressed
+    trigger:
+      - platform: event
+        event_type: double_click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e59abe
+    action:
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.dishwasher_enabled
+
+  - id: start_dishwasher_at_dishwasher_start_time_if_enabled
+    alias: Start Dishwasher at Dishwasher Start Time if Enabled
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') == (((state_attr('input_datetime.dishwasher_start_time' , 'timestamp')) - (15 * 60))|timestamp_custom('%H:%M', false)) }}"
+    condition:
+      - condition: state
+        entity_id: input_boolean.dishwasher_enabled
+        state: 'on'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.dishwasher

@@ -105,3 +105,8 @@ media_player:
 automation old: !include_dir_list automations
 group: !include_dir_named groups
 camera: !include cameras.yaml
+
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
