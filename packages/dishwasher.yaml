@@ -92,6 +92,7 @@ automation:
         event_type: click
         event_data:
           entity_id: binary_sensor.switch_158d0001e59abe
+          click_type: single
     action:
       - service: input_boolean.turn_on
         data:
@@ -101,9 +102,10 @@ automation:
     alias: Disable Dishwasher when Kitchen Button Double Pressed
     trigger:
       - platform: event
-        event_type: double_click
+        event_type: click
         event_data:
           entity_id: binary_sensor.switch_158d0001e59abe
+          click_type: double
     action:
       - service: input_boolean.turn_off
         data:
@@ -113,7 +115,7 @@ automation:
     alias: Start Dishwasher at Dishwasher Start Time if Enabled
     trigger:
       - platform: template
-        value_template: "{{ states('sensor.time') == (((state_attr('input_datetime.dishwasher_start_time' , 'timestamp')) - (15 * 60))|timestamp_custom('%H:%M', false)) }}"
+        value_template: "{{ states('sensor.time') == ((state_attr('input_datetime.dishwasher_start_time' , 'timestamp'))|timestamp_custom('%H:%M', false)) }}"
     condition:
       - condition: state
         entity_id: input_boolean.dishwasher_enabled
