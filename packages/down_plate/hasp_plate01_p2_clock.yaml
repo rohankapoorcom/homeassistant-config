@@ -20,11 +20,11 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[2].b[5].font'
-        payload_template: '{% set datelength = (now().strftime("%B ") ~ now().day)|length %}{% if datelength <= 6 -%}3{% elif (datelength > 6) and (datelength <= 10) %}2{% elif (datelength > 10) and (datelength <= 15) %}1{% else %}0{%- endif %}'
+        payload_template: '{% set datelength = (now().strftime("%B %C %Y") ~ now().day)|length %}{% if datelength <= 6 -%}3{% elif (datelength > 6) and (datelength <= 10) %}2{% elif (datelength > 10) and (datelength <= 15) %}1{% else %}0{%- endif %}'
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[2].b[5].txt'
-        payload_template: "\"{{now().strftime('%B ') ~ now().day}}\""
+        payload_template: "\"{{now().strftime('%B %C %Y')}}\""
 
   # Send the current time every minute
   - alias: hasp_down_plate_p2_ClockUpdate
@@ -59,8 +59,8 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[2].b[5].font'
-        payload_template: '{% set datelength = (now().strftime("%B ") ~ now().day)|length %}{% if datelength <= 6 -%}3{% elif (datelength > 6) and (datelength <= 10) %}2{% elif (datelength > 10) and (datelength <= 15) %}1{% else %}0{%- endif %}'
+        payload_template: '{% set datelength = (now().strftime("%B %C %Y") ~ now().day)|length %}{% if datelength <= 6 -%}3{% elif (datelength > 6) and (datelength <= 10) %}2{% elif (datelength > 10) and (datelength <= 15) %}1{% else %}0{%- endif %}'
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[2].b[5].txt'
-        payload_template: "\"{{now().strftime('%B ') ~ now().day}}\""
+        payload_template: "\"{{now().strftime('%B %C %Y')}}\""

@@ -1,6 +1,16 @@
 ##############################################################################
 # Automations to display media player info on page 8
 
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      media_player_entity: &media_player_entity
+          entity_id: media_player.all_speakers
+
 automation:
 # Initialize button text/font for media controls on start
   - alias: hasp_down_plate_p8_MediaInit
@@ -42,7 +52,7 @@ automation:
       payload: 'ON'
     action:
       service: media_player.media_play_pause
-      entity_id: media_player.media_player
+      <<: *media_player_entity
 
   # Prev Track button action
   - alias: hasp_down_plate_p8_MediaPrevTrackButton6
@@ -52,7 +62,7 @@ automation:
       payload: 'ON'
     action:
       service: media_player.media_previous_track
-      entity_id: media_player.media_player
+      <<: *media_player_entity
 
   # Next Track button action
   - alias: hasp_down_plate_p8_MediaNextTrackButton8
@@ -62,7 +72,7 @@ automation:
       payload: 'ON'
     action:
       service: media_player.media_next_track
-      entity_id: media_player.media_player
+      <<: *media_player_entity
 
   # Scale media information fonts to fit
   # 0 consolas 24 - 20 chars x 2 lines (wrapped)
@@ -106,7 +116,7 @@ automation:
   - alias: hasp_down_plate_p8_MediaPlayPause
     trigger:
     - platform: state
-      entity_id: media_player.media_player
+      <<: *media_player_entity
     action:
     - service: mqtt.publish
       data:
@@ -121,7 +131,7 @@ automation:
     action:
     - service: media_player.volume_set
       data_template:
-        entity_id: media_player.media_player
+        <<: *media_player_entity
         volume_level: '{{ (trigger.payload|int) / 100 }}'
 
   # Volume slider value changed by hass, update HASP
