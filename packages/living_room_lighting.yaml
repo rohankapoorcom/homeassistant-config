@@ -41,14 +41,14 @@ scene:
         state: on
         brightness_pct: 100
         color_temp: 233
-      light.tv_backlighting:
+      light.extended_color_light_1:
         state: on
         brightness_pct: 100
-        color_templ: 233
+        color_temp: 233
       light.living_room_lamp:
         state: on
         brightness_pct: 100
-        color_templ: 233
+        color_temp: 233
       group.kitchen_table:
         state: on
         brightness_pct: 100
@@ -58,7 +58,7 @@ scene:
     entities:
       group.end_tables: off
       light.couch_accent_white: off
-      light.tv_backlighting: off
+      light.extended_color_light_1: off
       light.living_room_lamp: off
       group.kitchen_table: off
 
@@ -72,14 +72,14 @@ scene:
         state: on
         brightness_pct: 100
         color_temp: 233
-      light.tv_backlighting:
+      light.extended_color_light_1:
         state: on
         brightness_pct: 100
-        color_templ: 233
+        color_temp: 233
       light.living_room_lamp:
         state: on
         brightness_pct: 100
-        color_templ: 233
+        color_temp: 233
 
   - name: Kitchen Lights On
     entities:
