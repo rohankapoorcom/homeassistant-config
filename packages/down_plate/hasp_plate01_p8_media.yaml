@@ -79,23 +79,6 @@ automation:
   # 1 consolas 32 - 15 chars x 2 lines (wrapped)
   # 2 consolas 48 - 10 chars x 1 line
   # 3 consolas 80 - 6 chars x 1 line
-  - alias: hasp_down_plate_p8_MediaArtist
-    trigger:
-    - platform: state
-      <<: *media_player_entity
-    - platform: mqtt
-      topic: 'hasp/down_plate/status'
-      payload: 'ON'
-    action:
-    - service: mqtt.publish
-      data:
-        topic: 'hasp/down_plate/command/p[8].b[4].font'
-        payload_template: "{% if state_attr('media_player.all_speakers', 'media_artist')|length <= 6 -%}3{% elif (state_attr('media_player.all_speakers', 'media_artist')|length > 6) and (state_attr('media_player.all_speakers', 'media_artist')|length <= 10) %}2{% elif (state_attr('media_player.all_speakers', 'media_artist')|length > 10) and (state_attr('media_player.all_speakers', 'media_artist')|length <= 15) %}1{% else %}0{%- endif %}"
-    - service: mqtt.publish
-      data:
-        topic: 'hasp/down_plate/command/p[8].b[4].txt'
-        payload_template: "{{ state_attr('media_player.all_speakers', 'media_artist')|wordwrap(20, wrapstring='\\r') }}"
-
   - alias: hasp_down_plate_p8_MediaTitle
     trigger:
     - platform: state
@@ -106,12 +89,29 @@ automation:
     action:
     - service: mqtt.publish
       data:
-        topic: 'hasp/down_plate/command/p[8].b[5].font'
+        topic: 'hasp/down_plate/command/p[8].b[4].font'
         payload_template: "{% if state_attr('media_player.all_speakers', 'media_title')|length <= 6 -%}3{% elif (state_attr('media_player.all_speakers', 'media_title')|length > 6) and (state_attr('media_player.all_speakers', 'media_title')|length <= 10) %}2{% elif (state_attr('media_player.all_speakers', 'media_title')|length > 10) and (state_attr('media_player.all_speakers', 'media_title')|length <= 15) %}1{% else %}0{%- endif %}"
     - service: mqtt.publish
       data:
+        topic: 'hasp/down_plate/command/p[8].b[4].txt'
+        payload_template: "\"{{ state_attr('media_player.all_speakers', 'media_title')|wordwrap(20, wrapstring='\\r') }}\""
+
+  - alias: hasp_down_plate_p8_MediaArtist
+    trigger:
+    - platform: state
+      <<: *media_player_entity
+    - platform: mqtt
+      topic: 'hasp/down_plate/status'
+      payload: 'ON'
+    action:
+    - service: mqtt.publish
+      data:
+        topic: 'hasp/down_plate/command/p[8].b[5].font'
+        payload_template: "{% if state_attr('media_player.all_speakers', 'media_artist')|length <= 6 -%}3{% elif (state_attr('media_player.all_speakers', 'media_artist')|length > 6) and (state_attr('media_player.all_speakers', 'media_artist')|length <= 10) %}2{% elif (state_attr('media_player.all_speakers', 'media_artist')|length > 10) and (state_attr('media_player.all_speakers', 'media_artist')|length <= 15) %}1{% else %}0{%- endif %}"
+    - service: mqtt.publish
+      data:
         topic: 'hasp/down_plate/command/p[8].b[5].txt'
-        payload_template: "{{ state_attr('media_player.all_speakers', 'media_title')|wordwrap(20, wrapstring='\\r') }}"
+        payload_template: "\"{{ state_attr('media_player.all_speakers', 'media_artist')|wordwrap(20, wrapstring='\\r') }}\""
 
   - alias: hasp_down_plate_p8_MediaPlayPause
     trigger:
