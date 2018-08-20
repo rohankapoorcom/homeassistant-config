@@ -19,6 +19,7 @@ light:
     state_topic: "hasp/down_plate/light/status"
     brightness_state_topic: "hasp/down_plate/brightness/status"
     brightness_command_topic: "hasp/down_plate/brightness/set"
+    retain: true
 
 binary_sensor:
   - platform: mqtt
@@ -189,12 +190,6 @@ group:
       - automation.hasp_down_plate_p8_mediatitle
       - automation.hasp_down_plate_p8_mediavolsliderupdatehasp
       - automation.hasp_down_plate_p8_mediavolsliderupdatehass
-      - automation.hasp_down_plate_p9_3dprinterinit
-      - automation.hasp_down_plate_p9_3dprinteroperational
-      - automation.hasp_down_plate_p9_3dprinterpaused
-      - automation.hasp_down_plate_p9_3dprinterprinting
-      - automation.hasp_down_plate_p9_3dprintertempgraph
-      - automation.hasp_down_plate_p9_3dprintertemptext
 
 automation:
 ##############################################################################
