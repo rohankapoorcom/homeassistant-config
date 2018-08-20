@@ -3,27 +3,27 @@
 
 automation:
   # Display weather details on page 2 when weather updates or on HASP init
-  - alias: hasp_down-plate_p2_Weather
+  - alias: hasp_down_plate_p2_Weather
     trigger:
     - platform: state
       entity_id: sensor.weather_temperature
     - platform: mqtt
-      topic: 'hasp/down-plate/status'
+      topic: 'hasp/down_plate/status'
       payload: 'ON'
     action:
     - service: mqtt.publish
       data:
-        topic: 'hasp/down-plate/command/p[2].b[6].font'
+        topic: 'hasp/down_plate/command/p[2].b[6].font'
         payload: '3'
     - service: mqtt.publish
       data:
-        topic: 'hasp/down-plate/command/p[2].b[6].txt'
+        topic: 'hasp/down_plate/command/p[2].b[6].txt'
         payload_template: '"{{states.sensor.weather_temperature.state}}F"'
     - service: mqtt.publish
       data:
-        topic: 'hasp/down-plate/command/p[2].b[7].font'
+        topic: 'hasp/down_plate/command/p[2].b[7].font'
         payload_template: '{% if states.sensor.weather_current.state|length <= 6 -%}3{% elif (states.sensor.weather_current.state|length > 6) and (states.sensor.weather_current.state|length <= 10) %}2{% elif (states.sensor.weather_current.state|length > 10) and (states.sensor.weather_current.state|length <= 15) %}1{% else %}0{%- endif %}'
     - service: mqtt.publish
       data:
-        topic: 'hasp/down-plate/command/p[2].b[7].txt'
+        topic: 'hasp/down_plate/command/p[2].b[7].txt'
         payload_template: '"{{states.sensor.weather_current.state|wordwrap(20, wrapstring="\\r")}}"'
