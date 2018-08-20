@@ -94,7 +94,7 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[8].b[4].txt'
-        payload_template: "{{ state_attr('media_player.all_speakers', 'media_artist')|wordwrap(20, wrapstring=\"\\r\") }}"
+        payload_template: "{{ state_attr('media_player.all_speakers', 'media_artist')|wordwrap(20, wrapstring='\\r') }}"
 
   - alias: hasp_down_plate_p8_MediaTitle
     trigger:
@@ -111,7 +111,7 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[8].b[5].txt'
-        payload_template: "{{ state_attr('media_player.all_speakers', 'media_title')|wordwrap(20, wrapstring=\"\\r\") }}"
+        payload_template: "{{ state_attr('media_player.all_speakers', 'media_title')|wordwrap(20, wrapstring='\\r') }}"
 
   - alias: hasp_down_plate_p8_MediaPlayPause
     trigger:
