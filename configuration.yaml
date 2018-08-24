@@ -111,3 +111,5 @@ sensor:
   - platform: time_date
     display_options:
       - 'time'
+
+python_script:

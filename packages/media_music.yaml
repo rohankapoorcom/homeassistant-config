@@ -34,7 +34,7 @@ homeassistant:
 
       increment_volume: &increment_volume
         <<: *decrement_volume
-        vol_up: true
+        vol_up: 'true'
 
     input_number.volume_increment:
       <<: *customize
@@ -263,7 +263,7 @@ script:
       - service: remote.send_command
         data_template:
           entity_id: "{{ entity_id }}"
-          command: "{{ 'VolumeUp' if vol_up else 'VolumeDown' }}"
+          command: "{{ 'VolumeUp' if vol_up == 'true' else 'VolumeDown' }}"
           device: "{{ 53194709 if entity_id == 'remote.upstairs_hub' else 55995993 }}"
           num_repeats: "{{ increment|int or 3 }}"
           delay_secs: 0.25
