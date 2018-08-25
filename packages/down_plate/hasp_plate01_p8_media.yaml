@@ -103,15 +103,10 @@ automation:
       service: media_player.media_next_track
       <<: *media_player_entity
 
-  # Scale media information fonts to fit
-  # 0 consolas 24 - 20 chars x 2 lines (wrapped)
-  # 1 consolas 32 - 15 chars x 2 lines (wrapped)
-  # 2 consolas 48 - 10 chars x 1 line
-  # 3 consolas 80 - 6 chars x 1 line
-  - alias: hasp_down_plate_p8_MediaInfo
+  - alias: hasp_down_plate_p8_MediaTitle
     trigger:
     - platform: state
-      <<: *media_player_entity
+      entity_id: sensor.all_speakers_media_title
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
@@ -120,12 +115,30 @@ automation:
       data_template:
         nodename: down_plate
         object_id: 'p[8].b[4]'
-        text: "{{ state_attr('media_player.all_speakers', 'media_title')|wordwrap(20, wrapstring='\\r') }}"
+        text: "{{ state('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
+
+  - alias: hasp_down_plate_p8_MediaArtist
+    trigger:
+    - platform: state
+      entity_id: sensor.all_speakers_media_artist
+    - platform: mqtt
+      topic: 'hasp/down_plate/status'
+      payload: 'ON'
+    action:
     - service: python_script.hasp_update_message
       data_template:
         nodename: down_plate
         object_id: 'p[8].b[5]'
-        text: "{{ state_attr('media_player.all_speakers', 'media_artist')|wordwrap(20, wrapstring='\\r') }}"
+        text: "{{ state('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
+
+  - alias: hasp_down_plate_p8_MediaPlayPause
+    trigger:
+    - platform: state
+      <<: *media_player_entity
+    - platform: mqtt
+      topic: 'hasp/down_plate/status'
+      payload: 'ON'
+    action:
     - service: python_script.hasp_update_message
       data_template:
         nodename: down_plate

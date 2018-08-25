@@ -49,6 +49,11 @@ homeassistant:
     switch.downstairs_speakers:
       <<: *customize
 
+    sensor.all_speakers_media_title:
+      <<: *customize
+    sensor.all_speakers_media_artist:
+      <<: *customize
+
     automation.turn_on_speakers_if_chromecast_audio_playing:
       <<: *customize
     automation.turn_off_speakers_when_chromecast_audio_stops_playing:
@@ -68,6 +73,10 @@ homeassistant:
       <<: *customize
     script.turn_off_downstairs_speakers:
       <<: *customize
+
+################################################
+## Input Number
+################################################
 
 input_number:
   volume_increment:
@@ -115,6 +124,10 @@ cover:
             <<: *decrement_volume
             entity_id: remote.living_room_hub
 
+################################################
+## Switch
+################################################
+
 switch:
   - platform: template
     switches:
@@ -144,6 +157,20 @@ switch:
           service: remote.turn_off
           data:
             entity_id: remote.living_room_hub
+
+################################################
+## Sensor
+################################################
+sensor:
+  - platform: template
+    sensors:
+      all_speakers_media_title:
+        friendly_name: Title
+        value_template: "{{ state_attr('media_player.all_speakers', 'media_title') }}"
+
+      all_speakers_media_artist:
+        friendly_name: Artist
+        value_template: "{{ state_attr('media_player.all_speakers', 'media_artist') }}"
 
 ################################################
 ## Automation
