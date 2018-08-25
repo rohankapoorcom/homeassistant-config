@@ -115,7 +115,7 @@ automation:
       data_template:
         nodename: down_plate
         object_id: 'p[8].b[4]'
-        text: "{{ state('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
+        text: "{{ states('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
 
   - alias: hasp_down_plate_p8_MediaArtist
     trigger:
@@ -129,7 +129,7 @@ automation:
       data_template:
         nodename: down_plate
         object_id: 'p[8].b[5]'
-        text: "{{ state('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
+        text: "{{ states('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
 
   - alias: hasp_down_plate_p8_MediaPlayPause
     trigger:
