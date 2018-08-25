@@ -135,6 +135,13 @@ automation:
     trigger:
     - platform: state
       <<: *media_player_entity
+      to: 'playing'
+    - platform: state
+      <<: *media_player_entity
+      to: 'paused'
+    - platform: state
+      <<: *media_player_entity
+      to: 'off'
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
