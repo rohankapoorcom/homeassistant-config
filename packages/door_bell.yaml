@@ -45,7 +45,7 @@ automation:
       - service: media_player.play_media
         entity_id: media_player.notifications
         data:
-          media_content_id: /local/sounds/westminster-chimes.mp3
+          media_content_id: !secret media_content_id.front_door_bell
           media_content_type: audio/mp3
 
   - id: reset_front_door_bell
