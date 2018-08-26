@@ -24,7 +24,7 @@ automation:
       topic: 'hasp/down_plate/state/p[2].b[1]'
       payload: 'ON'
     - platform: mqtt
-      topic: 'hasp/down_plate/state/p[2].b[1]'
+      topic: 'hasp/down_plate/state/p[9].b[1]'
       payload: 'ON'
     action:
     - service: input_number.set_value
