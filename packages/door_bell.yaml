@@ -40,7 +40,7 @@ automation:
     action:
       - service: persistent_notification.create
         data:
-          title: 'Front Doorbell Ringing'
+          message: 'Front Doorbell Ringing'
           notification_id: 'front_door_bell'
       - service: media_player.play_media
         entity_id: media_player.notifications
@@ -61,5 +61,10 @@ automation:
       - service: mqtt.publish
         data:
           topic: 'tele/rfbridge/RESULT'
-          payload: '7D35FCoff'
+          payload: >-
+            {
+              "RfReceived": {
+                "Data": "7D35FCoff"
+              }
+            }
           retain: 'true'
