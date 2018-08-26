@@ -116,7 +116,7 @@ automation:
           topic: 'hasp/down_plate/command/p[3].b[4].bco'
           payload_template: >-
             {% if is_state('group.end_tables', 'on') -%}
-              65535
+              64577
             {%- else -%}
               25388
             {%- endif %}
@@ -143,7 +143,7 @@ automation:
           topic: 'hasp/down_plate/command/p[3].b[5].bco'
           payload_template: >-
             {% if is_state('light.couch_accent_white', 'on') -%}
-              65535
+              64577
             {%- else -%}
               25388
             {%- endif %}
@@ -167,16 +167,16 @@ automation:
     action:
       - service: mqtt.publish
         data:
-          topic: 'hasp/down_plate/command/p[3].b[7].bco'
+          topic: 'hasp/down_plate/command/p[3].b[6].bco'
           payload_template: >-
             {% if is_state('light.extended_color_light_1', 'on') -%}
-              65535
+              64577
             {%- else -%}
               25388
             {%- endif %}
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[7].pco'
+          topic: 'hasp/down_plate/command/p[3].b[6].pco'
           payload_template: >-
             {% if is_state('light.extended_color_light_1', 'on') -%}
               0
@@ -194,16 +194,16 @@ automation:
     action:
       - service: mqtt.publish
         data:
-          topic: 'hasp/down_plate/command/p[3].b[6].bco'
+          topic: 'hasp/down_plate/command/p[3].b[7].bco'
           payload_template: >-
             {% if is_state('light.living_room_lamp', 'on') -%}
-              65535
+              64577
             {%- else -%}
               25388
             {%- endif %}
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[6].pco'
+          topic: 'hasp/down_plate/command/p[3].b[7].pco'
           payload_template: >-
             {% if is_state('light.living_room_lamp', 'on') -%}
               0
