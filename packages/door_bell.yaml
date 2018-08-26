@@ -15,6 +15,15 @@ homeassistant:
       customize: &customize
         package: 'door_bell'
 
+    binary_sensor.front_door_bell:
+      <<: *customize
+
+    automation.alert_front_door_bell:
+      <<: *customize
+
+    automation.reset_front_door_bell:
+      <<: *customize
+
 ################################################
 ## Binary Sensor
 ################################################
