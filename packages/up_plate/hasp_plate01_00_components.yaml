@@ -1,0 +1,236 @@
+##############################################################################
+# The devices created below are essential to the page control automations
+# and you'll probably want to carry them over to your own configuration
+homeassistant:
+  customize:
+    input_number.hasp_up_plate_alarmcode1:
+      hidden: true
+    input_number.hasp_up_plate_alarmcode2:
+      hidden: true
+    input_number.hasp_up_plate_alarmcode3:
+      hidden: true
+    input_number.hasp_up_plate_alarmcode4:
+      hidden: true
+
+light:
+  - platform: mqtt
+    name: up_plate Backlight
+    command_topic: "hasp/up_plate/light/switch"
+    state_topic: "hasp/up_plate/light/status"
+    brightness_state_topic: "hasp/up_plate/brightness/status"
+    brightness_command_topic: "hasp/up_plate/brightness/set"
+    retain: true
+
+binary_sensor:
+  - platform: mqtt
+    name: up_plate Connected
+    device_class: connectivity
+    state_topic: "hasp/up_plate/status"
+    payload_on: "ON"
+    payload_off: "OFF"
+    availability_topic: "hasp/up_plate/status"
+    payload_available: "ON"
+    payload_not_available: "OFF"
+
+sensor:
+  - platform: mqtt
+    name: up_plate Sensor
+    state_topic: "hasp/up_plate/sensor"
+    value_template: '{{ value_json.status }}'
+    json_attributes:
+      - espVersion
+      - updateESPAvailable
+      - lcdVersion
+      - updateLcdAvailable
+      - espUptime
+      - signalStrength
+      - haspIP
+
+input_text:
+  hasp_up_plate_pagebutton1label:
+    name: up_plate Page 1 Label
+    icon: mdi:book-open-page-variant
+  hasp_up_plate_pagebutton2label:
+    name: up_plate Page 2 Label
+    icon: mdi:book-open-page-variant
+  hasp_up_plate_pagebutton3label:
+    name: up_plate Page 3 Label
+    icon: mdi:book-open-page-variant
+
+input_number:
+  hasp_up_plate_pagebutton1page:
+    name: up_plate Page 1 Page
+    icon: mdi:format-list-numbers
+    min: 0
+    max: 9
+    step: 1
+  hasp_up_plate_pagebutton2page:
+    name: up_plate Page 2 Page
+    icon: mdi:format-list-numbers
+    min: 0
+    max: 9
+    step: 1
+  hasp_up_plate_pagebutton3page:
+    name: up_plate Page 3 Page
+    icon: mdi:format-list-numbers
+    min: 0
+    max: 9
+    step: 1
+  hasp_up_plate_activepage:
+    name: up_plate Active Page
+    icon: mdi:format-list-numbers
+    min: 0
+    max: 9
+    step: 1
+  hasp_up_plate_alarmcode1:
+    name: up_plate AlarmCode1
+    icon: mdi:format-list-numbers
+    min: -1
+    max: 9
+    step: 1
+    initial: -1
+  hasp_up_plate_alarmcode2:
+    name: up_plate AlarmCode2
+    icon: mdi:format-list-numbers
+    min: -1
+    max: 9
+    step: 1
+    initial: -1
+  hasp_up_plate_alarmcode3:
+    name: up_plate AlarmCode3
+    icon: mdi:format-list-numbers
+    min: -1
+    max: 9
+    step: 1
+    initial: -1
+  hasp_up_plate_alarmcode4:
+    name: up_plate AlarmCode4
+    icon: mdi:format-list-numbers
+    min: -1
+    max: 9
+    step: 1
+    initial: -1
+
+group:
+  up_plate:
+    name: up_plate
+    view: yes
+    entities:
+      - binary_sensor.up_plate_connected
+      - sensor.up_plate_sensor
+      - light.up_plate_backlight
+      - group.up_plate_pageselect
+      - group.up_plate_automations
+  up_plate_pageselect:
+    name: up_plate Page Selection
+    view: no
+    entities:
+      - input_number.hasp_up_plate_activepage
+      - input_number.hasp_up_plate_pagebutton1page
+      - input_text.hasp_up_plate_pagebutton1label
+      - input_number.hasp_up_plate_pagebutton2page
+      - input_text.hasp_up_plate_pagebutton2label
+      - input_number.hasp_up_plate_pagebutton3page
+      - input_text.hasp_up_plate_pagebutton3label
+  up_plate_automations:
+    name: up_plate automations
+    view: no
+    entities:
+      - automation.hasp_up_plate_00_firsttimesetup
+      - automation.hasp_up_plate_00_autofirmwareupdate
+      - automation.hasp_up_plate_p0_activepagesliderchanged
+      - automation.hasp_up_plate_p0_pagebutton1_text
+      - automation.hasp_up_plate_p0_pagebutton1action
+      - automation.hasp_up_plate_p0_pagebutton2_text
+      - automation.hasp_up_plate_p0_pagebutton2action
+      - automation.hasp_up_plate_p0_pagebutton3_text
+      - automation.hasp_up_plate_p0_pagebutton3action
+      - automation.hasp_up_plate_p0_pagebuttoncolors
+      - automation.hasp_up_plate_p0_panelpagechanged
+      - automation.hasp_up_plate_p0_restoreactivepage
+      - automation.hasp_up_plate_p1_scenebutton4
+      - automation.hasp_up_plate_p1_scenebutton5
+      - automation.hasp_up_plate_p1_scenebutton6
+      - automation.hasp_up_plate_p1_scenebutton7
+      - automation.hasp_up_plate_p1_scenesinit
+      - automation.hasp_up_plate_p2_clockinit
+      - automation.hasp_up_plate_p2_clockupdate
+      - automation.hasp_up_plate_p2_calendarupdate
+      - automation.hasp_up_plate_p2_weather
+      - automation.hasp_up_plate_p3_ToggleInit
+      - automation.hasp_up_plate_p3_ToggleEndTables
+      - automation.hasp_up_plate_p3_ToggleCouchAccent
+      - automation.hasp_up_plate_p3_ToggleTVBacklight
+      - automation.hasp_up_plate_p3_ToggleCornerLight
+      - automation.hasp_up_plate_p3_ToggleColor1
+      - automation.hasp_up_plate_p3_ToggleColor2
+      - automation.hasp_up_plate_p3_ToggleColor3
+      - automation.hasp_up_plate_p3_ToggleColor4
+      - automation.hasp_up_plate_p4_dimmer7updatehasp
+      - automation.hasp_up_plate_p4_dimmer7updatehass
+      - automation.hasp_up_plate_p4_dimmer8updatehasp
+      - automation.hasp_up_plate_p4_dimmer8updatehass
+      - automation.hasp_up_plate_p4_dimmer9updatehasp
+      - automation.hasp_up_plate_p4_dimmer9updatehass
+      - automation.hasp_up_plate_p4_dimmersinit
+      - automation.hasp_up_plate_p7_alarmarm
+      - automation.hasp_up_plate_p7_alarmarmed
+      - automation.hasp_up_plate_p7_alarmcodeentry0
+      - automation.hasp_up_plate_p7_alarmcodeentry1to9
+      - automation.hasp_up_plate_p7_alarmdisarm
+      - automation.hasp_up_plate_p7_alarmdisarmed
+      - automation.hasp_up_plate_p7_alarminit
+      - automation.hasp_up_plate_p7_alarmstatuspending
+      - automation.hasp_up_plate_p8_mediaartist
+      - automation.hasp_up_plate_p8_mediainit
+      - automation.hasp_up_plate_p8_medianexttrackbutton8
+      - automation.hasp_up_plate_p8_mediapausebutton7
+      - automation.hasp_up_plate_p8_mediaplaypause
+      - automation.hasp_up_plate_p8_mediaprevtrackbutton6
+      - automation.hasp_up_plate_p8_mediatitle
+      - automation.hasp_up_plate_p8_mediavolsliderupdatehasp
+      - automation.hasp_up_plate_p8_mediavolsliderupdatehass
+      - automation.hasp_up_plate_p9_ToggleInit
+      - automation.hasp_up_plate_p9_ToggleEndTables
+      - automation.hasp_up_plate_p9_ToggleCouchAccent
+      - automation.hasp_up_plate_p9_ToggleTVBacklight
+      - automation.hasp_up_plate_p9_ToggleCornerLight
+      - automation.hasp_up_plate_p9_ToggleColor1
+      - automation.hasp_up_plate_p9_ToggleColor2
+      - automation.hasp_up_plate_p9_ToggleColor3
+      - automation.hasp_up_plate_p9_ToggleColor4
+
+automation:
+##############################################################################
+# Set default values for input_text/number sliders
+  - alias: hasp_up_plate_00_FirstTimeSetup
+    trigger: []
+    action:
+      - service: input_text.set_value
+        data:
+          entity_id: 'input_text.hasp_up_plate_pagebutton1label'
+          value: 'scenes'
+      - service: input_text.set_value
+        data:
+          entity_id: 'input_text.hasp_up_plate_pagebutton2label'
+          value: 'status'
+      - service: input_text.set_value
+        data:
+          entity_id: 'input_text.hasp_up_plate_pagebutton3label'
+          value: 'lights'
+      - service: input_number.set_value
+        data:
+          entity_id: 'input_number.hasp_up_plate_pagebutton1page'
+          value: 1
+      - service: input_number.set_value
+        data:
+          entity_id: 'input_number.hasp_up_plate_pagebutton2page'
+          value: 2
+      - service: input_number.set_value
+        data:
+          entity_id: 'input_number.hasp_up_plate_pagebutton3page'
+          value: 3
+      - service: input_number.set_value
+        data:
+          entity_id: 'input_number.hasp_up_plate_activepage'
+          value: 1

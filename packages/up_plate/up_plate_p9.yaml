@@ -1,0 +1,176 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/26/2018
+#  @package      :  Up Plate P9
+#  @description  :  Handles page 9 on the upstairs HA Wallplate. Page 9 is
+#                   the second page of lighting controls.
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'up_plate_p9'
+
+    automation.hasp_up_plate_p9_ToggleInit:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleEndTables:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleCouchAccent:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleTVBacklight:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleCornerLight:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleColor1:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleColor2:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleColor3:
+      <<: *customize
+    automation.hasp_up_plate_p9_ToggleColor4:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+  # Set font and text for toggle buttons on device connection
+  - alias: hasp_up_plate_p9_ToggleInit
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/status'
+        payload: 'ON'
+    action:
+      - service: python_script.hasp_update_message
+        data:
+          nodename: up_plate
+          object_id: 'p[9].b[4]'
+          text: 'Kitchen Table'
+      - service: python_script.hasp_update_message
+        data:
+          nodename: up_plate
+          object_id: 'p[9].b[5]'
+          text: 'Kitchen Sink'
+      - service: python_script.hasp_update_message
+        data:
+          nodename: up_plate
+          object_id: 'p[9].b[6]'
+          text: 'Server Rack'
+      - service: python_script.hasp_update_message
+        data:
+          nodename: up_plate
+          object_id: 'p[9].b[7]'
+          text: ''
+
+  - alias: hasp_up_plate_p9_ToggleKitchenTable
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/state/p[9].b[4]'
+        payload: 'ON'
+    action:
+      - service: homeassistant.toggle
+        entity_id: group.kitchen_table
+
+  - alias: hasp_up_plate_p9_ToggleKitchenSink
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/state/p[9].b[5]'
+        payload: 'ON'
+    action:
+      - service: homeassistant.toggle
+        entity_id: light.kitchen_sink_light
+
+  - alias: hasp_up_plate_p9_ToggleServerRack
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/state/p[9].b[6]'
+        payload: 'ON'
+    action:
+      - service: homeassistant.toggle
+        entity_id: switch.server_rack_lights
+
+  - alias: hasp_up_plate_p9_ToggleColor1
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/status'
+        payload: 'ON'
+      - platform: state
+        entity_id: group.kitchen_table
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/up_plate/command/p[9].b[4].bco'
+          payload_template: >-
+            {% if is_state('group.kitchen_table', 'on') -%}
+              64577
+            {%- else -%}
+              25388
+            {%- endif %}
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/up_plate/command/p[9].b[4].pco'
+          payload_template: >-
+            {% if is_state('group.kitchen_table', 'on') -%}
+              0
+            {%- else -%}
+              65535
+            {%- endif %}
+
+  - alias: hasp_up_plate_p9_ToggleColor2
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/status'
+        payload: 'ON'
+      - platform: state
+        entity_id: light.kitchen_sink_light
+    action:
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/up_plate/command/p[9].b[5].bco'
+          payload_template: >-
+            {% if is_state('light.kitchen_sink_light', 'on') -%}
+              64577
+            {%- else -%}
+              25388
+            {%- endif %}
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/up_plate/command/p[9].b[5].pco'
+          payload_template: >-
+            {% if is_state('light.kitchen_sink_light', 'on') -%}
+              0
+            {%- else -%}
+              65535
+            {%- endif %}
+
+  - alias: hasp_up_plate_p9_ToggleColor3
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/up_plate/status'
+        payload: 'ON'
+      - platform: state
+        entity_id: switch.server_rack_lights
+    action:
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/up_plate/command/p[9].b[6].bco'
+          payload_template: >-
+            {% if is_state('switch.server_rack_lights', 'on') -%}
+              64577
+            {%- else -%}
+              25388
+            {%- endif %}
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/up_plate/command/p[9].b[6].pco'
+          payload_template: >-
+            {% if is_state('switch.server_rack_lights', 'on') -%}
+              0
+            {%- else -%}
+              65535
+            {%- endif %}
