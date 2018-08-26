@@ -1,0 +1,79 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/26/2018
+#  @package      :  Doorbell
+#  @description  :  Logic for receiving and processing door bell events
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'door_bell'
+
+    binary_sensor.front_door_bell:
+      <<: *customize
+
+    automation.alert_front_door_bell:
+      <<: *customize
+
+    automation.reset_front_door_bell:
+      <<: *customize
+
+################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: mqtt
+    name: front_door_bell
+    state_topic: 'tele/rfbridge/RESULT'
+    payload_on: '7D35FC'
+    payload_off: '7D35FCoff'
+    value_template: '{{ value_json.RfReceived.Data }}'
+
+################################################
+## Automation
+################################################
+automation:
+
+  - id: alert_front_door_bell
+    alias: Alert Front Door Bell
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_bell
+        to: 'on'
+    action:
+      - service: persistent_notification.create
+        data:
+          message: 'Front Doorbell Ringing'
+          notification_id: 'front_door_bell'
+      - service: media_player.play_media
+        entity_id: media_player.notifications
+        data:
+          media_content_id: !secret media_content_id.front_door_bell
+          media_content_type: audio/mp3
+
+  - id: reset_front_door_bell
+    alias: Reset Front Door Bell
+    hide_entity: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_bell
+        to: 'on'
+        for:
+          seconds: 5
+    action:
+      - service: mqtt.publish
+        data:
+          topic: 'tele/rfbridge/RESULT'
+          payload: >-
+            {
+              "RfReceived": {
+                "Data": "7D35FCoff"
+              }
+            }
+          retain: 'true'
