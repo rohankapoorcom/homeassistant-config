@@ -8,94 +8,76 @@ automation:
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     action:
-    - service: mqtt.publish
+    - service: python_script.hasp_update_message
       data:
-        topic: 'hasp/down_plate/command/p[3].b[4].font'
-        payload: '2'
-    - service: mqtt.publish
+        nodename: down_plate
+        object_id: 'p[3].b[4]'
+        text: 'End Tables'
+    - service: python_script.hasp_update_message
       data:
-        topic: 'hasp/down_plate/command/p[3].b[4].txt'
-        payload: '"Light 1"'
-    - service: mqtt.publish
+        nodename: down_plate
+        object_id: 'p[3].b[5]'
+        text: 'Couch Accent'
+    - service: python_script.hasp_update_message
       data:
-        topic: 'hasp/down_plate/command/p[3].b[5].font'
-        payload: '2'
-    - service: mqtt.publish
+        nodename: down_plate
+        object_id: 'p[3].b[6]'
+        text: 'TV Backlight'
+    - service: python_script.hasp_update_message
       data:
-        topic: 'hasp/down_plate/command/p[3].b[5].txt'
-        payload: '"Light 2"'
-    - service: mqtt.publish
-      data:
-        topic: 'hasp/down_plate/command/p[3].b[6].font'
-        payload: '2'
-    - service: mqtt.publish
-      data:
-        topic: 'hasp/down_plate/command/p[3].b[6].txt'
-        payload: '"Light 3"'
-    - service: mqtt.publish
-      data:
-        topic: 'hasp/down_plate/command/p[3].b[7].font'
-        payload: '2'
+        nodename: down_plate
+        object_id: 'p[3].b[7]'
+        text: 'Corner Light'
 
-  # Toggle light1 when p[3].b[4] pressed
-  - alias: hasp_down_plate_p3_ToggleLight1
+  - alias: hasp_down_plate_p3_ToggleEndTables
     trigger:
       platform: mqtt
       topic: 'hasp/down_plate/state/p[3].b[4]'
       payload: 'ON'
     action:
       service: homeassistant.toggle
-      entity_id: light.light_1
+      entity_id: group.end_tables
 
-  # Toggle light2 when p[3].b[5] pressed
-  - alias: hasp_down_plate_p3_ToggleLight2
+  - alias: hasp_down_plate_p3_ToggleCouchAccent
     trigger:
       platform: mqtt
       topic: 'hasp/down_plate/state/p[3].b[5]'
       payload: 'ON'
     action:
       service: homeassistant.toggle
-      entity_id: light.light_2
+      entity_id: light.couch_accent_white
 
-  # Toggle light3 when p[3].b[6] pressed
-  - alias: hasp_down_plate_p3_ToggleLight3
+  - alias: hasp_down_plate_p3_ToggleTVBacklight
     trigger:
       platform: mqtt
       topic: 'hasp/down_plate/state/p[3].b[6]'
       payload: 'ON'
     action:
       service: homeassistant.toggle
-      entity_id: light.light_3
+      entity_id: light.extended_color_light_1
 
-  # Toggle all light_toggle_group when p[3].b[7] pressed
-  - alias: hasp_down_plate_p3_ToggleAll
+  - alias: hasp_down_plate_p3_ToggleCornerLight
     trigger:
       platform: mqtt
       topic: 'hasp/down_plate/state/p[3].b[7]'
       payload: 'ON'
     action:
-      service_template: >
-          {% if states.group.light_toggle_group.state == "on" -%}
-            homeassistant.turn_off
-          {%- else -%}
-            homeassistant.turn_on
-          {%- endif %}
-      entity_id: group.light_toggle_group
+      service: homeassistant.toggle
+      entity_id: light.living_room_lamp
 
-  # Toggle colors on p[3].b[4] when light1 changes
   - alias: hasp_down_plate_p3_ToggleColor1
     trigger:
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     - platform: state
-      entity_id: light.light_1
+      entity_id: group.end_tables
     action:
     - service: mqtt.publish
-      data:
+      data_template:
         topic: 'hasp/down_plate/command/p[3].b[4].bco'
         payload_template: >-
-          {% if states.light.light_1.state == "on" -%}
+          {% if states.group.end_tables.state == "on" -%}
             65535
           {%- else -%}
             25388
@@ -104,26 +86,25 @@ automation:
       data_template:
         topic: 'hasp/down_plate/command/p[3].b[4].pco'
         payload_template: >-
-          {% if states.light.light_1.state == "on" -%}
+          {% if states.group.end_tables.state == "on" -%}
             0
           {%- else -%}
             65535
           {%- endif %}
 
-  # Toggle colors on p[3].b[5] when light1 changes
   - alias: hasp_down_plate_p3_ToggleColor2
     trigger:
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     - platform: state
-      entity_id: light.light_2
+      entity_id: light.couch_accent_white
     action:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[3].b[5].bco'
         payload_template: >-
-          {% if states.light.light_2.state == "on" -%}
+          {% if states.light.couch_accent_white.state == "on" -%}
             65535
           {%- else -%}
             25388
@@ -132,26 +113,25 @@ automation:
       data_template:
         topic: 'hasp/down_plate/command/p[3].b[5].pco'
         payload_template: >-
-          {% if states.light.light_2.state == "on" -%}
+          {% if states.light.couch_accent_white.state == "on" -%}
             0
           {%- else -%}
             65535
           {%- endif %}
 
-  # Toggle colors on p[3].b[6] when light1 changes
   - alias: hasp_down_plate_p3_ToggleColor3
     trigger:
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     - platform: state
-      entity_id: light.light_3
+      entity_id: light.extended_color_light_1
     action:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[3].b[6].bco'
         payload_template: >-
-          {% if states.light.light_3.state == "on" -%}
+          {% if states.light.extended_color_light_1.state == "on" -%}
             65535
           {%- else -%}
             25388
@@ -160,45 +140,35 @@ automation:
       data_template:
         topic: 'hasp/down_plate/command/p[3].b[6].pco'
         payload_template: >-
-          {% if states.light.light_3.state == "on" -%}
+          {% if states.light.extended_color_light_1.state == "on" -%}
             0
           {%- else -%}
             65535
           {%- endif %}
 
-  # Set button 4 to "All Off" if any lights are on, otherwise set to "All On"
-  - alias: hasp_down_plate_p3_ToggleColorAll
+  - alias: hasp_down_plate_p3_ToggleColor4
     trigger:
     - platform: mqtt
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     - platform: state
-      entity_id: group.light_toggle_group
+      entity_id: light.living_room_lamp
     action:
     - service: mqtt.publish
       data:
-        topic: 'hasp/down_plate/command/p[3].b[7].bco'
+        topic: 'hasp/down_plate/command/p[3].b[6].bco'
         payload_template: >-
-          {% if states.group.light_toggle_group.state == "on" -%}
+          {% if states.light.living_room_lamp.state == "on" -%}
+            65535
+          {%- else -%}
             25388
-          {%- else -%}
-            65535
           {%- endif %}
     - service: mqtt.publish
       data_template:
-        topic: 'hasp/down_plate/command/p[3].b[7].pco'
+        topic: 'hasp/down_plate/command/p[3].b[6].pco'
         payload_template: >-
-          {% if states.group.light_toggle_group.state == "on" -%}
-            65535
-          {%- else -%}
+          {% if states.light.living_room_lamp.state == "on" -%}
             0
-          {%- endif %}
-    - service: mqtt.publish
-      data_template:
-        topic: 'hasp/down_plate/command/p[3].b[7].txt'
-        payload_template: >-
-          {% if states.group.light_toggle_group.state == "on" -%}
-           "Lights Off"
           {%- else -%}
-           "Lights On"
+            65535
           {%- endif %}

@@ -18,16 +18,35 @@ automation:
 
 ##############################################################################
 # select hasp_down_plate_pagebutton1page in response to page button 1
-  - alias: hasp_down_plate_p0_PageButton1Action
+  - alias: hasp_down_plate_p0_PageButton1Action_p2_p9
     trigger:
-    - platform: mqtt
-      topic: 'hasp/down_plate/state/p[1].b[1]'
-      payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[2].b[1]'
       payload: 'ON'
     - platform: mqtt
+      topic: 'hasp/down_plate/state/p[2].b[1]'
+      payload: 'ON'
+    action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: 'input_number.hasp_down_plate_activepage'
+        value: 3
+
+  - alias: hasp_down_plate_p0_PageButton1Action_p3
+    trigger:
+    - platform: mqtt
       topic: 'hasp/down_plate/state/p[3].b[1]'
+      payload: 'ON'
+    action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: 'input_number.hasp_down_plate_activepage'
+        value: 9
+
+  - alias: hasp_down_plate_p0_PageButton1Action
+    trigger:
+    - platform: mqtt
+      topic: 'hasp/down_plate/state/p[1].b[1]'
       payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[4].b[1]'
@@ -43,9 +62,6 @@ automation:
       payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[8].b[1]'
-      payload: 'ON'
-    - platform: mqtt
-      topic: 'hasp/down_plate/state/p[9].b[1]'
       payload: 'ON'
     action:
     - service: input_number.set_value
@@ -92,6 +108,20 @@ automation:
 
 ##############################################################################
 # select hasp_down_plate_pagebutton3page in response to page button 3
+  - alias: hasp_down_plate_p0_PageButton3Action_p3_p9
+    trigger:
+    - platform: mqtt
+      topic: 'hasp/down_plate/state/p[3].b[3]'
+      payload: 'ON'
+    - platform: mqtt
+      topic: 'hasp/down_plate/state/p[9].b[3]'
+      payload: 'ON'
+    action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: 'input_number.hasp_down_plate_activepage'
+        value: 1
+
   - alias: hasp_down_plate_p0_PageButton3Action
     trigger:
     - platform: mqtt
@@ -99,9 +129,6 @@ automation:
       payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[2].b[3]'
-      payload: 'ON'
-    - platform: mqtt
-      topic: 'hasp/down_plate/state/p[3].b[3]'
       payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[4].b[3]'
@@ -117,9 +144,6 @@ automation:
       payload: 'ON'
     - platform: mqtt
       topic: 'hasp/down_plate/state/p[8].b[3]'
-      payload: 'ON'
-    - platform: mqtt
-      topic: 'hasp/down_plate/state/p[9].b[3]'
       payload: 'ON'
     action:
     - service: input_number.set_value
@@ -174,11 +198,11 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[2].b[1].txt'
-        payload_template: '"{{states.input_text.hasp_down_plate_pagebutton1label.state}}"'
+        payload_template: '"Lights"'
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[3].b[1].txt'
-        payload_template: '"{{states.input_text.hasp_down_plate_pagebutton1label.state}}"'
+        payload_template: '"1/2"'
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[4].b[1].txt'
@@ -202,7 +226,7 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[9].b[1].txt'
-        payload_template: '"{{states.input_text.hasp_down_plate_pagebutton1label.state}}"'
+        payload_template: '"2/2"'
 
 # set page button text on each page to hasp-down_plate-PageButton2Label
   - alias: hasp_down_plate_p0_PageButton2_Text
@@ -270,7 +294,7 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[3].b[3].txt'
-        payload_template: '"{{states.input_text.hasp_down_plate_pagebutton3label.state}}"'
+        payload_template: '"Scenes"'
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[4].b[3].txt'
@@ -294,7 +318,7 @@ automation:
     - service: mqtt.publish
       data:
         topic: 'hasp/down_plate/command/p[9].b[3].txt'
-        payload_template: '"{{states.input_text.hasp_down_plate_pagebutton3label.state}}"'
+        payload_template: '"Scenes"'
 
 ##############################################################################
 # Set page button colors across selected pages to show active page button
