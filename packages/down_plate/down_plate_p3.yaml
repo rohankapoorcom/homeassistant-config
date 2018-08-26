@@ -50,7 +50,7 @@ automation:
         data:
           nodename: down_plate
           object_id: 'p[3].b[4]'
-          text: 'End Tables'
+          text: 'Couch Tables'
       - service: python_script.hasp_update_message
         data:
           nodename: down_plate
