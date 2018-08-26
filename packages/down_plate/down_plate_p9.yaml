@@ -49,28 +49,28 @@ automation:
       - service: python_script.hasp_update_message
         data:
           nodename: down_plate
-          object_id: 'p[3].b[4]'
+          object_id: 'p[9].b[4]'
           text: 'Kitchen Table'
       - service: python_script.hasp_update_message
         data:
           nodename: down_plate
-          object_id: 'p[3].b[5]'
+          object_id: 'p[9].b[5]'
           text: 'Kitchen Sink'
       - service: python_script.hasp_update_message
         data:
           nodename: down_plate
-          object_id: 'p[3].b[6]'
+          object_id: 'p[9].b[6]'
           text: 'Server Rack'
       - service: python_script.hasp_update_message
         data:
           nodename: down_plate
-          object_id: 'p[3].b[7]'
+          object_id: 'p[9].b[7]'
           text: ''
 
   - alias: hasp_down_plate_p9_ToggleKitchenTable
     trigger:
       - platform: mqtt
-        topic: 'hasp/down_plate/state/p[3].b[4]'
+        topic: 'hasp/down_plate/state/p[9].b[4]'
         payload: 'ON'
     action:
       - service: homeassistant.toggle
@@ -79,7 +79,7 @@ automation:
   - alias: hasp_down_plate_p9_ToggleKitchenSink
     trigger:
       - platform: mqtt
-        topic: 'hasp/down_plate/state/p[3].b[5]'
+        topic: 'hasp/down_plate/state/p[9].b[5]'
         payload: 'ON'
     action:
       - service: homeassistant.toggle
@@ -88,7 +88,7 @@ automation:
   - alias: hasp_down_plate_p9_ToggleServerRack
     trigger:
       - platform: mqtt
-        topic: 'hasp/down_plate/state/p[3].b[6]'
+        topic: 'hasp/down_plate/state/p[9].b[6]'
         payload: 'ON'
     action:
       - service: homeassistant.toggle
@@ -104,7 +104,7 @@ automation:
     action:
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[4].bco'
+          topic: 'hasp/down_plate/command/p[9].b[4].bco'
           payload_template: >-
             {% if is_state('group.kitchen_table', 'on') -%}
               64577
@@ -113,7 +113,7 @@ automation:
             {%- endif %}
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[4].pco'
+          topic: 'hasp/down_plate/command/p[9].b[4].pco'
           payload_template: >-
             {% if is_state('group.kitchen_table', 'on') -%}
               0
@@ -131,7 +131,7 @@ automation:
     action:
       - service: mqtt.publish
         data:
-          topic: 'hasp/down_plate/command/p[3].b[5].bco'
+          topic: 'hasp/down_plate/command/p[9].b[5].bco'
           payload_template: >-
             {% if is_state('light.kitchen_sink_light', 'on') -%}
               64577
@@ -140,7 +140,7 @@ automation:
             {%- endif %}
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[5].pco'
+          topic: 'hasp/down_plate/command/p[9].b[5].pco'
           payload_template: >-
             {% if is_state('light.kitchen_sink_light', 'on') -%}
               0
@@ -158,7 +158,7 @@ automation:
     action:
       - service: mqtt.publish
         data:
-          topic: 'hasp/down_plate/command/p[3].b[6].bco'
+          topic: 'hasp/down_plate/command/p[9].b[6].bco'
           payload_template: >-
             {% if is_state('switch.server_rack_lights', 'on') -%}
               64577
@@ -167,7 +167,7 @@ automation:
             {%- endif %}
       - service: mqtt.publish
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[6].pco'
+          topic: 'hasp/down_plate/command/p[9].b[6].pco'
           payload_template: >-
             {% if is_state('switch.server_rack_lights', 'on') -%}
               0
