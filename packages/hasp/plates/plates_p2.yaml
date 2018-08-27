@@ -1,0 +1,85 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/26/2018
+#  @package      :  Plates P2
+#  @description  :  Logic for handling Page 2 on the HASP group 'plates'.
+#                   Page 2 shows the date/time, and the lock status
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'plates_p2'
+
+################################################
+## Automation
+################################################
+automation:
+
+  # Send the current time every minute
+  - alias: hasp_plates_p2_ClockUpdate
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/status'
+        payload: 'ON'
+      - platform: time
+        # Matches every minute
+        seconds: 00
+    condition:
+    action:
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[2].b[4]'
+          text: "{{(now().strftime('%I')|int)~now().strftime(':%M')}}"
+
+  # Send the date every day
+  - alias: hasp_plates_p2_CalendarUpdate
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/status'
+        payload: 'ON'
+      - platform: time
+        at: '00:00:00'
+    action:
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[2].b[5]'
+          text: '{{"  {}\\r{}".format(now().strftime("%A"),now().strftime("%B %C %Y"))}}'
+
+  - alias: hasp_plates_p2_DoorLock
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/status'
+        payload: 'ON'
+      - platform: state
+        entity_id: lock.front_door
+    action:
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[2].b[7]'
+          text: "Doors:{{states('lock.front_door')}}"
+
+  - alias: hasp_plates_p2_DoorLock_toggle
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/state/p[2].b[7]'
+        payload: 'ON'
+      - platform: mqtt
+        topic: 'hasp/up_plate/state/p[2].b[7]'
+        payload: 'ON'
+    action:
+      - service_template: >
+          {% if states('lock.front_door') == 'locked' %}
+            lock.unlock
+          {% else %}
+            lock.lock
+          {% endif %}
+        entity_id: lock.front_door

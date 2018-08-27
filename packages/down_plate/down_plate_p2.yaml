@@ -3,8 +3,8 @@
 #  @date         :  08/20/2018
 #  @package      :  Down Plate P2
 #  @description  :  Handles page 2 on the downstairs HA Wallplate. Page 2 shows
-#                   the date/time, downstairs temperature/humidity and the lock
-#                   status.
+#                   downstairs temperature/humidity. All other functions are
+#                   managed by the plates_p2 package.
 ###############################################################################
 
 homeassistant:
@@ -17,137 +17,28 @@ homeassistant:
       customize: &customize
         package: 'down_plate_p2'
 
-    automation.hasp_down_plate_p2_Init:
-      <<: *customize
-    automation.hasp_down_plate_p2_ClockUpdate:
-      <<: *customize
-    automation.hasp_down_plate_p2_CalendarUpdate:
-      <<: *customize
     automation.hasp_down_plate_p2_Weather:
-      <<: *customize
-    automation.hasp_down_plate_p2_DoorLock:
-      <<: *customize
-    automation.hasp_down_plate_p2_DoorLock_toggle:
-      <<: *customize
-
-    script.hasp_down_plate_p2_update_clock:
-      <<: *customize
-    script.hasp_down_plate_p2_update_date:
-      <<: *customize
-    script.hasp_down_plate_p2_update_weather:
-      <<: *customize
-    script.hasp_down_plate_p2_update_door_lock:
       <<: *customize
 
 ################################################
 ## Automation
 ################################################
 automation:
-
-  - alias: hasp_down_plate_p2_Init
+  # Send Temperature/Humidity
+  - alias: hasp_down_plate_p2_Weather
     trigger:
       - platform: mqtt
         topic: 'hasp/down_plate/status'
         payload: 'ON'
-    action:
-      - service: script.hasp_down_plate_p2_update_clock
-      - service: script.hasp_down_plate_p2_update_date
-      - service: script.hasp_down_plate_p2_update_weather
-      - service: script.hasp_down_plate_p2_update_door_lock
-
-  # Send the current time every minute
-  - alias: hasp_down_plate_p2_ClockUpdate
-    trigger:
-      - platform: time
-        # Matches every minute
-        seconds: 00
-    condition:
-      - condition: state
-        entity_id: 'binary_sensor.down_plate_connected'
-        state: 'on'
-    action:
-      - service: script.hasp_down_plate_p2_update_clock
-
-  # Send "Month Day Year" every day, scaling font to fit
-  # 0 consolas 24 - 20 chars x 2 lines (wrapped)
-  # 1 consolas 32 - 15 chars x 2 lines (wrapped)
-  # 2 consolas 48 - 10 chars x 1 line
-  # 3 consolas 80 - 6 chars x 1 line
-  - alias: hasp_down_plate_p2_CalendarUpdate
-    trigger:
-      - platform: time
-        at: '00:00:00'
-    condition:
-      - condition: state
-        entity_id: 'binary_sensor.down_plate_connected'
-        state: 'on'
-    action:
-      - service: script.hasp_down_plate_p2_update_date
-
-  # Send Temperature/Humidity
-  - alias: hasp_down_plate_p2_Weather
-    trigger:
       - platform: state
         entity_id: sensor.temperature_158d0002287ef6
       - platform: state
         entity_id: sensor.humidity_158d0002287ef6
     action:
-      - service: script.hasp_down_plate_p2_update_weather
-
-  - alias: hasp_down_plate_p2_DoorLock
-    trigger:
-      - platform: state
-        entity_id: lock.front_door
-    action:
-      - service: script.hasp_down_plate_p2_update_door_lock
-
-  - alias: hasp_down_plate_p2_DoorLock_toggle
-    trigger:
-      - platform: mqtt
-        topic: 'hasp/down_plate/state/p[2].b[7]'
-        payload: 'ON'
-    action:
-      - service_template: >
-          {% if states('lock.front_door') == 'locked' %}
-            lock.unlock
-          {% else %}
-            lock.lock
-          {% endif %}
-        entity_id: lock.front_door
-
-################################################
-## Script
-################################################
-script:
-
-  hasp_down_plate_p2_update_clock:
-    sequence:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[2].b[4]'
-          text: "{{(now().strftime('%I')|int)~now().strftime(':%M')}}"
-
-  hasp_down_plate_p2_update_date:
-    sequence:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[2].b[5]'
-          text: '{{"  {}\\r{}".format(now().strftime("%A"),now().strftime("%B %C %Y"))}}'
-
-  hasp_down_plate_p2_update_weather:
-    sequence:
       - service: python_script.hasp_update_message
         data_template:
           nodename: down_plate
           object_id: 'p[2].b[6]'
           text: "{{states('sensor.temperature_158d0002287ef6')}}F|{{states('sensor.humidity_158d0002287ef6')}}%"
 
-  hasp_down_plate_p2_update_door_lock:
-    sequence:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[2].b[7]'
-          text: "Doors:{{states('lock.front_door')}}"
+
