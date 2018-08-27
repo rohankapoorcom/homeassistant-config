@@ -40,5 +40,3 @@ automation:
           nodename: down_plate
           object_id: 'p[2].b[6]'
           text: "{{states('sensor.temperature_158d0002287ef6')}}F|{{states('sensor.humidity_158d0002287ef6')}}%"
-
-

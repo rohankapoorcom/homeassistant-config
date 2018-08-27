@@ -4,7 +4,8 @@
 #  @package      :  Down Plate P8
 #  @description  :  Handles page 8 on the downstairs HA Wallplate. Page 8 shows
 #                   the current media playback on All Speakers and allows
-#                   interacting with the sound system.
+#                   interacting with the sound system. Some functionality
+#                   provided by the plates_p8 package.
 ###############################################################################
 
 homeassistant:
@@ -28,12 +29,6 @@ homeassistant:
       <<: *customize
     automation.hasp_down_plate_p8_MediaNextTrackButton8:
       <<: *customize
-    automation.hasp_down_plate_p8_MediaTitle:
-      <<: *customize
-    automation.hasp_down_plate_p8_MediaArtist:
-      <<: *customize
-    automation.hasp_down_plate_p8_MediaPlayPause:
-      <<: *customize
     automation.hasp_down_plate_p8_MediaVolSliderUpdateHass:
       <<: *customize
 
@@ -41,6 +36,7 @@ homeassistant:
 ## Automation
 ################################################
 automation:
+
 # Initialize button text/font for media controls on start
   - alias: hasp_down_plate_p8_MediaInit
     trigger:
@@ -72,6 +68,29 @@ automation:
         data:
           topic: 'hasp/down_plate/command/p[8].b[8].txt'
           payload: '":"'
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: down_plate
+          object_id: 'p[8].b[4]'
+          text: "{{ states('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: down_plate
+          object_id: 'p[8].b[5]'
+          text: "{{ states('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: down_plate
+          object_id: 'p[8].b[7]'
+          text: >
+            {% if is_state('media_player.all_speakers', 'playing') %}
+            ;
+            {% elif is_state('media_player.all_speakers', 'paused') %}
+            4
+            {% else %}
+            ;
+            {% endif %}
+          update_font: 'false'
 
   # Play/Pause button action
   - alias: hasp_down_plate_p8_MediaPauseButton7
@@ -103,63 +122,6 @@ automation:
       - service: media_player.media_next_track
         <<: *media_player_entity
 
-  - alias: hasp_down_plate_p8_MediaTitle
-    trigger:
-      - platform: state
-        entity_id: sensor.all_speakers_media_title
-      - platform: mqtt
-        topic: 'hasp/down_plate/status'
-        payload: 'ON'
-    action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[8].b[4]'
-          text: "{{ states('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
-
-  - alias: hasp_down_plate_p8_MediaArtist
-    trigger:
-      - platform: state
-        entity_id: sensor.all_speakers_media_artist
-      - platform: mqtt
-        topic: 'hasp/down_plate/status'
-        payload: 'ON'
-    action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[8].b[5]'
-          text: "{{ states('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
-
-  - alias: hasp_down_plate_p8_MediaPlayPause
-    trigger:
-      - platform: state
-        <<: *media_player_entity
-        to: 'playing'
-      - platform: state
-        <<: *media_player_entity
-        to: 'paused'
-      - platform: state
-        <<: *media_player_entity
-        to: 'off'
-      - platform: mqtt
-        topic: 'hasp/down_plate/status'
-        payload: 'ON'
-    action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: down_plate
-          object_id: 'p[8].b[7]'
-          text: >
-            {% if is_state('media_player.all_speakers', 'playing') %}
-            ;
-            {% elif is_state('media_player.all_speakers', 'paused') %}
-            4
-            {% else %}
-            ;
-            {% endif %}
-          update_font: 'false'
-
   # Volume slider value published, apply published state
   - alias: hasp_down_plate_p8_MediaVolSliderUpdateHass
     trigger:
@@ -169,7 +131,7 @@ automation:
       - service: script.harmony_volume
         data_template:
           increment: "{{ (states('input_number.volume_increment'))|int }}"
-          entity_id: remote.upstairs_hub
+          entity_id: remote.living_room_hub
           vol_up: >
             {% if trigger.payload|int > 50 %}
               true
