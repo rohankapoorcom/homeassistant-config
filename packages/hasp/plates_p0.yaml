@@ -20,7 +20,6 @@ homeassistant:
 
     script.plates_p0_display_text_message:
       <<: *customize
-
     script.plates_p0_reset_screen:
       <<: *customize
 

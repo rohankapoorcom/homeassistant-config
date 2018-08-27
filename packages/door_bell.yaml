@@ -26,14 +26,16 @@ homeassistant:
 
     automation.alert_front_door_bell:
       <<: *customize
-
     automation.reset_front_door_bell_sensor:
       <<: *customize
-
     automation.reset_front_door_bell_notification:
       <<: *customize
 
     script.reset_front_door_bell_notification:
+      <<: *customize
+    script.loop_door_bell_font_colors:
+      <<: *customize
+    script.loop_door_bell_font_colors_loop_control:
       <<: *customize
 
 ################################################
@@ -108,6 +110,7 @@ automation:
 # ## Script
 # ################################################
 script:
+
   reset_front_door_bell_notification:
     sequence:
       - service: persistent_notification.dismiss
@@ -116,3 +119,26 @@ script:
       - service: media_player.media_stop
         <<: *media_player_id
       - service: script.plates_p0_reset_screen
+      - service: script.turn_off
+        entity_id: script.loop_door_bell_font_colors
+      - service: script.turn_off
+        entity_id: script.loop_door_bell_font_colors_loop_control
+
+  loop_door_bell_font_colors:
+    sequence:
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[0].b[1].bco'
+          payload: '63488'
+      - delay:
+          seconds: 1
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[0].b[1].bco'
+          payload: '2016'
+      - service: script.loop_door_bell_font_colors_loop_control
+
+  loop_door_bell_font_colors_loop_control:
+    sequence:
+      - service: script.loop_door_bell_font_colors
+
