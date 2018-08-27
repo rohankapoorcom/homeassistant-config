@@ -50,7 +50,7 @@ script:
         data_template:
           nodename: plates
           object_id: 'p[0].b[1]'
-          text: "{text}"
+          text: "{{text}}"
       - service: mqtt.publish
         data:
           topic: 'hasp/plates/command/page'
