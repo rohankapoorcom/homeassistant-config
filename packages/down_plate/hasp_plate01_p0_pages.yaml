@@ -339,7 +339,7 @@ automation:
     - service: python_script.hasp_update_colors
       data_template:
         nodename: down_plate
-        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1]'
+        object_id: 'p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1]'
         background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton1page.state|int -%}
             65535
@@ -363,7 +363,7 @@ automation:
     - service: python_script.hasp_update_colors
       data_template:
         nodename: down_plate
-        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[2]'
+        object_id: 'p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[2]'
         background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton2page.state|int -%}
             65535
@@ -379,7 +379,7 @@ automation:
     - service: python_script.hasp_update_colors
       data_template:
         nodename: down_plate
-        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[3]'
+        object_id: 'p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[3]'
         background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton3page.state|int -%}
             65535
