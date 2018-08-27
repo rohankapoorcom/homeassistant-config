@@ -28,7 +28,7 @@ if background:
 
 if foreground:
     foreground_payload = {
-        'topic': '{}.bco'.format(base_topic),
+        'topic': '{}.pco'.format(base_topic),
         'payload': '{}'.format(foreground)
     }
     hass.services.call('mqtt', 'publish', foreground_payload)
