@@ -342,6 +342,10 @@ automation:
         payload_template: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton1page.state|int -%}
             65535
+          {% elif states.input_number.hasp_down_plate_activepage.state|int == 3 %}
+            65535
+          {% elif states.input_number.hasp_down_plate_activepage.state|int == 9 %}
+            65535
           {%- else -%}
             25388
           {%- endif %}
@@ -350,6 +354,10 @@ automation:
         topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1].pco'
         payload_template: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton1page.state|int -%}
+            0
+          {% elif states.input_number.hasp_down_plate_activepage.state|int == 3 %}
+            0
+          {% elif states.input_number.hasp_down_plate_activepage.state|int == 9 %}
             0
           {%- else -%}
             65535
