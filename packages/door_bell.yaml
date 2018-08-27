@@ -73,6 +73,7 @@ automation:
       - service: script.plates_p0_display_text_message
         data:
           text: 'Doorbell Ringing!'
+      - service: script.loop_door_bell_font_colors
 
   - id: reset_front_door_bell_sensor
     alias: Reset Front Door Bell Sensor
