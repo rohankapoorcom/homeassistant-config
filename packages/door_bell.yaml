@@ -134,7 +134,7 @@ script:
       - service: mqtt.publish
         data:
           topic: 'hasp/plates/command/p[0].b[1].pco'
-          payload: '0'
+          payload: '65535'
       - service: script.turn_off
         entity_id: script.loop_door_bell_font_colors_loop_control
       - delay:
@@ -146,7 +146,7 @@ script:
       - service: mqtt.publish
         data:
           topic: 'hasp/plates/command/p[0].b[1].pco'
-          payload: '65535'
+          payload: '0'
       - service: script.loop_door_bell_font_colors_loop_control
 
   loop_door_bell_font_colors_loop_control:
