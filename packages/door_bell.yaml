@@ -114,37 +114,31 @@ script:
         entity_id: script.loop_door_bell_font_colors
       - service: script.turn_off
         entity_id: script.loop_door_bell_font_colors_loop_control
-      - service: mqtt.publish
+      - service: python_script.hasp_update_colors
         data:
-          topic: 'hasp/plates/command/p[0].b[1].bco'
-          payload: '25388'
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/plates/command/p[0].b[1].pco'
-          payload: '65535'
+          nodename: plates
+          object_id: 'p[0].b[1]'
+          background: '25388'
+          foreground: '65535'
 
   loop_door_bell_font_colors:
     sequence:
-      - service: mqtt.publish
+      - service: python_script.hasp_update_colors
         data:
-          topic: 'hasp/plates/command/p[0].b[1].bco'
-          payload: '63488'
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/plates/command/p[0].b[1].pco'
-          payload: '65535'
+          nodename: plates
+          object_id: 'p[0].b[1]'
+          background: '63488'
+          foreground: '65535'
       - service: script.turn_off
         entity_id: script.loop_door_bell_font_colors_loop_control
       - delay:
           milliseconds: 500
-      - service: mqtt.publish
+      - service: python_script.hasp_update_colors
         data:
-          topic: 'hasp/plates/command/p[0].b[1].bco'
-          payload: '2016'
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/plates/command/p[0].b[1].pco'
-          payload: '0'
+          nodename: plates
+          object_id: 'p[0].b[1]'
+          background: '2016'
+          foreground: '0'
       - service: script.loop_door_bell_font_colors_loop_control
 
   loop_door_bell_font_colors_loop_control:

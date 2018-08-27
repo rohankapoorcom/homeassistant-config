@@ -336,10 +336,11 @@ automation:
       topic: 'hasp/down_plate/status'
       payload: 'ON'
     action:
-    - service: mqtt.publish
+    - service: python_script.hasp_update_colors
       data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1].bco'
-        payload_template: >-
+        nodename: down_plate
+        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1]'
+        background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton1page.state|int -%}
             65535
           {% elif states.input_number.hasp_down_plate_activepage.state|int == 3 %}
@@ -349,10 +350,7 @@ automation:
           {%- else -%}
             25388
           {%- endif %}
-    - service: mqtt.publish
-      data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[1].pco'
-        payload_template: >-
+        foreground: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton1page.state|int -%}
             0
           {% elif states.input_number.hasp_down_plate_activepage.state|int == 3 %}
@@ -362,37 +360,33 @@ automation:
           {%- else -%}
             65535
           {%- endif %}
-    - service: mqtt.publish
+    - service: python_script.hasp_update_colors
       data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[2].bco'
-        payload_template: >-
+        nodename: down_plate
+        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[2]'
+        background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton2page.state|int -%}
             65535
           {%- else -%}
             25388
           {%- endif %}
-    - service: mqtt.publish
-      data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[2].pco'
-        payload_template: >-
+        foreground: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton2page.state|int -%}
            0
           {%- else -%}
             65535
           {%- endif %}
-    - service: mqtt.publish
+    - service: python_script.hasp_update_colors
       data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[3].bco'
-        payload_template: >-
+        nodename: down_plate
+        object_id: p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[3]'
+        background: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton3page.state|int -%}
             65535
           {%- else -%}
             25388
           {%- endif %}
-    - service: mqtt.publish
-      data_template:
-        topic: 'hasp/down_plate/command/p[{{states.input_number.hasp_down_plate_activepage.state|int}}].b[3].pco'
-        payload_template: >-
+        foreground: >-
           {% if states.input_number.hasp_down_plate_activepage.state|int == states.input_number.hasp_down_plate_pagebutton3page.state|int -%}
             0
           {%- else -%}

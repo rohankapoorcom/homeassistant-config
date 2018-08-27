@@ -111,19 +111,17 @@ automation:
       - platform: state
         entity_id: group.end_tables
     action:
-      - service: mqtt.publish
+      - service: python_script.hasp_update_colors
         data_template:
-          topic: 'hasp/down_plate/command/p[3].b[4].bco'
-          payload_template: >-
+          nodename: down_plate
+          object_id: 'p[3].b[4]'
+          background: >-
             {% if is_state('group.end_tables', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
-      - service: mqtt.publish
-        data_template:
-          topic: 'hasp/down_plate/command/p[3].b[4].pco'
-          payload_template: >-
+          foreground: >-
             {% if is_state('group.end_tables', 'on') -%}
               0
             {%- else -%}
@@ -138,19 +136,17 @@ automation:
       - platform: state
         entity_id: light.couch_accent_white
     action:
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/down_plate/command/p[3].b[5].bco'
-          payload_template: >-
+      - service: python_script.hasp_update_colors
+        data_template:
+          nodename: down_plate
+          object_id: 'p[3].b[5]'
+          background: >-
             {% if is_state('light.couch_accent_white', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
-      - service: mqtt.publish
-        data_template:
-          topic: 'hasp/down_plate/command/p[3].b[5].pco'
-          payload_template: >-
+          foreground: >-
             {% if is_state('light.couch_accent_white', 'on') -%}
               0
             {%- else -%}
@@ -165,19 +161,17 @@ automation:
       - platform: state
         entity_id: light.extended_color_light_1
     action:
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/down_plate/command/p[3].b[6].bco'
-          payload_template: >-
+      - service: python_script.hasp_update_colors
+        data_template:
+          nodename: down_plate
+          object_id: 'p[3].b[6]'
+          background: >-
             {% if is_state('light.extended_color_light_1', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
-      - service: mqtt.publish
-        data_template:
-          topic: 'hasp/down_plate/command/p[3].b[6].pco'
-          payload_template: >-
+          foreground: >-
             {% if is_state('light.extended_color_light_1', 'on') -%}
               0
             {%- else -%}
@@ -192,19 +186,17 @@ automation:
       - platform: state
         entity_id: light.living_room_lamp
     action:
-      - service: mqtt.publish
-        data:
-          topic: 'hasp/down_plate/command/p[3].b[7].bco'
-          payload_template: >-
+      - service: python_script.hasp_update_colors
+        data_template:
+          nodename: down_plate
+          object_id: 'p[3].b[7]'
+          background: >-
             {% if is_state('light.living_room_lamp', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
-      - service: mqtt.publish
-        data_template:
-          topic: 'hasp/down_plate/command/p[3].b[7].pco'
-          payload_template: >-
+          foreground: >-
             {% if is_state('light.living_room_lamp', 'on') -%}
               0
             {%- else -%}
