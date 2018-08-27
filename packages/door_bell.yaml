@@ -131,6 +131,8 @@ script:
         data:
           topic: 'hasp/plates/command/p[0].b[1].bco'
           payload: '63488'
+      - service: script.turn_off
+        entity_id: script.loop_door_bell_font_colors_loop_control
       - delay:
           seconds: 1
       - service: mqtt.publish
@@ -141,5 +143,9 @@ script:
 
   loop_door_bell_font_colors_loop_control:
     sequence:
+      - service: script.turn_off
+        entity_id: script.loop_door_bell_font_colors
+      - delay:
+          seconds: 1
       - service: script.loop_door_bell_font_colors
 
