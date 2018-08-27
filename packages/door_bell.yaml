@@ -114,6 +114,14 @@ script:
         entity_id: script.loop_door_bell_font_colors
       - service: script.turn_off
         entity_id: script.loop_door_bell_font_colors_loop_control
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[0].b[1].bco'
+          payload: '25388'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[0].b[1].pco'
+          payload: '65535'
 
   loop_door_bell_font_colors:
     sequence:
