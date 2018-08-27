@@ -28,8 +28,6 @@ homeassistant:
       <<: *customize
     automation.reset_front_door_bell_sensor:
       <<: *customize
-    automation.reset_front_door_bell_notification:
-      <<: *customize
 
     script.reset_front_door_bell_notification:
       <<: *customize
@@ -74,6 +72,9 @@ automation:
         data:
           text: 'Doorbell Ringing!'
       - service: script.loop_door_bell_font_colors
+      - delay:
+          seconds: 15
+      - service: script.reset_front_door_bell_notification
 
   - id: reset_front_door_bell_sensor
     alias: Reset Front Door Bell Sensor
@@ -95,17 +96,6 @@ automation:
               }
             }
           retain: 'true'
-
-  - id: reset_front_door_bell_notification
-    alias: Reset Front Door Notification
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door_bell
-        to: 'on'
-        for:
-          seconds: 15
-    action:
-      - service: script.reset_front_door_bell_notification
 
 # ################################################
 # ## Script
