@@ -15,13 +15,25 @@ homeassistant:
       customize: &customize
         package: 'door_bell'
 
+      media_player_id: &media_player_id
+        entity_id: media_player.notifications
+
+      notification_id: &notification_id
+        notification_id: 'front_door_bell'
+
     binary_sensor.front_door_bell:
       <<: *customize
 
     automation.alert_front_door_bell:
       <<: *customize
 
-    automation.reset_front_door_bell:
+    automation.reset_front_door_bell_sensor:
+      <<: *customize
+
+    automation.reset_front_door_bell_notification:
+      <<: *customize
+
+    script.reset_front_door_bell_notification:
       <<: *customize
 
 ################################################
@@ -50,15 +62,18 @@ automation:
       - service: persistent_notification.create
         data:
           message: 'Front Doorbell Ringing'
-          notification_id: 'front_door_bell'
+          <<: *notification_id
       - service: media_player.play_media
-        entity_id: media_player.notifications
+        <<: *media_player_id
         data:
           media_content_id: !secret media_content_id.front_door_bell
           media_content_type: audio/mp3
+      - service: script.plates_p0_display_text_message
+        data:
+          text: 'Doorbell Ringing!'
 
-  - id: reset_front_door_bell
-    alias: Reset Front Door Bell
+  - id: reset_front_door_bell_sensor
+    alias: Reset Front Door Bell Sensor
     hide_entity: true
     trigger:
       - platform: state
@@ -77,3 +92,27 @@ automation:
               }
             }
           retain: 'true'
+
+  - id: reset_front_door_bell_notification
+    alias: Reset Front Door Notification
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_bell
+        to: 'on'
+        for:
+          seconds: 15
+    action:
+      - service: script.reset_front_door_bell_notification
+
+# ################################################
+# ## Script
+# ################################################
+script:
+  reset_front_door_bell_notification:
+    sequence:
+      - service: persistent_notification.dismiss
+        data:
+          <<: *notification_id
+      - service: media_player.media_stop
+        <<: *media_player_id
+      - service: script.plates_p0_reset_screen
