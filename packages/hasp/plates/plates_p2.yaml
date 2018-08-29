@@ -16,6 +16,15 @@ homeassistant:
       customize: &customize
         package: 'plates_p2'
 
+    automation.hasp_plates_p2_ClockUpdate:
+      <<: *customize
+    automation.hasp_plates_p2_CalendarUpdate:
+      <<: *customize
+    automation.hasp_plates_p2_DoorLock:
+      <<: *customize
+    automation.hasp_plates_p2_DoorLock_toggle:
+      <<: *customize
+
 ################################################
 ## Automation
 ################################################
