@@ -61,9 +61,9 @@ automation:
           state: 'on'
     action:
       - service: homeassistant.turn_on
-        data:
+        data_template:
           entity_id: group.hasp_plates_backlights
-          payload_template: >
+          brightness: >
             {% if state_attr('sun.sun', 'elevation') >= 10 %}
               255
             {% elif (state_attr('sun.sun', 'elevation') < 10) and (state_attr('sun.sun', 'elevation') > -10) %}
@@ -136,13 +136,3 @@ automation:
         value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
     action:
       - event: HASP_CONNECTED
-
-  - alias: test_hasp_connectect_event
-    initial_state: 'on'
-    trigger:
-      - platform: event
-        event_type: HASP_CONNECTED
-    action:
-      - service: persistent_notification.create
-        data:
-          message: 'HASP Connected'
