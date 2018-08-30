@@ -121,7 +121,7 @@ automation:
         value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
       - condition: template
         value_template: >
-          {{ trigger.event.data.new_state.entity_id in states.group.hasp_plate_sensors.attributes.entity_id }}
+          {{ trigger.event.data.new_state.entity_id in state_attr('group.hasp_plates_sensors', 'entity_id') }}
       - condition: template
         value_template: "{{ is_state(trigger.event.data.new_state.entity_id, 'available') }}"
     action:
