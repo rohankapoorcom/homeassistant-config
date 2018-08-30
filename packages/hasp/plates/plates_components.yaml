@@ -77,6 +77,9 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
+      - platform: time
+        minutes: '/5'
+        seconds: 00
     action:
       - service: group.set
         data_template:
@@ -95,11 +98,14 @@ automation:
         data_template:
           object_id: 'hasp_plates_sensors'
           entities: >-
-            {%- for item in states.sensor if (
-              (item.entity_id | lower).endswith('backlight')
-              or (item.name | lower).endswith('backlight')
-              or 'plate' in item.entity_id | lower
-              or 'plate' in item.name | lower
+            {%- for item in states.binary_sensor if (
+              is_state_attr(item.entity_id, 'device_class', 'connectivity')
+              and (
+                (item.entity_id | lower).endswith('plate')
+                or (item.name | lower).endswith('plate')
+                or 'plate' in item.entity_id | lower
+                or 'plate' in item.name | lower
+                )
               )
             -%}
               {{ item.entity_id }}{% if not loop.last %}, {% endif %}
@@ -120,10 +126,12 @@ automation:
       - condition: template
         value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
       - condition: template
+        value_template: "{{ state_attr('group.hasp_plates_sensors', 'entity_id') is not none }}"
+      - condition: template
         value_template: >
           {{ trigger.event.data.new_state.entity_id in state_attr('group.hasp_plates_sensors', 'entity_id') }}
       - condition: template
-        value_template: "{{ is_state(trigger.event.data.new_state.entity_id, 'available') }}"
+        value_template: "{{ is_state(trigger.event.data.new_state.entity_id, 'on') }}"
     action:
       - event: HASP_CONNECTED
 
