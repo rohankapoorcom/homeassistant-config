@@ -17,8 +17,39 @@ homeassistant:
         package: 'plates_p8'
 
       media_player_entity: &media_player_entity
-          entity_id: media_player.all_speakers
+        entity_id: media_player.all_speakers
 
+      media_player_title: &media_player_title
+        service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[8].b[4]'
+          text: "{{ states('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
+
+      media_player_artist: &media_player_artist
+        service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[8].b[5]'
+          text: "{{ states('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
+
+      media_player_state: &media_player_state
+        service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[8].b[7]'
+          text: >
+            {% if is_state('media_player.all_speakers', 'playing') %}
+            ;
+            {% elif is_state('media_player.all_speakers', 'paused') %}
+            4
+            {% else %}
+            ;
+            {% endif %}
+          update_font: 'false'
+
+      automation.hasp_plates_p8_MediaInit:
+        <<: *customize
       automation.hasp_plates_p8_MediaTitle:
         <<: *customize
       automation.hasp_plates_p8_MediaArtist:
@@ -31,27 +62,53 @@ homeassistant:
 ################################################
 automation:
 
+  # Initialize button text/font for media controls on start
+  - alias: hasp_plates_p8_MediaInit
+    trigger:
+      - platform: event
+        event_type: HASP_CONNECTED
+    action:
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[6].font'
+          payload: '4'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[7].font'
+          payload: '4'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[8].font'
+          payload: '4'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[6].txt'
+          payload: '"9"'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[7].txt'
+          payload: '";"'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/p[8].b[8].txt'
+          payload: '":"'
+      - <<: *media_player_title
+      - <<: *media_player_artist
+      - <<: *media_player_state
+
   - alias: hasp_plates_p8_MediaTitle
     trigger:
       - platform: state
         entity_id: sensor.all_speakers_media_title
     action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: plates
-          object_id: 'p[8].b[4]'
-          text: "{{ states('sensor.all_speakers_media_title')|wordwrap(20, wrapstring='\\r') }}"
+      - <<: *media_player_title
 
   - alias: hasp_plates_p8_MediaArtist
     trigger:
       - platform: state
         entity_id: sensor.all_speakers_media_artist
     action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: plates
-          object_id: 'p[8].b[5]'
-          text: "{{ states('sensor.all_speakers_media_artist')|wordwrap(20, wrapstring='\\r') }}"
+      - <<: *media_player_artist
 
   - alias: hasp_plates_p8_MediaPlayPause
     trigger:
@@ -65,16 +122,4 @@ automation:
         <<: *media_player_entity
         to: 'off'
     action:
-      - service: python_script.hasp_update_message
-        data_template:
-          nodename: plates
-          object_id: 'p[8].b[7]'
-          text: >
-            {% if is_state('media_player.all_speakers', 'playing') %}
-            ;
-            {% elif is_state('media_player.all_speakers', 'paused') %}
-            4
-            {% else %}
-            ;
-            {% endif %}
-          update_font: 'false'
+      - <<: *media_player_state

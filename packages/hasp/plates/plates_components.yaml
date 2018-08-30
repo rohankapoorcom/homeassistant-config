@@ -58,7 +58,7 @@ automation:
           value_template: "{{ state_attr('sun.sun', 'elevation') >= -10 }}"
         - condition: state
           entity_id: group.hasp_plates_sensors
-          state: 'available'
+          state: 'on'
     action:
       - service: homeassistant.turn_on
         data:
