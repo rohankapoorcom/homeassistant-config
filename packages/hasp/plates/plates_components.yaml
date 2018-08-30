@@ -18,13 +18,28 @@ homeassistant:
 
     automation.hasp_plates_components_BacklightBySun:
       <<: *customize
+    automation.hasp_plates_components_UpdateLightGroupMembers:
+      <<: *customize
+    automation.hasp_plates_components_TriggerConnectedPlate:
+      <<: *customize
+
+    ################################################
+    ## Group
+    ################################################=
+    group.hasp_plates_backlights:
+      <<: *customize
+      friendly_name: 'HASP Plates'
+      control: hidden
+
+    group.hasp_plates_sensors:
+      <<: *customize
+      friendly_name: 'HASP Sensors'
+      control: hidden
 
 ################################################
 ## Automation
 ################################################
-
 automation:
-##############################################################################
 # Set backlight based on sun elevation according to following:
 # elevation > 10 == backlight 255
 # elevation -10 to 10 == backlight 20 to 255
@@ -41,11 +56,13 @@ automation:
           value_template: "{{ state_attr('sun.sun', 'elevation') <= 10 }}"
         - condition: template
           value_template: "{{ state_attr('sun.sun', 'elevation') >= -10 }}"
-      # Todo add check against all plates being connected
+        - condition: state
+          entity_id: group.hasp_plates_sensors
+          state: 'available'
     action:
-      - service: mqtt.publish
+      - service: homeassistant.turn_on
         data:
-          topic: 'hasp/plates/brightness/set'
+          entity_id: group.hasp_plates_backlights
           payload_template: >
             {% if state_attr('sun.sun', 'elevation') >= 10 %}
               255
@@ -54,3 +71,68 @@ automation:
             {% else %}
               5
             {% endif %}
+
+  - alias: hasp_plates_components_UpdateGroupMembers
+    initial_state: 'on'
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: group.set
+        data_template:
+          object_id: 'hasp_plates_backlights'
+          entities: >-
+            {%- for item in states.light if (
+              (item.entity_id | lower).endswith('backlight')
+              or (item.name | lower).endswith('backlight')
+              or 'plate' in item.entity_id | lower
+              or 'plate' in item.name | lower
+              )
+            -%}
+              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+      - service: group.set
+        data_template:
+          object_id: 'hasp_plates_sensors'
+          entities: >-
+            {%- for item in states.sensor if (
+              (item.entity_id | lower).endswith('backlight')
+              or (item.name | lower).endswith('backlight')
+              or 'plate' in item.entity_id | lower
+              or 'plate' in item.name | lower
+              )
+            -%}
+              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+
+  - alias: hasp_plates_components_TriggerConnectedPlate
+    initial_state: 'on'
+    trigger:
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: "{{ trigger.event.data is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.old_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state.entity_id in states.group.hasp_plate_sensors.attributes.entity_id }}
+      - condition: template
+        value_template: "{{ is_state(trigger.event.data.new_state.entity_id, 'available') }}"
+    action:
+      - event: HASP_CONNECTED
+
+  - alias: test_hasp_connectect_event
+    initial_state: 'on'
+    trigger:
+      - platform: event
+        event_type: HASP_CONNECTED
+    action:
+      - service: persistent_notification.create
+        data:
+          message: 'HASP Connected'
