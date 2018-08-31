@@ -1,0 +1,50 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/26/2018
+#  @package      :  Notifications
+#  @description  :  Logic for controlling speakers used for notifications
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'notifications'
+
+      media_player_entity: &media_player_entity
+        entity_id: media_player.notifications
+
+    automation.keep_notifications_awake:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+  # Google homes go to sleep and then make an annoying wake up sound,
+  # Now they stay awake
+  - id: keep_notifications_awake
+    alias: Keep Notifications Awake
+    trigger:
+      - platform: time
+        minutes: '/2'
+        seconds: 00
+    action:
+      - service: media_player.play_media
+        <<: *media_player_entity
+        data:
+          media_content_id: !secret media_content_id.1second_silence
+          media_content_type: audio/mp3
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            <<: *media_player_entity
+            state: 'off'
+          - condition: state
+            <<: *media_player_entity
+            state: 'idle'

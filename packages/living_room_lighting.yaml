@@ -1,0 +1,89 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/19/2018
+#  @package      :  Living Room Lighting
+#  @description  :  Various scenes for lights in the living room
+###############################################################################
+
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'living_room_lighting'
+
+
+    scene.downstairs_lights_on:
+      <<: *customize
+    scene.downstairs_lights_off:
+      <<: *customize
+    scene.living_room_lights_on:
+      <<: *customize
+    scene.kitchen_lights_on:
+      <<: *customize
+
+################################################
+## Scenes
+################################################
+scene:
+
+  - name: Downstairs Lights On
+    entities:
+      group.end_tables:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.couch_accent_white:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.extended_color_light_1:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.living_room_lamp:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      group.kitchen_table:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+
+  - name: Downstairs Lights Off
+    entities:
+      group.end_tables: off
+      light.couch_accent_white: off
+      light.extended_color_light_1: off
+      light.living_room_lamp: off
+      group.kitchen_table: off
+
+  - name: Living Room Lights On
+    entities:
+      group.end_tables:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.couch_accent_white:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.extended_color_light_1:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.living_room_lamp:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+
+  - name: Kitchen Lights On
+    entities:
+      group.kitchen_table:
+        state: on
+        brightness_pct: 100
+        color_temp: 233

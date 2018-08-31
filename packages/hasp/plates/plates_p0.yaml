@@ -1,0 +1,75 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/26/2018
+#  @package      :  Plates P0
+#  @description  :  Logic for handling Page 0 on the HASP group 'plates'
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'plates_p0'
+
+    automation.hasp_plates_p0_Button:
+      <<: *customize
+
+    script.plates_p0_display_text_message:
+      <<: *customize
+    script.plates_p0_reset_screen:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+  - alias: hasp_plates_p0_Button
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/state/p[0].b[1]'
+        payload: 'ON'
+      - platform: mqtt
+        topic: 'hasp/up_plate/state/p[0].b[1]'
+        payload: 'ON'
+    action:
+      - service: script.reset_front_door_bell_notification
+
+################################################
+## Script
+################################################
+script:
+
+  plates_p0_display_text_message:
+    sequence:
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: plates
+          object_id: 'p[0].b[1]'
+          text: "{{text}}"
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/page'
+          payload: '0'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command'
+          payload: 'vis 3,0'
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command'
+          payload: 'vis 1,1'
+
+  plates_p0_reset_screen:
+    sequence:
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/down_plate/command/page'
+          payload: '{{ states.input_number.hasp_down_plate_activepage.state | int }}'
+      - service: mqtt.publish
+        data_template:
+          topic: 'hasp/up_plate/command/page'
+          payload: '{{ states.input_number.hasp_up_plate_activepage.state | int }}'

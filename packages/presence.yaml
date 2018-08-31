@@ -10,12 +10,79 @@ homeassistant:
     ################################################
     ## Node Anchors
     ################################################
-
     package.node_anchors:
       customize: &customize
         package: 'presence'
 
+      downstairs: &downstairs
+        <<: *customize
+        detector_location: 'downstairs'
+
+      upstairs: &upstairs
+        <<: *customize
+        detector_location: 'upstairs'
+
+    ################################################
+    ## Binary Sensor
+    ################################################
+    binary_sensor.door_window_sensor_158d0001ef6cdb:
+      <<: *downstairs
+      friendly_name: Front Window
+
+    binary_sensor.door_window_sensor_158d000200a9da:
+      <<: *downstairs
+      friendly_name: Front Door
+
+    binary_sensor.motion_sensor_158d0001e07497:
+      <<: *downstairs
+      friendly_name: Server Rack Motion
+
+    binary_sensor.motion_sensor_158d0001e0a7db:
+      <<: *downstairs
+      friendly_name: Kitchen Motion
+
+    binary_sensor.door_window_sensor_158d0001b7bb38:
+      <<: *upstairs
+      friendly_name: Closet Door
+
+    binary_sensor.door_window_sensor_158d0001de6091:
+      <<: *upstairs
+      friendly_name: Bathroom Door
+
+    binary_sensor.motion_sensor_158d0001e50fb5:
+      <<: *upstairs
+      friendly_name: Desk Motion
+
+    binary_sensor.motion_sensor_158d0001e51317:
+      <<: *upstairs
+      friendly_name: Closet Motion
+
+    binary_sensor.motion_sensor_158d0001e05978:
+      <<: *upstairs
+      friendly_name: Bathroom Sink Motion
+
+    binary_sensor.motion_sensor_158d0001e51270:
+      <<: *upstairs
+      friendly_name: Bathroom Motion
+
+    binary_sensor.motion_sensor_158d0001e51287:
+      <<: *upstairs
+      friendly_name: Bathroom Motion 2
+
+
+    ################################################
+    ## Input Select
+    ################################################
     input_select.last_presence_location:
+      <<: *customize
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.update_downstairs_presence_detectors_group:
+      <<: *customize
+
+    automation.update_upstairs_presence_detectors_group:
       <<: *customize
 
     automation.update_last_presence_location_downstairs:
@@ -24,6 +91,23 @@ homeassistant:
     automation.update_last_presence_location_upstairs:
       <<: *customize
 
+    ################################################
+    ## Group
+    ################################################=
+    group.downstairs_presence_detectors:
+      <<: *customize
+      friendly_name: 'Downstairs Presence Detectors'
+      control: hidden
+
+    group.upstairs_presence_detectors:
+      <<: *customize
+      friendly_name: 'Upstairs Presence Detectors'
+      control: hidden
+
+
+################################################
+## Input Select
+################################################
 input_select:
   last_presence_location:
     name: Last Presence Location
@@ -36,19 +120,63 @@ input_select:
 ################################################
 ## Automation
 ################################################
-
 automation:
+
+  - id: update_downstairs_presence_detectors_group
+    alias: Update Downstairs Presence Detectors Group
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: group.set
+        data_template:
+          object_id: 'downstairs_presence_detectors'
+          entities: >-
+            {%- for item in states.binary_sensor if (
+              (item.attributes.detector_location | lower) == 'downstairs'
+              )
+            -%}
+              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+
+  - id: update_upstairs_presence_detectors_group
+    alias: Update Upstairs Presence Detectors Group
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: group.set
+        data_template:
+          object_id: 'upstairs_presence_detectors'
+          entities: >-
+            {%- for item in states.binary_sensor if (
+              (item.attributes.detector_location | lower) == 'upstairs'
+              )
+            -%}
+              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
 
   - id: update_last_presence_location_downstairs
     alias: Update Last Presence Location (Downstairs)
     trigger:
-      - entity_id:
-        - binary_sensor.door_window_sensor_158d0001ef6cdb
-        - binary_sensor.door_window_sensor_158d000200a9da
-        - binary_sensor.motion_sensor_158d0001e07497
-        - binary_sensor.motion_sensor_158d0001e0a7db
-        platform: state
-        to: 'on'
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: "{{ trigger.event.data is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.old_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
+      - condition: template
+        value_template: "{{ state_attr('group.downstairs_presence_detectors', 'entity_id') is not none }}"
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state.entity_id in state_attr('group.downstairs_presence_detectors', 'entity_id') }}
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
     action:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location
@@ -58,15 +186,24 @@ automation:
   - id: update_last_presence_location_upstairs
     alias: Update Last Presence Location (Upstairs)
     trigger:
-      - entity_id:
-        - binary_sensor.door_window_sensor_158d0001b7bb38
-        - binary_sensor.door_window_sensor_158d0001de6091
-        - binary_sensor.motion_sensor_158d0001e50fb5
-        - binary_sensor.motion_sensor_158d0001e51317
-        - binary_sensor.motion_sensor_158d0001e05978
-        - group.bathroom_motion
-        platform: state
-        to: 'on'
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: "{{ trigger.event.data is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.old_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state is not none }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
+      - condition: template
+        value_template: "{{ state_attr('group.upstairs_presence_detectors', 'entity_id') is not none }}"
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state.entity_id in state_attr('group.upstairs_presence_detectors', 'entity_id') }}
+      - condition: template
+        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
     action:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location

@@ -1,0 +1,42 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/20/2018
+#  @package      :  Down Plate P2
+#  @description  :  Handles page 2 on the downstairs HA Wallplate. Page 2 shows
+#                   downstairs temperature/humidity. All other functions are
+#                   managed by the plates_p2 package.
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'down_plate_p2'
+
+    automation.hasp_down_plate_p2_Weather:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+  # Send Temperature/Humidity
+  - alias: hasp_down_plate_p2_Weather
+    trigger:
+      - platform: mqtt
+        topic: 'hasp/down_plate/status'
+        payload: 'ON'
+      - platform: state
+        entity_id: sensor.temperature_158d0002287ef6
+      - platform: state
+        entity_id: sensor.humidity_158d0002287ef6
+    action:
+      - service: python_script.hasp_update_message
+        data_template:
+          nodename: down_plate
+          object_id: 'p[2].b[6]'
+          text: "{{states('sensor.temperature_158d0002287ef6')}}F|{{states('sensor.humidity_158d0002287ef6')}}%"
