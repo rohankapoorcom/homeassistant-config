@@ -10,7 +10,6 @@ homeassistant:
     ################################################
     ## Node Anchors
     ################################################
-
     package.node_anchors:
       customize: &customize
         package: 'presence'
@@ -177,8 +176,6 @@ automation:
         value_template: >
           {{ trigger.event.data.new_state.entity_id in state_attr('group.downstairs_presence_detectors', 'entity_id') }}
       - condition: template
-        value_template: "{{ trigger.event.data.old_state.state != 'on' }}"
-      - condition: template
         value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
     action:
       - service: input_select.select_option
@@ -205,8 +202,6 @@ automation:
       - condition: template
         value_template: >
           {{ trigger.event.data.new_state.entity_id in state_attr('group.upstairs_presence_detectors', 'entity_id') }}
-      - condition: template
-        value_template: "{{ trigger.event.data.old_state.state != 'on' }}"
       - condition: template
         value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
     action:
