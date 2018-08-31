@@ -1,4 +1,0 @@
-name: TV Lights
-entities:
-  - group.end_tables
-  - light.extended_color_light_1

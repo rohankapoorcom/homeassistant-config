@@ -1,0 +1,103 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/30/2018
+#  @package      :  Media / TV
+#  @description  :  Integrates lighting and the Harmony Remote for TV/Movies
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'media_tv'
+
+    ################################################
+    ## Group
+    ################################################
+    group.downstairs_tv_lights:
+      <<: *customize
+    group.downstairs_non_tv_lights:
+      <<: *customize
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.dim_lights_roku_play:
+      <<: *customize
+    automation.raise_lights_roku_pause:
+      <<: *customize
+
+################################################
+## Group
+################################################
+group:
+  downstairs_tv_lights:
+    name: TV Lights
+    entities:
+      - group.end_tables
+      - light.extended_color_light_1
+
+  downstairs_non_tv_lights:
+    name: Non TV Lights
+    entities:
+      - light.couch_accent_white
+      - light.gateway_light_7811dcb2396e
+      - group.kitchen_table
+      - light.kitchen_sink_light
+      - light.living_room_lamp
+      - switch.server_rack_lights
+
+################################################
+## Automation
+################################################
+automation:
+  - id: dim_lights_roku_play
+    alias: Dim Lights when Roku Plays
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Up
+    action:
+      - service: homeassistant.turn_off
+        entity_id: group.downstairs_non_tv_lights
+      - service: homeassistant.turn_on
+        entity_id: group.downstairs_tv_lights
+        data:
+          color_temp: 432
+          brightness: 120
+    condition:
+      # Dusk
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ states.sun.sun.attributes.elevation }}'
+        below: 2
+
+  - id: raise_lights_roku_pause
+    alias: Raise Lights when Roku Pause
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Down
+    action:
+      - service: homeassistant.turn_on
+        entity_id: group.downstairs_tv_lights
+        data:
+          color_temp: 432
+          brightness: 255
+    condition:
+      # Dusk
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ states.sun.sun.attributes.elevation }}'
+        below: 2
+
