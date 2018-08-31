@@ -134,7 +134,7 @@ automation:
           object_id: 'downstairs_presence_detectors'
           entities: >-
             {%- for item in states.binary_sensor if (
-              (item.detector_location | lower) == 'downstairs'
+              (item.attributes.detector_location | lower) == 'downstairs'
               )
             -%}
               {{ item.entity_id }}{% if not loop.last %}, {% endif %}
@@ -151,7 +151,7 @@ automation:
           object_id: 'upstairs_presence_detectors'
           entities: >-
             {%- for item in states.binary_sensor if (
-              (item.detector_location | lower) == 'upstairs'
+              (item.attributes.detector_location | lower) == 'upstairs'
               )
             -%}
               {{ item.entity_id }}{% if not loop.last %}, {% endif %}
