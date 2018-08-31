@@ -16,6 +16,9 @@ homeassistant:
       customize: &customize
         package: 'plates_components'
 
+    ################################################
+    ## Automation
+    ################################################
     automation.hasp_plates_components_BacklightBySun:
       <<: *customize
     automation.hasp_plates_components_UpdateLightGroupMembers:
@@ -28,7 +31,7 @@ homeassistant:
     ################################################=
     group.hasp_plates_backlights:
       <<: *customize
-      friendly_name: 'HASP Plates'
+      friendly_name: 'HASP Backlights'
       control: hidden
 
     group.hasp_plates_sensors:
@@ -42,8 +45,8 @@ homeassistant:
 automation:
 # Set backlight based on sun elevation according to following:
 # elevation > 10 == backlight 255
-# elevation -10 to 10 == backlight 20 to 255
-# elevation below -10 == backlight 20
+# elevation -10 to 10 == backlight 25 to 255
+# elevation below -10 == backlight 25
   - alias: hasp_plates_components_BacklightBySun
     trigger:
       - platform: time
@@ -67,9 +70,9 @@ automation:
             {% if state_attr('sun.sun', 'elevation') >= 10 %}
               255
             {% elif (state_attr('sun.sun', 'elevation') < 10) and (state_attr('sun.sun', 'elevation') > -10) %}
-              {{ ((state_attr('sun.sun', 'elevation') + 10) * 12.5) | int + 5 }}
+              {{ ((state_attr('sun.sun', 'elevation') + 10) * 12.5) | int + 25 }}
             {% else %}
-              5
+              25
             {% endif %}
 
   - alias: hasp_plates_components_UpdateGroupMembers
