@@ -19,6 +19,17 @@ homeassistant:
       speaker: &speaker
         icon_template: mdi:speaker
 
+      media_player_entity: &media_player_entity
+        entity_id: media_player.all_speakers
+
+      trigger_roku_keypress: &trigger_roku_keypress
+        - platform: event
+          event_type: roku_command
+
+      roku_event_data: &roku_event_data
+        roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+        type: keypress
+
       upstairs_speakers_value_template: &upstairs_speakers_value_template
         value_template: "{{ is_state_attr('remote.upstairs_hub', 'current_activity', 'Listen to Music on Speakers') }}"
 
@@ -185,7 +196,7 @@ automation:
   - id: turn_on_speakers_if_chromecast_audio_playing
     alias: Turn on Speakers if Chromecast Audio is Playing
     trigger:
-      - entity_id: media_player.all_speakers
+      - <<: *media_player_entity
         platform: state
         to: 'playing'
     action:
@@ -210,12 +221,12 @@ automation:
   - id: turn_off_speakers_when_chromecast_audio_stops_playing
     alias: Turn off Speakers when Chromecast Audio Stops Playing
     trigger:
-      - entity_id: media_player.all_speakers
+      - <<: *media_player_entity
         platform: state
         to: 'off'
         for:
           minutes: 10
-      - entity_id: media_player.all_speakers
+      - <<: *media_player_entity
         platform: state
         to: 'paused'
         for:
@@ -227,10 +238,10 @@ automation:
       condition: or
       conditions:
         - condition: state
-          entity_id: media_player.all_speakers
+          <<: *media_player_entity
           state: 'off'
         - condition: state
-          entity_id: media_player.all_speakers
+          <<: *media_player_entity
           state: 'paused'
 
   ################################################
@@ -240,41 +251,35 @@ automation:
   - id: playpause_chromecast_audio
     alias: Play/Pause Chromecast Audio
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Play
     action:
       - service: media_player.media_play_pause
-        entity_id: media_player.all_speakers
+        <<: *media_player_entity
 
   - id: rewind_chromecast_audio
     alias: Rewind Chromecast Audio
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Rev
     action:
       - service: media_player.media_previous_track
-        entity_id: media_player.all_speakers
+        <<: *media_player_entity
 
   - id: skip_chromecast_audio
     alias: Skip Chromecast Audio
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Fwd
     action:
       - service: media_player.media_next_track
-        entity_id: media_player.all_speakers
+        <<: *media_player_entity
 
 ################################################
 ## Script
@@ -299,7 +304,7 @@ script:
     alias: Turn on Speakers (Music)
     sequence:
       - service: media_player.media_pause
-        entity_id: media_player.all_speakers
+        <<: *media_player_entity
       - service: remote.turn_on
         data_template:
           entity_id: "{{ entity_id }}"
@@ -308,7 +313,7 @@ script:
         timeout: '00:00:08'
       - delay: '0:00:05'
       - service: media_player.media_play
-        entity_id: media_player.all_speakers
+        <<: *media_player_entity
 
   turn_off_upstairs_speakers:
     alias: Turn off Upstairs Speakers

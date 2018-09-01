@@ -19,6 +19,25 @@ homeassistant:
       media_player_entity: &media_player_entity
         entity_id: media_player.all_speakers
 
+      media_trigger_playing: &media_trigger_playing
+        - platform: state
+          <<: *media_player_entity
+          to: 'playing'
+
+      media_trigger_paused: &media_trigger_paused
+        - platform: state
+          <<: *media_player_entity
+          to: 'paused'
+
+      media_trigger_off: &media_trigger_off
+       - platform: state
+         <<: *media_player_entity
+         to: 'off'
+
+      restoration_time: &restoration_time
+        for:
+          minutes: 2
+
       media_player_title: &media_player_title
         service: python_script.hasp_update_message
         data_template:
@@ -112,14 +131,24 @@ automation:
 
   - alias: hasp_plates_p8_MediaPlayPause
     trigger:
-      - platform: state
-        <<: *media_player_entity
-        to: 'playing'
-      - platform: state
-        <<: *media_player_entity
-        to: 'paused'
-      - platform: state
-        <<: *media_player_entity
-        to: 'off'
+      - <<: *media_trigger_playing
+      - <<: *media_trigger_paused
+      - <<: *media_trigger_off
     action:
       - <<: *media_player_state
+
+  - alias: hasp_plates_p8_DisplayOnPlaying
+    trigger:
+      - <<: *media_trigger_playing
+    action:
+      - service: mqtt.publish
+        data:
+          topic: 'hasp/plates/command/page'
+          payload: '8'
+
+  - alias: hasp_plates_p8_RestoreOnPlaying
+    trigger:
+      - <<: *media_trigger_off
+        <<: *restoration_time
+    action:
+      - service: script.plates_p0_reset_screen
