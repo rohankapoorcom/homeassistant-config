@@ -35,6 +35,6 @@ def reset_hasp_screen(entity_id):
 entities = data.get('entities')
 
 if isinstance(entities, str):
-    entities = [e.strip() for e in entity_id.split(',')]
+    entities = [e.strip() for e in entities.split(',')]
     for entity_id in entities:
         reset_hasp_screen(entity_id)
