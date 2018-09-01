@@ -2,7 +2,8 @@
 #  @author       :  Rohan Kapoor
 #  @date         :  08/11/2018
 #  @package      :  Presence
-#  @description  :  Manages presence detection
+#  @description  :  Manages presence detection using a combination of motion
+#                   and door/window sensors.
 ###############################################################################
 
 homeassistant:
@@ -169,14 +170,21 @@ automation:
       - condition: template
         value_template: "{{ trigger.event.data.new_state is not none }}"
       - condition: template
-        value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
+        value_template: "{{ trigger.event.data.entity_id is not none }}"
       - condition: template
         value_template: "{{ state_attr('group.downstairs_presence_detectors', 'entity_id') is not none }}"
       - condition: template
         value_template: >
-          {{ trigger.event.data.new_state.entity_id in state_attr('group.downstairs_presence_detectors', 'entity_id') }}
+          {{ trigger.event.data.entity_id in state_attr('group.downstairs_presence_detectors', 'entity_id') }}
       - condition: template
-        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
+        value_template: >
+          {% if is_state_attr(trigger.event.data.entity_id, 'device_class', 'motion') %}
+            {{ trigger.event.data.new_state.state == 'on' }}
+          {% elif is_state_attr(trigger.event.data.entity_id, 'device_class', 'opening') %}
+            true
+          {% else %}
+            false
+          {% endif %}
     action:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location
@@ -196,14 +204,21 @@ automation:
       - condition: template
         value_template: "{{ trigger.event.data.new_state is not none }}"
       - condition: template
-        value_template: "{{ trigger.event.data.new_state.entity_id is not none }}"
+        value_template: "{{ trigger.event.data.entity_id is not none }}"
       - condition: template
         value_template: "{{ state_attr('group.upstairs_presence_detectors', 'entity_id') is not none }}"
       - condition: template
         value_template: >
-          {{ trigger.event.data.new_state.entity_id in state_attr('group.upstairs_presence_detectors', 'entity_id') }}
+          {{ trigger.event.data.entity_id in state_attr('group.upstairs_presence_detectors', 'entity_id') }}
       - condition: template
-        value_template: "{{ trigger.event.data.new_state.state == 'on' }}"
+        value_template: >
+          {% if is_state_attr(trigger.event.data.entity_id, 'device_class', 'motion') %}
+            {{ trigger.event.data.new_state.state == 'on' }}
+          {% elif is_state_attr(trigger.event.data.entity_id, 'device_class', 'opening') %}
+            true
+          {% else %}
+            false
+          {% endif %}
     action:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location
