@@ -127,4 +127,4 @@ automation:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location
         data_template:
-          option: "state_attr(trigger.event.data.entity_id, 'detector_location')"
+          option: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}"

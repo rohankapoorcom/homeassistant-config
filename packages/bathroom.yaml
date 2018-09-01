@@ -59,6 +59,7 @@ homeassistant:
 
     sensor.bathroom_light_sensor:
       <<: *customize
+      device_class: illuminance
 
     sensor.illumination_158d0001e05978:
       <<: *customize
@@ -136,7 +137,6 @@ sensor:
     entity_ids:
       - sensor.illumination_158d0001e51270
       - sensor.illumination_158d0001e51287
-    device_class: illuminance
     type: mean
     round_digits: 2
 
