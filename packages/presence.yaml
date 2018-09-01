@@ -17,11 +17,11 @@ homeassistant:
 
       downstairs: &downstairs
         <<: *customize
-        detector_location: 'downstairs'
+        detector_location: 'Downstairs'
 
       upstairs: &upstairs
         <<: *customize
-        detector_location: 'upstairs'
+        detector_location: 'Upstairs'
 
     ################################################
     ## Binary Sensor
@@ -70,7 +70,6 @@ homeassistant:
       <<: *upstairs
       friendly_name: Bathroom Motion 2
 
-
     ################################################
     ## Input Select
     ################################################
@@ -80,31 +79,8 @@ homeassistant:
     ################################################
     ## Automation
     ################################################
-    automation.update_downstairs_presence_detectors_group:
+    automation.update_last_presence_location:
       <<: *customize
-
-    automation.update_upstairs_presence_detectors_group:
-      <<: *customize
-
-    automation.update_last_presence_location_downstairs:
-      <<: *customize
-
-    automation.update_last_presence_location_upstairs:
-      <<: *customize
-
-    ################################################
-    ## Group
-    ################################################=
-    group.downstairs_presence_detectors:
-      <<: *customize
-      friendly_name: 'Downstairs Presence Detectors'
-      control: hidden
-
-    group.upstairs_presence_detectors:
-      <<: *customize
-      friendly_name: 'Upstairs Presence Detectors'
-      control: hidden
-
 
 ################################################
 ## Input Select
@@ -122,43 +98,8 @@ input_select:
 ## Automation
 ################################################
 automation:
-
-  - id: update_downstairs_presence_detectors_group
-    alias: Update Downstairs Presence Detectors Group
-    trigger:
-      - platform: homeassistant
-        event: start
-    action:
-      - service: group.set
-        data_template:
-          object_id: 'downstairs_presence_detectors'
-          entities: >-
-            {%- for item in states.binary_sensor if (
-              (item.attributes.detector_location | lower) == 'downstairs'
-              )
-            -%}
-              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
-            {%- endfor -%}
-
-  - id: update_upstairs_presence_detectors_group
-    alias: Update Upstairs Presence Detectors Group
-    trigger:
-      - platform: homeassistant
-        event: start
-    action:
-      - service: group.set
-        data_template:
-          object_id: 'upstairs_presence_detectors'
-          entities: >-
-            {%- for item in states.binary_sensor if (
-              (item.attributes.detector_location | lower) == 'upstairs'
-              )
-            -%}
-              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
-            {%- endfor -%}
-
-  - id: update_last_presence_location_downstairs
-    alias: Update Last Presence Location (Downstairs)
+  - id: update_last_presence_location
+    alias: Update Last Presence Location
     trigger:
       - platform: event
         event_type: state_changed
@@ -174,8 +115,7 @@ automation:
       - condition: template
         value_template: "{{ state_attr('group.downstairs_presence_detectors', 'entity_id') is not none }}"
       - condition: template
-        value_template: >
-          {{ trigger.event.data.entity_id in state_attr('group.downstairs_presence_detectors', 'entity_id') }}
+        value_template: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') is not none }}"
       - condition: template
         value_template: >
           {% if is_state_attr(trigger.event.data.entity_id, 'device_class', 'motion') %}
@@ -188,40 +128,5 @@ automation:
     action:
       - service: input_select.select_option
         entity_id: input_select.last_presence_location
-        data:
-          option: "Downstairs"
-
-  - id: update_last_presence_location_upstairs
-    alias: Update Last Presence Location (Upstairs)
-    trigger:
-      - platform: event
-        event_type: state_changed
-    condition:
-      - condition: template
-        value_template: "{{ trigger.event.data is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.old_state is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.new_state is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.entity_id is not none }}"
-      - condition: template
-        value_template: "{{ state_attr('group.upstairs_presence_detectors', 'entity_id') is not none }}"
-      - condition: template
-        value_template: >
-          {{ trigger.event.data.entity_id in state_attr('group.upstairs_presence_detectors', 'entity_id') }}
-      - condition: template
-        value_template: >
-          {% if is_state_attr(trigger.event.data.entity_id, 'device_class', 'motion') %}
-            {{ trigger.event.data.new_state.state == 'on' }}
-          {% elif is_state_attr(trigger.event.data.entity_id, 'device_class', 'opening') %}
-            true
-          {% else %}
-            false
-          {% endif %}
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.last_presence_location
-        data:
-          option: "Upstairs"
-
+        data_template:
+          option: "state_attr(trigger.event.data.entity_id, 'detector_location')"
