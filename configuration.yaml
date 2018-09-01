@@ -53,8 +53,6 @@ logbook:
 # Track the sun
 sun:
 
-binary_sensor: !include_dir_merge_list binary_sensors
-
 # Text to speech
 tts:
   platform: google

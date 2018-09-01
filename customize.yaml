@@ -23,13 +23,6 @@ group.all_lights:
   hidden: true
 switch.server_rack_lights:
   icon: mdi:lightbulb
-switch.bathroom_fan:
-  friendly_name: Bathroom Fan
-  icon: mdi:fan
-switch.bathroom_light:
-  icon: mdi:lightbulb
-switch.sink_lights:
-  icon: mdi:lightbulb
 group.all_remotes:
   friendly_name: Remotes
   hidden: false

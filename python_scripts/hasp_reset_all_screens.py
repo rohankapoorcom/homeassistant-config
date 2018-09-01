@@ -2,8 +2,7 @@
 #  @author       :  Rohan Kapoor
 #  @date         :  08/31/2018
 #  @name         :  hasp_reset_all_screens.py
-#  @description  :  Handles publishing new text with the correct font size
-#                   adjustments for a HASP device
+#  @description  :  Resets to the last viewed screen
 #  @params       :  All params are taken as strings from Home Assistant
 #   entities: A list of input numbers that are storing the active pages
 ###############################################################################
