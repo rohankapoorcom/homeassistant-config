@@ -113,8 +113,6 @@ automation:
       - condition: template
         value_template: "{{ trigger.event.data.entity_id is not none }}"
       - condition: template
-        value_template: "{{ state_attr('group.downstairs_presence_detectors', 'entity_id') is not none }}"
-      - condition: template
         value_template: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') is not none }}"
       - condition: template
         value_template: >
