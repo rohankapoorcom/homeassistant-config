@@ -5,7 +5,7 @@
 #  @description  :  Handles publishing new text with the correct font size
 #                   adjustments for a HASP device
 #  @params       :  All params are taken as strings from Home Assistant
-#   entity_ids: A list of input numbers that are storing the active pages
+#   entities: A list of input numbers that are storing the active pages
 ###############################################################################
 
 def get_nodename(entity_id):
@@ -34,7 +34,7 @@ def reset_hasp_screen(entity_id):
 
 entities = data.get('entities')
 
-if isinstance(entity_id, str):
+if isinstance(entities, str):
     entities = [e.strip() for e in entity_id.split(',')]
     for entity_id in entities:
         reset_hasp_screen(entity_id)
