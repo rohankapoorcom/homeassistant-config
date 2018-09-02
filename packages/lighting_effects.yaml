@@ -1,0 +1,122 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  09/01/2018
+#  @package      :  Lighting Effects
+#  @description  :  Scripts used for various lighting effects
+###############################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'lighting_effects'
+
+    ################################################
+    ## Input Boolean
+    ################################################
+    input_boolean.downstairs_random_color_loop:
+      <<: *customize
+
+    ################################################
+    ## Group
+    ################################################
+    group.downstairs_effects_lights:
+      <<: *customize
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.start_downstairs_random_color_loop:
+      <<: *customize
+
+    automation.stop_downstairs_random_color_loop:
+      <<: *customize
+
+    ################################################
+    ## Script
+    ################################################
+    script.downstairs_random_color_loop:
+      <<: *customize
+
+    script.downstairs_random_color_loop_control:
+      <<: *customize
+
+################################################
+## Input Boolean
+################################################
+input_boolean:
+  downstairs_random_color_loop:
+    name: Downstairs Color Fade
+    initial: off
+    icon: mdi:invert-colors
+
+################################################
+## Group
+################################################
+group:
+
+  downstairs_effects_lights:
+    entities:
+      - light.living_room_lamp
+      - light.extended_color_light_1
+      - group.end_tables
+      - group.kitchen_table
+
+################################################
+## Automation
+################################################
+automation:
+
+  - id: start_downstairs_random_color_loop
+    alias: Start Downstairs Random Color Loop
+    trigger:
+      - platform: state
+        entity_id: input_boolean.downstairs_random_color_loop
+        to: 'on'
+    action:
+      - service: homeassistant.turn_off
+        entity_id: group.downstairs_lights
+      - service: script.downstairs_random_color_loop
+
+  - id: stop_downstairs_random_color_loop
+    alias: Stop Downtairs Random Color Loop
+    trigger:
+      - platform: state
+        entity_id: input_boolean.downstairs_random_color_loop
+        to: 'off'
+    action:
+      - service: script.turn_off
+        entity_id: script.downstairs_random_color_loop
+      - service: script.turn_off
+        entity_id: script.downstairs_random_color_loop_control
+      - service: scene.turn_on
+        entity_id: scene.downstairs_lights_on
+
+################################################
+## Script
+################################################
+script:
+
+  downstairs_random_color_loop:
+    sequence:
+      # Pick random color
+      - service: light.turn_on
+        entity_id: group.downstairs_effects_lights
+        data_template:
+          rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
+          brightness_pct: '{{ (range(0, 100) | random) }}'
+      - service: script.turn_off
+        entity_id: script.downstairs_random_color_loop_control
+      - delay:
+          milliseconds: 250
+      - service: script.downstairs_random_color_loop_control
+
+  downstairs_random_color_loop_control:
+    sequence:
+      - service: script.turn_off
+        entity_id: script.downstairs_random_color_loop
+      - delay:
+          milliseconds: 250
+      - service: script.downstairs_random_color_loop
