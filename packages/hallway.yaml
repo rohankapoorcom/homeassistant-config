@@ -1,0 +1,83 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  09/01/2018
+#  @package      :  Hallway
+#  @description  :  Manages lighting in the hallway
+###############################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'hallway'
+
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.illumination_158d0001de738e:
+      <<: *customize
+      friendly_name: Staircase Bottom Light Sensor
+
+    sensor.illumination_158d0001e0ae30:
+      <<: *customize
+      friendly_name: Staircase Top Light Sensor
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.turn_on_hallway_lights_with_motion:
+      <<: *customize
+
+    automation.turn_off_hallway_lights_after_motion:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+
+  - id: turn_on_hallway_lights_with_motion
+    alias: Turn on Hallway Lights with Motion
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.motion_sensor_158d0001de738e
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.motion_sensor_158d0001e0ae30
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: light.hallway
+        state: 'off'
+      - condition: numeric_state
+        entity_id: sensor.illumination_158d0001e0ae30
+        below: '50'
+    action:
+      - service: light.turn_on
+        entity_id: light.hallway
+        data:
+          brightness_pct: 100
+          color_temp: 233
+
+  - id: turn_off_hallway_lights_after_motion
+    alias: Turn off Hallway Lights with Motion
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.motion_sensor_158d0001de738e
+        to: 'off'
+        for:
+          minutes: 5
+      - platform: state
+        entity_id: binary_sensor.motion_sensor_158d0001e0ae30
+        to: 'off'
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: input_select.last_presence_location
+        state: 'Downstairs'
+    action:
+      - service: light.turn_off
+        entity_id: light.hallway

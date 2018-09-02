@@ -5,7 +5,6 @@
 #  @description  :  Manages presence detection using a combination of motion
 #                   and door/window sensors.
 ###############################################################################
-
 homeassistant:
   customize:
     ################################################
@@ -42,6 +41,10 @@ homeassistant:
       <<: *downstairs
       friendly_name: Kitchen Motion
 
+    binary_sensor.motion_sensor_158d0001de738e:
+      <<: *downstairs
+      friendly_name: Staircase Bottom Motion
+
     binary_sensor.door_window_sensor_158d0001b7bb38:
       <<: *upstairs
       friendly_name: Closet Door
@@ -69,6 +72,10 @@ homeassistant:
     binary_sensor.motion_sensor_158d0001e51287:
       <<: *upstairs
       friendly_name: Bathroom Motion 2
+
+    binary_sensor.motion_sensor_158d0001e0ae30:
+      <<: *upstairs
+      friendly_name: Staircase Top Motion
 
     ################################################
     ## Input Select
