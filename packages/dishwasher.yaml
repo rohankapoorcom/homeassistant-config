@@ -16,7 +16,6 @@ homeassistant:
     ################################################
     ## Node Anchors
     ################################################
-
     package.node_anchors:
       customize: &customize
         package: 'dishwasher'
@@ -27,17 +26,43 @@ homeassistant:
         state_topic: 'tele/sonoff-dishwasher/SENSOR'
         force_update: true
 
+    ################################################
+    ## Binary Sensor
+    ################################################
+    binary_sensor.dishwasher_running:
+      <<: *customize
+
+    ################################################
+    ## Input Datetime
+    ################################################
     input_datetime.dishwasher_start_time:
       <<: *customize
 
+    ################################################
+    ## Input Boolean
+    ################################################
     input_boolean.dishwasher_enabled:
       <<: *customize
 
+    ################################################
+    ## Group
+    ################################################
+    group.dishwasher_controls:
+      <<: *customize
+
+    ################################################
+    ## Automation
+    ################################################
     automation.enable_dishwasher_when_kitchen_button_pressed:
       <<: *customize
+
     automation.Disable_dishwasher_when_kitchen_button_double_pressed:
       <<: *customize
+
     automation.start_dishwasher_at_dishwasher_start_time_if_enabled:
+      <<: *customize
+
+    automation.reset_dishwasher_when_complete_if_enabled:
       <<: *customize
 
 ################################################
@@ -62,11 +87,21 @@ sensor:
     unit_of_measurement: "A"
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: template
+    sensors:
+      dishwasher_running:
+        friendly_name: 'Running'
+        value_template: "{{ is_state('switch.dishwasher', 'on') }}"
+
+################################################
 ## Input Datetime
 ################################################
 input_datetime:
   dishwasher_start_time:
-    name: Dishwasher Start Time
+    name: Start Time
     has_date: false
     has_time: true
     initial: '10:00'
@@ -77,8 +112,20 @@ input_datetime:
 ################################################
 input_boolean:
   dishwasher_enabled:
-    name: Dishwasher Enabled
+    name: Enabled
     icon: mdi:washing-machine
+
+################################################
+## Group
+################################################
+group:
+  dishwasher_controls:
+    name: Dishwasher
+    control: hidden
+    entities:
+      - binary_sensor.dishwasher_running
+      - input_datetime.dishwasher_start_time
+      - input_boolean.dishwasher_enabled
 
 ################################################
 ## Automation
@@ -123,3 +170,22 @@ automation:
     action:
       - service: switch.turn_on
         entity_id: switch.dishwasher
+
+  - id: reset_dishwasher_when_complete_if_enabled
+    alias: Reset Dishwasher when Complete if Enabled
+    trigger:
+      - platform: state
+        entity_id: switch.dishwasher
+        to: 'on'
+        for:
+          hours: 3
+    condition:
+      - condition: state
+        entity_id: input_boolean.dishwasher_enabled
+        state: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.dishwasher
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.dishwasher_enabled

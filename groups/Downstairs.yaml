@@ -6,3 +6,4 @@ entities:
   - sensor.temperature_158d0002287ef6
   - group.downstairs_lights
   - group.downstairs_media
+  - group.dishwasher_controls
