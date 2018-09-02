@@ -95,10 +95,11 @@ script:
         data_template:
           rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
           brightness_pct: '{{ (range(0, 100) | random) }}'
+          transition: 1
       - service: script.turn_off
         entity_id: script.downstairs_random_color_loop_control
       - delay:
-          milliseconds: 500
+          milliseconds: 750
       - service: script.downstairs_random_color_loop_control
 
   downstairs_random_color_loop_control:
@@ -106,5 +107,5 @@ script:
       - service: script.turn_off
         entity_id: script.downstairs_random_color_loop
       - delay:
-          milliseconds: 500
+          milliseconds: 750
       - service: script.downstairs_random_color_loop
