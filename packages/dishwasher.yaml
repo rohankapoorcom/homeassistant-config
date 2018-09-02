@@ -123,9 +123,9 @@ group:
     name: Dishwasher
     control: hidden
     entities:
-      - binary_sensor.dishwasher_running
-      - input_datetime.dishwasher_start_time
       - input_boolean.dishwasher_enabled
+      - input_datetime.dishwasher_start_time
+      - binary_sensor.dishwasher_running
 
 ################################################
 ## Automation
