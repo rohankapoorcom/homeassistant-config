@@ -135,3 +135,25 @@ automation:
         entity_id: input_select.last_presence_location
         data_template:
           option: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}"
+      - service: mqtt.publish
+        data_template:
+          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config"
+          retain: true
+          payload: >
+            {
+              "name": "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }} Last Seen",
+              "state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
+              "{{ "{{" }} value_json.value | int {{ "}}" }}",
+              "json_attributes": [
+                "package"
+              ]
+            }
+      - service: mqtt.publish
+        data_template:
+          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
+          retain: true
+          payload: >
+            {
+              "value": {{ utcnow() }},
+              "package": "presence"
+            }

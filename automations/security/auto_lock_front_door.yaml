@@ -13,9 +13,12 @@ trigger:
     for:
       seconds: 10
 condition:
-  condition: state
-  entity_id: binary_sensor.door_window_sensor_158d000200a9da
-  state: 'off'
+  - condition: state
+    entity_id: binary_sensor.door_window_sensor_158d000200a9da
+    state: 'off'
+  - condition: state
+    entity_id: lock.front_door
+    state: 'unlocked'
 action:
   - service: tts.google_say
     data:

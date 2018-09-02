@@ -62,7 +62,7 @@ automation:
           color_temp: 233
 
   - id: turn_off_hallway_lights_after_motion
-    alias: Turn off Hallway Lights with Motion
+    alias: Turn off Hallway Lights after Motion
     trigger:
       - platform: state
         entity_id: binary_sensor.motion_sensor_158d0001de738e
