@@ -178,8 +178,8 @@ script:
             {%- endfor -%}
           rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
           brightness_pct: >-
-            {{ (range(states('input_number.random_color_loop_min_brightness'),
-                      states('input_number.random_color_loop_max_brightness'))
+            {{ (range(states('input_number.random_color_loop_min_brightness') | int,
+                      (states('input_number.random_color_loop_max_brightness') | int) + 1)
                 | random)
             }}
           transition: 1.5
