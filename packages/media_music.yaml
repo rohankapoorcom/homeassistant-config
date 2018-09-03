@@ -36,7 +36,7 @@ homeassistant:
 
       downstairs_speakers_value_template: &downstairs_speakers_value_template
         value_template: >
-          {% set entity_id = "remote.downstairs_hub" %}
+          {% set entity_id = "remote.living_room_hub" %}
           {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
 
       cover: &cover
@@ -276,22 +276,25 @@ automation:
         value_template: >
           {{ not is_state_attr('media_player.all_speakers', 'media_content_id', states('sensor.1second_silence_url')) }}
       - condition: template
+      # This should only evaluate to one remote
         value_template: >
-          {% if is_state('input_select.last_presence_location', 'Downstairs') %}
-            {% set entity = "remote.living_room_hub" %}
-          {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
-            {% set entity = "remote.upstairs_hub" %}
-          {% endif %}
-          {{ is_state(entity, 'off')}}
+          {%- for item in states.remote if (
+            is_state_attr(item.entity_id, 'location', states('input_select.last_presence_location'))
+            )
+          -%}
+            {{ is_state(item.entity_id, 'off') }}
+          {%- endfor -%}
     action:
       - service: script.harmony_music_turn_on
+      # This should only evaluate to one remote
         data_template:
           entity_id: >
-            {% if is_state('input_select.last_presence_location', 'Downstairs') %}
-              remote.living_room_hub
-            {% elif is_state('input_select.last_presence_location', 'Upstairs') %}
-              remote.upstairs_hub
-            {% endif %}
+            {%- for item in states.remote if (
+              is_state_attr(item.entity_id, 'location', states('input_select.last_presence_location'))
+              )
+            -%}
+              {{ item.entity_id }}
+            {%- endfor -%}
 
   - id: turn_off_speakers_when_chromecast_audio_stops_playing
     alias: Turn off Speakers when Chromecast Audio Stops Playing
@@ -369,24 +372,23 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
+      - platform: time
+        minutes: '/5'
+
     action:
-      - delay:
-          seconds: 45
       - service: input_number.set_value
         data_template:
           entity_id: input_number.speakers_playing
           value: >
-            {% set count = 0 %}
             {%- for item in states.remote if (
               state_attr(item.entity_id, 'music_activity_name')
               and is_state(item.entity_id, 'on')
               and is_state_attr(item.entity_id, 'current_activity', state_attr(item.entity_id, 'music_activity_name'))
               )
             -%}
-              {% set count = count + 1 %}
-              {% if loop.last -%}
-                {{ count }}
-              {%- endif %}
+              {% if loop.last %}
+                {{loop.index}}
+              {% endif %}
             {%- endfor -%}
 
 ################################################
