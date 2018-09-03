@@ -34,6 +34,9 @@ homeassistant:
     input_number.random_color_loop_max_brightness:
       <<: *customize
 
+    input_number.random_color_loop_transition_speed:
+      <<: *customize
+
     ################################################
     ## Group
     ################################################
@@ -116,6 +119,15 @@ input_number:
     step: 1
     icon: mdi:lightbulb-on-outline
 
+  random_color_loop_transition_speed:
+    name: Transition Time
+    initial: 1.5
+    min: 1
+    max: 10
+    step: 0.5
+    unit_of_measurement: second
+    icon: mdi:speedometer
+
 ################################################
 ## Group
 ################################################
@@ -127,6 +139,7 @@ group:
       - input_select.random_color_loop_location
       - input_number.random_color_loop_min_brightness
       - input_number.random_color_loop_max_brightness
+      - input_number.random_color_loop_transition_speed
       - input_boolean.random_color_loop
 
 ################################################
@@ -185,17 +198,15 @@ script:
             {% else %}
               {{ (range(right, left + 1) | random) }}
             {% endif %}
-          transition: 1.5
+          transition: "{{ states('input_number.random_color_loop_transition_speed') | float }}"
       - service: script.turn_off
         entity_id: script.random_color_loop_control
-      - delay:
-          milliseconds: 750
+      - delay: "00:00:00:{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
       - service: script.random_color_loop_control
 
   random_color_loop_control:
     sequence:
       - service: script.turn_off
         entity_id: script.random_color_loop
-      - delay:
-          milliseconds: 750
+      - delay: "00:00:00:{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
       - service: script.random_color_loop
