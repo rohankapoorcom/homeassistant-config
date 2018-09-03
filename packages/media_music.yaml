@@ -390,6 +390,8 @@ automation:
               {% if loop.last %}
                 {{loop.index}}
               {% endif %}
+            {% else %}
+              0
             {%- endfor -%}
 
 ################################################
