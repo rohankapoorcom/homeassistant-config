@@ -178,10 +178,13 @@ script:
             {%- endfor -%}
           rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
           brightness_pct: >-
-            {{ (range(states('input_number.random_color_loop_min_brightness') | int,
-                      (states('input_number.random_color_loop_max_brightness') | int) + 1)
-                | random)
-            }}
+            {% set left = states('input_number.random_color_loop_min_brightness') | int %}
+            {% set right = states('input_number.random_color_loop_max_brightness') | int %}
+            {% if left < right %}
+              {{ (range(left, right + 1) | random) }}
+            {% else %}
+              {{ (range(right, left + 1) | random) }}
+            {% endif %}
           transition: 1.5
       - service: script.turn_off
         entity_id: script.random_color_loop_control
