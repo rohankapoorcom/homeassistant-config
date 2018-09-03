@@ -206,7 +206,7 @@ automation:
     condition:
       - condition: template
         value_template: >
-          "{{ not is_state_attr('media_player.all_speakers', 'media_content_id', states('1second_silence_url')) }}"
+          "{{ not is_state_attr('media_player.all_speakers', 'media_content_id', states('sensor.1second_silence_url')) }}"
       - condition: template
         value_template: >
           {% if is_state('input_select.last_presence_location', 'Downstairs') %}
