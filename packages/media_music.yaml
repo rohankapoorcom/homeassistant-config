@@ -11,7 +11,6 @@ homeassistant:
     ################################################
     ## Node Anchors
     ################################################
-
     package.node_anchors:
       customize: &customize
         package: 'media_music'
@@ -31,10 +30,14 @@ homeassistant:
         type: keypress
 
       upstairs_speakers_value_template: &upstairs_speakers_value_template
-        value_template: "{{ is_state_attr('remote.upstairs_hub', 'current_activity', 'Listen to Music on Speakers') }}"
+        value_template: >
+          {% set entity_id = "remote.upstairs_hub" %}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity')) }}
 
       downstairs_speakers_value_template: &downstairs_speakers_value_template
-        value_template: "{{ is_state_attr('remote.living_room_hub', 'current_activity', 'Listen to Music') }}"
+        value_template: >
+          {% set entity_id = "remote.upstairs_hub" %}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity')) }}
 
       cover: &cover
         <<: *speaker
@@ -46,6 +49,16 @@ homeassistant:
       increment_volume: &increment_volume
         <<: *decrement_volume
         vol_up: 'true'
+
+    remote.living_room_hub:
+      <<: *customize
+      location: 'Downstairs'
+      music_activity: 'Listen to Music'
+
+    remote.upstairs_speakers:
+      <<: *customize
+      location: 'Upstairs'
+      music_activity: 'Listen to Music on Speakers'
 
     input_number.volume_increment:
       <<: *customize
@@ -88,7 +101,6 @@ homeassistant:
 ################################################
 ## Input Number
 ################################################
-
 input_number:
   volume_increment:
     name: Increment
@@ -101,7 +113,6 @@ input_number:
 ################################################
 ## Cover
 ################################################
-
 cover:
   # Template covers are used to create volume controls
   - platform: template
@@ -138,7 +149,6 @@ cover:
 ################################################
 ## Switch
 ################################################
-
 switch:
   - platform: template
     switches:
@@ -190,13 +200,11 @@ sensor:
 ################################################
 ## Automation
 ################################################
-
 automation:
 
   ################################################
   ## Actions triggered by Chromecast Audio
   ################################################
-
   - id: turn_on_speakers_if_chromecast_audio_playing
     alias: Turn on Speakers if Chromecast Audio is Playing
     trigger:
@@ -257,7 +265,6 @@ automation:
   ################################################
   ## Actions triggered by Harmony Remote
   ################################################
-
   - id: playpause_chromecast_audio
     alias: Play/Pause Chromecast Audio
     trigger:
@@ -294,7 +301,6 @@ automation:
 ################################################
 ## Script
 ################################################
-
 script:
 
   harmony_volume:
