@@ -15,8 +15,11 @@ homeassistant:
       customize: &customize
         package: 'notifications'
 
-      media_player_entity: &media_player_entity
+      media_player_notifications: &media_player_notifications
         entity_id: media_player.notifications
+
+      media_player_all_speakers: &media_player_all_speakers
+        entity_id: media_player.all_speakers
 
     automation.keep_notifications_awake:
       <<: *customize
@@ -33,18 +36,40 @@ automation:
       - platform: time
         minutes: '/2'
         seconds: 00
-    action:
-      - service: media_player.play_media
-        <<: *media_player_entity
-        data:
-          media_content_id: !secret media_content_id.1second_silence
-          media_content_type: audio/mp3
     condition:
       - condition: or
         conditions:
           - condition: state
-            <<: *media_player_entity
+            <<: *media_player_notifications
             state: 'off'
           - condition: state
-            <<: *media_player_entity
+            <<: *media_player_notifications
             state: 'idle'
+    action:
+      - service: media_player.play_media
+        <<: *media_player_notifications
+        data:
+          media_content_id: !secret media_content_id.1second_silence
+          media_content_type: audio/mp3
+
+  - id: keep_all_speakers_awake
+    alias: Keep All Speakers Awake
+    trigger:
+      - platform: time
+        minutes: '/2'
+        seconds: 00
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            <<: *media_player_all_speakers
+            state: 'off'
+          - condition: state
+            <<: *media_player_all_speakers
+            state: 'idle'
+    action:
+      - service: media_player.play_media
+        <<: *media_player_all_speakers
+        data:
+          media_content_id: !secret media_content_id.1second_silence
+          media_content_type: audio/mp3
