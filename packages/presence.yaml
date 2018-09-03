@@ -139,7 +139,7 @@ automation:
         data_template:
           topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config"
           retain: true
-          payload: >
+          payload: >-
             {
               "name": "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }} Last Seen",
               "state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
@@ -154,10 +154,10 @@ automation:
         data_template:
           topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
           retain: true
-          payload: >
+          payload: >-
             {
               "value": "{{ utcnow() }}",
               "package": "presence",
-              "mqtt_config_topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
+              "mqtt_config_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
               "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
             }
