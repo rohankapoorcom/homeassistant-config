@@ -36,7 +36,7 @@ homeassistant:
 
       downstairs_speakers_value_template: &downstairs_speakers_value_template
         value_template: >
-          {% set entity_id = "remote.upstairs_hub" %}
+          {% set entity_id = "remote.downstairs_hub" %}
           {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
 
       cover: &cover
@@ -55,6 +55,18 @@ homeassistant:
         data_template:
           entity_id: "{{ entity_id }}"
           activity: "{{ state_attr(entity_id, 'music_activity_id') }}"
+
+      decrement_speakers_playing: &decrement_speakers_playing
+        service: input_number.set_value
+        data_template:
+          entity_id: input_number.speakers_playing
+          value: >
+            {% set entity_id = 'input_number.speakers_playing' %}
+            {% if states(entity_id) | int > state_attr(entity_id, 'min') %}
+              {{ (states(entity_id) | int) - 1 }}
+            {% else %}
+              {{ states(entity_id) | int }}
+            {% endif %}
 
     ################################################
     ## Remote
@@ -78,11 +90,7 @@ homeassistant:
     ################################################
     input_number.volume_increment:
       <<: *customize
-
-    ################################################
-    ## Counter
-    ################################################
-    counter.speakers_playing:
+    input_number.speakers_playing:
       <<: *customize
 
     ################################################
@@ -143,6 +151,7 @@ homeassistant:
 ## Input Number
 ################################################
 input_number:
+
   volume_increment:
     name: Increment
     initial: 3
@@ -151,13 +160,13 @@ input_number:
     step: 1
     icon: mdi:volume-high
 
-################################################
-## Counter
-################################################
-counter:
   speakers_playing:
+    name: Speakers Playing
     initial: 0
+    min: 0
+    max: 2
     step: 1
+    icon: mdi:speaker
 
 ################################################
 ## Cover
@@ -350,6 +359,32 @@ automation:
       - service: media_player.media_next_track
         <<: *media_player_entity
 
+  ################################################
+  ## Restore state on startup
+  ################################################
+  - id: restore_speakers_playing_at_startup
+    alias: Restore Speakers Playing at Startup
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.speakers_playing
+          value: >
+            {% set count = 0 %}
+            {%- for item in states.remote if (
+              state_attr(item.entity_id, 'music_activity_name')
+              and is_state(item.entity_id, 'on')
+              and is_state_attr(item.entity_id, 'current_activity', state_attr(item.entity_id, 'music_activity_name'))
+              )
+            -%}
+              {% set count = count + 1 %}
+              {% if loop.last -%}
+                {{ count }}
+              {%- endif %}
+            {%- endfor -%}
+
 ################################################
 ## Script
 ################################################
@@ -376,16 +411,23 @@ script:
       - condition: template
         value_template: "{{ state_attr(entity_id, 'music_activity_id') is not none }}"
       - service_template: >
-          {% if states('counter.speakers_playing') | int == 0 %}
+          {% if states('input_number.speakers_playing') | int == 0 %}
             script.harmony_music_turn_on_first_time
           {% else %}
             script.harmony_music_turn_on_subsequent_times
           {% endif %}
         data_template:
           entity_id: "{{ entity_id }}"
-      - service: counter.increment
-        data:
-          entity_id: counter.speakers_playing
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.speakers_playing
+          value: >
+            {% set entity_id = 'input_number.speakers_playing' %}
+            {% if states(entity_id) | int < state_attr(entity_id, 'max') %}
+              {{ (states(entity_id) | int) + 1 }}
+            {% else %}
+              {{ states(entity_id) | int }}
+            {% endif %}
 
   harmony_music_turn_on_subsequent_times:
     alias: Turn on Speakers (Music) Subsequent Times
@@ -407,9 +449,7 @@ script:
   turn_off_upstairs_speakers:
     alias: Turn off Upstairs Speakers
     sequence:
-      - service: counter.decrement
-        data:
-          entity_id: counter.speakers_playing
+      - <<: *decrement_speakers_playing
       - condition: template
         <<: *upstairs_speakers_value_template
       - service: remote.turn_off
@@ -418,9 +458,7 @@ script:
   turn_off_downstairs_speakers:
     alias: Turn off Downstairs Speakers
     sequence:
-      - service: counter.decrement
-        data:
-          entity_id: counter.speakers_playing
+      - <<: *decrement_speakers_playing
       - condition: template
         <<: *downstairs_speakers_value_template
       - service: remote.turn_off

@@ -99,10 +99,11 @@ automation:
         data_template:
           entity_id: input_number.bathroom_fan_triggers
           value: >
-            {% if states.input_number.bathroom_fan_triggers.state | int < states.input_number.bathroom_fan_triggers.attributes.max %}
-              {{ (states.input_number.bathroom_fan_triggers.state | int) + 1 }}
+            {% set entity_id = 'input_number.bathroom_fan_triggers' %}
+            {% if states(entity_id) | int < state_attr(entity_id, 'max') %}
+              {{ (states(entity_id) | int) + 1 }}
             {% else %}
-              {{ states.input_number.bathroom_fan_triggers.state | int }}
+              {{ states(entity_id) | int }}
             {% endif %}
 
   - id: decrement_bathroom_fan_triggers
@@ -127,10 +128,11 @@ automation:
         data_template:
           entity_id: input_number.bathroom_fan_triggers
           value: >
-            {% if states.input_number.bathroom_fan_triggers.state | int > states.input_number.bathroom_fan_triggers.attributes.min %}
-              {{ (states.input_number.bathroom_fan_triggers.state | int) - 1 }}
+            {% set entity_id = 'input_number.bathroom_fan_triggers' %}
+            {% if states(entity_id) | int > state_attr(entity_id, 'min') %}
+              {{ (states(entity_id) | int) - 1 }}
             {% else %}
-              {{ states.input_number.bathroom_fan_triggers.state | int }}
+              {{ states(entity_id) | int }}
             {% endif %}
 
   ################################################
