@@ -32,12 +32,12 @@ homeassistant:
       upstairs_speakers_value_template: &upstairs_speakers_value_template
         value_template: >
           {% set entity_id = "remote.upstairs_hub" %}
-          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity')) }}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
 
       downstairs_speakers_value_template: &downstairs_speakers_value_template
         value_template: >
           {% set entity_id = "remote.upstairs_hub" %}
-          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity')) }}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
 
       cover: &cover
         <<: *speaker
@@ -50,34 +50,68 @@ homeassistant:
         <<: *decrement_volume
         vol_up: 'true'
 
+      turn_on_speakers: &turn_on_speakers
+        service: remote.turn_on
+        data_template:
+          entity_id: "{{ entity_id }}"
+          activity: "{{ state_attr(entity_id, 'music_activity_id') }}"
+
+    ################################################
+    ## Remote
+    ################################################
     remote.living_room_hub:
       <<: *customize
       location: 'Downstairs'
-      music_activity: 'Listen to Music'
+      music_activity_name: 'Listen to Music'
+      music_activity_id: '22851881'
+      volume_device: '55995993'
 
     remote.upstairs_hub:
       <<: *customize
       location: 'Upstairs'
-      music_activity: 'Listen to Music on Speakers'
+      music_activity_name: 'Listen to Music on Speakers'
+      music_activity_id: '32547827'
+      volume_device: '53194709'
 
+    ################################################
+    ## Input Number
+    ################################################
     input_number.volume_increment:
       <<: *customize
 
+    ################################################
+    ## Counter
+    ################################################
+    counter.speakers_playing:
+      <<: *customize
+
+    ################################################
+    ## Cover
+    ################################################
     cover.upstairs_volume:
       <<: *customize
     cover.downstairs_volume:
       <<: *customize
 
+    ################################################
+    ## Switch
+    ################################################
     switch.upstairs_speakers:
       <<: *customize
     switch.downstairs_speakers:
       <<: *customize
 
+    ################################################
+    ## Sensor
+    ################################################
     sensor.all_speakers_media_title:
       <<: *customize
     sensor.all_speakers_media_artist:
       <<: *customize
 
+    ################################################
+    ## Automation
+    ################################################
     automation.turn_on_speakers_if_chromecast_audio_playing:
       <<: *customize
     automation.turn_off_speakers_when_chromecast_audio_stops_playing:
@@ -89,9 +123,16 @@ homeassistant:
     automation.skip_chromecast_audio:
       <<: *customize
 
+    ################################################
+    ## Script
+    ################################################
     script.harmony_volume:
       <<: *customize
     script.harmony_music_turn_on:
+      <<: *customize
+    script.harmony_music_turn_on_subsequent_times:
+      <<: *customize
+    script.harmony_music_turn_on_first_time:
       <<: *customize
     script.turn_off_upstairs_speakers:
       <<: *customize
@@ -109,6 +150,14 @@ input_number:
     max: 10
     step: 1
     icon: mdi:volume-high
+
+################################################
+## Counter
+################################################
+counter:
+  speakers_playing:
+    initial: 0
+    step: 1
 
 ################################################
 ## Cover
@@ -310,24 +359,45 @@ script:
     alias: Harmony Volume Control
     sequence:
       - condition: template
-        value_template: "{{ true if is_state(entity_id, 'on') else false }}"
+        value_template: "{{ is_state(entity_id, 'on') }}"
+      - condition: template
+        value_template: "{{ state_attr(entity_id, 'volume_device') is not none }}"
       - service: remote.send_command
         data_template:
           entity_id: "{{ entity_id }}"
           command: "{{ 'VolumeUp' if vol_up == 'true' else 'VolumeDown' }}"
-          device: "{{ 53194709 if entity_id == 'remote.upstairs_hub' else 55995993 }}"
+          device: "{{ state_attr(entity_id, 'volume_device') }}"
           num_repeats: "{{ increment|int or 3 }}"
           delay_secs: 0.25
 
   harmony_music_turn_on:
-    alias: Turn on Speakers (Music)
+    alias: Turn on Speakers (music)
+    sequence:
+      - condition: template
+        value_template: "{{ state_attr(entity_id, 'music_activity_id') is not none }}"
+      - service_template: >
+          {% if states('counter.speakers_playing') | int == 0 %}
+            script.harmony_music_turn_on_first_time
+          {% else %}
+            script.harmony_music_turn_on_subsequent_times
+          {% endif %}
+        data_template:
+          entity_id: "{{ entity_id }}"
+      - service: counter.increment
+        data:
+          entity_id: counter.speakers_playing
+
+  harmony_music_turn_on_subsequent_times:
+    alias: Turn on Speakers (Music) Subsequent Times
+    sequence:
+      - <<: *turn_on_speakers
+
+  harmony_music_turn_on_first_time:
+    alias: Turn on Speakers (Music) First Time
     sequence:
       - service: media_player.media_pause
         <<: *media_player_entity
-      - service: remote.turn_on
-        data_template:
-          entity_id: "{{ entity_id }}"
-          activity: "{{ 32547827 if entity_id == 'remote.upstairs_hub' else 22851881 }}"
+      - <<: *turn_on_speakers
       - wait_template: "{{ is_state(entity_id, 'on')}}"
         timeout: '00:00:08'
       - delay: '0:00:05'
@@ -337,6 +407,9 @@ script:
   turn_off_upstairs_speakers:
     alias: Turn off Upstairs Speakers
     sequence:
+      - service: counter.decrement
+        data:
+          entity_id: counter.speakers_playing
       - condition: template
         <<: *upstairs_speakers_value_template
       - service: remote.turn_off
@@ -345,6 +418,9 @@ script:
   turn_off_downstairs_speakers:
     alias: Turn off Downstairs Speakers
     sequence:
+      - service: counter.decrement
+        data:
+          entity_id: counter.speakers_playing
       - condition: template
         <<: *downstairs_speakers_value_template
       - service: remote.turn_off
