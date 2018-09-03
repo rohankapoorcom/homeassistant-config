@@ -26,6 +26,15 @@ homeassistant:
       <<: *customize
 
     ################################################
+    ## Input Number
+    ################################################
+    input_number.random_color_loop_min_brightness:
+      <<: *customize
+
+    input_number.random_color_loop_max_brightness:
+      <<: *customize
+
+    ################################################
     ## Group
     ################################################
     group.lighting_effects:
@@ -87,6 +96,27 @@ input_select:
     icon: mdi:radar
 
 ################################################
+## Input Number
+################################################
+input_number:
+
+  random_color_loop_min_brightness:
+    name: Minimum Brightness
+    initial: 0
+    min: 0
+    max: 100
+    step: 1
+    icon: mdi:lightbulb-outline
+
+  random_color_loop_max_brightness:
+    name: Maximum Brightness
+    initial: 100
+    min: 0
+    max: 100
+    step: 1
+    icon: mdi:lightbulb-on-outline
+
+################################################
 ## Group
 ################################################
 group:
@@ -95,6 +125,8 @@ group:
     control: hidden
     entities:
       - input_select.random_color_loop_location
+      - input_number.random_color_loop_min_brightness
+      - input_number.random_color_loop_max_brightness
       - input_boolean.random_color_loop
 
 ################################################
@@ -145,7 +177,11 @@ script:
               {{ item.entity_id }}
             {%- endfor -%}
           rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
-          brightness_pct: '{{ (range(0, 100) | random) }}'
+          brightness_pct: >-
+            {{ (range(states('input_number.random_color_loop_min_brightness'),
+                      states('input_number.random_color_loop_max_brightness'))
+                | random)
+            }}
           transition: 1.5
       - service: script.turn_off
         entity_id: script.random_color_loop_control
