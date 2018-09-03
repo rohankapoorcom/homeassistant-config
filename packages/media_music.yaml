@@ -130,6 +130,8 @@ homeassistant:
       <<: *customize
     automation.skip_chromecast_audio:
       <<: *customize
+    automation.restore_speakers_playing_at_startup:
+      <<: *customize
 
     ################################################
     ## Script
@@ -368,6 +370,8 @@ automation:
       - platform: homeassistant
         event: start
     action:
+      - delay:
+          seconds: 45
       - service: input_number.set_value
         data_template:
           entity_id: input_number.speakers_playing
