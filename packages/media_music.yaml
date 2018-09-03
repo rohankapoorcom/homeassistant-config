@@ -55,7 +55,7 @@ homeassistant:
       location: 'Downstairs'
       music_activity: 'Listen to Music'
 
-    remote.upstairs_speakers:
+    remote.upstairs_hub:
       <<: *customize
       location: 'Upstairs'
       music_activity: 'Listen to Music on Speakers'
