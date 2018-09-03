@@ -374,6 +374,7 @@ automation:
         event: start
       - platform: time
         minutes: '/5'
+        seconds: 00
 
     action:
       - service: input_number.set_value
