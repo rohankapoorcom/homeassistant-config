@@ -96,9 +96,9 @@ input_select:
   last_presence_location:
     name: Last Presence Location
     options:
-      - Upstairs
       - Downstairs
-    initial: Upstairs
+      - Upstairs
+    initial: Downstairs
     icon: mdi:radar
 
 ################################################

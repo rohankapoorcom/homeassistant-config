@@ -10,3 +10,4 @@ entities:
   - group.bathroom
   - group.upstairs_lights
   - group.upstairs_media
+  - group.lighting_effects

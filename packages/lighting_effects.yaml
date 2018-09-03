@@ -16,96 +16,147 @@ homeassistant:
     ################################################
     ## Input Boolean
     ################################################
-    input_boolean.downstairs_random_color_loop:
+    input_boolean.random_color_loop:
+      <<: *customize
+
+    ################################################
+    ## Input Select
+    ################################################
+    input_select.random_color_loop_location:
+      <<: *customize
+
+    ################################################
+    ## Group
+    ################################################
+    group.lighting_effects:
       <<: *customize
 
     ################################################
     ## Light
     ################################################
-    light.discoagroup:
+    light.downstairs_color_lights:
       <<: *customize
+      location: Downstairs
+
+    light.upstairs_color_lights:
+      <<: *customize
+      location: Upstairs
+
+    light.all_color_lights:
+      <<: *customize
+      location: All
 
     ################################################
     ## Automation
     ################################################
-    automation.start_downstairs_random_color_loop:
+    automation.start_random_color_loop:
       <<: *customize
 
-    automation.stop_downstairs_random_color_loop:
+    automation.stop_random_color_loop:
       <<: *customize
 
     ################################################
     ## Script
     ################################################
-    script.downstairs_random_color_loop:
+    script.random_color_loop:
       <<: *customize
 
-    script.downstairs_random_color_loop_control:
+    script.random_color_loop_control:
       <<: *customize
 
 ################################################
 ## Input Boolean
 ################################################
 input_boolean:
-  downstairs_random_color_loop:
-    name: Downstairs Color Fade
+  random_color_loop:
+    name: Color Fade
     initial: off
     icon: mdi:invert-colors
+
+################################################
+## Input Select
+################################################
+input_select:
+  random_color_loop_location:
+    name: Location
+    options:
+      - All
+      - Downstairs
+      - Upstairs
+    initial: All
+    icon: mdi:radar
+
+################################################
+## Group
+################################################
+group:
+  lighting_effects:
+    name: Lighting Effects
+    control: hidden
+    entities:
+      - input_select.random_color_loop_location
+      - input_boolean.random_color_loop
 
 ################################################
 ## Automation
 ################################################
 automation:
 
-  - id: start_downstairs_random_color_loop
-    alias: Start Downstairs Random Color Loop
+  - id: start_random_color_loop
+    alias: Start Random Color Loop
     trigger:
       - platform: state
-        entity_id: input_boolean.downstairs_random_color_loop
+        entity_id: input_boolean.random_color_loop
         to: 'on'
     action:
       - service: homeassistant.turn_off
         entity_id: group.downstairs_lights
-      - service: script.downstairs_random_color_loop
+      - service: script.random_color_loop
 
-  - id: stop_downstairs_random_color_loop
-    alias: Stop Downtairs Random Color Loop
+  - id: stop_random_color_loop
+    alias: Stop Random Color Loop
     trigger:
       - platform: state
-        entity_id: input_boolean.downstairs_random_color_loop
+        entity_id: input_boolean.random_color_loop
         to: 'off'
     action:
       - service: script.turn_off
-        entity_id: script.downstairs_random_color_loop
+        entity_id: script.random_color_loop
       - service: script.turn_off
-        entity_id: script.downstairs_random_color_loop_control
-      - service: scene.turn_on
-        entity_id: scene.downstairs_lights_on
+        entity_id: script.random_color_loop_control
+      # Todo store/reset lights affected
 
 ################################################
 ## Script
 ################################################
 script:
 
-  downstairs_random_color_loop:
+  random_color_loop:
     sequence:
       # Pick random color
       - service: light.turn_on
-        entity_id: light.discoagroup
         data_template:
+          entity_id: >
+            # This should only evaluate to one lightgroup
+            {%- for item in states.light if (
+              is_state_attr(item.entity_id, 'location', states('input_select.random_color_loop_location'))
+              )
+            -%}
+              {{ item.entity_id }}
+            {%- endfor -%}
           rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
           brightness_pct: '{{ (range(0, 100) | random) }}'
-          transition: 1
+          transition: 1.5
       - service: script.turn_off
-        entity_id: script.downstairs_random_color_loop_control
+        entity_id: script.random_color_loop_control
       - delay:
           milliseconds: 750
-      - service: script.downstairs_random_color_loop_control
+      - service: script.random_color_loop_control
 
-  downstairs_random_color_loop_control:
+  random_color_loop_control:
     sequence:
       - service: script.turn_off
-        entity_id: script.downstairs_random_color_loop
+        entity_id: script.random_color_loop
       - delay:
           milliseconds: 750
-      - service: script.downstairs_random_color_loop
+      - service: script.random_color_loop

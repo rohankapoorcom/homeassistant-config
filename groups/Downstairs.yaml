@@ -7,3 +7,4 @@ entities:
   - group.downstairs_lights
   - group.downstairs_media
   - group.dishwasher_controls
+  - group.lighting_effects

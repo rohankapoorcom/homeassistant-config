@@ -261,6 +261,9 @@ automation:
         - condition: state
           <<: *media_player_entity
           state: 'paused'
+        - condition: state
+          <<: *media_player_entity
+          state: 'idle'
 
   ################################################
   ## Actions triggered by Harmony Remote
