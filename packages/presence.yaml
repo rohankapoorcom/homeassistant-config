@@ -156,7 +156,7 @@ automation:
           retain: true
           payload: >
             {
-              "value": {{ utcnow() }},
+              "value": "{{ utcnow() }}",
               "package": "presence",
               "mqtt_config_topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
               "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
