@@ -136,8 +136,8 @@ script:
       # Pick random color
       - service: light.turn_on
         data_template:
+          # This should only evaluate to one lightgroup
           entity_id: >
-            # This should only evaluate to one lightgroup
             {%- for item in states.light if (
               is_state_attr(item.entity_id, 'location', states('input_select.random_color_loop_location'))
               )
