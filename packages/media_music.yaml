@@ -449,7 +449,7 @@ script:
       - service: media_player.media_pause
         <<: *media_player_entity
       - <<: *turn_on_speakers
-      - wait_template: "{{ is_state(entity_id, 'on') }}"
+      - wait_template: "{{ is_state(entity_id, 'on')}}"
         timeout: '00:00:08'
       - delay: '0:00:05'
       - service: media_player.media_play
