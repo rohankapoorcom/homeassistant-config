@@ -201,12 +201,14 @@ script:
           transition: "{{ states('input_number.random_color_loop_transition_speed') | float }}"
       - service: script.turn_off
         entity_id: script.random_color_loop_control
-      - delay: "00:00:00:{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
+      - delay: >
+          { 'milliseconds': {{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }} }
       - service: script.random_color_loop_control
 
   random_color_loop_control:
     sequence:
       - service: script.turn_off
         entity_id: script.random_color_loop
-      - delay: "00:00:00:{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
+      - delay: >
+          { 'milliseconds': {{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }} }
       - service: script.random_color_loop
