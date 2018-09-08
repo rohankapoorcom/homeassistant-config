@@ -202,7 +202,7 @@ script:
       - service: script.turn_off
         entity_id: script.random_color_loop_control
       - delay:
-          milliseconds: "{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
+          milliseconds: 750
       - service: script.random_color_loop_control
 
   random_color_loop_control:
@@ -210,5 +210,5 @@ script:
       - service: script.turn_off
         entity_id: script.random_color_loop
       - delay:
-          milliseconds: "{{ (((states('input_number.random_color_loop_transition_speed') | float) / 2) * 1000) | int }}"
+          milliseconds: 750
       - service: script.random_color_loop
