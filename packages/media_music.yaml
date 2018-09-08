@@ -335,7 +335,7 @@ automation:
     action:
       service: python_script.media_music_turn_off_speakers
       data_template:
-        entties: >
+        entities: >
           {%- for sensor in states.sensor if (
             is_state_attr(sensor.entity_id, 'package', 'presence')
             and sensor.entity_id.endswith('_last_seen')
