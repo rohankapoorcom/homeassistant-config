@@ -124,10 +124,6 @@ homeassistant:
       <<: *customize
     script.harmony_music_turn_on_first_time:
       <<: *customize
-    script.turn_off_upstairs_speakers:
-      <<: *customize
-    script.turn_off_downstairs_speakers:
-      <<: *customize
 
 ################################################
 ## Input Number

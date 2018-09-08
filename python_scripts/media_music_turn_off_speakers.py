@@ -18,7 +18,11 @@ def decrement_speakers_playing(hass):
     count = int(float(speakers_playing.state))
     if count > int(float(speakers_playing.attributes.get('min'))):
         count = count - 1
-    hass.services.call('input_number', 'set_value', {'value': count})
+    hass.services.call('input_number', 'set_value', {
+                           'value': count,
+                           'entity_id': entity_id
+                           }
+                       )
 
 def turn_off_speaker(hass, entity_id):
     cur_state = hass.states.get(entity_id)
