@@ -29,16 +29,6 @@ homeassistant:
         roku_usn: 4t8k7RAjE3TBcfheQvCATZ
         type: keypress
 
-      upstairs_speakers_value_template: &upstairs_speakers_value_template
-        value_template: >
-          {% set entity_id = "remote.upstairs_hub" %}
-          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
-
-      downstairs_speakers_value_template: &downstairs_speakers_value_template
-        value_template: >
-          {% set entity_id = "remote.living_room_hub" %}
-          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
-
       cover: &cover
         <<: *speaker
         position_template: 50
@@ -55,18 +45,6 @@ homeassistant:
         data_template:
           entity_id: "{{ entity_id }}"
           activity: "{{ state_attr(entity_id, 'music_activity_id') }}"
-
-      decrement_speakers_playing: &decrement_speakers_playing
-        service: input_number.set_value
-        data_template:
-          entity_id: input_number.speakers_playing
-          value: >
-            {% set entity_id = 'input_number.speakers_playing' %}
-            {% if states(entity_id) | int > state_attr(entity_id, 'min') %}
-              {{ (states(entity_id) | int) - 1 }}
-            {% else %}
-              {{ states(entity_id) | int }}
-            {% endif %}
 
     ################################################
     ## Remote
@@ -216,7 +194,9 @@ switch:
       upstairs_speakers:
         <<: *speaker
         friendly_name: "Upstairs Speakers"
-        <<: *upstairs_speakers_value_template
+        value_template: >
+          {% set entity_id = "remote.upstairs_hub" %}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
         turn_on:
           service: script.harmony_music_turn_on
           data:
@@ -229,7 +209,9 @@ switch:
       downstairs_speakers:
         <<: *speaker
         friendly_name: "Downstairs Speakers"
-        <<: *downstairs_speakers_value_template
+        value_template: >
+          {% set entity_id = "remote.living_room_hub" %}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
         turn_on:
           service: script.harmony_music_turn_on
           data:
@@ -271,7 +253,12 @@ automation:
       - <<: *media_player_entity
         platform: state
         to: 'playing'
+      - platform: state
+        entity_id: input_select.last_presence_location
     condition:
+      - condition: state
+        <<: *media_player_entity
+        state: 'playing'
       - condition: template
         value_template: >
           {{ not is_state_attr('media_player.all_speakers', 'media_content_id', states('sensor.1second_silence_url')) }}
@@ -312,9 +299,6 @@ automation:
       - <<: *media_player_entity
         platform: state
         to: 'idle'
-    action:
-      - service: script.turn_off_upstairs_speakers
-      - service: script.turn_off_downstairs_speakers
     condition:
       condition: or
       conditions:
@@ -327,6 +311,43 @@ automation:
         - condition: state
           <<: *media_player_entity
           state: 'idle'
+    action:
+      - service: python_script.media_music_turn_off_speakers
+        data_template:
+          entities: >
+            {%- for item in states.remote if (
+              state_attr(item.entity_id, 'location') is not none
+              )
+            -%}
+              {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+
+  # Check if active speakers are playing in a still populated location
+  # Turns them off in not
+  - id: evaluate_and_turn_off_speakers_when_presence_location_changes
+    alias: Evaluate and Turn off Speakers when Presence Location Changes
+    trigger:
+      - platform: time
+        minutes: '/5'
+        seconds: 00
+    action:
+      service: python_script.media_music_turn_off_speakers
+      data_template:
+        entties: >
+          {%- for sensor in states.sensor if (
+            is_state_attr(sensor.entity_id, 'package', 'presence')
+            and sensor.entity_id.endswith('_last_seen')
+            and not is_state('input_select.last_presence_location', sensor.name.split(' ')[0])
+            and (as_timestamp(now()) - as_timestamp(sensor.state) > (5 * 60))
+            )
+          -%}
+            {%- for remote in states.remote if (
+              is_state_attr(remote.entity_id, 'location', sensor.name.split(' ')[0])
+              )
+            -%}
+              {{ remote.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
 
   ################################################
   ## Actions triggered by Harmony Remote
@@ -454,21 +475,3 @@ script:
       - delay: '0:00:05'
       - service: media_player.media_play
         <<: *media_player_entity
-
-  turn_off_upstairs_speakers:
-    alias: Turn off Upstairs Speakers
-    sequence:
-      - <<: *decrement_speakers_playing
-      - condition: template
-        <<: *upstairs_speakers_value_template
-      - service: remote.turn_off
-        entity_id: remote.upstairs_hub
-
-  turn_off_downstairs_speakers:
-    alias: Turn off Downstairs Speakers
-    sequence:
-      - <<: *decrement_speakers_playing
-      - condition: template
-        <<: *downstairs_speakers_value_template
-      - service: remote.turn_off
-        entity_id: remote.living_room_hub
