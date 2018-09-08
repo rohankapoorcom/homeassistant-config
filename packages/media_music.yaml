@@ -395,6 +395,10 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
+      - platform: event
+        event_type: platform_discovered
+        event_data:
+          service: harmony
       - platform: time
         minutes: '/5'
         seconds: 00
