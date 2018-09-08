@@ -110,6 +110,8 @@ homeassistant:
       <<: *customize
     automation.restore_speakers_playing_at_startup:
       <<: *customize
+    automation.evaluate_and_turn_off_speakers_when_presence_location_changes:
+      <<: *customize
 
     ################################################
     ## Script
