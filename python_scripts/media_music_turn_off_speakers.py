@@ -10,21 +10,27 @@
 def decrement_speakers_playing(hass):
     entity_id = 'input_number.speakers_playing'
     speakers_playing = hass.states.get(entity_id)
-    if not (speakers_playing and speakers_playing.min):
+    if not (speakers_playing
+            and speakers_playing.attributes
+            and speakers_playing.attributes.get('min') is not None
+    ):
         return
     count = int(float(speakers_playing.state))
-    if count > int(float(speakers_playing.min)):
-        count -= 1
-    hass.services.call('input_number', 'set_value', count)
+    if count > int(float(speakers_playing.attributes.get('min'))):
+        count = count - 1
+    hass.services.call('input_number', 'set_value', {'value': count})
 
 def turn_off_speaker(hass, entity_id):
     cur_state = hass.states.get(entity_id)
-    if not (cur_state and cur_state.current_activity
-            and cur_state.music_activity_name
-            and cur_state.music_activity_name == cur_state.current_activity):
+    if not (cur_state
+            and cur_state.attributes
+            and cur_state.attributes.get('current_activity') is not None
+            and cur_state.attributes.get('music_activity_name') is not None
+            and cur_state.attributes.get('music_activity_name') == cur_state.attributes.get('current_activity')
+    ):
         return
 
-    hass.services.call('remote', 'turn_off', entity_id)
+    hass.services.call('remote', 'turn_off', {'entity_id': entity_id})
 
 entities = data.get('entities')
 

@@ -250,7 +250,7 @@ automation:
   ## Actions triggered by Chromecast Audio
   ################################################
   - id: turn_on_speakers_if_chromecast_audio_playing
-    alias: Turn on Speakers if Chromecast Audio is Playing
+    alias: Turn on Speakers if Chromecast Audio Playing
     trigger:
       - <<: *media_player_entity
         platform: state
