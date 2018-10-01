@@ -92,7 +92,7 @@ automation:
         payload: 'ON'
     action:
       - service: homeassistant.toggle
-        entity_id: light.extended_color_light_1
+        entity_id: light.tv_backlight_color
 
   - alias: hasp_up_plate_p3_ToggleCornerLight
     trigger:
@@ -163,13 +163,13 @@ automation:
         topic: 'hasp/up_plate/status'
         payload: 'ON'
       - platform: state
-        entity_id: light.extended_color_light_1
+        entity_id: light.tv_backlight_color
     action:
       - service: mqtt.publish
         data:
           topic: 'hasp/up_plate/command/p[3].b[6].bco'
           payload_template: >-
-            {% if is_state('light.extended_color_light_1', 'on') -%}
+            {% if is_state('light.tv_backlight_color', 'on') -%}
               64577
             {%- else -%}
               25388
@@ -178,7 +178,7 @@ automation:
         data_template:
           topic: 'hasp/up_plate/command/p[3].b[6].pco'
           payload_template: >-
-            {% if is_state('light.extended_color_light_1', 'on') -%}
+            {% if is_state('light.tv_backlight_color', 'on') -%}
               0
             {%- else -%}
               65535

@@ -92,7 +92,7 @@ automation:
         payload: 'ON'
     action:
       - service: homeassistant.toggle
-        entity_id: light.extended_color_light_1
+        entity_id: light.tv_backlight_color
 
   - alias: hasp_down_plate_p3_ToggleCornerLight
     trigger:
@@ -159,20 +159,20 @@ automation:
         topic: 'hasp/down_plate/status'
         payload: 'ON'
       - platform: state
-        entity_id: light.extended_color_light_1
+        entity_id: light.tv_backlight_color
     action:
       - service: python_script.hasp_update_colors
         data_template:
           nodename: down_plate
           object_id: 'p[3].b[6]'
           background: >-
-            {% if is_state('light.extended_color_light_1', 'on') -%}
+            {% if is_state('light.tv_backlight_color', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
           foreground: >-
-            {% if is_state('light.extended_color_light_1', 'on') -%}
+            {% if is_state('light.tv_backlight_color', 'on') -%}
               0
             {%- else -%}
               65535

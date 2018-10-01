@@ -41,7 +41,11 @@ scene:
         state: on
         brightness_pct: 100
         color_temp: 233
-      light.extended_color_light_1:
+      light.tv_backlight_color:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.tv_backlight_white:
         state: on
         brightness_pct: 100
         color_temp: 233
@@ -58,7 +62,8 @@ scene:
     entities:
       group.end_tables: off
       light.couch_accent_white: off
-      light.extended_color_light_1: off
+      light.tv_backlight_color: off
+      light.tv_backlight_white: off
       light.living_room_lamp: off
       group.kitchen_table: off
 
@@ -72,7 +77,11 @@ scene:
         state: on
         brightness_pct: 100
         color_temp: 233
-      light.extended_color_light_1:
+      light.tv_backlight_color:
+        state: on
+        brightness_pct: 100
+        color_temp: 233
+      light.tv_backlight_white:
         state: on
         brightness_pct: 100
         color_temp: 233

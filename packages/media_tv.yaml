@@ -39,7 +39,7 @@ group:
     name: TV Lights
     entities:
       - group.end_tables
-      - light.extended_color_light_1
+      - light.tv_backlight_color
 
   downstairs_non_tv_lights:
     name: Non TV Lights
@@ -49,6 +49,7 @@ group:
       - group.kitchen_table
       - light.kitchen_sink_light
       - light.living_room_lamp
+      - light.tv_backlight_white
       - switch.server_rack_lights
 
 ################################################
