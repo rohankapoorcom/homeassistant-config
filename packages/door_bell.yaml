@@ -118,8 +118,8 @@ script:
         data:
           nodename: plates
           object_id: 'p[0].b[1]'
-          background: '25388'
-          foreground: '65535'
+          background: '65535'
+          foreground: '25388'
 
   loop_door_bell_font_colors:
     sequence:
