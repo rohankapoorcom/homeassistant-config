@@ -49,12 +49,12 @@ sensor:
       - last_build_state
 
   - platform: command_line
-      name: current_git_commit_id
-      command: 'git -C /etc/homeassistant/ rev-parse HEAD'
+    name: current_git_commit_id
+    command: 'git -C /etc/homeassistant/ rev-parse HEAD'
 
   - platform: command_line
-      name: current_git_commit_time
-      command: 'git -C /etc/homeassistant/ log -1 --format="%at" | xargs -I{} date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
+    name: current_git_commit_time
+    command: 'git -C /etc/homeassistant/ log -1 --format="%at" | xargs -I{} date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
 ################################################
 ## Automation
