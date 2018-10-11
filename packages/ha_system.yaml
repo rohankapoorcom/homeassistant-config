@@ -70,12 +70,10 @@ automation:
     condition:
       - condition: template
         value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit Branch', 'master') }}"
-        state: 'master'
       - condition: template
         value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', sensor.current_git_commit_id) }}"
       - condition: template
         value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Committed Date') }}"
-
     action:
       - service: script.pull_and_restart_homeassistant
 
