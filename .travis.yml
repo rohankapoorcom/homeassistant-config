@@ -8,3 +8,6 @@ script:
 before_install:
   - mv tests/travis_secrets.yaml secrets.yaml
 
+cache:
+  directories:
+    - $HOME/.cache/pip
