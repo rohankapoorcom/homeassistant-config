@@ -93,5 +93,5 @@ script:
   pull_and_restart_homeassistant:
     sequence:
       - service: shell_command.git_pull
-      - wait_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', sensor.current_git_commit_id) }}"
+      - wait_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
       - service: homeassistant.restart
