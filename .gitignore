@@ -11,3 +11,4 @@ entity_registry.yaml
 *.pyc
 tts
 __pycache__
+.idea

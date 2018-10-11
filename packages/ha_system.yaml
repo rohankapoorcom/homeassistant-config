@@ -27,7 +27,12 @@ homeassistant:
     script.pull_and_restart_homeassistant:
       <<: *customize
 
+################################################
+## Sensor
+################################################
+
 sensor:
+
   - platform: travisci
     api_key: !secret sensor.travis.api_key
     repository:
@@ -36,6 +41,13 @@ sensor:
       - master
     monitored_conditions:
       - last_build_state
+
+  - platform: command_line
+    sensors:
+      current_git_commit_id:
+        command: 'git -C /etc/homeassistant/ rev-parse HEAD'
+      current_git_commit_time:
+        command: 'git -C /etc/homeassistant/ log -1 --format="%at" | xargs -I{} date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
 ################################################
 ## Automation
@@ -49,6 +61,15 @@ automation:
       - entity_id: sensor.rohankapoorcomhomeassistantconfig_last_build_state
         platform: state
         to: 'passed'
+    condition:
+      - conditon: template
+        value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit Branch', 'master') }}"
+        state: 'master'
+      - condition: template
+        value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', sensor.current_git_commit_id) }}"
+      - condition: template
+        value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Committed Date') }}"
+
     action:
       - service: script.pull_and_restart_homeassistant
 
@@ -67,4 +88,5 @@ script:
   pull_and_restart_homeassistant:
     sequence:
       - service: shell_command.git_pull
+      - wait_template: "is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', sensor.current_git_commit_id) }}"
       - service: homeassistant.restart
