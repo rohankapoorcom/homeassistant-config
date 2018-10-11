@@ -18,6 +18,12 @@ homeassistant:
     sensor.rohankapoorcomhomeassistantconfig_last_build_state:
       <<: *customize
 
+    sensor.current_git_commit_id:
+      <<: *customize
+
+    sensor.current_git_commit_time:
+      <<: *customize
+
     automation.update_configuration_if_travis_build_is_successful:
       <<: *customize
 
@@ -62,7 +68,7 @@ automation:
         platform: state
         to: 'passed'
     condition:
-      - conditon: template
+      - condition: template
         value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit Branch', 'master') }}"
         state: 'master'
       - condition: template
