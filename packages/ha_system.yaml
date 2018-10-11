@@ -54,7 +54,7 @@ sensor:
 
   - platform: command_line
     name: current_git_commit_time
-    command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | xargs -I{} date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
+    command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
 ################################################
 ## Automation
