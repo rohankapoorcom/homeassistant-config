@@ -15,6 +15,10 @@ homeassistant:
       customize: &customize
         package: 'ha_system'
 
+      command_line_sensor_default: &defaults
+        scan_interval: 10
+        command_timeout: 5
+
     sensor.rohankapoorcomhomeassistantconfig_last_build_state:
       <<: *customize
 
@@ -64,21 +68,26 @@ sensor:
       - last_build_state
 
   - platform: command_line
+    <<: *defaults
     name: current_git_commit_id
     command: '/usr/bin/git -C /etc/homeassistant/ rev-parse HEAD'
 
   - platform: command_line
+    <<: *defaults
     name: current_git_commit_time
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
   - platform: version
+    <<: *defaults
     name: current_version
 
   - platform: command_line
+    <<: *defaults
     name: desired_version
     command: '/bin/cat /etc/homeassistant/.HA_VERSION'
 
   - platform: command_line
+    <<: *defaults
     name: upgraded_version
     command: '/srv/homeassistant/bin/hass --version'
 
@@ -122,6 +131,8 @@ script:
     sequence:
       - service: shell_command.git_pull
       - wait_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
+      - delay:
+          seconds: 30 # Wait for all command line sensors to be updated
       - service: script.update_homeassistant
       - wait_template: "{{ is_state('sensor.upgraded_version', states('sensor.desired_version')) }}"
       - service: homeassistant.restart
