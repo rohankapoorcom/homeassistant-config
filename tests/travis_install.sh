@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-version = `cat .HA_VERSION`
+version=`cat .HA_VERSION`
 if [ "$version" = "" ]; then
     pip3 install homeassistant
 else
