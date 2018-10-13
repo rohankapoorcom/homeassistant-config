@@ -56,6 +56,17 @@ sensor:
     name: current_git_commit_time
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
+  - platform: version
+    name: current_version
+
+  - platform: command_line
+    name: desired_version
+    command: '/bin/cat /etc/homeassistant/.HA_VERSION'
+
+  - platform: command_line
+    name: upgraded_version
+    command: '/srv/homeassistant/bin/hass --version'
+
 ################################################
 ## Automation
 ################################################
@@ -84,14 +95,24 @@ automation:
 
 shell_command:
   git_pull: "/usr/bin/git -C /etc/homeassistant/ pull"
+  update_homeassistant: "/bin/bash /etc/homeassistant/bash_scripts/update.sh -u {{ states('sensor.desired_version') }}"
 
 ################################################
 ## Script
 ################################################
 
 script:
+
   pull_and_restart_homeassistant:
     sequence:
       - service: shell_command.git_pull
       - wait_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
+      - service: script.update_homeassistant
+      - wait_template: "{{ is_state('sensor.upgraded_version', states('sensor.desired_version')) }}"
       - service: homeassistant.restart
+
+  update_homeassistant:
+    sequence:
+      - condition: template
+        value_template: "{{ states('sensor.current_version') < states('sensor.desired_version') }}"
+      - service: shell_command.update_homeassistant
