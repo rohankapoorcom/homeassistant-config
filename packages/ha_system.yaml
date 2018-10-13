@@ -24,13 +24,28 @@ homeassistant:
     sensor.current_git_commit_time:
       <<: *customize
 
+    sensor.current_version:
+      <<: *customize
+
+    sensor.desired_version:
+      <<: *customize
+
+    sensor.upgraded_version:
+      <<: *customize
+
     automation.update_configuration_if_travis_build_is_successful:
       <<: *customize
 
     shell_command.git_pull:
       <<: *customize
 
+    shell_command.update_homeassistant:
+      <<: *customize
+
     script.pull_and_restart_homeassistant:
+      <<: *customize
+
+    script.update_homeassistant:
       <<: *customize
 
 ################################################
