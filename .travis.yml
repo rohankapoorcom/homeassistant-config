@@ -1,8 +1,7 @@
 language: python
 python:
   - "3.6.3"
-install:
-
+install: ./tests/travis_install.sh
 script:
   - hass -c . --script check_config
 before_install:
