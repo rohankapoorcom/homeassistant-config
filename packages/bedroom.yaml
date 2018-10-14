@@ -21,6 +21,9 @@ homeassistant:
     automation.bedroom_alarm_triggered:
       <<: *customize
 
+    automation.bedroom_lights_toggle:
+      <<: *customize
+
 ################################################
 ## Automation
 ################################################
@@ -44,3 +47,12 @@ automation:
         data:
           brightness_pct: 100
           color_temp: 233
+
+  - id: bedroom_lights_toggle
+    alias: Bedroom Lights Toggle
+    trigger:
+    - platform: mqtt
+      topic: cmnd/sonoff-bedroom-lights/POWER1
+    action:
+    - entity_id: light.bedroom
+      service: light.toggle
