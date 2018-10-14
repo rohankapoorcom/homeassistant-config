@@ -53,9 +53,6 @@ logbook:
 # Track the sun
 sun:
 
-# Text to speech
-tts:
-  platform: google
 
 mqtt:
   broker: !secret mqtt.broker
@@ -69,12 +66,6 @@ mqtt:
 
 hue:
   bridges: !secret hue.bridges
-
-notify:
-  - name: FirebasePush
-    platform: html5
-    gcm_api_key: !secret notify.gcm_api_key
-    gcm_sender_id: !secret notify.gcm_sender_id
 
 emulated_roku:
   host_ip: !secret emulated_roku.host_ip
