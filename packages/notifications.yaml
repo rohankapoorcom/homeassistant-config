@@ -27,11 +27,19 @@ homeassistant:
 tts:
   platform: google
 
+mailgun:
+  domain: !secret mailgun.domain
+  api_key: !secret mailgun.api_key
+
 notify:
   - name: FirebasePush
     platform: html5
     gcm_api_key: !secret notify.gcm_api_key
     gcm_sender_id: !secret notify.gcm_sender_id
+
+  - name: rohan_email
+    platform: mailgun
+    recipient: !secret notify.rohan_email.recipient
 
 ################################################
 ## Automation
