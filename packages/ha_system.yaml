@@ -2,7 +2,11 @@
 #  @author       :  Rohan Kapoor
 #  @date         :  08/11/2018
 #  @package      :  HA System
-#  @description  :  Manages aspects of the home assistant system
+#  @description  :  Manages aspects of the home assistant system. If the travis
+#                   build succeeds (on the master branch), it will update the
+#                   local configuration and then check if a HA update is
+#                   required (in the repo) and the process the update,
+#                   restarting HA when complete.
 ###############################################################################
 
 homeassistant:
@@ -18,6 +22,10 @@ homeassistant:
       command_line_sensor_default: &defaults
         scan_interval: 10
         command_timeout: 5
+
+    ################################################
+    ## Sensor
+    ################################################
 
     sensor.rohankapoorcomhomeassistantconfig_last_build_state:
       <<: *customize
@@ -37,14 +45,26 @@ homeassistant:
     sensor.upgraded_version:
       <<: *customize
 
+    ################################################
+    ## Automation
+    ################################################
+
     automation.update_configuration_if_travis_build_is_successful:
       <<: *customize
+
+    ################################################
+    ## Shell Command
+    ################################################
 
     shell_command.git_pull:
       <<: *customize
 
     shell_command.update_homeassistant:
       <<: *customize
+
+    ################################################
+    ## Script
+    ################################################
 
     script.pull_and_restart_homeassistant:
       <<: *customize
