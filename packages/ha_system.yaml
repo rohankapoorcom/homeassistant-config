@@ -24,10 +24,16 @@ homeassistant:
         command_timeout: 5
 
     ################################################
+    ## Group
+    ################################################
+    group.ha_system:
+      <<: *customize
+
+    ################################################
     ## Sensor
     ################################################
 
-    sensor.rohankapoorcomhomeassistantconfig_last_build_state:
+    sensor.rohankapoorcom_homeassistant_config_last_build_state:
       <<: *customize
 
     sensor.current_git_commit_id:
@@ -82,7 +88,7 @@ group:
     entities:
       - sensor.current_git_commit_id
       - sensor.current_git_commit_time
-      - sensor.rohankapoorcomhomeassistantconfig_last_build_state
+      - sensor.rohankapoorcom_homeassistant_config_last_build_state
       - sensor.current_version
       - sensor.desired_version
       - sensor.upgraded_version
@@ -134,16 +140,16 @@ automation:
   - id: update_configuration_if_travis_build_is_successful
     alias: Update configuration if travis build is successful
     trigger:
-      - entity_id: sensor.rohankapoorcomhomeassistantconfig_last_build_state
+      - entity_id: sensor.rohankapoorcom_homeassistant_config_last_build_state
         platform: state
         to: 'passed'
     condition:
       - condition: template
-        value_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit Branch', 'master') }}"
+        value_template: "{{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit Branch', 'master') }}"
       - condition: template
-        value_template: "{{ not is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
+        value_template: "{{ not is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
       - condition: template
-        value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Committed Date') }}"
+        value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Committed Date') }}"
     action:
       - service: script.pull_and_restart_homeassistant
 
@@ -164,7 +170,7 @@ script:
   pull_and_restart_homeassistant:
     sequence:
       - service: shell_command.git_pull
-      - wait_template: "{{ is_state_attr('sensor.rohankapoorcomhomeassistantconfig_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
+      - wait_template: "{{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
       - delay:
           seconds: 30 # Wait for all command line sensors to be updated
       - service: script.update_homeassistant
