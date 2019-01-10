@@ -73,6 +73,21 @@ homeassistant:
       <<: *customize
 
 ################################################
+## Group
+################################################
+group:
+  ha_system:
+    name: System
+    view: yes
+    entities:
+      - sensor.current_git_commit_id
+      - sensor.current_git_commit_time
+      - sensor.rohankapoorcomhomeassistantconfig_last_build_state
+      - sensor.current_version
+      - sensor.desired_version
+      - sensor.upgraded_version
+
+################################################
 ## Sensor
 ################################################
 
