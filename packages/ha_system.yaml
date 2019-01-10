@@ -86,6 +86,10 @@ group:
     name: System
     view: yes
     entities:
+      - group.configuration
+
+  ha_system_configuration:
+    name: Configuration
       - sensor.current_git_commit_id
       - sensor.current_git_commit_time
       - sensor.rohankapoorcom_homeassistant_config_last_build_state
@@ -110,25 +114,30 @@ sensor:
   - platform: command_line
     <<: *defaults
     name: current_git_commit_id
+    friendly_name: Current Git Hash
     command: '/usr/bin/git -C /etc/homeassistant/ rev-parse HEAD'
 
   - platform: command_line
     <<: *defaults
     name: current_git_commit_time
+    friendly_name: Current Git Time
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
   - platform: version
     <<: *defaults
     name: current_version
+    friendly_name: Running Version
 
   - platform: command_line
     <<: *defaults
     name: desired_version
+    friendly_name: Desired Version
     command: '/bin/cat /etc/homeassistant/.HA_VERSION'
 
   - platform: command_line
     <<: *defaults
     name: upgraded_version
+    friendly_name: Upgraded Version
     command: '/srv/homeassistant/bin/hass --version'
 
 ################################################
