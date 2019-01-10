@@ -93,6 +93,7 @@ group:
 
   ha_system_configuration:
     name: Configuration
+    entities:
       - sensor.current_git_commit_id
       - sensor.current_git_commit_time
       - sensor.rohankapoorcom_homeassistant_config_last_build_state
