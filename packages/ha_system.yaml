@@ -29,6 +29,9 @@ homeassistant:
     group.ha_system:
       <<: *customize
 
+    group.ha_system_configuration:
+      <<: *customize
+
     ################################################
     ## Sensor
     ################################################
@@ -86,7 +89,7 @@ group:
     name: System
     view: yes
     entities:
-      - group.configuration
+      - group.ha_system_configuration
 
   ha_system_configuration:
     name: Configuration
