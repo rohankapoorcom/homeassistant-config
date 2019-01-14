@@ -102,6 +102,15 @@ input_select:
     icon: mdi:radar
 
 ################################################
+## Device Tracker
+################################################
+device_tracker:
+  - platform: google_maps
+    username: !secret device_tracker.google_maps.username
+    password: !secret device_tracker.google_maps.password
+    max_gps_accuracy: 1000
+
+################################################
 ## Automation
 ################################################
 automation:
