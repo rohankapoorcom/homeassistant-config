@@ -111,6 +111,20 @@ device_tracker:
     max_gps_accuracy: 1000
 
 ################################################
+## Zone
+################################################
+zone:
+  - name: Home
+    latitude: !secret homeassistant.latitude
+    longitude: !secret homeassistant.longitude
+    radius: 100
+
+  - name: Work
+    latitude: !secret zone.work.latitude
+    longitude: !secret zone.work.latitude
+    radius: 100
+
+################################################
 ## Automation
 ################################################
 automation:
