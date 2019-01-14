@@ -184,3 +184,16 @@ automation:
               "mqtt_config_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
               "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
             }
+
+  - id: turn_off_all_lights_when_leaving_home_zone
+    alias: Turn off all Lights when Leaving Home Zone
+    trigger:
+      - platform: state
+        entity_id: device_tracker.google_maps_105963854027405298065
+        from: 'home'
+        to: 'not_home'
+        for:
+          minutes: 5
+    action:
+      - service: homeassistant.turn_off
+        entity_id: group.all_lights
