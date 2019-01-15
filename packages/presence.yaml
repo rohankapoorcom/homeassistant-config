@@ -89,6 +89,15 @@ homeassistant:
     automation.update_last_presence_location:
       <<: *customize
 
+    ################################################
+    ## Zone
+    ################################################
+    zone.home:
+      <<: *customize
+
+    zone.work:
+      <<: *customize
+
 ################################################
 ## Input Select
 ################################################
@@ -122,7 +131,7 @@ zone:
   - name: Work
     latitude: !secret zone.work.latitude
     longitude: !secret zone.work.longitude
-    radius: 100
+    radius: 250
 
 ################################################
 ## Automation
