@@ -121,7 +121,7 @@ zone:
 
   - name: Work
     latitude: !secret zone.work.latitude
-    longitude: !secret zone.work.latitude
+    longitude: !secret zone.work.longitude
     radius: 100
 
 ################################################
