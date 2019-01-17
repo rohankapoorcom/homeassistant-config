@@ -126,6 +126,19 @@ homeassistant:
       <<: *customize
 
 ################################################
+## Emulated Roku
+################################################
+emulated_roku:
+  host_ip: !secret emulated_roku.host_ip
+  listen_ports: !secret emulated_roku.listen_ports
+
+################################################
+## Media Player
+################################################
+media_player:
+  - platform: denonavr
+
+################################################
 ## Input Number
 ################################################
 input_number:

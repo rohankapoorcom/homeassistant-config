@@ -66,10 +66,6 @@ mqtt:
 hue:
   bridges: !secret hue.bridges
 
-emulated_roku:
-  host_ip: !secret emulated_roku.host_ip
-  listen_ports: !secret emulated_roku.listen_ports
-
 xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface
   gateways: !secret xiaomi_aqara.gateways
@@ -80,8 +76,6 @@ lutron_caseta:
   certfile: caseta.crt
   ca_certs: caseta-bridge.crt
 
-media_player:
-  - platform: denonavr
 
 automation old: !include_dir_list automations
 group: !include_dir_named groups
