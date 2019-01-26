@@ -26,7 +26,7 @@ homeassistant:
           event_type: roku_command
 
       roku_event_data: &roku_event_data
-        roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+        source_name: 4t8k7RAjE3TBcfheQvCATZ
         type: keypress
 
       cover: &cover
@@ -129,8 +129,10 @@ homeassistant:
 ## Emulated Roku
 ################################################
 emulated_roku:
-  host_ip: !secret emulated_roku.host_ip
-  listen_ports: !secret emulated_roku.listen_ports
+  servers:
+    - name: !secret emulated_roku.name
+      listen_port: !secret emulated_roku.listen_port
+      host_ip: !secret emulated_roku.host_ip
 
 ################################################
 ## Media Player
@@ -338,7 +340,7 @@ automation:
   - id: evaluate_and_turn_off_speakers_when_presence_location_changes
     alias: Evaluate and Turn off Speakers when Presence Location Changes
     trigger:
-      - platform: time
+      - platform: time_pattern
         minutes: '/5'
         seconds: 00
     action:
@@ -408,9 +410,8 @@ automation:
         event_type: platform_discovered
         event_data:
           service: harmony
-      - platform: time
+      - platform: time_pattern
         minutes: '/5'
-        seconds: 00
     action:
       - service: input_number.set_value
         data_template:

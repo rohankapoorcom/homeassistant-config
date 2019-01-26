@@ -35,9 +35,8 @@ automation:
     trigger:
       - platform: event
         event_type: HASP_CONNECTED
-      - platform: time
-        # Matches every minute
-        seconds: 00
+      - platform: time_pattern
+        minutes: '/1'
     condition:
     action:
       - service: python_script.hasp_update_message

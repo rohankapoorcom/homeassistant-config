@@ -49,9 +49,8 @@ automation:
 # elevation below -10 == backlight 25
   - alias: hasp_plates_components_BacklightBySun
     trigger:
-      - platform: time
-        # Matches every minute
-        seconds: 00
+      - platform: time_pattern
+        minutes: '/1'
     condition:
       - condition: and
         conditions:
@@ -80,9 +79,8 @@ automation:
     trigger:
       - platform: homeassistant
         event: start
-      - platform: time
+      - platform: time_pattern
         minutes: '/5'
-        seconds: 00
     action:
       - service: group.set
         data_template:

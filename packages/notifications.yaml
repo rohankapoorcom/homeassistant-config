@@ -51,9 +51,8 @@ automation:
   - id: keep_notifications_awake
     alias: Keep Notifications Awake
     trigger:
-      - platform: time
+      - platform: time_pattern
         minutes: '/2'
-        seconds: 00
     condition:
       - condition: or
         conditions:
@@ -73,9 +72,8 @@ automation:
   - id: keep_all_speakers_awake
     alias: Keep All Speakers Awake
     trigger:
-      - platform: time
+      - platform: time_pattern
         minutes: '/2'
-        seconds: 00
     condition:
       - condition: or
         conditions:
