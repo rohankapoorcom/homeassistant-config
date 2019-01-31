@@ -61,6 +61,8 @@ homeassistant:
       location: 'Upstairs'
       music_activity_name: 'Listen to Music on Speakers'
       music_activity_id: '32547827'
+      pc_activity_name: 'Use PC on Speakers'
+      pc_activity_id: '32547985'
       volume_device: '53194709'
 
     ################################################
@@ -83,6 +85,8 @@ homeassistant:
     ## Switch
     ################################################
     switch.upstairs_speakers:
+      <<: *customize
+    switch.upstairs_pc_speakers:
       <<: *customize
     switch.downstairs_speakers:
       <<: *customize
@@ -214,6 +218,22 @@ switch:
           service: script.harmony_music_turn_on
           data:
             entity_id: remote.upstairs_hub
+        turn_off:
+          service: remote.turn_off
+          data:
+            entity_id: remote.upstairs_hub
+
+      upstairs_pc_speakers:
+        <<: *speaker
+        friendly_name: "PC Speakers"
+        value_template: >
+          {% set entity_id = "remote.upstairs_hub" %}
+          {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'pc_activity_name')) }}
+        turn_on:
+          service: remote.turn_on
+          data_template:
+            entity_id: remote.upstairs_hub
+            activity: "{{ state_attr(entity_id, 'pc_activity_id') }}"
         turn_off:
           service: remote.turn_off
           data:

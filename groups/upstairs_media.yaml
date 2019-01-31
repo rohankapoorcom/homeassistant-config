@@ -3,5 +3,6 @@ control: hidden
 entities:
   - media_player.all_speakers
   - switch.upstairs_speakers
+  - switch.upstairs_pc_speakers
   - input_number.volume_increment
   - cover.upstairs_volume
