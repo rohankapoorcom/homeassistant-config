@@ -16,6 +16,9 @@ homeassistant:
       customize: &customize
         package: 'living_room_lighting'
 
+    light.end_table_color_lights:
+      <<: *customize
+      friendly_name: 'End Tables'
 
     scene.downstairs_lights_on:
       <<: *customize
@@ -33,7 +36,7 @@ scene:
 
   - name: Downstairs Lights On
     entities:
-      group.end_tables:
+      light.end_table_color_lights:
         state: on
         brightness_pct: 100
         color_temp: 233
@@ -60,7 +63,7 @@ scene:
 
   - name: Downstairs Lights Off
     entities:
-      group.end_tables: off
+      light.end_table_color_lights: off
       light.couch_accent_white: off
       light.tv_backlight_color: off
       light.tv_backlight_white: off
@@ -69,7 +72,7 @@ scene:
 
   - name: Living Room Lights On
     entities:
-      group.end_tables:
+      light.end_table_color_lights:
         state: on
         brightness_pct: 100
         color_temp: 233

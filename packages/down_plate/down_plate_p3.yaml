@@ -74,7 +74,7 @@ automation:
         payload: 'ON'
     action:
       - service: homeassistant.toggle
-        entity_id: group.end_tables
+        entity_id: light.end_table_color_lights
 
   - alias: hasp_down_plate_p3_ToggleCouchAccent
     trigger:
@@ -109,20 +109,20 @@ automation:
         topic: 'hasp/down_plate/status'
         payload: 'ON'
       - platform: state
-        entity_id: group.end_tables
+        entity_id: light.end_table_color_lights
     action:
       - service: python_script.hasp_update_colors
         data_template:
           nodename: down_plate
           object_id: 'p[3].b[4]'
           background: >-
-            {% if is_state('group.end_tables', 'on') -%}
+            {% if is_state('light.end_table_color_lights', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
           foreground: >-
-            {% if is_state('group.end_tables', 'on') -%}
+            {% if is_state('light.end_table_color_lights', 'on') -%}
               0
             {%- else -%}
               65535

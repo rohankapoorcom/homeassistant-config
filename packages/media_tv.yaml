@@ -38,7 +38,7 @@ group:
   downstairs_tv_lights:
     name: TV Lights
     entities:
-      - group.end_tables
+      - light.end_table_color_lights
       - light.tv_backlight_color
 
   downstairs_non_tv_lights:

@@ -7,7 +7,7 @@ trigger:
     to: 'on'
 action:
   - service: homeassistant.turn_on
-    entity_id: group.end_tables
+    entity_id: light.end_table_color_lights
     data:
       brightness_pct: 100
       color_temp: 233
@@ -23,7 +23,7 @@ condition:
     below: -2.5
   # Lights already on
   - condition: state
-    entity_id: group.end_tables
+    entity_id: light.end_table_color_lights
     state: 'off'
   - condition: state
     entity_id: light.couch_accent_white

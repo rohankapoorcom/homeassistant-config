@@ -6,5 +6,5 @@ entities:
   - light.kitchen_sink_light
   - light.living_room_lamp
   - light.tv_backlight_color
-  - group.end_tables
+  - light.end_table_color_lights
   - switch.server_rack_lights
