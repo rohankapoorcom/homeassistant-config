@@ -74,7 +74,7 @@ automation:
         payload: 'ON'
     action:
       - service: homeassistant.toggle
-        entity_id: group.kitchen_table
+        entity_id: light.kitchen_table
 
   - alias: hasp_down_plate_p9_ToggleKitchenSink
     trigger:
@@ -100,20 +100,20 @@ automation:
         topic: 'hasp/down_plate/status'
         payload: 'ON'
       - platform: state
-        entity_id: group.kitchen_table
+        entity_id: light.kitchen_table
     action:
       - service: python_script.hasp_update_colors
         data_template:
           nodename: down_plate
           object_id: 'p[9].b[4]'
           background: >-
-            {% if is_state('group.kitchen_table', 'on') -%}
+            {% if is_state('light.kitchen_table', 'on') -%}
               64577
             {%- else -%}
               25388
             {%- endif %}
           foreground: >-
-            {% if is_state('group.kitchen_table', 'on') -%}
+            {% if is_state('light.kitchen_table', 'on') -%}
               0
             {%- else -%}
               65535

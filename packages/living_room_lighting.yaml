@@ -56,7 +56,7 @@ scene:
         state: on
         brightness_pct: 100
         color_temp: 233
-      group.kitchen_table:
+      light.kitchen_table:
         state: on
         brightness_pct: 100
         color_temp: 233
@@ -68,7 +68,7 @@ scene:
       light.tv_backlight_color: off
       light.tv_backlight_white: off
       light.living_room_lamp: off
-      group.kitchen_table: off
+      light.kitchen_table: off
 
   - name: Living Room Lights On
     entities:
@@ -95,7 +95,7 @@ scene:
 
   - name: Kitchen Lights On
     entities:
-      group.kitchen_table:
+      light.kitchen_table:
         state: on
         brightness_pct: 100
         color_temp: 233

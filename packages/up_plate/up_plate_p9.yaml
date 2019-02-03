@@ -74,7 +74,7 @@ automation:
         payload: 'ON'
     action:
       - service: homeassistant.toggle
-        entity_id: group.kitchen_table
+        entity_id: light.kitchen_table
 
   - alias: hasp_up_plate_p9_ToggleKitchenSink
     trigger:
@@ -100,13 +100,13 @@ automation:
         topic: 'hasp/up_plate/status'
         payload: 'ON'
       - platform: state
-        entity_id: group.kitchen_table
+        entity_id: light.kitchen_table
     action:
       - service: mqtt.publish
         data_template:
           topic: 'hasp/up_plate/command/p[9].b[4].bco'
           payload_template: >-
-            {% if is_state('group.kitchen_table', 'on') -%}
+            {% if is_state('light.kitchen_table', 'on') -%}
               64577
             {%- else -%}
               25388
@@ -115,7 +115,7 @@ automation:
         data_template:
           topic: 'hasp/up_plate/command/p[9].b[4].pco'
           payload_template: >-
-            {% if is_state('group.kitchen_table', 'on') -%}
+            {% if is_state('light.kitchen_table', 'on') -%}
               0
             {%- else -%}
               65535
