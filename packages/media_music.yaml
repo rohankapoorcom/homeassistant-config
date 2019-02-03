@@ -233,7 +233,7 @@ switch:
           service: remote.turn_on
           data_template:
             entity_id: remote.upstairs_hub
-            activity: "{{ state_attr(entity_id, 'pc_activity_id') }}"
+            activity: "{{ state_attr(remote.upstairs_hub, 'pc_activity_id') }}"
         turn_off:
           service: remote.turn_off
           data:
