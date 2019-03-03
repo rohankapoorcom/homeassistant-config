@@ -48,13 +48,13 @@ sensor:
 
 input_text:
   hasp_down_plate_pagebutton1label:
-    name: down_plate Page 1 Label
+    name: Page 1
     icon: mdi:book-open-page-variant
   hasp_down_plate_pagebutton2label:
-    name: down_plate Page 2 Label
+    name: Page 2
     icon: mdi:book-open-page-variant
   hasp_down_plate_pagebutton3label:
-    name: down_plate Page 3 Label
+    name: Page 3
     icon: mdi:book-open-page-variant
 
 input_number:
@@ -122,7 +122,6 @@ group:
       - light.down_plate_backlight
       - group.down_plate_pageselect
       - group.down_plate_automations
-      - input_select.hasp_down_plate_p2_weather_selection
 
   down_plate_pageselect:
     name: Page Selection
@@ -135,6 +134,7 @@ group:
       - input_text.hasp_down_plate_pagebutton2label
       - input_number.hasp_down_plate_pagebutton3page
       - input_text.hasp_down_plate_pagebutton3label
+      - input_select.hasp_down_plate_p2_weather_selection
     control: hidden
 
   down_plate_automations:
@@ -186,13 +186,11 @@ group:
       - automation.hasp_down_plate_p8_medianexttrackbutton8
       - automation.hasp_down_plate_p8_mediapausebutton7
       - automation.hasp_down_plate_p8_mediaprevtrackbutton6
-      - automation.hasp_down_plate_p8_mediatitle
-      - automation.hasp_down_plate_p8_mediavolsliderupdatehasp
       - automation.hasp_down_plate_p8_mediavolsliderupdatehass
       - automation.hasp_down_plate_p9_ToggleInit
-      - automation.hasp_down_plate_p9_ToggleCouchAccent
-      - automation.hasp_down_plate_p9_ToggleTVBacklight
-      - automation.hasp_down_plate_p9_ToggleCornerLight
+      - automation.hasp_down_plate_p9_ToggleKitchenTable
+      - automation.hasp_down_plate_p9_ToggleKitchenSink
+      - automation.hasp_down_plate_p9_ToggleServerRack
       - automation.hasp_down_plate_p9_ToggleColor1
       - automation.hasp_down_plate_p9_ToggleColor2
       - automation.hasp_down_plate_p9_ToggleColor3

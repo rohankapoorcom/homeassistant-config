@@ -33,6 +33,7 @@ input_select:
     options:
       - Interior
       - Exterior
+    icon: mdi:book-open-page-variant
 
 ################################################
 ## Automation
