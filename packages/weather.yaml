@@ -36,7 +36,7 @@ sensor:
     sensors:
 
       exterior_temperature:
-        value_template: "{{state_attr('weather.dark_sky', 'temperature')}}"
+        value_template: "{{state_attr('weather.dark_sky', 'temperature') | round(1)}}"
 
       exterior_humidity:
-        value_template: "{{state_attr('weather.dark_sky', 'humidity')}}"
+        value_template: "{{state_attr('weather.dark_sky', 'humidity') | round(1)}}"
