@@ -19,8 +19,11 @@ homeassistant:
       customize: &customize
         package: 'ha_system'
 
-      command_line_sensor_default: &defaults
+      defaults: &defaults
         scan_interval: 10
+
+      command_line_sensor_default: &command_line_sensor_defaults
+        <<: *defaults
         command_timeout: 5
 
     ################################################
@@ -41,17 +44,34 @@ homeassistant:
 
     sensor.current_git_commit_id:
       <<: *customize
+      friendly_name: Current Git Hash
 
     sensor.current_git_commit_time:
       <<: *customize
+      friendly_name: Current Git Time
 
     sensor.current_version:
       <<: *customize
+      friendly_name: Running Version
 
     sensor.desired_version:
       <<: *customize
+      friendly_name: Desired Version
 
     sensor.upgraded_version:
+      <<: *customize
+      friendly_name: Upgraded Version
+
+    sensor.speedtest_ping:
+      <<: *customize
+
+    sensor.speedtest_download:
+      <<: *customize
+
+    sensor.speedtest_upload:
+      <<: *customize
+
+    sensor.fast_com_download:
       <<: *customize
 
     ################################################
@@ -90,6 +110,7 @@ group:
     view: yes
     entities:
       - group.ha_system_configuration
+      - group.network_monitoring
 
   ha_system_configuration:
     name: Configuration
@@ -100,6 +121,15 @@ group:
       - sensor.current_version
       - sensor.desired_version
       - sensor.upgraded_version
+
+  network_monitoring:
+    name: Network
+    entities:
+      - sensor.speedtest_ping
+      - sensor.speedtest_download
+      - sensor.speedtest_upload
+      - sensor.fast_com_download
+
 
 ################################################
 ## Sensor
@@ -116,32 +146,27 @@ sensor:
       - last_build_state
 
   - platform: command_line
-    <<: *defaults
+    <<: *command_line_sensor_defaults
     name: current_git_commit_id
-    friendly_name: Current Git Hash
     command: '/usr/bin/git -C /etc/homeassistant/ rev-parse HEAD'
 
   - platform: command_line
-    <<: *defaults
+    <<: *command_line_sensor_defaults
     name: current_git_commit_time
-    friendly_name: Current Git Time
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
   - platform: version
     <<: *defaults
     name: current_version
-    friendly_name: Running Version
 
   - platform: command_line
-    <<: *defaults
+    <<: *command_line_sensor_defaults
     name: desired_version
-    friendly_name: Desired Version
     command: '/bin/cat /etc/homeassistant/.HA_VERSION'
 
   - platform: command_line
-    <<: *defaults
+    <<: *command_line_sensor_defaults
     name: upgraded_version
-    friendly_name: Upgraded Version
     command: '/srv/homeassistant/bin/hass --version'
 
 ################################################
