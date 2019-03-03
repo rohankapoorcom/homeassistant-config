@@ -20,13 +20,16 @@ homeassistant:
     automation.hasp_down_plate_p2_Weather:
       <<: *customize
 
+    automation.hasp_down_plate_p2_Weather_toggle:
+      <<: *customize
+
 
 ################################################
 ## Input Select
 ################################################
 input_select:
   hasp_down_plate_p2_weather_selection:
-    name: down_plate Weather Selection
+    name: Weather Selection
     options:
       - Interior
       - Exterior

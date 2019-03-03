@@ -112,6 +112,7 @@ input_number:
     initial: -1
 
 group:
+
   down_plate:
     name: down_plate
     view: yes
@@ -121,8 +122,10 @@ group:
       - light.down_plate_backlight
       - group.down_plate_pageselect
       - group.down_plate_automations
+      - input_select.hasp_down_plate_p2_weather_selection
+
   down_plate_pageselect:
-    name: down_plate Page Selection
+    name: Page Selection
     view: no
     entities:
       - input_number.hasp_down_plate_activepage
@@ -132,12 +135,13 @@ group:
       - input_text.hasp_down_plate_pagebutton2label
       - input_number.hasp_down_plate_pagebutton3page
       - input_text.hasp_down_plate_pagebutton3label
+    control: hidden
+
   down_plate_automations:
-    name: down_plate automations
+    name: Automations
     view: no
     entities:
       - automation.hasp_down_plate_00_firsttimesetup
-      - automation.hasp_down_plate_00_autofirmwareupdate
       - automation.hasp_down_plate_p0_activepagesliderchanged
       - automation.hasp_down_plate_p0_pagebutton1_text
       - automation.hasp_down_plate_p0_pagebutton1action
@@ -153,10 +157,8 @@ group:
       - automation.hasp_down_plate_p1_scenebutton6
       - automation.hasp_down_plate_p1_scenebutton7
       - automation.hasp_down_plate_p1_scenesinit
-      - automation.hasp_down_plate_p2_clockinit
-      - automation.hasp_down_plate_p2_clockupdate
-      - automation.hasp_down_plate_p2_calendarupdate
-      - automation.hasp_down_plate_p2_weather
+      - automation.hasp_down_plate_p2_Weather
+      - automation.hasp_down_plate_p2_Weather_toggle
       - automation.hasp_down_plate_p3_ToggleInit
       - automation.hasp_down_plate_p3_ToggleEndTables
       - automation.hasp_down_plate_p3_ToggleCouchAccent
@@ -181,24 +183,19 @@ group:
       - automation.hasp_down_plate_p7_alarmdisarmed
       - automation.hasp_down_plate_p7_alarminit
       - automation.hasp_down_plate_p7_alarmstatuspending
-      - automation.hasp_down_plate_p8_mediaartist
-      - automation.hasp_down_plate_p8_mediainit
       - automation.hasp_down_plate_p8_medianexttrackbutton8
       - automation.hasp_down_plate_p8_mediapausebutton7
-      - automation.hasp_down_plate_p8_mediaplaypause
       - automation.hasp_down_plate_p8_mediaprevtrackbutton6
       - automation.hasp_down_plate_p8_mediatitle
       - automation.hasp_down_plate_p8_mediavolsliderupdatehasp
       - automation.hasp_down_plate_p8_mediavolsliderupdatehass
       - automation.hasp_down_plate_p9_ToggleInit
-      - automation.hasp_down_plate_p9_ToggleEndTables
       - automation.hasp_down_plate_p9_ToggleCouchAccent
       - automation.hasp_down_plate_p9_ToggleTVBacklight
       - automation.hasp_down_plate_p9_ToggleCornerLight
       - automation.hasp_down_plate_p9_ToggleColor1
       - automation.hasp_down_plate_p9_ToggleColor2
       - automation.hasp_down_plate_p9_ToggleColor3
-      - automation.hasp_down_plate_p9_ToggleColor4
 
 automation:
 ##############################################################################

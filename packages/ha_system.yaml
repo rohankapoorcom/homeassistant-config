@@ -121,6 +121,7 @@ group:
       - sensor.current_version
       - sensor.desired_version
       - sensor.upgraded_version
+    control: hidden
 
   network_monitoring:
     name: Network
@@ -129,6 +130,7 @@ group:
       - sensor.speedtest_download
       - sensor.speedtest_upload
       - sensor.fast_com_download
+    control: hidden
 
 
 ################################################
