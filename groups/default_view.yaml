@@ -7,3 +7,4 @@ entities:
   - media_player.denon_avrs720w
   - media_player.living_room
   - group.all_remotes
+  - weather.dark_sky

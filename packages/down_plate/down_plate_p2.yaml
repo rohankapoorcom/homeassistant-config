@@ -20,6 +20,17 @@ homeassistant:
     automation.hasp_down_plate_p2_Weather:
       <<: *customize
 
+
+################################################
+## Input Select
+################################################
+input_select:
+  hasp_down_plate_p2_weather_selection:
+    name: down_plate Weather Selection
+    options:
+      - Interior
+      - Exterior
+
 ################################################
 ## Automation
 ################################################
@@ -34,9 +45,31 @@ automation:
         entity_id: sensor.temperature_158d0002287ef6
       - platform: state
         entity_id: sensor.humidity_158d0002287ef6
+      - platform: state
+        entity_id: sensor.exterior_temperature
+      - platform: state
+        entity_id: sensor.exterior_weather
+      - platform: state
+        entity_id: input_select.hasp_down_plate_p2_weather_selection
     action:
       - service: python_script.hasp_update_message
         data_template:
           nodename: down_plate
           object_id: 'p[2].b[6]'
-          text: "{{states('sensor.temperature_158d0002287ef6')}}F|{{states('sensor.humidity_158d0002287ef6')}}%"
+          text: >
+            {%- set entity_id = 'input_select.hasp_down_plate_p2_weather_selection' -%}
+            {%- if is_state(entity_id, 'Interior') -%}
+              I|{{states('sensor.temperature_158d0002287ef6')}}F|{{states('sensor.humidity_158d0002287ef6')}}%
+            {%- elif is_state(entity_id, 'Exterior') -%}
+              E|{{states('sensor.exterior_temperature')}}F|{{states('sensor.exterior_humidity')}}%
+            {%- else -%}
+            {%- endif -%}
+
+  - alias: hasp_down_plate_p2_Weather_toggle
+    trigger:
+    - platform: mqtt
+      topic: 'hasp/down_plate/state/p[2].b[6]'
+      payload: 'ON'
+    action:
+    - service: input_select.select_next
+      entity_id: input_select.hasp_down_plate_p2_weather_selection

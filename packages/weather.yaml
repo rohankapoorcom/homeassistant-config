@@ -15,6 +15,28 @@ homeassistant:
       customize: &customize
         package: 'weather'
 
+      ################################################
+      ## Sensor
+      ################################################
+      sensor.exterior_temperature:
+        <<: *customize
+      sensor.exterior_humidity:
+        <<: *customize
+
 weather:
   - platform: darksky
     api_key: !secret weather.darksky.api_key
+
+
+################################################
+## Sensor
+################################################
+sensor:
+  - platform: template
+    sensors:
+
+      exterior_temperature:
+        value_template: "{{state_attr('weather.dark_sky', 'temperature')}}"
+
+      exterior_humidity:
+        value_template: "{{state_attr('weather.dark_sky', 'humidity')}}"
