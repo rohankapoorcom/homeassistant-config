@@ -1,0 +1,20 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  03/02/2019
+#  @package      :  Weather
+#  @description  :  Creates weather related entities
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'weather'
+
+weather:
+  - platform: darksky
+    api_key: !secret weather.darksky.api_key
