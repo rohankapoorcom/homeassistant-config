@@ -15,13 +15,13 @@ homeassistant:
       customize: &customize
         package: 'weather'
 
-      ################################################
-      ## Sensor
-      ################################################
-      sensor.exterior_temperature:
-        <<: *customize
-      sensor.exterior_humidity:
-        <<: *customize
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.exterior_temperature:
+      <<: *customize
+    sensor.exterior_humidity:
+      <<: *customize
 
 weather:
   - platform: darksky
