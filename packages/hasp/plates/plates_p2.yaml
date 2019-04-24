@@ -57,7 +57,7 @@ automation:
         data_template:
           nodename: plates
           object_id: 'p[2].b[5]'
-          text: '{{"  {}\\r{}".format(now().strftime("%A"),now().strftime("%B %C %Y"))}}'
+          text: '{{"  {}\\r{}".format(now().strftime("%A"),now().strftime("%B %d %Y"))}}'
 
   - alias: hasp_plates_p2_DoorLock
     trigger:
