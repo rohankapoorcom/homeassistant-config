@@ -143,6 +143,7 @@ emulated_roku:
 ################################################
 media_player:
   - platform: denonavr
+    host: !secret media_player.denonavr.host
 
 ################################################
 ## Input Number
