@@ -25,7 +25,7 @@ homeassistant:
       <<: *customize
 
 tts:
-  platform: google
+  platform: google_translate
 
 mailgun:
   domain: !secret mailgun.domain
