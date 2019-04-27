@@ -44,7 +44,7 @@ automation:
       from: 'locked'
       to: 'unlocked'
     action:
-    - service: tts.google_say
+    - service: tts.google_translate_say
       data:
         entity_id: media_player.notifications
         message: 'Alert - The front door is unlocked'
@@ -74,7 +74,7 @@ automation:
       entity_id: lock.front_door
       state: 'unlocked'
     action:
-    - service: tts.google_say
+    - service: tts.google_translate_say
       data:
         entity_id: media_player.notifications
         message: 'Automatically locking the front door'
