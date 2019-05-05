@@ -56,7 +56,7 @@ automation:
       - platform: state
         entity_id: input_select.hasp_down_plate_p2_weather_selection
     action:
-      - service: python_script.hasp_update_message
+      - service: python_script.hasp_update_message_and_colors
         data_template:
           nodename: down_plate
           object_id: 'p[2].b[6]'
@@ -68,6 +68,14 @@ automation:
               E|{{states('sensor.exterior_temperature')}}F|{{states('sensor.exterior_humidity')}}%
             {%- else -%}
             {%- endif -%}
+          background: >
+            {%- set entity_id = 'input_select.hasp_down_plate_p2_weather_selection' -%}
+            {%- if is_state(entity_id, 'Interior') -%}
+              '17004'
+            {%- elif is_state(entity_id, 'Exterior') -%}
+              '25063'
+            {%- endif -%}
+          foreground: '65535'
 
   - alias: hasp_down_plate_p2_Weather_toggle
     trigger:
