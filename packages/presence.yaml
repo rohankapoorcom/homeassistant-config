@@ -181,11 +181,7 @@ automation:
               "name": "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }} Last Seen",
               "state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
               "value_template": "{{ "{{" }} value_json.value {{ "}}" }}",
-              "json_attributes": [
-                "package",
-                "mqtt_config_topic",
-                "mqtt_state_topic"
-              ]
+              "json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes",
             }
       - service: mqtt.publish
         data_template:
@@ -194,6 +190,13 @@ automation:
           payload: >-
             {
               "value": "{{ utcnow() }}",
+            }
+      - service: mqtt.publish
+        data_template:
+          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
+          retain: true
+          payload: >-
+            {
               "package": "presence",
               "mqtt_config_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
               "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
