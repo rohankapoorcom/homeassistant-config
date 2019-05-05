@@ -26,15 +26,17 @@ base_payload = {
     'object_id': object_id,
 }
 
-if text:
-    payload = base_payload.copy().update({
+if 'text' in data:
+    payload = base_payload.copy()
+    payload.update({
         'text': text,
         'update_font': update_font
     })
     hass.services.call('python_script', 'hasp_update_message', payload)
 
 if background or foreground:
-    payload = base_payload.copy().update({
+    payload = base_payload.copy()
+    payload.update({
         'background': background,
         'foreground': foreground
     })
