@@ -181,7 +181,7 @@ automation:
               "name": "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }} Last Seen",
               "state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
               "value_template": "{{ "{{" }} value_json.value {{ "}}" }}",
-              "json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes",
+              "json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
             }
       - service: mqtt.publish
         data_template:
