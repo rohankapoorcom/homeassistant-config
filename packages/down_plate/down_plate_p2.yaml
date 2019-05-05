@@ -73,7 +73,7 @@ automation:
             {%- if is_state(entity_id, 'Interior') -%}
               17004
             {%- elif is_state(entity_id, 'Exterior') -%}
-              25063
+              25062
             {%- endif -%}
           foreground: '65535'
 

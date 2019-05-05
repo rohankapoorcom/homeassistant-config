@@ -74,9 +74,9 @@ automation:
           background: >
             {%- set entity_id = 'lock.front_door' -%}
             {%- if is_state(entity_id, 'locked') -%}
-              '63488'
+              63488
             {%- elif is_state(entity_id, 'unlocked') -%}
-              '1600'
+              1600
             {%- endif -%}
 
   - alias: hasp_plates_p2_DoorLock_toggle
