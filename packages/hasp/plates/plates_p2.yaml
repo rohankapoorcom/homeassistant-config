@@ -66,11 +66,18 @@ automation:
       - platform: state
         entity_id: lock.front_door
     action:
-      - service: python_script.hasp_update_message
+      - service: python_script.hasp_update_message_and_colors
         data_template:
           nodename: plates
           object_id: 'p[2].b[7]'
           text: "Doors:{{states('lock.front_door')}}"
+          background: >
+            {%- set entity_id = 'lock.front_door' -%}
+            {%- if is_state(entity_id, 'Locked') -%}
+              '63488'
+            {%- elif is_state(entity_id, 'Unlocked') -%}
+              '1600'
+            {%- endif -%}
 
   - alias: hasp_plates_p2_DoorLock_toggle
     trigger:
