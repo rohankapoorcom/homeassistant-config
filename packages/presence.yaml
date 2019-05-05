@@ -189,7 +189,7 @@ automation:
           retain: true
           payload: >-
             {
-              "value": "{{ utcnow() }}",
+              "value": "{{ utcnow() }}"
             }
       - service: mqtt.publish
         data_template:
