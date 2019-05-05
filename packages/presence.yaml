@@ -199,7 +199,8 @@ automation:
             {
               "package": "presence",
               "mqtt_config_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
-              "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
+              "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
+              "mqtt_json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
             }
 
   - id: turn_off_all_lights_when_leaving_home_zone
