@@ -42,6 +42,7 @@ amcrest:
       - motion_detected
 
 ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
 
 stream:
 
