@@ -8,6 +8,20 @@ script:
 before_install:
   - mv tests/travis_secrets.yaml secrets.yaml
 
+addons:
+  apt:
+    update: true
+    packages:
+      - python-dev
+      - pkg-config
+      - libavformat-dev
+      - libavcodec-dev
+      - libavdevice-dev
+      - libavutil-dev
+      - libswscale-dev
+      - libavresample-dev
+      - libavfilter-dev
+
 cache:
   directories:
     - $HOME/.cache/pip
