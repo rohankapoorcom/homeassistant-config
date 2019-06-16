@@ -41,6 +41,8 @@ amcrest:
     binary_sensors:
       - motion_detected
 
+ffmpeg:
+
 stream:
 
 
