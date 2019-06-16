@@ -31,6 +31,19 @@ zoneminder:
 camera:
   - platform: zoneminder
 
+amcrest:
+  - host: !secret amcrest.host.frontdoor.host
+    username: !secret amcrest.host.frontdoor.username
+    password: !secret amcrest.host.frontdoor.password
+    name: Frontdoor
+    resolution: high
+    stream_source: rtsp
+    binary_sensors:
+      - motion_detected
+
+stream:
+
+
 ################################################
 ## Automation
 ################################################
