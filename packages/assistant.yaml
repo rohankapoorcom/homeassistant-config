@@ -7,11 +7,11 @@
 
 google_assistant:
   project_id: !secret google_assistant.project_id
-    api_key: !secret google_assistant.api_key
-    exposed_domains:
-      - camera
-    entity_config:
-      camera.frontdoor:
-        expose: false
-      camera.frontdoor_2:
-        name: Front Door Camera
+  api_key: !secret google_assistant.api_key
+  exposed_domains:
+    - camera
+  entity_config:
+    camera.frontdoor:
+      expose: false
+    camera.frontdoor_2:
+      name: Front Door Camera
