@@ -12,6 +12,8 @@ before_install:
 addons:
   apt:
     update: true
+    sources:
+      - sourceline: "ppa:jonathonf/ffmpeg-4"
     packages:
       - python-dev
       - pkg-config
