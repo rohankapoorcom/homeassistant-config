@@ -13,5 +13,9 @@ google_assistant:
   entity_config:
     camera.frontdoor:
       expose: false
+    camera.backwindow:
+      expose: false
     camera.frontdoor_2:
       name: Front Door Camera
+    camera.backwindow_2:
+      name: Back Window Camera
