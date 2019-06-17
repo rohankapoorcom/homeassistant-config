@@ -44,11 +44,11 @@ amcrest:
   - host: !secret amcrest.host.backwindow.host
     username: !secret amcrest.host.backwindow.username
     password: !secret amcrest.host.backwindow.password
-      name: Backwindow
-      resolution: high
-      stream_source: rtsp
-      binary_sensors:
-        - motion_detected
+    name: Backwindow
+    resolution: high
+    stream_source: rtsp
+    binary_sensors:
+      - motion_detected
 
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
