@@ -50,6 +50,15 @@ amcrest:
     binary_sensors:
       - motion_detected
 
+  - host: !secret amcrest.host.upstairs.host
+    username: !secret amcrest.host.upstairs.username
+    password: !secret amcrest.host.upstairs.password
+    name: Upstairs
+    resolution: high
+    stream_source: rtsp
+    binary_sensors:
+      - motion_detected
+
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 
@@ -63,6 +72,7 @@ group:
     entities:
       - camera.frontdoor
       - camera.backwindow
+      - camera.upstairs
 
 
 ################################################

@@ -13,9 +13,13 @@ google_assistant:
   entity_config:
     camera.frontdoor:
       expose: false
-    camera.backwindow:
-      expose: false
     camera.frontdoor_2:
       name: Front Door Camera
+    camera.backwindow:
+      expose: false
     camera.backwindow_2:
       name: Back Window Camera
+    camera.upstairs:
+      expose: false
+    camera.upstairs_2:
+      name: Upstairs Camera
