@@ -12,6 +12,10 @@ homeassistant:
   time_zone: America/Los_Angeles
   customize: !include customize.yaml
   packages: !include_dir_named packages
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks: !secret http.trusted_networks
 
 # Enables the frontend
 frontend:
@@ -21,13 +25,10 @@ frontend:
 config:
 
 http:
-  # Uncomment this to add a password (recommended!)
-  api_password: !secret http.api_password
   # Uncomment this if you are using SSL or running in Docker etc
   base_url: !secret http.base_url
   use_x_forwarded_for: True
   trusted_proxies: !secret http.trusted_proxies
-  trusted_networks: !secret http.trusted_networks
   ip_ban_enabled: True
   login_attempts_threshold: 3
 

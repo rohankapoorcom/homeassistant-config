@@ -34,8 +34,9 @@ mailgun:
 notify:
   - name: FirebasePush
     platform: html5
-    gcm_api_key: !secret notify.gcm_api_key
-    gcm_sender_id: !secret notify.gcm_sender_id
+    vapid_prv_key: !secret notify.gcm.vapid_prv_key
+    vapid_pub_key: !secret notify.gcm.vapid_pub_key
+    vapid_email: !secret notify.gcm.vapid_email
 
   - name: rohan_email
     platform: mailgun
