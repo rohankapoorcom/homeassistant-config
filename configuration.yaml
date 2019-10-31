@@ -44,6 +44,9 @@ conversation:
 recorder:
   db_url: !secret recorder.db_url
   purge_interval: 0
+  exclude:
+    entities:
+      - sensor.roborock_map
 
 # Enables support for tracking state changes over time.
 history:

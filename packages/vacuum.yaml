@@ -1,0 +1,45 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  10/30/2019
+#  @package      :  Vacuum
+#  @description  :  Manages integration with Vacuums
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'vacuum'
+
+
+    ################################################
+    ## Sensor
+    ################################################
+
+    sensor.roborock_map:
+      <<: *customize
+
+
+    ################################################
+    ## Sensor
+    ################################################
+    vacuum.rockrobo:
+      <<: *customize
+
+
+################################################
+## Sensor
+################################################
+
+sensor:
+
+  - platform: mqtt
+    state_topic: "valetudo/roborock/state"
+    json_attributes_topic: "valetudo/roborock/map_data"
+    name: roborock_map
+    value_template: 'OK'
+    scan_interval: 5
