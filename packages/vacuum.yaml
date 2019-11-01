@@ -15,31 +15,91 @@ homeassistant:
       customize: &customize
         package: 'vacuum'
 
+    ################################################
+    ## Vacuum
+    ################################################
+    vacuum.rockrobo:
+      <<: *customize
 
     ################################################
     ## Sensor
     ################################################
-
     sensor.roborock_map:
       <<: *customize
 
+    ################################################
+    ## Input Boolean
+    ################################################
+    input_boolean.send_vacuum_home:
+      <<: *customize
 
     ################################################
-    ## Sensor
+    ## Script
     ################################################
-    vacuum.rockrobo:
+    script.send_vacuum_for_emptying:
+      <<: *customize
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.send_vacuum_when_kitchen_button_held_down:
       <<: *customize
 
 
 ################################################
 ## Sensor
 ################################################
-
 sensor:
-
   - platform: mqtt
     state_topic: "valetudo/rockrobo/state"
     json_attributes_topic: "valetudo/rockrobo/map_data"
     name: roborock_map
     value_template: 'OK'
     scan_interval: 5
+
+
+################################################
+## Input Boolean
+################################################
+input_boolean:
+  send_vacuum_home:
+    name: Enabled
+
+################################################
+## Script
+################################################
+script:
+  send_vacuum_for_emptying:
+    sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: 'vacuum.rockrobo'
+          command: 'go_to'
+          params:
+            spot_id: 'Kitchen Trash Can'
+
+
+################################################
+## Automation
+################################################
+automation:
+  - id: send_vacuum_when_kitchen_button_held_down
+    alias: Send Vacuum when Kitchen Button Held Down
+    trigger:
+      - platform: event
+        event_type: xiaomi_aqara.click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e59abe
+          click_type: hold
+    action:
+      - service_template: >
+          {% if states('input_boolean.send_vacuum_home') %}
+            vacuum.return_to_base
+          {% else %}
+            script.send_vacuum_for_emptying
+          {% endif %}
+        data:
+          entity_id: vacuum.rockrobo
+      - service: input_boolean.toggle
+        data:
+          entity_id: input_boolean.send_vacuum_home
