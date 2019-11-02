@@ -93,7 +93,7 @@ automation:
           click_type: hold
     action:
       - service_template: >
-          {% if states('input_boolean.send_vacuum_home') %}
+          {% if is_state('input_boolean.send_vacuum_home', 'on') %}
             vacuum.return_to_base
           {% else %}
             script.send_vacuum_for_emptying
