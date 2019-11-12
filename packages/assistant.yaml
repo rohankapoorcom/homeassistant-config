@@ -8,8 +8,8 @@
 google_assistant:
   project_id: !secret google_assistant.project_id
   api_key: !secret google_assistant.api_key
-  exposed_domains:
-    - camera
+  report_state: true
+  expose_by_default: false
   entity_config:
     camera.frontdoor:
       expose: false
@@ -23,3 +23,11 @@ google_assistant:
       expose: false
     camera.upstairs_2:
       name: Upstairs Camera
+    sensor.temperature_158d0002249e6f:
+      name: Bedroom Temperature
+      aliases:
+        - Upstairs Temperature
+      room: Bedroom
+    sensor.temperature_158d0002287ef6:
+      name: Downstairs Temperature
+      room: Living Room
