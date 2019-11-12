@@ -8,7 +8,6 @@
 google_assistant:
   project_id: !secret google_assistant.project_id
   api_key: !secret google_assistant.api_key
-  report_state: true
   expose_by_default: false
   entity_config:
     camera.frontdoor:
