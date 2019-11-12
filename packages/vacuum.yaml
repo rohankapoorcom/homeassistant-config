@@ -52,8 +52,8 @@ homeassistant:
 ################################################
 sensor:
   - platform: mqtt
-    state_topic: "valetudo/rockrobo/state"
-    json_attributes_topic: "valetudo/rockrobo/map_data"
+    state_topic: "valetudo/downstairs_rockrobo/state"
+    json_attributes_topic: "valetudo/downstairs_rockrobo/map_data"
     name: roborock_map
     value_template: 'OK'
     scan_interval: 5
