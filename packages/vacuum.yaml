@@ -20,7 +20,7 @@ homeassistant:
     ################################################
     vacuum.downstairs_rockrobo:
       <<: *customize
-      name: Downstairs Vacuum
+      friendly_name: Downstairs Vacuum
 
     ################################################
     ## Sensor
@@ -52,8 +52,8 @@ homeassistant:
 ################################################
 sensor:
   - platform: mqtt
-    state_topic: "valetudo/downstairs_rockrobo/state"
-    json_attributes_topic: "valetudo/downstairs_rockrobo/map_data"
+    state_topic: "valetudo/downstairs-rockrobo/state"
+    json_attributes_topic: "valetudo/downstairs-rockrobo/map_data"
     name: roborock_map
     value_template: 'OK'
     scan_interval: 5
