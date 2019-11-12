@@ -10,23 +10,22 @@ google_assistant:
   api_key: !secret google_assistant.api_key
   expose_by_default: false
   entity_config:
-    camera.frontdoor:
-      expose: false
     camera.frontdoor_2:
       name: Front Door Camera
-    camera.backwindow:
-      expose: false
+      expose: true
     camera.backwindow_2:
       name: Back Window Camera
-    camera.upstairs:
-      expose: false
+      expose: true
     camera.upstairs_2:
       name: Upstairs Camera
+      expose: true
     sensor.temperature_158d0002249e6f:
       name: Bedroom Temperature
       aliases:
         - Upstairs Temperature
       room: Bedroom
+      expose: true
     sensor.temperature_158d0002287ef6:
       name: Downstairs Temperature
       room: Living Room
+      expose: true

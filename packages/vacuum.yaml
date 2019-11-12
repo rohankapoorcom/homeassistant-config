@@ -18,8 +18,9 @@ homeassistant:
     ################################################
     ## Vacuum
     ################################################
-    vacuum.rockrobo:
+    vacuum.downstairs_rockrobo:
       <<: *customize
+      name: Downstairs Vacuum
 
     ################################################
     ## Sensor
@@ -73,7 +74,7 @@ script:
     sequence:
       - service: vacuum.send_command
         data:
-          entity_id: 'vacuum.rockrobo'
+          entity_id: 'vacuum.downstairs_rockrobo'
           command: 'go_to'
           params:
             spot_id: 'Kitchen Trash Can'
@@ -99,7 +100,7 @@ automation:
             script.send_vacuum_for_emptying
           {% endif %}
         data:
-          entity_id: vacuum.rockrobo
+          entity_id: vacuum.downstairs_rockrobo
       - service: input_boolean.toggle
         data:
           entity_id: input_boolean.send_vacuum_home
