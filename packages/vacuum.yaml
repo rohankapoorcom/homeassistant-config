@@ -82,17 +82,17 @@ sensor:
 ## Input Boolean
 ################################################
 input_boolean:
-  - send_downstairs_vacuum_home:
+  send_downstairs_vacuum_home:
     name: Enabled
 
-  - send_upstairs_vacuum_home:
+  send_upstairs_vacuum_home:
     name: Enabled
 
 ################################################
 ## Script
 ################################################
 script:
-  - send_downstairs_vacuum_for_emptying:
+  send_downstairs_vacuum_for_emptying:
     sequence:
       - service: vacuum.send_command
         data:
@@ -101,7 +101,7 @@ script:
           params:
             spot_id: 'Kitchen Trash Can'
 
-  - send_upstairs_vacuum_for_emptying:
+  send_upstairs_vacuum_for_emptying:
     sequence:
       - service: vacuum.send_command
         data:
