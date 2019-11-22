@@ -1,7 +1,7 @@
 language: python
 dist: xenial
 python:
-  - "3.6.3"
+  - "3.7.5"
 install:
   - bash tests/travis_install.sh
 script:
