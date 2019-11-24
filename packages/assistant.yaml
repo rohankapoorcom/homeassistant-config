@@ -9,6 +9,8 @@ google_assistant:
   project_id: !secret google_assistant.project_id
   api_key: !secret google_assistant.api_key
   expose_by_default: false
+  service_account: !secret google_assistant.service_account
+  report_state: true
   entity_config:
     camera.frontdoor_2:
       name: Front Door Camera
@@ -28,4 +30,10 @@ google_assistant:
     sensor.temperature_158d0002287ef6:
       name: Downstairs Temperature
       room: Living Room
+      expose: true
+    vacuum.downstairs_rockrobo:
+      room: Living Room
+      expose: true
+    vacuum.upstairs_rockrobo:
+      room: Bedroom
       expose: true
