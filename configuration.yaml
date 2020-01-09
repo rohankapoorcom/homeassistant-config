@@ -13,9 +13,10 @@ homeassistant:
   customize: !include customize.yaml
   packages: !include_dir_named packages
   auth_providers:
-    - type: homeassistant
-    - type: trusted_networks
-      trusted_networks: !secret http.trusted_networks
+    - type: command_line
+      command: /usr/local/bin/ldap-auth.sh
+      args: ["/usr/local/bin/home-assistant.cfg"]
+      meta: true
 
 # Enables the frontend
 frontend:
