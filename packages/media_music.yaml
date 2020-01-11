@@ -173,6 +173,8 @@ media_player:
         service: media_player.volume_mute
         data:
           entity_id: media_player.upstairs_speakers
+          is_volume_muted: >-
+            {{ state_attr('media_player.upstairs_speakers', 'is_volume_muted') }}
     attributes:
       state: switch.upstairs_speakers
       is_volume_muted: media_player.upstairs_speakers|is_volume_muted
