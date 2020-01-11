@@ -149,6 +149,7 @@ media_player:
     name: Upstairs Speakers
     children:
       - media_player.all_speakers
+      - media_player.upstairs_speakers
     commands:
       turn_on:
         service: switch.turn_on
@@ -168,8 +169,13 @@ media_player:
         data_template:
           <<: *decrement_volume
           entity_id: remote.upstairs_hub
+      volume_mute:
+        serivce: media_player.volume_mute
+        data:
+          entity_id: media_player.upstairs_speakers
     attributes:
       state: switch.upstairs_speakers
+      is_volume_muted: media_player.upstairs_speakers|is_volume_muted
 
 ################################################
 ## Input Number
