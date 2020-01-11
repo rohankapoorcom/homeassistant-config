@@ -145,6 +145,32 @@ media_player:
   - platform: denonavr
     host: !secret media_player.denonavr.host
 
+  - platform: universal
+    name: Upstairs Speakers
+    children:
+      - media_player.all_speakers
+    commands:
+      turn_on:
+        service: switch.turn_on
+        data:
+          entity_id: switch.upstairs_speakers
+      turn_off:
+        service: switch.turn_off
+        data:
+          entity_id: switch.upstairs_speakers
+      volume_up:
+        service: script.harmony_volume
+        data_template:
+          <<: *increment_volume
+          entity_id: remote.upstairs_hub
+      volume_down:
+        service: script.harmony_volume
+        data_template:
+          <<: *decrement_volume
+          entity_id: remote.upstairs_hub
+    attributes:
+      state: switch.upstairs_speakers
+
 ################################################
 ## Input Number
 ################################################
