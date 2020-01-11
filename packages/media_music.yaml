@@ -170,7 +170,7 @@ media_player:
           <<: *decrement_volume
           entity_id: remote.upstairs_hub
       volume_mute:
-        serivce: media_player.volume_mute
+        service: media_player.volume_mute
         data:
           entity_id: media_player.upstairs_speakers
     attributes:
