@@ -206,6 +206,11 @@ media_player:
         data_template:
           entity_id: media_player.main_zone
           is_volume_muted: "{{ not state_attr('media_player.main_zone', 'is_volume_muted') }}"
+      volume_set:
+        service: media_player.volume_set
+        data_template:
+          entity_id: media_player.main_zone
+          volume_level: '{{ volume_level }}'
     attributes:
       state: switch.downstairs_speakers
       volume_level: media_player.main_zone|volume_level
