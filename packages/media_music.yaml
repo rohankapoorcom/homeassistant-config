@@ -74,11 +74,11 @@ homeassistant:
       <<: *customize
 
     ################################################
-    ## Cover
+    ## Media Player
     ################################################
-    cover.upstairs_volume:
+    media_player.upstairs_speakers_2:
       <<: *customize
-    cover.downstairs_volume:
+    media_player.downstairs_speakers_2:
       <<: *customize
 
     ################################################
@@ -208,6 +208,7 @@ media_player:
           is_volume_muted: "{{ not state_attr('media_player.main_zone', 'is_volume_muted') }}"
     attributes:
       state: switch.downstairs_speakers
+      volume_level: media_player.main_zone|volume_level
       is_volume_muted: media_player.main_zone|is_volume_muted
 
 ################################################
@@ -230,42 +231,6 @@ input_number:
     max: 2
     step: 1
     icon: mdi:speaker
-
-################################################
-## Cover
-################################################
-cover:
-  # Template covers are used to create volume controls
-  - platform: template
-    covers:
-
-      upstairs_volume:
-        <<: *cover
-        friendly_name: "Upstairs Volume"
-        open_cover:
-          service: script.harmony_volume
-          data_template:
-            <<: *increment_volume
-            entity_id: remote.upstairs_hub
-        close_cover:
-          service: script.harmony_volume
-          data_template:
-            <<: *decrement_volume
-            entity_id: remote.upstairs_hub
-
-      downstairs_volume:
-        <<: *cover
-        friendly_name: "Downstairs Volume"
-        open_cover:
-          service: script.harmony_volume
-          data_template:
-            <<: *increment_volume
-            entity_id: remote.living_room_hub
-        close_cover:
-          service: script.harmony_volume
-          data_template:
-            <<: *decrement_volume
-            entity_id: remote.living_room_hub
 
 ################################################
 ## Switch
