@@ -178,6 +178,38 @@ media_player:
       state: switch.upstairs_speakers
       is_volume_muted: media_player.upstairs_speakers|is_volume_muted
 
+  - platform: universal
+      name: Downstairs Speakers
+      children:
+        - media_player.all_speakers
+        - media_player.downstairs_speakers
+        - media_player.main_zone
+      commands:
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.downstairs_speakers
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.downstairs_speakers
+        volume_up:
+          service: media_player.volume_up
+          data:
+            entity_id: media_player.main_zone
+        volume_down:
+          service: media_player.volume_up
+            data:
+              entity_id: media_player.main_zone
+        volume_mute:
+          service: media_player.volume_mute
+          data_template:
+            entity_id: media_player.main_zone
+            is_volume_muted: "{{ not state_attr('media_player.main_zone', 'is_volume_muted') }}"
+      attributes:
+        state: switch.downstairs_speakers
+        is_volume_muted: media_player.main_zone|is_volume_muted
+
 ################################################
 ## Input Number
 ################################################
