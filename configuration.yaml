@@ -91,3 +91,5 @@ sensor:
       - 'time'
 
 python_script:
+
+mobile_app:
