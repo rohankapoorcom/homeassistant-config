@@ -28,10 +28,7 @@ config:
 http:
   # Uncomment this if you are using SSL or running in Docker etc
   base_url: !secret http.base_url
-  use_x_forwarded_for: True
-  trusted_proxies: !secret http.trusted_proxies
   ip_ban_enabled: False
-  login_attempts_threshold: 3
 
 # Checks for available updates
 updater:
@@ -91,5 +88,3 @@ sensor:
       - 'time'
 
 python_script:
-
-mobile_app:
