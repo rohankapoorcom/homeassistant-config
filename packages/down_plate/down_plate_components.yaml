@@ -37,14 +37,14 @@ sensor:
     name: down_plate Sensor
     state_topic: "hasp/down_plate/sensor"
     value_template: '{{ value_json.status }}'
-    json_attributes_topic: "hasp/down_plate/sensor"
-#      - espVersion
-#      - updateESPAvailable
-#      - lcdVersion
-#      - updateLcdAvailable
-#      - espUptime
-#      - signalStrength
-#      - haspIP
+    json_attributes:
+      - espVersion
+      - updateESPAvailable
+      - lcdVersion
+      - updateLcdAvailable
+      - espUptime
+      - signalStrength
+      - haspIP
 
 input_text:
   hasp_down_plate_pagebutton1label:
