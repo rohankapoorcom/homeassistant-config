@@ -26,6 +26,7 @@ homeassistant:
 weather:
   - platform: darksky
     api_key: !secret weather.darksky.api_key
+    mode: daily
 
 
 ################################################
