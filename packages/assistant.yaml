@@ -7,7 +7,6 @@
 
 google_assistant:
   project_id: !secret google_assistant.project_id
-  api_key: !secret google_assistant.api_key
   expose_by_default: false
   service_account: !secret google_assistant.service_account
   report_state: true
