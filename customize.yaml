@@ -1,9 +1,6 @@
 switch.bedroom_lights:
   hidden: true
 automation.skip_chromecast_audio: {}
-group.all_automations:
-  friendly_name: Automations
-  hidden: false
 switch.bedroom_lights_2:
   friendly_name: Bedroom Lights (Relay)
   hidden: true
@@ -19,13 +16,8 @@ light.hgrp0000065518:
   hidden: true
 light.hallway_lamp:
   hidden: true
-group.all_lights:
-  hidden: true
 switch.server_rack_lights:
   icon: mdi:lightbulb
-group.all_remotes:
-  friendly_name: Remotes
-  hidden: false
 group.upstairs_media:
   friendly_name: Media
 binary_sensor.door_window_sensor_158d0001de6091: {}

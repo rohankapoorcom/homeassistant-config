@@ -27,15 +27,6 @@ homeassistant:
         command_timeout: 5
 
     ################################################
-    ## Group
-    ################################################
-    group.ha_system:
-      <<: *customize
-
-    group.ha_system_configuration:
-      <<: *customize
-
-    ################################################
     ## Sensor
     ################################################
 
@@ -100,39 +91,6 @@ homeassistant:
 
     script.update_homeassistant:
       <<: *customize
-
-################################################
-## Group
-################################################
-group:
-  ha_system:
-    name: System
-    view: yes
-    icon: mdi:tune
-    entities:
-      - group.ha_system_configuration
-      - group.network_monitoring
-
-  ha_system_configuration:
-    name: Configuration
-    entities:
-      - sensor.current_git_commit_id
-      - sensor.current_git_commit_time
-      - sensor.rohankapoorcom_homeassistant_config_last_build_state
-      - sensor.current_version
-      - sensor.desired_version
-      - sensor.upgraded_version
-    control: hidden
-
-  network_monitoring:
-    name: Network
-    entities:
-      - sensor.speedtest_ping
-      - sensor.speedtest_download
-      - sensor.speedtest_upload
-      - sensor.fast_com_download
-    control: hidden
-
 
 ################################################
 ## Sensor

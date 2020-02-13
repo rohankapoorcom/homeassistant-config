@@ -89,18 +89,6 @@ input_boolean:
     icon: mdi:washing-machine
 
 ################################################
-## Group
-################################################
-group:
-  dishwasher_controls:
-    name: Dishwasher
-    control: hidden
-    entities:
-      - input_boolean.dishwasher_enabled
-      - input_datetime.dishwasher_start_time
-      - binary_sensor.dishwasher_running
-
-################################################
 ## Automation
 ################################################
 automation:
