@@ -368,6 +368,8 @@ automation:
       - <<: *media_player_entity
         platform: state
         to: 'idle'
+        for:
+          minutes: 10
     condition:
       condition: or
       conditions:

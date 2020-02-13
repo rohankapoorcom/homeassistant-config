@@ -129,20 +129,6 @@ input_number:
     icon: mdi:speedometer
 
 ################################################
-## Group
-################################################
-group:
-  lighting_effects:
-    name: Lighting Effects
-    control: hidden
-    entities:
-      - input_select.random_color_loop_location
-      - input_number.random_color_loop_min_brightness
-      - input_number.random_color_loop_max_brightness
-      - input_number.random_color_loop_transition_speed
-      - input_boolean.random_color_loop
-
-################################################
 ## Automation
 ################################################
 automation:

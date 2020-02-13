@@ -64,16 +64,6 @@ ffmpeg:
 
 stream:
 
-group:
-  cameras:
-    name: Camers
-    view: yes
-    icon: mdi:cctv
-    entities:
-      - camera.frontdoor
-      - camera.backwindow
-      - camera.upstairs
-
 
 ################################################
 ## Automation

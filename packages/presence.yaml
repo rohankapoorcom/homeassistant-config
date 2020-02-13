@@ -220,5 +220,5 @@ automation:
 #        for:
 #          minutes: 5
 #    action:
-#      - service: homeassistant.turn_off
-#        entity_id: group.all_lights
+#      - service: light.turn_off
+#        entity_id: all
