@@ -78,7 +78,6 @@ automation:
 
   - id: reset_front_door_bell_sensor
     alias: Reset Front Door Bell Sensor
-    hide_entity: true
     trigger:
       - platform: state
         entity_id: binary_sensor.front_door_bell
