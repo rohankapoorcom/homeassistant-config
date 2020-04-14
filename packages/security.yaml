@@ -31,34 +31,6 @@ zoneminder:
 camera:
   - platform: zoneminder
 
-amcrest:
-  - host: !secret amcrest.host.frontdoor.host
-    username: !secret amcrest.host.frontdoor.username
-    password: !secret amcrest.host.frontdoor.password
-    name: Frontdoor
-    resolution: high
-    stream_source: rtsp
-    binary_sensors:
-      - motion_detected
-
-  - host: !secret amcrest.host.backwindow.host
-    username: !secret amcrest.host.backwindow.username
-    password: !secret amcrest.host.backwindow.password
-    name: Backwindow
-    resolution: high
-    stream_source: rtsp
-    binary_sensors:
-      - motion_detected
-
-  - host: !secret amcrest.host.upstairs.host
-    username: !secret amcrest.host.upstairs.username
-    password: !secret amcrest.host.upstairs.password
-    name: Upstairs
-    resolution: high
-    stream_source: rtsp
-    binary_sensors:
-      - motion_detected
-
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 

@@ -88,3 +88,8 @@ sensor:
       - 'time'
 
 python_script:
+
+zwave:
+  usb_path: /dev/zwave
+  network_key: !secret zwave.network_key
+  config_path: /etc/homeassistant/openzwave/config/
