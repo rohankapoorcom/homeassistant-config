@@ -72,13 +72,6 @@ xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface
   gateways: !secret xiaomi_aqara.gateways
 
-lutron_caseta:
-  host: !secret lutron_caseta.host
-  keyfile: caseta.key
-  certfile: caseta.crt
-  ca_certs: caseta-bridge.crt
-
-
 automation old: !include_dir_list automations
 group: !include_dir_named groups
 
