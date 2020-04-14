@@ -25,6 +25,7 @@ addons:
       - libavresample-dev
       - libavfilter-dev
       - ffmpeg
+      - libudev-dev
 
 cache:
   directories:
