@@ -32,12 +32,12 @@ homeassistant:
     group.hasp_plates_backlights:
       <<: *customize
       friendly_name: 'HASP Backlights'
-      control: hidden
+
 
     group.hasp_plates_sensors:
       <<: *customize
       friendly_name: 'HASP Sensors'
-      control: hidden
+
 
 ################################################
 ## Automation

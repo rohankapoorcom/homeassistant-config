@@ -1,5 +1,5 @@
 name: Media
-control: hidden
+
 entities:
   - media_player.all_speakers
   - switch.downstairs_speakers
