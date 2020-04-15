@@ -20,6 +20,9 @@ homeassistant:
     scene.kitchen_lights_off:
       <<: *customize
 
+    light.kitchen_lights:
+      <<: *customize
+
     automation.turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped:
       <<: *customize
     automation.turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped:
@@ -34,6 +37,14 @@ homeassistant:
       <<: *customize
 
 ################################################
+## Light
+################################################
+light:
+  - platform: switch
+    name: Kitchen Lights
+    entity_id: switch.kitchen_lights
+
+################################################
 ## Scene
 ################################################
 scene:
@@ -41,7 +52,6 @@ scene:
     entities:
       light.kitchen_lights:
         state: on
-        brightness_pct: 100
       light.kitchen_cabinet_lights:
         state: on
         brightness_pct: 100
@@ -116,8 +126,6 @@ automation:
           brightness_pct: 100
       - service: light.turn_on
         entity_id: light.kitchen_lights
-        data:
-          brightness_pct: 100
       - service: zwave.set_config_parameter
         data_template:
           node_id: '{{ trigger.event.data.node_id }}'
