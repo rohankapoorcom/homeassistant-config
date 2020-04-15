@@ -35,7 +35,8 @@ automation:
     action:
       - service: light.turn_on
         entity_id: light.kitchen_cabinet_lights
-        brightness_pct: 100
+        data:
+          brightness_pct: 100
       - service: zwave.set_config_parameter
         data_template:
           node_id: '{{ trigger.event.data.node_id }}'
