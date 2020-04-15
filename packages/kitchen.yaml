@@ -1,0 +1,61 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  04/14/2020
+#  @package      :  Kitchen
+#  @description  :  Logic for handling lights in the kitchen.
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'kitchen'
+
+    automation.turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped:
+      <<: *customize
+    automation.turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped:
+      <<: *customize
+
+################################################
+## Automation
+################################################
+automation:
+  - id: turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+          data:
+            entity_id: zwave.kitchen_lights
+            node_id: 6
+            scene_data: 7860
+            scene_id: 2
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_cabinet_lights
+        brightness_pct: 100
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: {{ trigger.event.data.node_id }}
+          parameter: 8
+          value: 18745158
+
+  - id: turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+          data:
+            entity_id: zwave.kitchen_lights
+            scene_data: 7860
+            scene_id: 1
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_cabinet_lights
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: {{ trigger.event.data.node_id }}
+          parameter: 8
+          value: 18743878
