@@ -28,9 +28,8 @@ automation:
     trigger:
       - platform: event
         event_type: zwave.scene_activated
-        data:
+        event_data:
           entity_id: zwave.kitchen_lights
-          node_id: 6
           scene_data: 7860
           scene_id: 2
     action:
@@ -39,7 +38,7 @@ automation:
         brightness_pct: 100
       - service: zwave.set_config_parameter
         data_template:
-          node_id: {{ trigger.event.data.node_id }}
+          node_id: '{{ trigger.event.data.node_id }}'
           parameter: 8
           value: 18745158
 
@@ -47,7 +46,7 @@ automation:
     trigger:
       - platform: event
         event_type: zwave.scene_activated
-        data:
+        event_data:
           entity_id: zwave.kitchen_lights
           scene_data: 7860
           scene_id: 1
@@ -56,6 +55,6 @@ automation:
         entity_id: light.kitchen_cabinet_lights
       - service: zwave.set_config_parameter
         data_template:
-          node_id: {{ trigger.event.data.node_id }}
+          node_id: '{{ trigger.event.data.node_id }}'
           parameter: 8
           value: 18743878
