@@ -28,11 +28,11 @@ automation:
     trigger:
       - platform: event
         event_type: zwave.scene_activated
-          data:
-            entity_id: zwave.kitchen_lights
-            node_id: 6
-            scene_data: 7860
-            scene_id: 2
+        data:
+          entity_id: zwave.kitchen_lights
+          node_id: 6
+          scene_data: 7860
+          scene_id: 2
     action:
       - service: light.turn_on
         entity_id: light.kitchen_cabinet_lights
@@ -47,10 +47,10 @@ automation:
     trigger:
       - platform: event
         event_type: zwave.scene_activated
-          data:
-            entity_id: zwave.kitchen_lights
-            scene_data: 7860
-            scene_id: 1
+        data:
+          entity_id: zwave.kitchen_lights
+          scene_data: 7860
+          scene_id: 1
     action:
       - service: light.turn_off
         entity_id: light.kitchen_cabinet_lights
