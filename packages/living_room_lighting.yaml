@@ -26,8 +26,6 @@ homeassistant:
       <<: *customize
     scene.living_room_lights_on:
       <<: *customize
-    scene.kitchen_lights_on:
-      <<: *customize
 
 ################################################
 ## Scenes
@@ -89,13 +87,6 @@ scene:
         brightness_pct: 100
         color_temp: 233
       light.living_room_lamp:
-        state: on
-        brightness_pct: 100
-        color_temp: 233
-
-  - name: Kitchen Lights On
-    entities:
-      light.kitchen_table:
         state: on
         brightness_pct: 100
         color_temp: 233

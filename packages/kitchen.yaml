@@ -15,10 +15,48 @@ homeassistant:
       customize: &customize
         package: 'kitchen'
 
+    scene.kitchen_lights_on:
+      <<: *customize
+    scene.kitchen_lights_off:
+      <<: *customize
+
     automation.turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped:
       <<: *customize
     automation.turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped:
       <<: *customize
+    automation.turn_on_kitchen_and_cabinet_lights_when_switch_up_triple_tapped:
+      <<: *customize
+    automation.turn_off_kitchen_and_cabinet_lights_when_switch_down_triple_tapped:
+      <<: *customize
+    automation.turn_on_kitchen_scene_when_switch_up_quad_tapped:
+      <<: *customize
+    automation.turn_off_kitchen_scene_when_switch_down_quad_tapped:
+      <<: *customize
+
+################################################
+## Scene
+################################################
+scene:
+  - name: Kitchen Lights On
+    entities:
+      light.kitchen_lights:
+        state: on
+        brightness_pct: 100
+      light.kitchen_cabinet_lights:
+        state: on
+        brightness_pct: 100
+      light.sink_accent_lights:
+        state: on
+        brightness_pct: 100
+
+  - name: Kitchen Lights Off
+    entities:
+      light.kitchen_lights:
+        state: off
+      light.kitchen_cabinet_lights:
+        state: off
+      light.sink_accent_lights:
+        state: off
 
 ################################################
 ## Automation
@@ -61,3 +99,83 @@ automation:
           node_id: '{{ trigger.event.data.node_id }}'
           parameter: 8
           value: 18743878
+
+  - id: turn_on_kitchen_and_cabinet_lights_when_switch_up_triple_tapped
+    alias: Turn on Kitchen and Cabinet Lights when Switch Up Triple Tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          entity_id: zwave.kitchen_lights
+          scene_data: 7920
+          scene_id: 2
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_cabinet_lights
+        data:
+          brightness_pct: 100
+      - service: light.turn_on
+        entity_id: light.kitchen_lights
+        data:
+          brightness_pct: 100
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: '{{ trigger.event.data.node_id }}'
+          parameter: 8
+          value: 18745218
+
+  - id: turn_off_kitchen_and_cabinet_lights_when_switch_down_triple_tapped
+    alias: Turn off Kitchen and Cabinet Lights when Switch Down Triple Tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          entity_id: zwave.kitchen_lights
+          scene_data: 7920
+          scene_id: 1
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_cabinet_lights
+      - service: light.turn_off
+        entity_id: light.kitchen_lights
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: '{{ trigger.event.data.node_id }}'
+          parameter: 8
+          value: 18743938
+
+  - id: turn_on_kitchen_scene_when_switch_up_quad_tapped
+    alias: Turn on Kitchen Scene when Switch Up Quad Tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          entity_id: zwave.kitchen_lights
+          scene_data: 7980
+          scene_id: 2
+    action:
+      - service: scene.turn_on
+        entity_id: scene.kitchen_lights_on
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: '{{ trigger.event.data.node_id }}'
+          parameter: 8
+          value: 18745230
+
+  - id: turn_off_kitchen_scene_when_switch_down_quad_tapped
+    alias: Turn off Kitchen Scene when Switch Down Quad Tapped
+    trigger:
+      - platform: event
+        event_type: zwave.scene_activated
+        event_data:
+          entity_id: zwave.kitchen_lights
+          scene_data: 7980
+          scene_id: 1
+    action:
+      - service: scene.turn_on
+        entity_id: scene.kitchen_lights_off
+      - service: zwave.set_config_parameter
+        data_template:
+          node_id: '{{ trigger.event.data.node_id }}'
+          parameter: 8
+          value: 18743950
