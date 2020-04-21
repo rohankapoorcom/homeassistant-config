@@ -65,9 +65,6 @@ mqtt:
   password: !secret mqtt.password
   discovery: true
 
-hue:
-  bridges: !secret hue.bridges
-
 xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface
   gateways: !secret xiaomi_aqara.gateways
