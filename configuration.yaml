@@ -77,6 +77,8 @@ sensor:
     display_options:
       - 'time'
 
+  - platform: badnest
+
 python_script:
 
 zwave:
@@ -92,6 +94,3 @@ badnest:
 climate:
   - platform: badnest
     scan_interval: 10
-
-sensor:
-  - platform: badnest
