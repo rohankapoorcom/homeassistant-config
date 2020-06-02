@@ -83,3 +83,15 @@ zwave:
   usb_path: /dev/zwave
   network_key: !secret zwave.network_key
   config_path: /etc/homeassistant/openzwave/config/
+
+badnest:
+  issue_token: !secret badnest.issue_token
+  cookie: !secret badnest.access_token
+  region: us
+
+climate:
+  - platform: badnest
+    scan_interval: 10
+
+sensor:
+  - platform: badnest
