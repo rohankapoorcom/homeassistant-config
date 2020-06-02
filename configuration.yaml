@@ -86,7 +86,7 @@ zwave:
 
 badnest:
   issue_token: !secret badnest.issue_token
-  cookie: !secret badnest.access_token
+  cookie: !secret badnest.cookie
   region: us
 
 climate:
