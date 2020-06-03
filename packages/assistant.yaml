@@ -28,3 +28,14 @@ google_assistant:
       aliases:
         - Sink Lights
         - Sink Lighting
+    light.dining_room_lights:
+      expose: true
+      aliases:
+        - Dining Table Lights
+        - Dining Lights
+    light.living_room_lights:
+      expose: true
+    light.office_lights:
+      expose: true
+      aliases:
+        - Study Lights
