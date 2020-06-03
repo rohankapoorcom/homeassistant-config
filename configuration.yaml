@@ -41,7 +41,7 @@ conversation:
 
 recorder:
   db_url: !secret recorder.db_url
-  purge_interval: 0
+  auto_purge: false
   exclude:
     entities:
       - sensor.roborock_map
@@ -77,7 +77,7 @@ sensor:
     display_options:
       - 'time'
 
-  - platform: badnest
+#  - platform: badnest
 
 python_script:
 
@@ -86,11 +86,11 @@ zwave:
   network_key: !secret zwave.network_key
   config_path: /etc/homeassistant/openzwave/config/
 
-badnest:
-  issue_token: !secret badnest.issue_token
-  cookie: !secret badnest.cookie
-  region: us
-
-climate:
-  - platform: badnest
-    scan_interval: 10
+#badnest:
+#  issue_token: !secret badnest.issue_token
+#  cookie: !secret badnest.cookie
+#  region: us
+#
+#climate:
+#  - platform: badnest
+#    scan_interval: 10
