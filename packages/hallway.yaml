@@ -33,6 +33,17 @@ homeassistant:
     automation.turn_off_hallway_lights_after_motion:
       <<: *customize
 
+
+################################################
+## Light
+################################################
+light:
+  - platform: group
+    name: Hallway Lights
+    entities:
+      - light.hallway_lights_switch
+      - light.entryway_lights
+
 ################################################
 ## Automation
 ################################################

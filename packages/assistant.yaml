@@ -13,3 +13,18 @@ google_assistant:
   entity_config:
     light.master_bedroom_lights:
       expose: true
+    light.hallway_lights:
+      expose: true
+    light.kitchen_lights:
+      expose: true
+    light.kitchen_cabinet_lights:
+      expose: true
+      aliases:
+        - Cabinet Lights
+        - Cabinet Lighting
+        - Cabinets
+    light.sink_accent_lights:
+      expose: true
+      aliases:
+        - Sink Lights
+        - Sink Lighting
