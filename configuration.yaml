@@ -94,3 +94,7 @@ badnest:
 climate:
   - platform: badnest
     scan_interval: 10
+
+spotcast:
+  sp_dc: !secret spotcast.sp_dc
+  sp_key: !secret spotcast.sp_key
