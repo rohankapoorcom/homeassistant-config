@@ -146,6 +146,11 @@ media_player:
     host: !secret media_player.denonavr.host
 
   - platform: universal
+    name: All Speakers
+    children:
+      - media_player.whole_house
+
+  - platform: universal
     name: Upstairs Speakers
     children:
       - media_player.all_speakers
