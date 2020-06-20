@@ -1,18 +1,23 @@
 {
-  "domain": "hacs",
-  "name": "HACS (Home Assistant Community Store)",
-  "documentation": "https://hacs.xyz",
-  "dependencies": [],
+  "codeowners": ["@ludeeus"],
   "config_flow": true,
-  "codeowners": [
-    "@ludeeus"
+  "dependencies": [
+    "websocket_api",
+    "frontend",
+    "persistent_notification",
+    "lovelace"
   ],
-  "homeassistant": "0.98.0",
+  "documentation": "https://hacs.xyz/docs/configuration/start",
+  "issue_tracker": "https://github.com/hacs/integration/issues",
+  "domain": "hacs",
+  "name": "HACS",
   "requirements": [
-    "aiofiles==0.4.0",
-    "attrs==19.2.0",
-    "aiogithubapi==0.4.2",
-    "backoff==1.8.0",
-    "integrationhelper==0.2.2"
+    "aiofiles==0.5.0",
+    "aiogithubapi==1.0.4",
+    "backoff==1.10.0",
+    "hacs_frontend==202006071141",
+    "integrationhelper==0.2.2",
+    "semantic_version==2.8.5",
+    "queueman==0.5"
   ]
 }
