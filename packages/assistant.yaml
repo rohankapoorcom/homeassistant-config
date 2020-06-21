@@ -39,3 +39,7 @@ google_assistant:
       expose: true
       aliases:
         - Study Lights
+    light.master_bathroom_lights:
+      expose: true
+    switch.master_bathroom_fan:
+      expose: true

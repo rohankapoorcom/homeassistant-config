@@ -11,3 +11,4 @@ entity_registry.yaml
 tts
 __pycache__
 .idea
+.vscode
