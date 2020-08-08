@@ -95,6 +95,10 @@ climate:
   - platform: badnest
     scan_interval: 10
 
+spotify:
+  client_id: !secret spotify.client_id
+  client_secret: !secret spotify.client_secret
+
 spotcast:
   sp_dc: !secret spotcast.sp_dc
   sp_key: !secret spotcast.sp_key
