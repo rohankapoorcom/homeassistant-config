@@ -141,6 +141,7 @@ emulated_roku:
 ################################################
 ## Media Player
 ################################################
+media_player:
   - platform: universal
     name: All Speakers
     children:
