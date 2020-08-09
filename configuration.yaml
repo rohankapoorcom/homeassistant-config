@@ -12,6 +12,8 @@ homeassistant:
   time_zone: America/Los_Angeles
   customize: !include customize.yaml
   packages: !include_dir_named packages
+  external_url: !secret http.base_url
+  internal_url: !secret http.base_url
   auth_providers:
     - type: command_line
       command: /usr/local/bin/ldap-auth.sh
@@ -27,8 +29,6 @@ config:
 
 http:
   # Uncomment this if you are using SSL or running in Docker etc
-  external_url: !secret http.base_url
-  internal_url: !secret http.base_url
   ip_ban_enabled: False
 
 # Checks for available updates
