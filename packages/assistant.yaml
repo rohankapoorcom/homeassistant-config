@@ -43,3 +43,7 @@ google_assistant:
       expose: true
     switch.master_bathroom_fan:
       expose: true
+    vacuum.upstairs_rockrobo:
+      expose: true
+    vacuum.downstairs_rockrobo:
+      expose: true
