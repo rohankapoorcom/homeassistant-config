@@ -66,14 +66,14 @@ sensor:
   - platform: mqtt
     state_topic: "valetudo/downstairs-rockrobo/state"
     json_attributes_topic: "valetudo/downstairs-rockrobo/map_data"
-    json_atributes_template: "{{ value | decode_valetudo_map }}"
+    json_attributes_template: "{{ value | decode_valetudo_map }}"
     name: downstairs_roborock_map
     value_template: 'OK'
 
   - platform: mqtt
     state_topic: "valetudo/upstairs-rockrobo/state"
     json_attributes_topic: "valetudo/upstairs-rockrobo/map_data"
-    json_atributes_template: "{{ value | decode_valetudo_map }}"
+    json_attributes_template: "{{ value | decode_valetudo_map }}"
     name: upstairs_roborock_map
     value_template: 'OK'
 
