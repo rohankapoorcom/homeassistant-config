@@ -2,7 +2,11 @@
 from datetime import datetime
 import logging
 
-from homeassistant.components.climate import ClimateDevice
+try:
+    from homeassistant.components.climate import ClimateEntity
+except ImportError:
+    from homeassistant.components.climate import ClimateDevice as ClimateEntity
+
 from homeassistant.components.climate.const import (
     ATTR_TARGET_TEMP_HIGH,
     ATTR_TARGET_TEMP_LOW,
@@ -78,7 +82,7 @@ async def async_setup_platform(hass,
     async_add_entities(thermostats)
 
 
-class NestClimate(ClimateDevice):
+class NestClimate(ClimateEntity):
     """Representation of a Nest climate device."""
 
     def __init__(self, device_id, api):
@@ -116,7 +120,6 @@ class NestClimate(ClimateDevice):
 
         if self.device.device_data[device_id]['target_humidity_enabled']:
             self._support_flags = self._support_flags | SUPPORT_TARGET_HUMIDITY
-            
 
     @property
     def unique_id(self):
@@ -157,7 +160,7 @@ class NestClimate(ClimateDevice):
     def target_humidity(self):
         """Return the target humidity."""
         return self.device.device_data[self.device_id]['target_humidity']
-        
+
     @property
     def min_humidity(self):
         """Return the min target humidity."""
@@ -279,7 +282,9 @@ class NestClimate(ClimateDevice):
 
     def set_humidity(self, humidity):
         """Set new target humidity."""
-        humidity = int(round(float(humidity) / ROUND_TARGET_HUMIDITY_TO_NEAREST) * ROUND_TARGET_HUMIDITY_TO_NEAREST)
+        humidity = int(round(
+            float(humidity) / ROUND_TARGET_HUMIDITY_TO_NEAREST)
+            * ROUND_TARGET_HUMIDITY_TO_NEAREST)
         if humidity < NEST_HUMIDITY_MIN:
             humidity = NEST_HUMIDITY_MIN
         if humidity > NEST_HUMIDITY_MAX:

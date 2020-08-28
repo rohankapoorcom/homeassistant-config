@@ -105,7 +105,7 @@ class NestProtectSensor(Entity):
     @property
     def unique_id(self):
         """Return an unique ID."""
-        return self.device_id + '_' + self._sensor_type
+        return f"{self.device_id}_{self._sensor_type}"
 
     @property
     def name(self):

@@ -1,0 +1,6 @@
+{
+  "name": "XAPController",
+  "content_in_root": true,
+  "render_readme": true,
+  "iot_class": "Local Push"
+}

@@ -1,0 +1,10 @@
+
+Surround sound plan:  Source and zone can each include a list of channels.  This will replace the current stereo approach.  When a mult-channel source is selected, it will map the source chanels to the destimation channels sequentially, so S1->Z1, S2->Z2, etc.  If there are more zones than sources, the sources will repeat, so if uou have a 2 channel sources and a 4 channel zone, the sources wil be mapped S1->Z1, S2->Z2, S1->Z3, S4->Z4.  If there are more source channels than zone channels, then what?  Map only the first set and no repeat? I think so.
+
+For the 4 speaker surround situation, where the are 5 source channels but only 4 zone channels, what do we do? You can list a channel multiple times, so maybe have the source be listed with 6 channels, the center listed twice at the end, and allow the zone to have 6 channels, with the front channels listed twice, 1 &2 and also 5 & 6. 
+
+With this approach, there will need to be a conditional handling of matric routing vs gain adjustments.  So for the matric routing, each routing connecitn is made.  But for gain adjustments, you'd do each channel only once.  So if front left and right are mapped twice, with front left and right sources plus center source going to each, then you'd only adjust the output gain once on each channel.
+
+This seems like it should work......?  Might not be elegant, but short of having some configurtion file this seems like a decent solution....?
+
+What about expansion channels?  I was using them in a complex way to try to achieve the center channel stereo....  maybe can drop that multi-conditional deal? Actually, no, still have to handle the mapping of input channels to expansion bus since a source will have to identify itself as being both an input channel and an expasnion bus channel.

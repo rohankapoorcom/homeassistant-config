@@ -1,0 +1,9 @@
+{
+    "domain": "xap_controller",
+    "name": "XAP Contoller",
+    "documentation": "https://github.com/jslove/xap_controller/blob/master/README.md",
+    "dependencies": [],
+    "codeowners": ["jslove"],
+    "requirements": [
+      "https://github.com/jslove/XAPX00/archive/0.2.8.2.zip#XAPX00==0.2.8.2" ]
+  }

@@ -1,0 +1,9 @@
+move_to_preset:
+  description: Move the Vaddio Conferenceshot Camera to the specified preset
+  fields:
+    mac_address:
+      description: The Mac address of the camera to move (separated with colons, dashes or nothing).
+      example: "AB:78:37:E4:D5:E0"
+    preset:
+      description: The integer number of any stored preset (1-16)
+      example: 3
