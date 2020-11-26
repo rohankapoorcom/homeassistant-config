@@ -31,6 +31,7 @@ jobs:
     - name: Install dependencies
       run: |
         bash tests/travis_install.sh
+        python3 -m pip install --disable-pip-version-check google-cloud-pubsub
     - name: Check Homeassistant Config
       run: |
         hass -c . --script check_config
