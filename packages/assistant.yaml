@@ -13,6 +13,8 @@ google_assistant:
   entity_config:
     light.master_bedroom_lights:
       expose: true
+    fan.master_bedroom_fan:
+      expose: true
     light.hallway_lights:
       expose: true
     light.kitchen_lights:
@@ -39,6 +41,10 @@ google_assistant:
       expose: true
       aliases:
         - Study Lights
+    switch.office_fan:
+      expose: true
+      aliases:
+        - Study Fan
     light.master_bathroom_lights:
       expose: true
     switch.master_bathroom_fan:
