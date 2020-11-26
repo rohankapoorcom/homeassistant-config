@@ -15,6 +15,8 @@ google_assistant:
       expose: true
     fan.master_bedroom_fan:
       expose: true
+    sensor.master_bedroom_temperature:
+      expose: true
     light.hallway_lights:
       expose: true
     light.kitchen_lights:
@@ -52,4 +54,8 @@ google_assistant:
     vacuum.upstairs_rockrobo:
       expose: true
     vacuum.downstairs_rockrobo:
+      expose: true
+    climate.downstairs:
+      expose: true
+    climate.upstairs:
       expose: true
