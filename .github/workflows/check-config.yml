@@ -1,0 +1,32 @@
+name: Check Config
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: 'x64'
+    - name: Install apt packages
+      run: |
+        add-apt-repository ppa:jonathonf/ffmpeg-4
+        apt update
+        apt install python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
+    - name: Move secrets
+      run: |
+        mv tests/travis_secrets.yaml secrets.yaml
+    - name: Install dependencies
+      run: |
+        bash tests/travis_install.sh
+    - name: Check Homeassistant Config
+      run: |
+        hass -c . --script check_config
