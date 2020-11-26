@@ -2,7 +2,7 @@
 
 version=`cat .HA_VERSION`
 if [ "$version" = "" ]; then
-    pip3 install homeassistant
+    python3 -m pip install --disable-pip-version-check homeassistant install homeassistant
 else
-    pip3 install homeassistant==${version}
+    python3 -m pip install --disable-pip-version-check homeassistant install homeassistant==${version}
 fi
