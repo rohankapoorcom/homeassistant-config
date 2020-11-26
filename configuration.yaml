@@ -30,6 +30,9 @@ config:
 http:
   # Uncomment this if you are using SSL or running in Docker etc
   ip_ban_enabled: False
+  use_x_forwarded_for: True
+  trusted_proxies:
+    - 127.0.0.1
 
 # Checks for available updates
 updater:
@@ -78,23 +81,12 @@ sensor:
     display_options:
       - 'time'
 
-  - platform: badnest
-
 python_script:
 
 zwave:
   usb_path: /dev/zwave
   network_key: !secret zwave.network_key
   config_path: /etc/homeassistant/openzwave/config/
-
-badnest:
-  issue_token: !secret badnest.issue_token
-  cookie: !secret badnest.cookie
-  region: us
-
-climate:
-  - platform: badnest
-    scan_interval: 10
 
 spotify:
   client_id: !secret spotify.client_id
@@ -105,3 +97,31 @@ spotcast:
   sp_key: !secret spotcast.sp_key
 
 browser_mod:
+
+vaddio_conferenceshot:
+  - host: !secret vaddio_conferenceshot.host
+    username: !secret vaddio_conferenceshot.username
+    password: !secret vaddio_conferenceshot.password
+  - host: !secret vaddio_roboshot.host
+    username: !secret vaddio_roboshot.username
+    password: !secret vaddio_roboshot.password
+
+custom_filters:
+
+script: !include scripts.yaml
+
+nest:
+  client_id: !secret nest.client_id
+  client_secret: !secret nest.client_secret
+  project_id: !secret nest.project_id
+  subscriber_id: !secret nest.subscriber_id
+
+smartir:
+  check_updates: false
+
+fan:
+  - platform: smartir
+    name: Master Bedroom Fan
+    unique_id: master_bedroom_fan
+    controller_data: remote.master_bedroom_ir_transmitter_remote
+    device_code: 1140
