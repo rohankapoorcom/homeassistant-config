@@ -3,6 +3,7 @@ import logging
 import voluptuous as vol
 import random
 import time
+from datetime import datetime
 import spotipy
 from functools import wraps, partial
 from homeassistant.components import http, websocket_api
@@ -12,7 +13,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.cast.media_player import KNOWN_CHROMECAST_INFO_KEY
 from homeassistant.components.cast.helpers import ChromeCastZeroconf
 
-__VERSION__ = "3.4.2"
+__VERSION__ = "3.4.4"
 DOMAIN = "spotcast"
 
 _LOGGER = logging.getLogger(__name__)
@@ -161,7 +162,7 @@ def setup(hass, config):
                 resp = resp.get("content")
             elif playlistType == "featured":
                 resp = client.featured_playlists(
-                    locale=locale, country=countryCode, timestamp=None, limit=limit, offset=0
+                    locale=locale, country=countryCode, timestamp=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'), limit=limit, offset=0
                 )
                 resp = resp.get("playlists")
             else:
@@ -254,16 +255,6 @@ def setup(hass, config):
                 random_song,
             )
             client.start_playback(**kwargs)
-        if shuffle or repeat:
-            time.sleep(3)
-            if shuffle:
-                _LOGGER.debug("Turning shuffle on")
-                time.sleep(2)
-                client.shuffle(state=shuffle, device_id=spotify_device_id)
-            if repeat:
-                _LOGGER.debug("Turning repeat on")
-                time.sleep(2)
-                client.repeat(state=repeat, device_id=spotify_device_id)
 
     def getSpotifyConnectDeviceId(client, device_name):
         devices_available = client.devices()
@@ -311,6 +302,16 @@ def setup(hass, config):
             client.transfer_playback(device_id=spotify_device_id, force_play=force_playback)
         else:
             play(client, spotify_device_id, uri, random_song, repeat, shuffle, position)
+        if shuffle or repeat:
+            time.sleep(3)
+            if shuffle:
+                _LOGGER.debug("Turning shuffle on")
+                time.sleep(2)
+                client.shuffle(state=shuffle, device_id=spotify_device_id)
+            if repeat:
+                _LOGGER.debug("Turning repeat on")
+                time.sleep(2)
+                client.repeat(state=repeat, device_id=spotify_device_id)
 
     # Register websocket and service
     hass.components.websocket_api.async_register_command(
@@ -435,7 +436,7 @@ class SpotifyCastDevice:
                      None,
                      None,
                  ),
-                 ChromeCastZeroconf.get_zeroconf()) 
+                 ChromeCastZeroconf.get_zeroconf())
         _LOGGER.error(
             "Could not find device %s from hass.data",
             device_name,

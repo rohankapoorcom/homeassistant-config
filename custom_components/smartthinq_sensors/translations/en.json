@@ -5,6 +5,7 @@
             "no_smartthinq_devices": "No SmartThinQ devices found. Component setup aborted."
         },
         "error": {
+            "error_url": "Error retrieving login URL from ThinQ.",
             "invalid_region": "Invalid region format.",
             "invalid_language": "Invalid language format.",
             "invalid_url": "Invalid redirection URL.",
@@ -13,12 +14,10 @@
         "step": {
             "user": {
                 "data": {
-                    "region": "Region (ISO 3166-1 alpha-2, e.g. US)",
-                    "language": "Language (ISO-639-1, e.g. en)",
-                    "token": "Refresh Token (only for Authentication mode v1)",
-                    "use_api_v2": "Use Authentication mode v2"
+                    "region": "Country Code",
+                    "language": "Language Code"
                 },
-                "description": "Fill in your SmartThinQ access information. If you don't have a refresh token, leave it empty to start the authentication process with your credentials. Refresh token is not used with Authentication mode v2.",
+                "description": "Select your SmartThinQ account localization information.",
                 "title": "SmartThinQ LGE Sensors"
             },
             "url": {
@@ -26,7 +25,7 @@
                     "login_url": "SmartThinQ login URL",
                     "callback_url": "Redirection URL"
                 },
-                "description": "Use the URL in the first field to perform login to SmartThinQ with your credentials, then paste the URL where the browser is redirected after the login in the second field.",
+                "description": "Use the URL in the first field to perform login to SmartThinQ with your credentials, then paste the URL where the browser is redirected after the login in the second field. Share feedback about your setup [here](https://git.io/JU166).",
                 "title": "SmartThinQ LGE Sensors - Authentication"
             },
             "token": {

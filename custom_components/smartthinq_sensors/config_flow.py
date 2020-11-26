@@ -1,5 +1,6 @@
 """Config flow for TP-Link."""
 import logging
+import pycountry
 import re
 
 import voluptuous as vol
@@ -30,6 +31,23 @@ INIT_SCHEMA = vol.Schema(
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _countries_list():
+    """Returns a list of countries, suitable for use in a multiple choice field."""
+    countries = {}
+    for country in sorted(pycountry.countries, key=lambda x: x.name):
+        countries[country.alpha_2] = f"{country.name} - {country.alpha_2}"
+    return countries
+
+
+def _languages_list():
+    """Returns a list of languages, suitable for use in a multiple choice field."""
+    languages = {}
+    for language in sorted(pycountry.languages, key=lambda x: x.name):
+        if hasattr(language, "alpha_2"):
+            languages[language.alpha_2] = f"{language.name} - {language.alpha_2}"
+    return languages
 
 
 class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -73,19 +91,26 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         region_regex = re.compile(r"^[A-Z]{2,3}$")
         if not region_regex.match(region):
-            return self._show_form({"base": "invalid_region"})
+            return self._show_form(errors={"base": "invalid_region"})
 
-        language_regex = re.compile(r"^[a-z]{2,3}$")
+        if len(language) == 2:
+            language_regex = re.compile(r"^[a-z]{2,3}$")
+        else:
+            language_regex = re.compile(r"^[a-z]{2,3}-[A-Z]{2,3}$")
         if not language_regex.match(language):
-            return self._show_form({"base": "invalid_language"})
+            return self._show_form(errors={"base": "invalid_language"})
 
         self._region = region
-        self._language = language + "-" + region
+        self._language = language
+        if len(language) == 2:
+            self._language += "-" + region
         self._token = refresh_token
 
         if not self._token:
             lgauth = LGEAuthentication(self._region, self._language, self._use_api_v2)
             self._loginurl = await self.hass.async_add_executor_job(lgauth.getLoginUrl)
+            if not self._loginurl:
+                return self._show_form(errors={"base": "error_url"})
             return self._show_form(errors=None, step_id="url")
 
         return await self._save_config_entry()
@@ -155,7 +180,16 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the form to the user."""
         schema = INIT_SCHEMA
 
-        if step_id == "url":
+        if step_id == "user":
+            schema = vol.Schema(
+                {
+                    # vol.Required(CONF_REGION): str,
+                    vol.Required(CONF_REGION): vol.In(_countries_list()),
+                    # vol.Required(CONF_LANGUAGE): str,
+                    vol.Required(CONF_LANGUAGE): vol.In(_languages_list()),
+                }
+            )
+        elif step_id == "url":
             schema = vol.Schema(
                 {
                     vol.Required(CONF_LOGIN, default=self._loginurl): str,
