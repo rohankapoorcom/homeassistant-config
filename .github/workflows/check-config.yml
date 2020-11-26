@@ -18,9 +18,9 @@ jobs:
         architecture: 'x64'
     - name: Install apt packages
       run: |
-        add-apt-repository ppa:jonathonf/ffmpeg-4
-        apt update
-        apt install python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
+        sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+        sudo apt update
+        sudo apt install -y python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
     - name: Move secrets
       run: |
         mv tests/travis_secrets.yaml secrets.yaml
