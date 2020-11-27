@@ -1,9 +1,0 @@
-id: server_rack_lights_on
-alias: Turn on Server Rack Lights
-trigger:
-  - entity_id: binary_sensor.motion_sensor_158d0001e07497
-    platform: state
-    to: 'on'
-action:
-  - entity_id: switch.server_rack_lights
-    service: switch.turn_on

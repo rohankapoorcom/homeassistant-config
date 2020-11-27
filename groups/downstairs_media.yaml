@@ -1,7 +1,0 @@
-name: Media
-
-entities:
-  - media_player.all_speakers
-  - switch.downstairs_speakers
-  - input_number.volume_increment
-  - cover.downstairs_volume
