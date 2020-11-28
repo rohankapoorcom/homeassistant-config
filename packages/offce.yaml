@@ -1,0 +1,57 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  11/28/2020
+#  @package      :  Office
+#  @description  :  Manages functionality within the office
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'office'
+
+
+################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: template
+    sensors:
+      streaming_lights_enabled:
+        friendly_name: Streaming Lights Enabled
+        value_template: >-
+          {{ is_state_attr('light.elgato_key_light_dbc2', 'brightness', 51)
+            and is_state_attr('light.elgato_key_light_dbc2', 'color_temp', 143)
+            and is_state_attr('light.office_lights', 'brightness', 129)
+          }}
+
+
+################################################
+## Script
+################################################
+script:
+  toggle_streaming_lights:
+    sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: binary_sensor.streaming_lights_enabled
+            state: off
+          sequence:
+            - service: light.turn_off
+              entity_id: light.office_lights
+            - service: light.turn_off
+              entity_id: light.elgato_key_light_dbc2
+        default:
+          - service: light.turn_on
+            entity_id: light.office_lights
+            brightness_pct: 50
+          - service: light.turn_on
+            entity_id: light.elgato_key_light_dbc2
+            color_temp: 143
+            brightness_pct: 20
