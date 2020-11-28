@@ -16,7 +16,7 @@ homeassistant:
     ################################################
     ## Light
     ################################################
-    light.hallway_lights
+    light.hallway_lights:
       <<: *customize
 
 
