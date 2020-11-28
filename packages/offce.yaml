@@ -41,7 +41,7 @@ script:
         - conditions:
           - condition: state
             entity_id: binary_sensor.streaming_lights_enabled
-            state: 'off'
+            state: 'on'
           sequence:
             - service: light.turn_off
               entity_id: light.office_lights
