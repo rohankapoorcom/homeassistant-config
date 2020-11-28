@@ -49,9 +49,11 @@ script:
               entity_id: light.elgato_key_light_dbc2
         default:
           - service: light.turn_on
-            entity_id: light.office_lights
-            brightness_pct: 50
+            data:
+              entity_id: light.office_lights
+              brightness_pct: 50
           - service: light.turn_on
             entity_id: light.elgato_key_light_dbc2
-            color_temp: 143
-            brightness_pct: 20
+            data:
+              color_temp: 143
+              brightness_pct: 20
