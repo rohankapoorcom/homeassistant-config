@@ -48,7 +48,8 @@ recorder:
   auto_purge: false
   exclude:
     entities:
-      - sensor.roborock_map
+      - sensor.upstairs_roborock_map
+      - sensor.downstairs_roborock_map
 
 # Enables support for tracking state changes over time.
 history:
