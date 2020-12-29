@@ -15,77 +15,11 @@ homeassistant:
       customize: &customize
         package: 'bathroom'
 
-    ################################################
-    ## Switch
-    ################################################
-    switch.bathroom_fan:
-      <<: *customize
-      friendly_name: Bathroom Fan
-      icon: mdi:fan
 
-    switch.bathroom_light:
-      <<: *customize
-      icon: mdi:lightbulb
-
-    switch.sink_lights:
-      <<: *customize
-      icon: mdi:lightbulb
-
-    ################################################
-    ## Group
-    ################################################
-    group.bathroom:
-      <<: *customize
-
-    group.bathroom_motion:
-      <<: *customize
-
-    ################################################
-    ## Binary Sensor
-    ################################################
-    binary_sensor.bathroom_motion:
-      <<: *customize
-
-    ################################################
-    ## Sensor
-    ################################################
-    sensor.illumination_158d0001e51270:
-      <<: *customize
-      friendly_name: Bathroom Light Sensor 1
-
-    sensor.illumination_158d0001e51287:
-      <<: *customize
-      friendly_name: Bathroom Light Sensor 2
-
-    sensor.bathroom_light_sensor:
-      <<: *customize
-      device_class: illuminance
-
-    sensor.illumination_158d0001e05978:
-      <<: *customize
-      friendly_name: Bathroom Sink Light Sensor
-
-    sensor.temperature_158d000228846a:
-      <<: *customize
-      friendly_name: Temperature
-
-    sensor.humidity_158d000228846a:
-      <<: *customize
-      friendly_name: Humidity
-
-    sensor.pressure_158d000228846a:
-      <<: *customize
-      friendly_name: Air Pressure
 
     ################################################
     ## Automation
     ################################################
-    automation.bathroom_sink_lights_on:
-      <<: *customize
-
-    automation.bathroom_sink_lights_off:
-      <<: *customize
-
     automation.bathroom_light_on:
       <<: *customize
 
@@ -94,68 +28,9 @@ homeassistant:
 
 
 ################################################
-## Group
-################################################
-group:
-
-  bathroom_motion:
-    name: Bathroom Motion
-    entities:
-      - binary_sensor.motion_sensor_158d0001e51270
-      - binary_sensor.motion_sensor_158d0001e51287
-
-################################################
-## Binary Sensor
-################################################
-binary_sensor:
-  - platform: template
-    sensors:
-      bathroom_motion:
-        friendly_name: 'Bathroom Motion'
-        device_class: 'motion'
-        value_template: "{{ is_state('group.bathroom_motion', 'on') }}"
-
-################################################
-## Sensor
-################################################
-sensor:
-  - platform: min_max
-    name: Bathroom Light Sensor
-    entity_ids:
-      - sensor.illumination_158d0001e51270
-      - sensor.illumination_158d0001e51287
-    type: mean
-    round_digits: 2
-
-################################################
 ## Automation
 ################################################
 automation:
-
-  ################################################
-  ## Bathroom Sink Lights
-  ################################################
-  - id: bathroom_sink_lights_on
-    alias: Turn on Bathroom Sink Lights
-    trigger:
-      - entity_id: binary_sensor.motion_sensor_158d0001e05978
-        platform: state
-        to: 'on'
-    action:
-      - entity_id: switch.sink_lights
-        service: switch.turn_on
-
-  - id: bathroom_sink_lights_off
-    alias: Turn off Bathroom Sink Lights
-    trigger:
-      - entity_id: binary_sensor.motion_sensor_158d0001e05978
-        for:
-          minutes: 2
-        platform: state
-        to: 'off'
-    action:
-      - entity_id: switch.sink_lights
-        service: switch.turn_off
 
   ################################################
   ## Bathroom Light
@@ -163,47 +38,22 @@ automation:
   - id: bathroom_light_on
     alias: Turn on the Bathroom Light
     trigger:
-      # Door closed
-      - entity_id: binary_sensor.door_window_sensor_158d0001de6091
-        platform: state
-        to: 'off'
-      # Motion detected
-      - entity_id: group.bathroom_motion
+      - entity_id: binary_sensor.master_bathroom_motion
         platform: state
         to: 'on'
     action:
-      - service: switch.turn_on
-        entity_id: switch.bathroom_light
+      - service: light.turn_on
+        entity_id: light.master_bathroom_lights
 
   - id: bathroom_light_off
     alias: Turn off the Bathroom Light
     trigger:
-      # Door open for 30 seconds
-      - entity_id: binary_sensor.door_window_sensor_158d0001de6091
-        platform: state
-        to: 'on'
-        for:
-          seconds: 30
-      # No motion detected for 1 minute
-      - entity_id: group.bathroom_motion
+      - entity_id: binary_sensor.master_bathroom_motion
         platform: state
         to: 'off'
         for:
-          minutes: 1
+          minutes: 5
     action:
-      - service: switch.turn_off
-        entity_id: switch.bathroom_light
-    condition:
-      condition: and
-      conditions:
-        # No motion for 30 seconds
-        - condition: state
-          entity_id: group.bathroom_motion
-          state: 'off'
-          for:
-            seconds: 30
-        # Door open
-        - condition: state
-          entity_id: binary_sensor.door_window_sensor_158d0001de6091
-          state: 'on'
+      - service: light.turn_off
+        entity_id: light.master_bathroom_lights
 
