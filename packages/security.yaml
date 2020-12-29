@@ -15,11 +15,6 @@ homeassistant:
       customize: &customize
         package: 'security'
 
-august:
-  login_method: !secret august.login_method
-  username: !secret august.username
-  password: !secret august.password
-
 zoneminder:
   host: !secret zoneminder.host
 
