@@ -126,3 +126,5 @@ fan:
     unique_id: master_bedroom_fan
     controller_data: remote.master_bedroom_ir_transmitter_remote
     device_code: 1140
+
+mobile_app:
