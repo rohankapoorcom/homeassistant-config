@@ -1,0 +1,51 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  01/03/2021
+#  @package      :  Backyard
+#  @description  :  Logic for handling lights in the backyard.
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'backyard'
+
+    light.master_bedroom_balcony_lights:
+      <<: *customize
+
+    light.office_balcony_lights:
+      <<: *customize
+
+    light.patio_lights:
+      <<: *customize
+
+    light.backyard_lights:
+      <<: *customize
+
+################################################
+## Light
+################################################
+light:
+  - platform: switch
+    name: Master Bedroom Balcony Lights
+    entity_id: switch.master_bedroom_balcony_lights
+
+  - platform: switch
+    name: Office Balcony Lights
+    entity_id: switch.office_balcony_lights
+
+  - platform: switch
+    name: Patio Lights
+    entity_id: switch.patio_lights
+
+  - platform: group
+    name: Backyard Lights
+    entities:
+      - light.master_bedroom_balcony_lights
+      - light.office_balcony_lights
+      - light.patio_lights

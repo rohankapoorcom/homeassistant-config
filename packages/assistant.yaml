@@ -59,3 +59,14 @@ google_assistant:
       expose: true
     climate.upstairs:
       expose: true
+    light.backyard_lights:
+      expose: true
+      aliases:
+        - Outdoor Lights
+        - Patio Lights
+        - Balcony Lights
+    light.stairway_lights:
+      expose: true
+      aliases:
+        - Staircase Lights
+        - Stairs

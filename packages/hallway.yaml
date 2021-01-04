@@ -19,6 +19,9 @@ homeassistant:
     light.hallway_lights:
       <<: *customize
 
+    light.stairway_lights:
+      <<: *customize
+
 
 ################################################
 ## Light
@@ -29,3 +32,7 @@ light:
     entities:
       - light.hallway_lights_switch
       - light.entryway_lights
+
+  - platform: switch
+    name: Stairway Lights
+    entity_id: switch.stairway_lights
