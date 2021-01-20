@@ -98,6 +98,9 @@ spotcast:
   sp_key: !secret spotcast.sp_key
 
 browser_mod:
+  disable:
+    - light
+
 
 vaddio_conferenceshot:
   - host: !secret vaddio_conferenceshot.host
