@@ -77,6 +77,6 @@ google_assistant:
         - Downstairs Lights
         - Downstairs Hallway Lights
     light.guest_room_lights:
-      espose: true
+      expose: true
       aliases:
         - Guest Lights
