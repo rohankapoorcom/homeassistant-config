@@ -70,3 +70,13 @@ google_assistant:
       aliases:
         - Staircase Lights
         - Stairs
+    light.downstairs_hallway_lights:
+      expose: true
+      aliases:
+        - Downstairs
+        - Downstairs Lights
+        - Downstairs Hallway Lights
+    light.guest_room_lights:
+      espose: true
+      aliases:
+        - Guest Lights
