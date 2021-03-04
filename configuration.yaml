@@ -131,3 +131,6 @@ fan:
     device_code: 1140
 
 mobile_app:
+
+zha:
+  device_config: !secret zha.device_config
