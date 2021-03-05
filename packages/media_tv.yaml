@@ -73,7 +73,7 @@ automation:
         target:
           entity_id: media_player.living_room_shield_tv
         data:
-          source: Youtube
+          source: YouTube
 
   - id: living_room_shield_tv_launch_prime_video
     alias: Living Room Shield TV Launch Prime Video
@@ -87,7 +87,7 @@ automation:
         target:
           entity_id: media_player.living_room_shield_tv
         data:
-          source: Prime Video
+          source: "Prime Video"
 
   - id: living_room_shield_tv_launch_hbo_now
     alias: Living Room Shield TV Launch HBO Now
@@ -101,7 +101,7 @@ automation:
         target:
           entity_id: media_player.living_room_shield_tv
         data:
-          source: com.hbo.hbonow
+          source: "com.hbo.hbonow"
 
   - id: living_room_shield_tv_launch_search
     alias: Living Room Shield TV Launch Search
