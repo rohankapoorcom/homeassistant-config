@@ -31,6 +31,12 @@ homeassistant:
     automation.raise_lights_roku_pause:
       <<: *customize
 
+
+media_player:
+  - platform: androidtv
+    name: Living Room Shield TV
+    host: !secret media_player.living_room_shield_tv.host
+
 ################################################
 ## Group
 ################################################
