@@ -78,85 +78,85 @@ automation:
         data:
           source: Netflix
 
-    - id: living_room_shield_tv_launch_plex
-      alias: Living Room Shield TV Launch Plex
-      trigger:
-        - platform: event
-          event_type: roku_command
-          event_data:
-            roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-            type: keypress
-            key: Right
-      action:
-        - service: media_player.select_source
-          target:
-            entity_id: media_player.living_room_shield_tv
-          data:
-            source: Plex
+  - id: living_room_shield_tv_launch_plex
+    alias: Living Room Shield TV Launch Plex
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Right
+    action:
+      - service: media_player.select_source
+        target:
+          entity_id: media_player.living_room_shield_tv
+        data:
+          source: Plex
 
-      - id: living_room_shield_tv_launch_youtube
-        alias: Living Room Shield TV Launch Youtube
-        trigger:
-          - platform: event
-            event_type: roku_command
-            event_data:
-              roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-              type: keypress
-              key: Down
-        action:
-          - service: media_player.select_source
-            target:
-              entity_id: media_player.living_room_shield_tv
-            data:
-              source: Youtube
+  - id: living_room_shield_tv_launch_youtube
+    alias: Living Room Shield TV Launch Youtube
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Down
+    action:
+      - service: media_player.select_source
+        target:
+          entity_id: media_player.living_room_shield_tv
+        data:
+          source: Youtube
 
-      - id: living_room_shield_tv_launch_prime_video
-        alias: Living Room Shield TV Launch Prime Video
-        trigger:
-          - platform: event
-            event_type: roku_command
-            event_data:
-              roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-              type: keypress
-              key: Left
-        action:
-          - service: media_player.select_source
-            target:
-              entity_id: media_player.living_room_shield_tv
-            data:
-              source: Prime Video
+  - id: living_room_shield_tv_launch_prime_video
+    alias: Living Room Shield TV Launch Prime Video
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Left
+    action:
+      - service: media_player.select_source
+        target:
+          entity_id: media_player.living_room_shield_tv
+        data:
+          source: Prime Video
 
-      - id: living_room_shield_tv_launch_hbo_now
-        alias: Living Room Shield TV Launch HBO Now
-        trigger:
-          - platform: event
-            event_type: roku_command
-            event_data:
-              roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-              type: keypress
-              key: Home
-        action:
-          - service: media_player.select_source
-            target:
-              entity_id: media_player.living_room_shield_tv
-            data:
-              source: com.hbo.hbonow
+  - id: living_room_shield_tv_launch_hbo_now
+    alias: Living Room Shield TV Launch HBO Now
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Home
+    action:
+      - service: media_player.select_source
+        target:
+          entity_id: media_player.living_room_shield_tv
+        data:
+          source: com.hbo.hbonow
 
-      - id: living_room_shield_tv_launch_search
-        alias: Living Room Shield TV Launch Search
-        trigger:
-          - platform: event
-            event_type: roku_command
-            event_data:
-              roku_usn: 4t8k7RAjE3TBcfheQvCATZ
-              type: keypress
-              key: Search
-        action:
-          - service: androidtv.adb_command
-            target:
-              entity_id: media_player.living_room_shield_tv
-            data:
-              command: SEARCH
+  - id: living_room_shield_tv_launch_search
+    alias: Living Room Shield TV Launch Search
+    trigger:
+      - platform: event
+        event_type: roku_command
+        event_data:
+          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          type: keypress
+          key: Search
+    action:
+      - service: androidtv.adb_command
+        target:
+          entity_id: media_player.living_room_shield_tv
+        data:
+          command: SEARCH
 #  - id: dim_lights_roku_play
 #    alias: Dim Lights when Roku Plays
 #    trigger:
