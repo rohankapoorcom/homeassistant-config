@@ -15,48 +15,19 @@ homeassistant:
       customize: &customize
         package: 'media_tv'
 
-    ################################################
-    ## Group
-    ################################################
-    group.downstairs_tv_lights:
-      <<: *customize
-    group.downstairs_non_tv_lights:
-      <<: *customize
 
-    ################################################
-    ## Automation
-    ################################################
-    automation.dim_lights_roku_play:
-      <<: *customize
-    automation.raise_lights_roku_pause:
-      <<: *customize
+      trigger_roku_keypress: &trigger_roku_keypress
+        - platform: event
+          event_type: roku_command
 
+      roku_event_data: &roku_event_data
+        source_name: 4t8k7RAjE3TBcfheQvCATZ
+        type: keypress
 
 media_player:
   - platform: androidtv
     name: Living Room Shield TV
     host: !secret media_player.living_room_shield_tv.host
-
-################################################
-## Group
-################################################
-group:
-  downstairs_tv_lights:
-    name: TV Lights
-    entities:
-      - light.end_table_color_lights
-      - light.tv_backlight_color
-
-  downstairs_non_tv_lights:
-    name: Non TV Lights
-    entities:
-      - light.couch_accent_white
-      - light.gateway_light_7811dcb2396e
-      - light.kitchen_table
-      - light.kitchen_sink_light
-      - light.living_room_lamp
-      - light.tv_backlight_white
-      - switch.server_rack_lights
 
 ################################################
 ## Automation
@@ -65,11 +36,9 @@ automation:
   - id: living_room_shield_tv_launch_netflix
     alias: Living Room Shield TV Launch Netflix
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Up
     action:
       - service: media_player.select_source
@@ -81,11 +50,9 @@ automation:
   - id: living_room_shield_tv_launch_plex
     alias: Living Room Shield TV Launch Plex
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Right
     action:
       - service: media_player.select_source
@@ -97,11 +64,9 @@ automation:
   - id: living_room_shield_tv_launch_youtube
     alias: Living Room Shield TV Launch Youtube
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Down
     action:
       - service: media_player.select_source
@@ -113,11 +78,9 @@ automation:
   - id: living_room_shield_tv_launch_prime_video
     alias: Living Room Shield TV Launch Prime Video
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Left
     action:
       - service: media_player.select_source
@@ -129,11 +92,9 @@ automation:
   - id: living_room_shield_tv_launch_hbo_now
     alias: Living Room Shield TV Launch HBO Now
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Home
     action:
       - service: media_player.select_source
@@ -145,11 +106,9 @@ automation:
   - id: living_room_shield_tv_launch_search
     alias: Living Room Shield TV Launch Search
     trigger:
-      - platform: event
-        event_type: roku_command
+      - <<: *trigger_roku_keypress
         event_data:
-          source_name: 4t8k7RAjE3TBcfheQvCATZ
-          type: keypress
+          <<: *roku_event_data
           key: Search
     action:
       - service: androidtv.adb_command
@@ -157,49 +116,3 @@ automation:
           entity_id: media_player.living_room_shield_tv
         data:
           command: SEARCH
-#  - id: dim_lights_roku_play
-#    alias: Dim Lights when Roku Plays
-#    trigger:
-#      - platform: event
-#        event_type: roku_command
-#        event_data:
-#          source_name: 4t8k7RAjE3TBcfheQvCATZ
-#          type: keypress
-#          key: Up
-#    action:
-#      - service: homeassistant.turn_off
-#        entity_id: group.downstairs_non_tv_lights
-#      - service: homeassistant.turn_on
-#        entity_id: group.downstairs_tv_lights
-#        data:
-#          color_temp: 432
-#          brightness: 120
-#    condition:
-#      # Dusk
-#      - condition: numeric_state
-#        entity_id: sun.sun
-#        value_template: '{{ states.sun.sun.attributes.elevation }}'
-#        below: 2
-#
-#  - id: raise_lights_roku_pause
-#    alias: Raise Lights when Roku Pause
-#    trigger:
-#      - platform: event
-#        event_type: roku_command
-#        event_data:
-#          source_name: 4t8k7RAjE3TBcfheQvCATZ
-#          type: keypress
-#          key: Down
-#    action:
-#      - service: homeassistant.turn_on
-#        entity_id: group.downstairs_tv_lights
-#        data:
-#          color_temp: 432
-#          brightness: 255
-#    condition:
-#      # Dusk
-#      - condition: numeric_state
-#        entity_id: sun.sun
-#        value_template: '{{ states.sun.sun.attributes.elevation }}'
-#        below: 2
-#
