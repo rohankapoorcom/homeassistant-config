@@ -87,7 +87,7 @@ automation:
         target:
           entity_id: media_player.living_room_shield_tv
         data:
-          source: "Prime Video"
+          source: "com.amazon.amazonvideo.livingroom"
 
   - id: living_room_shield_tv_launch_hbo_now
     alias: Living Room Shield TV Launch HBO Now
