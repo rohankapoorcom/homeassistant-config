@@ -68,7 +68,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Up
     action:
@@ -84,7 +84,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Right
     action:
@@ -100,7 +100,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Down
     action:
@@ -116,7 +116,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Left
     action:
@@ -132,7 +132,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Home
     action:
@@ -148,7 +148,7 @@ automation:
       - platform: event
         event_type: roku_command
         event_data:
-          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+          source_name: 4t8k7RAjE3TBcfheQvCATZ
           type: keypress
           key: Search
     action:
@@ -163,7 +163,7 @@ automation:
 #      - platform: event
 #        event_type: roku_command
 #        event_data:
-#          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+#          source_name: 4t8k7RAjE3TBcfheQvCATZ
 #          type: keypress
 #          key: Up
 #    action:
@@ -187,7 +187,7 @@ automation:
 #      - platform: event
 #        event_type: roku_command
 #        event_data:
-#          roku_usn: 4t8k7RAjE3TBcfheQvCATZ
+#          source_name: 4t8k7RAjE3TBcfheQvCATZ
 #          type: keypress
 #          key: Down
 #    action:
