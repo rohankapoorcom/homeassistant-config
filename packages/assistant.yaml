@@ -51,9 +51,9 @@ google_assistant:
       expose: true
     switch.master_bathroom_fan:
       expose: true
-    vacuum.upstairs_rockrobo:
+    vacuum.upstairs_vacuum:
       expose: true
-    vacuum.downstairs_rockrobo:
+    vacuum.downstairs_vacuum:
       expose: true
     climate.downstairs:
       expose: true
