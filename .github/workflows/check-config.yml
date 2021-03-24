@@ -1,0 +1,37 @@
+name: Check Config
+
+on:
+  push:
+    branches: [ master ]
+
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: 'x64'
+    - name: Install apt packages
+      run: |
+        sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+        sudo apt update
+        sudo apt install -y python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
+    - name: Move secrets
+      run: |
+        mv tests/travis_secrets.yaml secrets.yaml
+    - name: Install dependencies
+      run: |
+        bash tests/travis_install.sh
+        python3 -m pip install --disable-pip-version-check google-cloud-pubsub
+    - name: Check Homeassistant Config
+      run: |
+        hass -c . --script check_config
