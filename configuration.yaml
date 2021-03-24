@@ -110,8 +110,6 @@ vaddio_conferenceshot:
     username: !secret vaddio_roboshot.username
     password: !secret vaddio_roboshot.password
 
-custom_filters:
-
 script: !include scripts.yaml
 
 nest:

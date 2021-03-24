@@ -16,26 +16,6 @@ homeassistant:
         package: 'vacuum'
 
     ################################################
-    ## Vacuum
-    ################################################
-    vacuum.downstairs_rockrobo:
-      <<: *customize
-      friendly_name: Downstairs Vacuum
-
-    vacuum.upstairs_rockrobo:
-      <<: *customize
-      friendly_name: Upstairs Vacuum
-
-    ################################################
-    ## Sensor
-    ################################################
-    sensor.downstairs_roborock_map:
-      <<: *customize
-
-    sensor.upstairs_roborock_map:
-      <<: *customize
-
-    ################################################
     ## Input Boolean
     ################################################
     input_boolean.send_downstairs_vacuum_home:
@@ -58,24 +38,6 @@ homeassistant:
 
     automation.send_upstairs_vacuum_when_button_held_down:
       <<: *customize
-
-################################################
-## Sensor
-################################################
-sensor:
-  - platform: mqtt
-    state_topic: "valetudo/downstairs-rockrobo/state"
-    json_attributes_topic: "valetudo/downstairs-rockrobo/map_data"
-    json_attributes_template: "{% if 'class' in value[1:10] %} {{ value }} {% else %} {{ value | decode_valetudo_map }} {% endif %}"
-    name: downstairs_roborock_map
-    value_template: 'OK'
-
-  - platform: mqtt
-    state_topic: "valetudo/upstairs-rockrobo/state"
-    json_attributes_topic: "valetudo/upstairs-rockrobo/map_data"
-    json_attributes_template: "{% if 'class' in value[1:10] %} {{ value }} {% else %} {{ value | decode_valetudo_map }} {% endif %}"
-    name: upstairs_roborock_map
-    value_template: 'OK'
 
 
 ################################################
