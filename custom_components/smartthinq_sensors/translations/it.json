@@ -8,14 +8,16 @@
             "error_url": "Errore nel recuperare l'URL di login da ThinQ.",
             "invalid_region": "Formato Paese non valido.",
             "invalid_language": "Formato lingua non valido.",
-            "invalid_url": "URL di reindizzamento non valido.",
-            "invalid_credentials": "Credendiali SmartThinQ non valide."
+            "invalid_url": "URL di reindizzamento non valido. Accertati di poter accedere alla app ThinQ sul tuo smartphone. Puoi richiedere supporto [qui](https://git.io/JTjid).",
+            "invalid_credentials": "Credenziali SmartThinQ non valide. Riprova, assicurandoti prima di poter accedere dall'applicazione ThinQ sul telefono"
         },
         "step": {
             "user": {
                 "data": {
                     "region": "Codice Paese",
-                    "language": "Codice Lingua"
+                    "language": "Codice Lingua",
+                    "use_tls_v1": "Forza l'utilizzo del protocollo TLSv1 (richiesto in alcuni casi)",
+                    "exclude_dh": "Non utilizzare il cypher DH (in caso di errore 'dh key too small')"
                 },
                 "description": "Seleziona le informazioni di localizzazione del tuo account SmartThinQ.",
                 "title": "SmartThinQ LGE Sensors"

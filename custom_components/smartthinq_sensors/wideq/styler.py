@@ -1,20 +1,14 @@
-"""------------------for DishWasher"""
+"""------------------for Styler"""
 import logging
 from typing import Optional
 
 from . import (
     FEAT_CHILDLOCK,
-    FEAT_DELAYSTART,
-    FEAT_DOOROPEN,
-    FEAT_DUALZONE,
-    FEAT_ENERGYSAVER,
     FEAT_ERROR_MSG,
-    FEAT_HALFLOAD,
-    FEAT_PROCESS_STATE,
-    FEAT_RINSEREFILL,
+    FEAT_NIGHTDRY,
+    FEAT_PRE_STATE,
+    FEAT_REMOTESTART,
     FEAT_RUN_STATE,
-    FEAT_SALTREFILL,
-    FEAT_TUBCLEAN_COUNT,
 )
 
 from .device import (
@@ -23,13 +17,13 @@ from .device import (
     STATE_OPTIONITEM_NONE,
 )
 
-STATE_DISHWASHER_POWER_OFF = "@DW_STATE_POWER_OFF_W"
-STATE_DISHWASHER_END = [
-    "@DW_STATE_END_W",
-    "@DW_STATE_COMPLETE_W",
+STATE_STYLER_POWER_OFF = "@ST_STATE_POWER_OFF_W"
+STATE_STYLER_END = [
+    "@ST_STATE_END_W",
+    "@ST_STATE_COMPLETE_W",
 ]
-STATE_DISHWASHER_ERROR_OFF = "OFF"
-STATE_DISHWASHER_ERROR_NO_ERROR = [
+STATE_STYLER_ERROR_OFF = "OFF"
+STATE_STYLER_ERROR_NO_ERROR = [
     "ERROR_NOERROR",
     "ERROR_NOERROR_TITLE",
     "No Error",
@@ -39,28 +33,28 @@ STATE_DISHWASHER_ERROR_NO_ERROR = [
 _LOGGER = logging.getLogger(__name__)
 
 
-class DishWasherDevice(Device):
-    """A higher-level interface for a dishwasher."""
+class StylerDevice(Device):
+    """A higher-level interface for a styler."""
     def __init__(self, client, device):
-        super().__init__(client, device, DishWasherStatus(self, None))
+        super().__init__(client, device, StylerStatus(self, None))
 
     def reset_status(self):
-        self._status = DishWasherStatus(self, None)
+        self._status = StylerStatus(self, None)
         return self._status
 
-    def poll(self) -> Optional["DishWasherStatus"]:
+    def poll(self) -> Optional["StylerStatus"]:
         """Poll the device's current state."""
 
-        res = self.device_poll("dishwasher")
+        res = self.device_poll("styler")
         if not res:
             return None
 
-        self._status = DishWasherStatus(self, res)
+        self._status = StylerStatus(self, res)
         return self._status
 
 
-class DishWasherStatus(DeviceStatus):
-    """Higher-level information about a dishwasher's current status.
+class StylerStatus(DeviceStatus):
+    """Higher-level information about a styler's current status.
 
     :param device: The Device instance.
     :param data: JSON data from the API.
@@ -68,32 +62,32 @@ class DishWasherStatus(DeviceStatus):
     def __init__(self, device, data):
         super().__init__(device, data)
         self._run_state = None
-        self._process = None
+        self._pre_state = None
         self._error = None
 
     def _get_run_state(self):
         if not self._run_state:
             state = self.lookup_enum(["State", "state"])
             if not state:
-                self._run_state = STATE_DISHWASHER_POWER_OFF
+                self._run_state = STATE_STYLER_POWER_OFF
             else:
                 self._run_state = state
         return self._run_state
 
-    def _get_process(self):
-        if not self._process:
-            process = self.lookup_enum(["Process", "process"])
-            if not process:
-                self._process = STATE_OPTIONITEM_NONE
+    def _get_pre_state(self):
+        if not self._pre_state:
+            state = self.lookup_enum(["PreState", "preState"])
+            if not state:
+                self._pre_state = STATE_STYLER_POWER_OFF
             else:
-                self._process = process
-        return self._process
+                self._pre_state = state
+        return self._pre_state
 
     def _get_error(self):
         if not self._error:
             error = self.lookup_reference(["Error", "error"], ref_key="title")
             if not error:
-                self._error = STATE_DISHWASHER_ERROR_OFF
+                self._error = STATE_STYLER_ERROR_OFF
             else:
                 self._error = error
         return self._error
@@ -101,14 +95,14 @@ class DishWasherStatus(DeviceStatus):
     @property
     def is_on(self):
         run_state = self._get_run_state()
-        return run_state != STATE_DISHWASHER_POWER_OFF
+        return run_state != STATE_STYLER_POWER_OFF
 
     @property
     def is_run_completed(self):
         run_state = self._get_run_state()
-        process = self._get_process()
-        if run_state in STATE_DISHWASHER_END or (
-            run_state == STATE_DISHWASHER_POWER_OFF and process in STATE_DISHWASHER_END
+        pre_state = self._get_pre_state()
+        if run_state in STATE_STYLER_END or (
+            run_state == STATE_STYLER_POWER_OFF and pre_state in STATE_STYLER_END
         ):
             return True
         return False
@@ -118,7 +112,7 @@ class DishWasherStatus(DeviceStatus):
         if not self.is_on:
             return False
         error = self._get_error()
-        if error in STATE_DISHWASHER_ERROR_NO_ERROR or error == STATE_DISHWASHER_ERROR_OFF:
+        if error in STATE_STYLER_ERROR_NO_ERROR or error == STATE_STYLER_ERROR_OFF:
             return False
         return True
 
@@ -183,29 +177,19 @@ class DishWasherStatus(DeviceStatus):
     @property
     def run_state(self):
         run_state = self._get_run_state()
-        if run_state == STATE_DISHWASHER_POWER_OFF:
+        if run_state == STATE_STYLER_POWER_OFF:
             run_state = STATE_OPTIONITEM_NONE
         return self._update_feature(
             FEAT_RUN_STATE, run_state
         )
 
     @property
-    def process_state(self):
-        process = self._get_process()
+    def pre_state(self):
+        pre_state = self._get_pre_state()
+        if pre_state == STATE_STYLER_POWER_OFF:
+            pre_state = STATE_OPTIONITEM_NONE
         return self._update_feature(
-            FEAT_PROCESS_STATE, process
-        )
-
-    @property
-    def halfload_state(self):
-        if self.is_info_v2:
-            half_load = self.lookup_bit_enum("halfLoad")
-        else:
-            half_load = self.lookup_bit_enum("HalfLoad")
-        if not half_load:
-            half_load = STATE_OPTIONITEM_NONE
-        return self._update_feature(
-            FEAT_HALFLOAD, half_load
+            FEAT_PRE_STATE, pre_state
         )
 
     @property
@@ -219,27 +203,6 @@ class DishWasherStatus(DeviceStatus):
         )
 
     @property
-    def tubclean_count(self):
-        if self.is_info_v2:
-            result = DeviceStatus.int_or_none(self._data.get("tclCount"))
-        else:
-            result = self._data.get("TclCount")
-        if result is None:
-            result = "N/A"
-        return self._update_feature(
-            FEAT_TUBCLEAN_COUNT, result, False
-        )
-
-    @property
-    def door_opened_state(self):
-        status = self.lookup_bit(
-            "door" if self.is_info_v2 else "Door"
-        )
-        return self._update_feature(
-            FEAT_DOOROPEN, status, False
-        )
-
-    @property
     def childlock_state(self):
         status = self.lookup_bit(
             "childLock" if self.is_info_v2 else "ChildLock"
@@ -249,62 +212,29 @@ class DishWasherStatus(DeviceStatus):
         )
 
     @property
-    def rinserefill_state(self):
+    def nightdry_state(self):
         status = self.lookup_bit(
-            "rinseRefill" if self.is_info_v2 else "RinseRefill"
+            "nightDry" if self.is_info_v2 else "NightDry"
         )
         return self._update_feature(
-            FEAT_RINSEREFILL, status, False
+            FEAT_NIGHTDRY, status, False
         )
 
     @property
-    def saltrefill_state(self):
+    def remotestart_state(self):
         status = self.lookup_bit(
-            "saltRefill" if self.is_info_v2 else "SaltRefill"
+            "remoteStart" if self.is_info_v2 else "RemoteStart"
         )
         return self._update_feature(
-            FEAT_SALTREFILL, status, False
-        )
-
-    @property
-    def dualzone_state(self):
-        status = self.lookup_bit(
-            "dualZone" if self.is_info_v2 else "DualZone"
-        )
-        return self._update_feature(
-            FEAT_DUALZONE, status, False
-        )
-
-    @property
-    def delaystart_state(self):
-        status = self.lookup_bit(
-            "delayStart" if self.is_info_v2 else "DelayStart"
-        )
-        return self._update_feature(
-            FEAT_DELAYSTART, status, False
-        )
-
-    @property
-    def energysaver_state(self):
-        status = self.lookup_bit(
-            "energySaver" if self.is_info_v2 else "EnergySaver"
-        )
-        return self._update_feature(
-            FEAT_ENERGYSAVER, status, False
+            FEAT_REMOTESTART, status, False
         )
 
     def _update_features(self):
         result = [
             self.run_state,
-            self.process_state,
-            self.halfload_state,
+            self.pre_state,
             self.error_msg,
-            self.tubclean_count,
-            self.door_opened_state,
             self.childlock_state,
-            self.rinserefill_state,
-            self.saltrefill_state,
-            self.dualzone_state,
-            self.delaystart_state,
-            self.energysaver_state,
+            self.nightdry_state,
+            self.remotestart_state,
         ]

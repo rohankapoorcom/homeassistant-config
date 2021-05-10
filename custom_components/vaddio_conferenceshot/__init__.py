@@ -148,6 +148,8 @@ class VaddioDevice:
     def _retrieve_info(self):
         """Retrieve the name and mac address from the camera."""
         response = self._telnet_command("network settings get")
+        if not response:
+            _LOGGER.error('Response was invalid, unable to retrieve information')
         self._mac_address = response[1].split()[-1].replace(":", "")
         self._name = response[6].split()[-1]
 

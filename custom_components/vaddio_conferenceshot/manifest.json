@@ -4,5 +4,6 @@
   "documentation": "https://www.home-assistant.io/integrations/vaddio_conferenceshot",
   "issue_tracker": "https://github.com/rohankapoorcom/vaddio_conferenceshot/issues",
   "codeowners": ["@rohankapoorcom"],
-  "dependencies": ["stream"]
+  "dependencies": ["stream"],
+  "version": "0.1.1"
 }

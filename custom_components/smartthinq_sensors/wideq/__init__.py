@@ -1,7 +1,59 @@
 """
 Support for LG Smartthinq device.
 """
+import ssl
 import uuid
+
+from urllib3.poolmanager import PoolManager
+from urllib3.util.ssl_ import DEFAULT_CIPHERS
+from requests.adapters import HTTPAdapter
+
+DATA_ROOT = "lgedmRoot"
+DEFAULT_COUNTRY = "US"
+DEFAULT_LANGUAGE = "en-US"
+
+# wash devices features
+FEAT_RUN_STATE = "run_state"
+FEAT_PRE_STATE = "pre_state"
+FEAT_PROCESS_STATE = "process_state"
+FEAT_ERROR_MSG = "error_message"
+FEAT_TUBCLEAN_COUNT = "tubclean_count"
+FEAT_DRYLEVEL = "dry_level"
+FEAT_SPINSPEED = "spin_speed"
+FEAT_TEMPCONTROL = "temp_control"
+FEAT_TIMEDRY = "time_dry"
+FEAT_WATERTEMP = "water_temp"
+
+FEAT_CHILDLOCK = "child_lock"
+FEAT_CREASECARE = "crease_care"
+FEAT_DELAYSTART = "delay_start"
+FEAT_DOORCLOSE = "door_close"
+FEAT_DOORLOCK = "door_lock"
+FEAT_DOOROPEN = "door_open"
+FEAT_DUALZONE = "dual_zone"
+FEAT_ENERGYSAVER = "energy_saver"
+FEAT_HALFLOAD = "half_load"
+FEAT_MEDICRINSE = "medic_rinse"
+FEAT_NIGHTDRY = "night_dry"
+FEAT_PREWASH = "pre_wash"
+FEAT_REMOTESTART = "remote_start"
+FEAT_STEAM = "steam"
+FEAT_STEAMSOFTENER = "steam_softener"
+FEAT_RINSEREFILL = "rinse_refill"
+FEAT_SALTREFILL = "salt_refill"
+FEAT_TURBOWASH = "turbo_wash"
+
+# refrigerator device features
+FEAT_ECOFRIENDLY = "eco_friendly"
+FEAT_EXPRESSMODE = "express_mode"
+FEAT_EXPRESSFRIDGE = "express_fridge"
+FEAT_FRESHAIRFILTER = "fresh_air_filter"
+FEAT_ICEPLUS = "ice_plus"
+FEAT_SMARTSAVINGMODE = "smart_saving_mode"
+# FEAT_SMARTSAVING_STATE = "smart_saving_state"
+FEAT_WATERFILTERUSED_MONTH = "water_filter_used_month"
+
+CIPHERS = ":HIGH:!DH:!aNULL"
 
 
 def as_list(obj):
@@ -19,3 +71,27 @@ def as_list(obj):
 
 def gen_uuid():
     return str(uuid.uuid4())
+
+
+class AuthHTTPAdapter(HTTPAdapter):
+    def __init__(self, use_tls_v1=False, exclude_dh=False):
+        self._use_tls_v1 = use_tls_v1
+        self._exclude_dh = exclude_dh
+        super().__init__()
+
+    def init_poolmanager(self, *args, **kwargs):
+        """
+        Secure settings adding required ciphers
+        """
+        context = ssl.create_default_context()  # SSLContext()
+        ciphers = DEFAULT_CIPHERS
+        if self._exclude_dh:
+            ciphers += CIPHERS
+
+        context.set_ciphers(ciphers)
+        self.poolmanager = PoolManager(
+            *args,
+            ssl_context=context,
+            ssl_version=ssl.PROTOCOL_TLSv1 if self._use_tls_v1 else None,
+            **kwargs,
+        )
