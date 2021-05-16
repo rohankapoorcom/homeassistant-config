@@ -76,19 +76,21 @@ automation:
     alias: Turn on Kitchen Cabinet Lights when Switch Up Double Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7860
-          scene_id: 2
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 002
+          value: KeyPressed2x
     action:
       - service: light.turn_on
         entity_id: light.kitchen_cabinet_lights
         data:
           brightness_pct: 100
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18745158
 
@@ -96,17 +98,19 @@ automation:
     alias: Turn off Kitchen Cabinet Lights when Switch Down Double Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7860
-          scene_id: 1
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 001
+          value: KeyPressed2x
     action:
       - service: light.turn_off
         entity_id: light.kitchen_cabinet_lights
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18743878
 
@@ -114,11 +118,12 @@ automation:
     alias: Turn on Kitchen and Cabinet Lights when Switch Up Triple Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7920
-          scene_id: 2
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 002
+          value: KeyPressed3x
     action:
       - service: light.turn_on
         entity_id: light.kitchen_cabinet_lights
@@ -126,9 +131,10 @@ automation:
           brightness_pct: 100
       - service: light.turn_on
         entity_id: light.kitchen_lights
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18745218
 
@@ -136,19 +142,21 @@ automation:
     alias: Turn off Kitchen and Cabinet Lights when Switch Down Triple Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7920
-          scene_id: 1
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 001
+          value: KeyPressed3x
     action:
       - service: light.turn_off
         entity_id: light.kitchen_cabinet_lights
       - service: light.turn_off
         entity_id: light.kitchen_lights
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18743938
 
@@ -156,17 +164,19 @@ automation:
     alias: Turn on Kitchen Scene when Switch Up Quad Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7980
-          scene_id: 2
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 002
+          value: KeyPressed4x
     action:
       - service: scene.turn_on
         entity_id: scene.kitchen_lights_on
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18745230
 
@@ -174,16 +184,18 @@ automation:
     alias: Turn off Kitchen Scene when Switch Down Quad Tapped
     trigger:
       - platform: event
-        event_type: zwave.scene_activated
+        event_type: zwave_js_value_notification
         event_data:
-          entity_id: zwave.kitchen_lights
-          scene_data: 7980
-          scene_id: 1
+          node_id: 36
+          command_class_name: Central Scene
+          property_key_name: 001
+          value: KeyPressed4x
     action:
       - service: scene.turn_on
         entity_id: scene.kitchen_lights_off
-      - service: zwave.set_config_parameter
-        data_template:
-          node_id: '{{ trigger.event.data.node_id }}'
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: switch.kitchen_lights
+        data:
           parameter: 8
           value: 18743950

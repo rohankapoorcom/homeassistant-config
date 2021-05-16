@@ -84,11 +84,6 @@ sensor:
 
 python_script:
 
-zwave:
-  usb_path: /dev/zwave
-  network_key: !secret zwave.network_key
-  config_path: /etc/homeassistant/openzwave/config/
-
 spotify:
   client_id: !secret spotify.client_id
   client_secret: !secret spotify.client_secret
