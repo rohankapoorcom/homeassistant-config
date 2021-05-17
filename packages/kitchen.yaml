@@ -123,8 +123,6 @@ automation:
           - service: light.turn_off
             target:
               area_id: c74119fdbc01442e8932a5a871e3b700
-            data:
-              brightness_pct: 100
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
               entity_id: switch.kitchen_lights
