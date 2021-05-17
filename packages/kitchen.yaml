@@ -15,25 +15,7 @@ homeassistant:
       customize: &customize
         package: 'kitchen'
 
-    scene.kitchen_lights_on:
-      <<: *customize
-    scene.kitchen_lights_off:
-      <<: *customize
-
     light.kitchen_lights:
-      <<: *customize
-
-    automation.turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped:
-      <<: *customize
-    automation.turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped:
-      <<: *customize
-    automation.turn_on_kitchen_and_cabinet_lights_when_switch_up_triple_tapped:
-      <<: *customize
-    automation.turn_off_kitchen_and_cabinet_lights_when_switch_down_triple_tapped:
-      <<: *customize
-    automation.turn_on_kitchen_scene_when_switch_up_quad_tapped:
-      <<: *customize
-    automation.turn_off_kitchen_scene_when_switch_down_quad_tapped:
       <<: *customize
 
 ################################################
@@ -45,157 +27,111 @@ light:
     entity_id: switch.kitchen_lights
 
 ################################################
-## Scene
-################################################
-scene:
-  - name: Kitchen Lights On
-    entities:
-      light.kitchen_lights:
-        state: on
-      light.kitchen_cabinet_lights:
-        state: on
-        brightness_pct: 100
-      light.sink_accent_lights:
-        state: on
-        brightness_pct: 100
-
-  - name: Kitchen Lights Off
-    entities:
-      light.kitchen_lights:
-        state: off
-      light.kitchen_cabinet_lights:
-        state: off
-      light.sink_accent_lights:
-        state: off
-
-################################################
 ## Automation
 ################################################
 automation:
-  - id: turn_on_kitchen_cabinet_lights_when_switch_up_double_tapped
-    alias: Turn on Kitchen Cabinet Lights when Switch Up Double Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "002"
-          value: KeyPressed2x
-    action:
-      - service: light.turn_on
-        entity_id: light.kitchen_cabinet_lights
-        data:
-          brightness_pct: 100
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18745158
-
-  - id: turn_off_kitchen_cabinet_lights_when_switch_down_double_tapped
-    alias: Turn off Kitchen Cabinet Lights when Switch Down Double Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "001"
-          value: KeyPressed2x
-    action:
-      - service: light.turn_off
-        entity_id: light.kitchen_cabinet_lights
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18743878
-
-  - id: turn_on_kitchen_and_cabinet_lights_when_switch_up_triple_tapped
-    alias: Turn on Kitchen and Cabinet Lights when Switch Up Triple Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "002"
-          value: KeyPressed3x
-    action:
-      - service: light.turn_on
-        entity_id: light.kitchen_cabinet_lights
-        data:
-          brightness_pct: 100
-      - service: light.turn_on
-        entity_id: light.kitchen_lights
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18745218
-
-  - id: turn_off_kitchen_and_cabinet_lights_when_switch_down_triple_tapped
-    alias: Turn off Kitchen and Cabinet Lights when Switch Down Triple Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "001"
-          value: KeyPressed3x
-    action:
-      - service: light.turn_off
-        entity_id: light.kitchen_cabinet_lights
-      - service: light.turn_off
-        entity_id: light.kitchen_lights
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18743938
-
-  - id: turn_on_kitchen_scene_when_switch_up_quad_tapped
-    alias: Turn on Kitchen Scene when Switch Up Quad Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "002"
-          value: KeyPressed4x
-    action:
-      - service: scene.turn_on
-        entity_id: scene.kitchen_lights_on
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18745230
-
-  - id: turn_off_kitchen_scene_when_switch_down_quad_tapped
-    alias: Turn off Kitchen Scene when Switch Down Quad Tapped
-    trigger:
-      - platform: event
-        event_type: zwave_js_value_notification
-        event_data:
-          node_id: 36
-          command_class_name: Central Scene
-          property_key_name: "001"
-          value: KeyPressed4x
-    action:
-      - service: scene.turn_on
-        entity_id: scene.kitchen_lights_off
-      - service: zwave_js.bulk_set_partial_config_parameters
-        target:
-          entity_id: switch.kitchen_lights
-        data:
-          parameter: 8
-          value: 18743950
+  - id: 47c666bc-1a15-44ee-9712-d9ae472ad785
+    alias: Kitchen Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Kitchen.
+    use_blueprint:
+      path: kylerw/inovelli-lzw30-red-series-switch-using-the-new-zwave-js-integration.yaml
+      input:
+        zwave_device: 5d8cc12a755640bb788ec4a171f8ac4e
+        button_a2:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 70
+                0xff00: 70%
+                0xff0000: 30
+                0x7f000000: Solid
+        button_b2:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_cabinet_lights
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 70
+                0xff00: 20%
+                0xff0000: 30
+                0x7f000000: Solid
+        button_a3:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_lights
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 130
+                0xff00: 70%
+                0xff0000: 30
+                0x7f000000: Solid
+        button_b3:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_cabinet_lights
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_lights
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 130
+                0xff00: 20%
+                0xff0000: 30
+                0x7f000000: Solid
+        button_a4:
+          - service: light.turn_on
+            target:
+              area_id: c74119fdbc01442e8932a5a871e3b700
+            data:
+              brightness_pct: 100
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 142
+                0xff00: 70%
+                0xff0000: 30
+                0x7f000000: Solid
+        button_b4:
+          - service: light.turn_off
+            target:
+              area_id: c74119fdbc01442e8932a5a871e3b700
+            data:
+              brightness_pct: 100
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 8
+              value:
+                0xff: 142
+                0xff00: 20%
+                0xff0000: 30
+                0x7f000000: Solid
