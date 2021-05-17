@@ -79,7 +79,7 @@ blueprint:
       default: []
       selector:
         action: {}
-  source_url :https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-red-series-switch.yaml
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-red-series-switch.yaml
 mode: single
 max_exceeded: silent
 variables:
