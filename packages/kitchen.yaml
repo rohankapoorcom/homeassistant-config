@@ -34,7 +34,7 @@ automation:
     alias: Kitchen Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Kitchen.
     use_blueprint:
-      path: kylerw/inovelli-lzw30-red-series-switch-using-the-new-zwave-js-integration.yaml
+      path: rohankapoorcom/inovelli-lzw30-red-series-switch.yaml
       input:
         zwave_device: 5d8cc12a755640bb788ec4a171f8ac4e
         button_a2:
