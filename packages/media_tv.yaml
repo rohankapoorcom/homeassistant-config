@@ -120,3 +120,35 @@ automation:
           entity_id: media_player.living_room_shield_tv
         data:
           command: SEARCH
+
+  - id: c8ff656a-e0d6-4b26-9840-0da9863b1867
+    alias: Living Room Shield TV Notify Washer
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.washer_wash_completed
+        to: 'on'
+    action:
+      - service: notify.living_room_shield_tv
+        data:
+          title: Washer Complete
+          message: The washer has finished it's cycle.
+          data:
+            duration: 10
+            position: top-right
+            transparency: 50%
+
+  - id: e2f38056-ce90-46ca-8138-51a9637e3e50
+    alias: Living Room Shield TV Notify Dryer
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dryer_dry_completed
+        to: 'on'
+    action:
+      - service: notify.living_room_shield_tv
+        data:
+          title: Dryer Complete
+          message: The dryer has finished it's cycle.
+          data:
+            duration: 10
+            position: top-right
+            transparency: 50%
