@@ -166,6 +166,6 @@ automation:
           message: >
             {{ states('sensor.line_103_caller_name')}} - {{states('sensor.line_103_caller_number') }}
           data:
-            duration: 10
+            duration: 25
             position: top-right
             transparency: 50%
