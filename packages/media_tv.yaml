@@ -152,3 +152,20 @@ automation:
             duration: 10
             position: top-right
             transparency: 50%
+
+  - id: c34228e0-c6c9-431f-ad73-cef94537ca2c
+    alias: Living Room TV Notify Phone Call
+    trigger:
+      - platform: state
+        entity_id: sensor.line_103_status
+        to: 'incoming'
+    action:
+      - service: notify.living_room_shield_tv
+        data_template:
+          title: Incoming Phone Call
+          message: >
+            {{ states('sensor.line_103_caller_name')}} - {{states('sensor.line_103_caller_number') }}
+          data:
+            duration: 10
+            position: top-right
+            transparency: 50%

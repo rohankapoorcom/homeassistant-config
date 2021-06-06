@@ -1,0 +1,42 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  06/06/2021
+#  @package      :  Phone Calls
+#  @description  :  Manages notifications for phone calls
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'phone_calls'
+
+
+################################################
+## Sensor
+################################################
+sensor:
+  - platform: mqtt
+    name: Line 103 Status
+    unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-status
+    state_topic: sip2mqtt/103
+    icon: mdi:bell
+    value_template: "{{ value_json.verb }}"
+
+  - platform: mqtt
+    name: Line 103 Caller Number
+    unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-caller-number
+    state_topic: sip2mqtt/103
+    icon: mdi:bell
+    value_template: '{{ value_json.caller.split(" ")[-1] }}'
+
+  - platform: mqtt
+    name: Line 103 Caller Name
+    unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-caller-name
+    state_topic: sip2mqtt/103
+    icon: mdi:bell
+    value_template: '{{ value_json.caller.split(" ")[:-1]|join(" ", )}}'
