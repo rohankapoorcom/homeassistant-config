@@ -30,8 +30,8 @@ action:
     data_template:
       parameter: LED Indicator Color
       value: >
-      {% if trigger.to_state.state == 'locked' %}
-        Green
-      {% else %}
-        Red
-      {% endif %}
+        {% if trigger.to_state.state == 'locked' %}
+          Green
+        {% else %}
+          Red
+        {% endif %}
