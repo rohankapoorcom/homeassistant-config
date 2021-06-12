@@ -1,0 +1,37 @@
+blueprint:
+  name: Inovelli LZW30 Lock Notifications
+  description: Displays the current status of the lock using an Inovelli Black Series LZW30 Switch
+  domain: automation
+  input:
+    lock_entity:
+      name: Lock Entity
+      description: List of available lock entities
+      selector:
+        entity:
+          domain: lock
+    zwave_device:
+      name: Inovelli Switch
+      description: List of available Inovelli LZW30 switches.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Inovelli
+          model: LZW30
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-black-series-lock-notifications.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input lock_entity
+action:
+  - service: zwave_js.set_config_parameter
+    target:
+      device_id: !input zwave_device
+    data_template:
+      parameter: LED Indicator Color
+      value: >
+      {% if trigger.to_state.state == 'locked' %}
+        Green
+      {% else %}
+        Red
+      {% endif %}

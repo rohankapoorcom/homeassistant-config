@@ -25,3 +25,22 @@ ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 
 stream:
+
+automation:
+  - id: d69e14ae-1236-4948-8084-bc162861cbcf
+    alias: Show Front Door Lock Status
+    description: Utilizes a blueprint to show the Front Door Lock Status on an Inovelli LZW30 Switch
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw30-black-series-lock-notifications.yaml
+      input:
+        lock_entity: lock.front_door_lock
+        zwave_device: 64a4dd14224033fa4119a7b1cb66d888
+
+  - id: ff131bcc-1a3b-4e2f-adf9-4e92eb98260b
+    alias: Show Side Door Lock Status
+    description: Utilizes a blueprint to show the Side Door Lock Status on an Inovelli LZW30 Switch
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw30-black-series-lock-notifications.yaml
+      input:
+        lock_entity: lock.side_door_lock
+        zwave_device: ae0519b39c8bb3cbe6123a6bb612d2d3
