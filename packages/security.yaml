@@ -44,3 +44,12 @@ automation:
       input:
         lock_entity: lock.side_door_lock
         zwave_device: ae0519b39c8bb3cbe6123a6bb612d2d3
+
+  - id: 96d57252-86bb-44c7-b6b0-926257312296
+    alias: Show Garage Door Lock Status
+    description: Utilizes a blueprint to show the Side Door Lock Status on an Inovelli LZW31-SN Dimmer Switch
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-sn-red-series-lock-notifications.yaml
+      input:
+        lock_entity: lock.garage_door_lock
+        zwave_device: df9d58e09f02db4bcb1a908a1e32e5e5

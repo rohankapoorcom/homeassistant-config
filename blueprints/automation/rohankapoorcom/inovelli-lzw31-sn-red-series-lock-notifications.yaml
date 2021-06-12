@@ -1,0 +1,41 @@
+blueprint:
+  name: Inovelli LZW31-SN Lock Notifications
+  description: Displays the current status of the lock using an Inovelli Red Series LZW31-SN Dimmer Switch
+  domain: automation
+  input:
+    lock_entity:
+      name: Lock Entity
+      description: List of available lock entities
+      selector:
+        entity:
+          domain: lock
+    zwave_device:
+      name: Inovelli Switch
+      description: List of available Inovelli LZW30 switches.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Inovelli
+          model: LZW31-SN
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw31-sn-red-series-lock-notifications.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input lock_entity
+action:
+  - service: zwave_js.bulk_set_partial_config_parameters
+    target:
+      device_id: !input zwave_device
+    data_template:
+      parameter: 16
+      value:
+        oxff: >
+          {% if trigger.to_state.state == 'locked' %}
+            Green
+          {% else %}
+            Red
+          {% endif %}
+        0xff00: 70%
+        0xff0000: 255
+        0x7f000000: Solid
