@@ -30,12 +30,12 @@ action:
     data_template:
       parameter: 16
       value:
-        oxff: >
+        LED Effect Color: >
           {% if trigger.to_state.state == 'locked' %}
             Green
           {% else %}
             Red
           {% endif %}
-        0xff00: 70%
-        0xff0000: 255
-        0x7f000000: Solid
+        LED Effect Brightness: 70%
+        LED Effect Duration: 255
+        LED Effect Type: Solid

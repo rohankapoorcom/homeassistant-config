@@ -49,10 +49,10 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 70
-                0xff00: 70%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 70
+                LED Effect Brightness: 70%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
         button_b2:
           - service: light.turn_off
             target:
@@ -63,10 +63,10 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 70
-                0xff00: 20%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 70
+                LED Effect Brightness: 20%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
         button_a3:
           - service: light.turn_on
             target:
@@ -82,10 +82,10 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 130
-                0xff00: 70%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 130
+                LED Effect Brightness: 70%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
         button_b3:
           - service: light.turn_off
             target:
@@ -99,10 +99,10 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 130
-                0xff00: 20%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 130
+                LED Effect Brightness: 20%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
         button_a4:
           - service: light.turn_on
             target:
@@ -115,10 +115,10 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 142
-                0xff00: 70%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 142
+                LED Effect Brightness: 70%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
         button_b4:
           - service: light.turn_off
             target:
@@ -129,7 +129,7 @@ automation:
             data:
               parameter: 8
               value:
-                0xff: 142
-                0xff00: 20%
-                0xff0000: 30
-                0x7f000000: Solid
+                LED Effect Color: 142
+                LED Effect Brightness: 20%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
