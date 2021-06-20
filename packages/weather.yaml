@@ -38,6 +38,8 @@ sensor:
 
       exterior_temperature:
         value_template: "{{state_attr('weather.dark_sky', 'temperature') | round(1)}}"
+        device_class: temperature
 
       exterior_humidity:
         value_template: "{{state_attr('weather.dark_sky', 'humidity') | round(1)}}"
+        device_class: humidity
