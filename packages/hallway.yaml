@@ -18,6 +18,7 @@ homeassistant:
     ################################################
     light.hallway_lights:
       <<: *customize
+      id: 84b4f4a0-97d9-4e4d-89e8-185402b86669
       supported_features: 33
 
     light.stairway_lights:
@@ -30,7 +31,6 @@ homeassistant:
 light:
   - platform: group
     name: Hallway Lights
-    id: 84b4f4a0-97d9-4e4d-89e8-185402b86669
     entities:
       - light.hallway_lights_switch
       - light.entryway_lights
