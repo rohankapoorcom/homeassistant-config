@@ -11,7 +11,7 @@ blueprint:
           domain: lock
     zwave_device:
       name: Inovelli Switch
-      description: List of available Inovelli LZW30 switches.
+      description: List of available Inovelli LZW31-SN switches.
       selector:
         device:
           integration: zwave_js
