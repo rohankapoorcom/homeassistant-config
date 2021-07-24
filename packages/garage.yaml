@@ -36,7 +36,7 @@ automation:
       - platform: state
         entity_id: cover.garage_door
         from: 'closed'
-        to: 'open'
+        to: 'opening'
     action:
       - service: light.turn_on
         entity_id: light.garage_lights
