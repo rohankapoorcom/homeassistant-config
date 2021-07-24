@@ -20,8 +20,8 @@ homeassistant:
 ################################################
 light:
   - platform: switch
-    entity: switch.garage_lights
     name: Garage Lights
+    entity_id: switch.garage_lights
 
 automation:
   - id: 8cbaf941-3de6-482e-9226-fbe103e7c84e
