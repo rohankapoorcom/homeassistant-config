@@ -1,0 +1,51 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  07/23/2021
+#  @package      :  Garage
+#  @description  :  Automations in the Garage
+###############################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'garage'
+
+
+################################################
+## Light
+################################################
+light:
+  - platform: switch
+    entity: switch.garage_lights
+    name: Garage Lights
+
+automation:
+  - id: 8cbaf941-3de6-482e-9226-fbe103e7c84e
+    alias: Control the Garage Lights
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.garage_lights_motion
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: cover.garage_door
+        from: 'closed'
+        to: 'open'
+    action:
+      - service: light.turn_on
+        entity_id: light.garage_lights
+      - wait_for_trigger:
+        - platform: template
+          value_template: >
+            is_state('cover.garage_door', 'closed') and is_state('binary_sensor.garage_lights_motion', 'off')
+        continue_on_timeout: false
+      - delay:
+          minutes: 10
+      - service: light.turn_off
+        entity_id: light.garage_lights
