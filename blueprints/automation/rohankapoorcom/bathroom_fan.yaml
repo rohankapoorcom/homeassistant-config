@@ -1,0 +1,81 @@
+blueprint:
+  name: Motion / Humidity Bathroom Fan
+  description: Turns on a Bathroom Fan when motion or humidity are detected.
+  domain: automation
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/bathroom_fan.yaml
+  input:
+    motion_entity:
+      name: Motion Sensor
+      description: List of available motion sensor entitites.
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    bathroom_humidity_entity:
+      name: Bathroom Humidity Sensor
+      description: List of available humidity sensor entities.
+      selector:
+        entity:
+          domain: sensor
+          device_class: humidity
+    external_humidity_entity:
+      name: External Humidity Sensor (used for comparison)
+      description: List of available humidity sensor entities.
+      selector:
+        entity:
+          domain: sensor
+          device_class: humidity
+    bathroom_fan_entity:
+      name: Bathroom Fan Switch
+      description: List of available switch entities.
+      selector:
+        entity:
+          domain: switch
+    relative_humidity_high:
+      name: Humidity High Point
+      description: The difference in humidity point at which the fan should be activated.
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 99
+    relative_humidity_low:
+      name: Humidity Low Point
+      description: The difference in humidity point at which the fan should be deactivated.
+      default: 5
+      selector:
+        number:
+          min: 5
+          max: 99
+    delay_time:
+      name: Delay time
+      description: Time to leave the fan on after last motion is detected and humidity has returned to normal.
+      default: 300
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: seconds
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input motion_entity
+    from: "off"
+    to: "on"
+  - platform: template
+    value_template: >
+      {{ states(!input bathroom_humidity_entity) | float - states(!input external_humidity_entity) | float > !input relative_humidity_high }}
+
+action:
+  - service: switch.turn_on
+    target: !input bathroom_fan_entity
+  - wait_for_trigger:
+      platform: template
+      value_template: >
+        {{ states(!input bathroom_humidity_entity) | float - states(!input external_humidity_entity) | float <= !input relative_humidity_low }}
+  - delay: !input delay_time
+  - service: switch.turn_off
+    target: !input bathroom_fan_entity
