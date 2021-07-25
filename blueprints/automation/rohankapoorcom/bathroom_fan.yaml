@@ -29,8 +29,9 @@ blueprint:
       name: Bathroom Fan Switch
       description: List of available switch entities.
       selector:
-        entity:
-          domain: switch
+        target:
+          entity:
+            domain: switch
     relative_humidity_high:
       name: Humidity High Point
       description: The difference in humidity point at which the fan should be activated.
