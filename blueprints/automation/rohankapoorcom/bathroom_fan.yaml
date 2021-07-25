@@ -25,7 +25,7 @@ blueprint:
         entity:
           domain: sensor
           device_class: humidity
-    bathroom_fan_entity:
+    bathroom_fan_target:
       name: Bathroom Fan Switch
       description: List of available switch entities.
       selector:
@@ -71,11 +71,11 @@ trigger:
 
 action:
   - service: switch.turn_on
-    target: !input bathroom_fan_entity
+    target: !input bathroom_fan_target
   - wait_for_trigger:
       platform: template
       value_template: >
         {{ states(!input bathroom_humidity_entity) | float - states(!input external_humidity_entity) | float <= !input relative_humidity_low }}
   - delay: !input delay_time
   - service: switch.turn_off
-    target: !input bathroom_fan_entity
+    target: !input bathroom_fan_target
