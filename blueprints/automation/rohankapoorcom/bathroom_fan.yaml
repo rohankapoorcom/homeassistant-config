@@ -11,16 +11,9 @@ blueprint:
         entity:
           domain: binary_sensor
           device_class: motion
-    bathroom_humidity_entity:
-      name: Bathroom Humidity Sensor
-      description: List of available humidity sensor entities.
-      selector:
-        entity:
-          domain: sensor
-          device_class: humidity
-    external_humidity_entity:
-      name: External Humidity Sensor (used for comparison)
-      description: List of available humidity sensor entities.
+    relative_humidity_entity:
+      name: Relative Humidity Sensor
+      description: The derived humidity sensor based on a baseline and a sensor in the bathroom.
       selector:
         entity:
           domain: sensor
@@ -61,28 +54,27 @@ blueprint:
 mode: restart
 max_exceeded: silent
 
-variables:
-  bathroom_humidity_entity: !input bathroom_humidity_entity
-  external_humidity_entity: !input external_humidity_entity
-  relative_humidity_high: !input relative_humidity_high
-  relative_humidity_low: !input relative_humidity_low
-
 trigger:
   - platform: state
     entity_id: !input motion_entity
     from: "off"
     to: "on"
-  - platform: template
-    value_template: >
-      {{ states(bathroom_humidity_entity) | float - states(external_humidity_entity) | float > relative_humidity_high }}
+  - platform: numeric_state
+    entity_id: !input relative_humidity_entity
+    above: !input relative_humidity_high
 
 action:
   - service: switch.turn_on
     target: !input bathroom_fan_target
   - wait_for_trigger:
-      platform: template
-      value_template: >
-        {{ states(bathroom_humidity_entity) | float - states(external_humidity_entity) | float <= relative_humidity_low }}
+      platform: numeric_state
+      entity_id: !input relative_humidity_entity
+      below: !input relative_humidity_low
+  - wait_for_trigger:
+      platform: state
+      entity_id: !input motion_entity
+      from: "on"
+      to: "off"
   - delay: !input delay_time
   - service: switch.turn_off
     target: !input bathroom_fan_target
