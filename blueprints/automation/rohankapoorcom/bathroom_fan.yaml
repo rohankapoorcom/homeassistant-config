@@ -61,6 +61,12 @@ blueprint:
 mode: restart
 max_exceeded: silent
 
+variables:
+  bathroom_humidity_entity: !input bathroom_humidity_entity
+  external_humidity_entity: !input external_humidity_entity
+  relative_humidity_high: !input relative_humidity_high
+  relative_humidity_low: !input relative_humidity_low
+
 trigger:
   - platform: state
     entity_id: !input motion_entity
@@ -68,7 +74,7 @@ trigger:
     to: "on"
   - platform: template
     value_template: >
-      {{ states(!input bathroom_humidity_entity) | float - states(!input external_humidity_entity) | float > !input relative_humidity_high }}
+      {{ states(bathroom_humidity_entity) | float - states(external_humidity_entity) | float > relative_humidity_high }}
 
 action:
   - service: switch.turn_on
@@ -76,7 +82,7 @@ action:
   - wait_for_trigger:
       platform: template
       value_template: >
-        {{ states(!input bathroom_humidity_entity) | float - states(!input external_humidity_entity) | float <= !input relative_humidity_low }}
+        {{ states(bathroom_humidity_entity) | float - states(external_humidity_entity) | float <= relative_humidity_low }}
   - delay: !input delay_time
   - service: switch.turn_off
     target: !input bathroom_fan_target
