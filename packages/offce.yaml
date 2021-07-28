@@ -30,6 +30,13 @@ binary_sensor:
             and is_state_attr('light.office_lights', 'brightness', 129)
           }}
 
+################################################
+## Input Boolean
+################################################
+input_boolean:
+  sentinal_headset_enabled:
+    name: Sentinal Headset Enabled
+    icon: mdi:headset
 
 ################################################
 ## Script
@@ -57,3 +64,24 @@ script:
             data:
               color_temp: 143
               brightness_pct: 20
+
+################################################
+## Automation
+################################################
+automation:
+  - id: 0c527fe1-216b-4ace-8e81-004fe00484b9
+    alias: Toggle Sentinal Headset
+    description: Switches Sentinal to route voice communication audio over to the Jabra Headset or the Ceiling Speakers
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: input_boolean.sentinal_headset_enabled
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: >
+            {% if trigger.to_state == 'on' %}
+              switch.sentinal_enable_headset
+            {% else %}
+              switch.sentinal_enable_speakers
+            {% endif %}
