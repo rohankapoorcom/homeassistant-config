@@ -80,7 +80,7 @@ automation:
       - service: switch.turn_on
         target:
           entity_id: >
-            {% if trigger.to_state == 'on' %}
+            {% if trigger.to_state.state == 'on' %}
               switch.sentinal_enable_headset
             {% else %}
               switch.sentinal_enable_speakers
