@@ -142,11 +142,10 @@ trigger:
   - platform: event
     event_type: roku_command
 condition:
-  conditions:
-    - condition: template
-      value_template: '{{ trigger.event.data.source_name == emulated_roku_name }}'
-    - condition: template
-      value_template: '{{ trigger.event.data.type == "keypress" }}'
+  - condition: template
+    value_template: '{{ trigger.event.data.source_name == emulated_roku_name }}'
+  - condition: template
+    value_template: '{{ trigger.event.data.type == "keypress" }}'
 action:
   - variables:
       key_id: '{{ trigger.event.data.key }}'
