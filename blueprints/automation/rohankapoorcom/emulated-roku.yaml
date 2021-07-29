@@ -141,7 +141,7 @@ variables:
 trigger:
   - platform: event
     event_type: roku_command
-conditions:
+condition:
   conditions:
     - '{{ trigger.event.data.source_name == emulated_roku_name }}'
     - '{{ trigger.event.data.type == "keypress" }}'
