@@ -37,7 +37,7 @@ notify:
 ## Automation
 ################################################
 automation:
-  - id: GUID
+  - id: faea6bc6-9c9b-439c-9f5a-ac65fbec8cdf
     alias: Handle Shield Emulated Roku Harmony Commands
     description: Executed commands on the Living Room Shield TV in response to Emulated Roku events from the Harmony Hub
     use_blueprint:
