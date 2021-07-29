@@ -63,46 +63,73 @@ blueprint:
         "Rewind" Button
       description: >
         Action to run, when the "Rewind" button is pressed
+      default: []
+      selector:
+        action: {}
     forward_action:
       name: >
         "Forward" Button
       description: >
         Action to run when the "Forward" button is pressed
+      default: []
+      selector:
+        action: {}
     play_action:
       name: >
         "Play" Button
       description: >
         Action to run when the "Play" button is pressed
+      default: []
+      selector:
+        action: {}
     select_action:
       name: >
         "Select" Button
       description: >
         Action to run when the "Select" button is pressed
+      default: []
+      selector:
+        action: {}
     back_action:
       name: >
         "Back" Button
       description: >
         Action to run when the "Back" button is pressed
+      default: []
+      selector:
+        action: {}
     instant_replay_action:
       name: >
         "InstantReplay" Button
       description: >
         Action to run when the "InstantReplay" button is pressed
+      default: []
+      selector:
+        action: {}
     info_action:
       name: >
         "Info" Button
       description: >
         Action to run when the "Info" button is pressed
+      default: []
+      selector:
+        action: {}
     back_space_action:
       name: >
         "BackSpace" Button
       description: >
         Action to run when the "BackSpace" button is pressed
+      default: []
+      selector:
+        action: {}
     enter_action:
       name: >
         "Enter" Button
       description: >
         Action to run when the "Enter" button is pressed
+      default: []
+      selector:
+        action: {}
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/emulated-roku.yaml
 
 mode: single
