@@ -37,89 +37,49 @@ notify:
 ## Automation
 ################################################
 automation:
-  - id: living_room_shield_tv_launch_netflix
-    alias: Living Room Shield TV Launch Netflix
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Up
-    action:
-      - service: media_player.select_source
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          source: Netflix
-
-  - id: living_room_shield_tv_launch_plex
-    alias: Living Room Shield TV Launch Plex
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Right
-    action:
-      - service: media_player.select_source
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          source: Plex
-
-  - id: living_room_shield_tv_launch_youtube
-    alias: Living Room Shield TV Launch Youtube
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Down
-    action:
-      - service: media_player.select_source
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          source: YouTube
-
-  - id: living_room_shield_tv_launch_prime_video
-    alias: Living Room Shield TV Launch Prime Video
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Left
-    action:
-      - service: androidtv.adb_command
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          command: "am start -a android.intent.action.VIEW -d -n com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity"
-
-  - id: living_room_shield_tv_launch_hbo_now
-    alias: Living Room Shield TV Launch HBO Now
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Home
-    action:
-      - service: media_player.select_source
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          source: "com.hbo.hbonow"
-
-  - id: living_room_shield_tv_launch_search
-    alias: Living Room Shield TV Launch Search
-    trigger:
-      - <<: *trigger_roku_keypress
-        event_data:
-          <<: *roku_event_data
-          key: Search
-    action:
-      - service: androidtv.adb_command
-        target:
-          entity_id: media_player.living_room_shield_tv
-        data:
-          command: SEARCH
+  - id: GUID
+    alias: Handle Shield Emulated Roku Harmony Commands
+    description: Executed commands on the Living Room Shield TV in response to Emulated Roku events from the Harmony Hub
+    use_blueprint:
+      path: rohankapoorcom/emulated-roku.yaml
+      input:
+        emulated_roku_name: 4t8k7RAjE3TBcfheQvCATZ
+        up_action:
+          - service: media_player.select_source
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              source: Netflix
+        right_action:
+          - service: media_player.select_source
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              source: Plex
+        down_action:
+          - service: media_player.select_source
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              source: YouTube
+        left_action:
+          - service: androidtv.adb_command
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              command: "am start -a android.intent.action.VIEW -d -n com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity"
+        home_action:
+          - service: media_player.select_source
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              source: "com.hbo.hbonow"
+        search_action:
+          - service: androidtv.adb_command
+            target:
+              entity_id: media_player.living_room_shield_tv
+            data:
+              command: SEARCH
 
   - id: c8ff656a-e0d6-4b26-9840-0da9863b1867
     alias: Living Room Shield TV Notify Washer

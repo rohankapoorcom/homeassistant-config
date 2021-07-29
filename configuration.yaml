@@ -74,6 +74,7 @@ xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface
   gateways: !secret xiaomi_aqara.gateways
 
+automation: !include automations.yaml
 automation old: !include_dir_list automations
 group: !include_dir_named groups
 

@@ -1,0 +1,153 @@
+blueprint:
+  name: Emulated Roku
+  description: Create Automations for Emulated Roku Keypresses
+  domain: automation
+
+  input:
+    emulated_roku_name:
+      name: Emulated Roku Name
+      description: The name of the Emulated Roku
+      selector:
+        text:
+          multiline: false
+    up_action:
+      name: >
+        "Up" Button
+      description: >
+        Action to run, when the "Up" button is pressed
+      default: []
+      selector:
+        action: {}
+    right_action:
+      name: >
+        "Right" Button
+      description: >
+        Action to run, when the "Right" button is pressed
+      default: []
+      selector:
+        action: {}
+    down_action:
+      name: >
+        "Down" Button
+      description: >
+        Action to run, when the "Down" button is pressed
+      default: []
+      selector:
+        action: {}
+    left_action:
+      name: >
+        "Left" Button
+      description: >
+        Action to run, when the "Left" button is pressed
+      default: []
+      selector:
+        action: {}
+    home_action:
+      name: >
+        "Home" Button
+      description: >
+        Action to run, when the "Home" button is pressed
+      default: []
+      selector:
+        action: {}
+    search_action:
+      name: >
+        "Search" Button
+      description: >
+        Action to run, when the "Search" button is pressed
+      default: []
+      selector:
+        action: {}
+    rewind_action:
+      name: >
+        "Rewind" Button
+      description: >
+        Action to run, when the "Rewind" button is pressed
+    forward_action:
+      name: >
+        "Forward" Button
+      description: >
+        Action to run when the "Forward" button is pressed
+    play_action:
+      name: >
+        "Play" Button
+      description: >
+        Action to run when the "Play" button is pressed
+    select_action:
+      name: >
+        "Select" Button
+      description: >
+        Action to run when the "Select" button is pressed
+    back_action:
+      name: >
+        "Back" Button
+      description: >
+        Action to run when the "Back" button is pressed
+    instant_replay_action:
+      name: >
+        "InstantReplay" Button
+      description: >
+        Action to run when the "InstantReplay" button is pressed
+    info_action:
+      name: >
+        "Info" Button
+      description: >
+        Action to run when the "Info" button is pressed
+    back_space_action:
+      name: >
+        "BackSpace" Button
+      description: >
+        Action to run when the "BackSpace" button is pressed
+    enter_action:
+      name: >
+        "Enter" Button
+      description: >
+        Action to run when the "Enter" button is pressed
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/emulated-roku.yaml
+
+mode: single
+max_exceeded: silent
+
+variables:
+  emulated_roku_name: !input emulated_roku_name
+
+trigger:
+  - platform: event
+    event_type: roku_command
+conditions:
+  - '{{ trigger.event.data.source_name == emulated_roku_name }}'
+  - '{{ trigger.event.data.type == "keypress" }}'
+action:
+  - variables:
+      key_id: '{{ trigger.event.data.key }}'
+  - choose:
+    - conditions: '{{ key_id == "Up" }}'
+      sequence: !input up_action
+    - conditions: '{{ key_id ==  "Right" }}'
+      sequence: !input right_action
+    - conditions: '{{ key_id ==  "Down" }}'
+      sequence: !input down_action
+    - conditions: '{{ key_id ==  "Left" }}'
+      sequence: !input left_action
+    - conditions: '{{ key_id ==  "Home" }}'
+      sequence: !input home_action
+    - conditions: '{{ key_id ==  "Search" }}'
+      sequence: !input search_action
+    - conditions: '{{ key_id ==  "Rev" }}'
+      sequence: !input rewind_action
+    - conditions: '{{ key_id ==  "Fwd" }}'
+      sequence: !input forward_action
+    - conditions: '{{ key_id ==  "Play" }}'
+      sequence: !input play_action
+    - conditions: '{{ key_id ==  "Select" }}'
+      sequence: !input select_action
+    - conditions: '{{ key_id ==  "Back" }}'
+      sequence: !input back_action
+    - conditions: '{{ key_id ==  "InstantReplay" }}'
+      sequence: !input instant_replay_action
+    - conditions: '{{ key_id ==  "Info" }}'
+      sequence: !input info_action
+    - conditions: '{{ key_id ==  "BackSpace" }}'
+      sequence: !input back_space_action
+    - conditions: '{{ key_id ==  "Enter" }}'
+      sequence: !input enter_action
