@@ -4,6 +4,7 @@
 #  @package      :  Hallway
 #  @description  :  Manages lighting in the hallway
 ###############################################################################
+---
 homeassistant:
   customize:
     ################################################
@@ -22,7 +23,6 @@ homeassistant:
 
     light.stairway_lights:
       <<: *customize
-
 
 ################################################
 ## Light

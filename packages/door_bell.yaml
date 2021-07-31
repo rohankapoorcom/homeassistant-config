@@ -4,7 +4,7 @@
 #  @package      :  Doorbell
 #  @description  :  Logic for receiving and processing door bell events
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################

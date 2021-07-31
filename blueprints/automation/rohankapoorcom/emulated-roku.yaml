@@ -1,3 +1,4 @@
+---
 blueprint:
   name: Emulated Roku
   description: Create Automations for Emulated Roku Keypresses
@@ -150,33 +151,33 @@ action:
   - variables:
       key_id: '{{ trigger.event.data.key }}'
   - choose:
-    - conditions: '{{ key_id == "Up" }}'
-      sequence: !input up_action
-    - conditions: '{{ key_id ==  "Right" }}'
-      sequence: !input right_action
-    - conditions: '{{ key_id ==  "Down" }}'
-      sequence: !input down_action
-    - conditions: '{{ key_id ==  "Left" }}'
-      sequence: !input left_action
-    - conditions: '{{ key_id ==  "Home" }}'
-      sequence: !input home_action
-    - conditions: '{{ key_id ==  "Search" }}'
-      sequence: !input search_action
-    - conditions: '{{ key_id ==  "Rev" }}'
-      sequence: !input rewind_action
-    - conditions: '{{ key_id ==  "Fwd" }}'
-      sequence: !input forward_action
-    - conditions: '{{ key_id ==  "Play" }}'
-      sequence: !input play_action
-    - conditions: '{{ key_id ==  "Select" }}'
-      sequence: !input select_action
-    - conditions: '{{ key_id ==  "Back" }}'
-      sequence: !input back_action
-    - conditions: '{{ key_id ==  "InstantReplay" }}'
-      sequence: !input instant_replay_action
-    - conditions: '{{ key_id ==  "Info" }}'
-      sequence: !input info_action
-    - conditions: '{{ key_id ==  "BackSpace" }}'
-      sequence: !input back_space_action
-    - conditions: '{{ key_id ==  "Enter" }}'
-      sequence: !input enter_action
+      - conditions: '{{ key_id == "Up" }}'
+        sequence: !input up_action
+      - conditions: '{{ key_id ==  "Right" }}'
+        sequence: !input right_action
+      - conditions: '{{ key_id ==  "Down" }}'
+        sequence: !input down_action
+      - conditions: '{{ key_id ==  "Left" }}'
+        sequence: !input left_action
+      - conditions: '{{ key_id ==  "Home" }}'
+        sequence: !input home_action
+      - conditions: '{{ key_id ==  "Search" }}'
+        sequence: !input search_action
+      - conditions: '{{ key_id ==  "Rev" }}'
+        sequence: !input rewind_action
+      - conditions: '{{ key_id ==  "Fwd" }}'
+        sequence: !input forward_action
+      - conditions: '{{ key_id ==  "Play" }}'
+        sequence: !input play_action
+      - conditions: '{{ key_id ==  "Select" }}'
+        sequence: !input select_action
+      - conditions: '{{ key_id ==  "Back" }}'
+        sequence: !input back_action
+      - conditions: '{{ key_id ==  "InstantReplay" }}'
+        sequence: !input instant_replay_action
+      - conditions: '{{ key_id ==  "Info" }}'
+        sequence: !input info_action
+      - conditions: '{{ key_id ==  "BackSpace" }}'
+        sequence: !input back_space_action
+      - conditions: '{{ key_id ==  "Enter" }}'
+        sequence: !input enter_action

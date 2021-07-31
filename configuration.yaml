@@ -1,3 +1,4 @@
+---
 homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
@@ -29,8 +30,8 @@ config:
 
 http:
   # Uncomment this if you are using SSL or running in Docker etc
-  ip_ban_enabled: False
-  use_x_forwarded_for: True
+  ip_ban_enabled: false
+  use_x_forwarded_for: true
   trusted_proxies:
     - 127.0.0.1
 
@@ -96,7 +97,6 @@ spotcast:
 browser_mod:
   disable:
     - light
-
 
 vaddio_conferenceshot:
   - host: !secret vaddio_conferenceshot.host

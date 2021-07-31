@@ -5,7 +5,7 @@
 #  @description  :  Controls the Chromecast Audio devices and integrates them
 #                   with Harmony. Speakers power on and off automatically
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -334,7 +334,7 @@ automation:
         value_template: >
           {{ not is_state_attr('media_player.all_speakers', 'media_content_id', states('sensor.1second_silence_url')) }}
       - condition: template
-      # This should only evaluate to one remote
+        # This should only evaluate to one remote
         value_template: >
           {%- for item in states.remote if (
             is_state_attr(item.entity_id, 'location', states('input_select.last_presence_location'))
@@ -344,7 +344,7 @@ automation:
           {%- endfor -%}
     action:
       - service: script.harmony_music_turn_on
-      # This should only evaluate to one remote
+        # This should only evaluate to one remote
         data_template:
           entity_id: >
             {%- for item in states.remote if (

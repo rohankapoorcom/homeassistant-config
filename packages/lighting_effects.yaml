@@ -4,6 +4,7 @@
 #  @package      :  Lighting Effects
 #  @description  :  Scripts used for various lighting effects
 ###############################################################################
+---
 homeassistant:
   customize:
     ################################################
@@ -82,7 +83,7 @@ homeassistant:
 input_boolean:
   random_color_loop:
     name: Color Fade
-    initial: off
+    initial: false
     icon: mdi:invert-colors
 
 ################################################
@@ -155,7 +156,7 @@ automation:
         entity_id: script.random_color_loop
       - service: script.turn_off
         entity_id: script.random_color_loop_control
-      # Todo store/reset lights affected
+        # Todo store/reset lights affected
 
 ################################################
 ## Script
@@ -175,7 +176,8 @@ script:
             -%}
               {{ item.entity_id }}
             {%- endfor -%}
-          rgb_color: ['{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}','{{ (range(0, 255) | random) }}']
+          rgb_color: >
+            ['{{ (range(0, 255) | random) }}' , '{{ (range(0, 255) | random) }}' , '{{ (range(0, 255) | random) }}']
           brightness_pct: >-
             {% set left = states('input_number.random_color_loop_min_brightness') | int %}
             {% set right = states('input_number.random_color_loop_max_brightness') | int %}

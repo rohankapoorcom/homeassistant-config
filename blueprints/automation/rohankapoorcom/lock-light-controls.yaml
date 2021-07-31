@@ -1,3 +1,4 @@
+---
 blueprint:
   name: Lock Light Controls
   description: Turns on a light in response to a lock being unlocked

@@ -1,3 +1,4 @@
+---
 blueprint:
   name: Inovelli LZW30 Lock Notifications
   description: Displays the current status of the lock using an Inovelli Black Series LZW30 Switch

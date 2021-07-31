@@ -4,7 +4,7 @@
 #  @package      :  Office
 #  @description  :  Manages functionality within the office
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -14,7 +14,6 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'office'
-
 
 ################################################
 ## Binary Sensor
@@ -45,15 +44,15 @@ script:
   toggle_streaming_lights:
     sequence:
       - choose:
-        - conditions:
-          - condition: state
-            entity_id: binary_sensor.streaming_lights_enabled
-            state: 'on'
-          sequence:
-            - service: light.turn_off
-              entity_id: light.office_lights
-            - service: light.turn_off
-              entity_id: light.elgato_key_light_dbc2
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.streaming_lights_enabled
+                state: 'on'
+            sequence:
+              - service: light.turn_off
+                entity_id: light.office_lights
+              - service: light.turn_off
+                entity_id: light.elgato_key_light_dbc2
         default:
           - service: light.turn_on
             data:
@@ -71,7 +70,9 @@ script:
 automation:
   - id: 0c527fe1-216b-4ace-8e81-004fe00484b9
     alias: Toggle Sentinal Headset
-    description: Switches Sentinal to route voice communication audio over to the Jabra Headset or the Ceiling Speakers
+    description: >-
+      Switches Sentinal to route voice communication audio over to theJabra Headset
+      or the Ceiling Speakers
     mode: single
     trigger:
       - platform: state
