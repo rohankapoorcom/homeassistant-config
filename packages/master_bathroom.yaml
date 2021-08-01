@@ -4,7 +4,7 @@
 #  @package      :  Master Bathroom
 #  @description  :  Controls lights and fans in the Master Bathroom.
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -13,7 +13,6 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'bathroom'
-
 
 ################################################
 ## Sensor
@@ -24,8 +23,8 @@ sensor:
       master_bathroom_relative_humidity:
         friendly_name: 'Relative Humidity'
         unit_of_measurement: '%'
-        value_template: '{{ states.sensor.master_bathroom_humidity.state|float - states.sensor.master_bedroom_humidity.state|float }}'
-
+        value_template: >
+          {{ states.sensor.master_bathroom_humidity.state|float - states.sensor.master_bedroom_humidity.state|float }}
 
 ################################################
 ## Automation
@@ -48,6 +47,10 @@ automation:
     mode: restart
     max_exceeded: silent
     trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
       - platform: state
         entity_id: binary_sensor.master_bathroom_motion
         from: 'off'
@@ -56,15 +59,31 @@ automation:
         entity_id: sensor.master_bathroom_relative_humidity
         above: 20
     action:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.master_bathroom_fan
-      - wait_for_trigger:
-          platform: template
-          value_template: >
-            {{ states('sensor.master_bathroom_relative_humidity') | float <= 10
-               and is_state('binary_sensor.master_bathroom_motion', 'off') }}
-      - delay: 300
-      - service: switch.turn_off
-        target:
-          entity_id: switch.master_bathroom_fan
+      - choose:
+          - alias: If there is motion or high humidity, then turn on the fan.
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.master_bathroom_motion
+                    state: 'on'
+                  - condition: numeric_state
+                    entity_id: sensor.master_bathroom_relative_humidity
+                    above: 20
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.master_bathroom_fan
+              - wait_for_trigger:
+                platform: template
+                value_template: >
+                  {{ states('sensor.master_bathroom_relative_humidity') | float <= 10
+                     and is_state('binary_sensor.master_bathroom_motion', 'off') }}
+              - delay: 300
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.master_bathroom_fan
+        default:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.master_bathroom_fan
