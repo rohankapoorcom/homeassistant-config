@@ -4,7 +4,7 @@
 #  @package      :  Garage
 #  @description  :  Automations in the Garage
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -13,7 +13,6 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'garage'
-
 
 ################################################
 ## Light
@@ -29,6 +28,10 @@ automation:
     mode: restart
     max_exceeded: silent
     trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
       - platform: state
         entity_id: binary_sensor.garage_lights_motion
         from: 'off'
@@ -38,14 +41,35 @@ automation:
         from: 'closed'
         to: 'opening'
     action:
-      - service: light.turn_on
-        entity_id: light.garage_lights
-      - wait_for_trigger:
-        - platform: template
-          value_template: >
-            {{ is_state('cover.garage_door', 'closed') and is_state('binary_sensor.garage_lights_motion', 'off') }}
-        continue_on_timeout: false
-      - delay:
-          minutes: 10
-      - service: light.turn_off
-        entity_id: light.garage_lights
+      - choose:
+          - alias: If there is motion, the garage door is opening or open, then turn on the lights.
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.garage_lights_motion
+                    state: 'on'
+                  - condition: state
+                    entity_id: cover.garage_door
+                    state: 'opening'
+                  - condition: state
+                    entity_id: cover.garage_door
+                    state: 'open'
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.garage_lights
+              - wait_for_trigger:
+                  - platform: template
+                    value_template: >
+                      {{ is_state('cover.garage_door', 'closed')
+                      and is_state('binary_sensor.garage_lights_motion', 'off') }}
+                continue_on_timeout: false
+              - delay:
+                  minutes: 10
+              - service: light.turn_off
+                target:
+                  entity_id: light.garage_lights
+        default:
+          - service: light.turn_off
+            entity_id: light.garage_lights
