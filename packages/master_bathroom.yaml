@@ -75,10 +75,10 @@ automation:
                 target:
                   entity_id: switch.master_bathroom_fan
               - wait_for_trigger:
-                platform: template
-                value_template: >
-                  {{ states('sensor.master_bathroom_relative_humidity') | float <= 10
-                     and is_state('binary_sensor.master_bathroom_motion', 'off') }}
+                  - platform: template
+                    value_template: >
+                      {{ states('sensor.master_bathroom_relative_humidity') | float <= 10
+                         and is_state('binary_sensor.master_bathroom_motion', 'off') }}
               - delay: 300
               - service: switch.turn_off
                 target:
