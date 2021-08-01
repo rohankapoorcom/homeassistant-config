@@ -1,0 +1,66 @@
+# Based off of the Home Assistant default motion-light blueprint
+# yamllint disable-line rule:line-length
+# Original source: https://github.com/home-assistant/core/blob/dev/homeassistant/components/automation/blueprints/motion_light.yaml
+---
+blueprint:
+  name: Motion-activated Light
+  description: Turn on a light when motion is detected.
+  domain: automation
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml
+  input:
+    motion_entity:
+      name: Motion Sensor
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    light_target:
+      name: Light
+      selector:
+        target:
+          entity:
+            domain: light
+    no_motion_wait:
+      name: Wait time
+      description: Time to leave the light on after last motion is detected.
+      default: 120
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: seconds
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: state
+    entity_id: !input motion_entity
+    from: 'off'
+    to: 'on'
+
+action:
+  - choose:
+      - alias: If there is motion, then turn on the light_target.
+        conditions:
+          - condition: state
+            entity_id: !input motion_entity
+            state: 'on'
+        sequence:
+          - service: light.turn_on
+            target: !input light_target
+          - wait_for_trigger:
+              platform: state
+              entity_id: !input motion_entity
+              from: 'on'
+              to: 'off'
+          - delay: !input no_motion_wait
+          - service: light.turn_off
+            target: !input light_target
+    default:
+      - service: light.turn_off
+        target: !input light_target
