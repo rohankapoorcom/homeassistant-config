@@ -55,21 +55,21 @@ automation:
                   - condition: state
                     entity_id: cover.garage_door
                     state: 'open'
-                sequence:
-                  - service: light.turn_on
-                    target:
-                      entity_id: light.garage_lights
-                  - wait_for_trigger:
-                      - platform: template
-                        value_template: >
-                          {{ is_state('cover.garage_door', 'closed')
-                          and is_state('binary_sensor.garage_lights_motion', 'off') }}
-                    continue_on_timeout: false
-                  - delay:
-                      minutes: 10
-                  - service: light.turn_off
-                    target:
-                      entity_id: light.garage_lights
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.garage_lights
+              - wait_for_trigger:
+                  - platform: template
+                    value_template: >
+                      {{ is_state('cover.garage_door', 'closed')
+                      and is_state('binary_sensor.garage_lights_motion', 'off') }}
+                continue_on_timeout: false
+              - delay:
+                  minutes: 10
+              - service: light.turn_off
+                target:
+                  entity_id: light.garage_lights
         default:
           - service: light.turn_off
             entity_id: light.garage_lights
