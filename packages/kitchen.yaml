@@ -24,7 +24,6 @@ homeassistant:
 light:
   - platform: switch
     name: Kitchen Lights
-    unique_id: 6b6b68c3-342b-42ce-8183-accca569696c
     entity_id: switch.kitchen_lights
 
 ################################################
