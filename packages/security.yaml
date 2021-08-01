@@ -4,7 +4,7 @@
 #  @package      :  Security
 #  @description  :  Controls cameras, locks and other security devices
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################

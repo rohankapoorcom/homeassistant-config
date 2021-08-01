@@ -4,7 +4,7 @@
 #  @package      :  Media / TV
 #  @description  :  Integrates lighting and the Harmony Remote for TV/Movies
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -14,14 +14,6 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'media_tv'
-
-      trigger_roku_keypress: &trigger_roku_keypress
-        - platform: event
-          event_type: roku_command
-
-      roku_event_data: &roku_event_data
-        source_name: 4t8k7RAjE3TBcfheQvCATZ
-        type: keypress
 
 media_player:
   - platform: androidtv
@@ -67,6 +59,7 @@ automation:
             target:
               entity_id: media_player.living_room_shield_tv
             data:
+              # yamllint disable-line rule:line-length
               command: "am start -a android.intent.action.VIEW -d -n com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity"
         home_action:
           - service: media_player.select_source

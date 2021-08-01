@@ -4,7 +4,7 @@
 #  @package      :  Phone Calls
 #  @description  :  Manages notifications for phone calls
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -14,7 +14,6 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'phone_calls'
-
 
 ################################################
 ## Sensor

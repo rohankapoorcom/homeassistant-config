@@ -1,3 +1,4 @@
+---
 blueprint:
   name: Inovelli LZW31-SN Lock Notifications
   description: Displays the current status of the lock using an Inovelli Red Series LZW31-SN Dimmer Switch

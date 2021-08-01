@@ -8,7 +8,7 @@
 #                   required (in the repo) and the process the update,
 #                   restarting HA when complete.
 ###############################################################################
-
+---
 homeassistant:
   customize:
     ################################################
@@ -114,6 +114,7 @@ sensor:
   - platform: command_line
     <<: *command_line_sensor_defaults
     name: current_git_commit_time
+    # yamllint disable-line rule:line-length
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
   - platform: version
@@ -153,10 +154,13 @@ automation:
         to: 'passed'
     condition:
       - condition: template
-        value_template: "{{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit Branch', 'master') }}"
+        value_template: >
+          {{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit Branch', 'master') }}
       - condition: template
+        # yamllint disable-line rule:line-length
         value_template: "{{ not is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
       - condition: template
+        # yamllint disable-line rule:line-length
         value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Committed Date') }}"
     action:
       - service: script.pull_and_restart_homeassistant
@@ -178,9 +182,10 @@ script:
   pull_and_restart_homeassistant:
     sequence:
       - service: shell_command.git_pull
+      # yamllint disable-line rule:line-length
       - wait_template: "{{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
       - delay:
-          seconds: 30 # Wait for all command line sensors to be updated
+          seconds: 30  # Wait for all command line sensors to be updated
       - service: script.update_homeassistant
       - wait_template: "{{ is_state('sensor.upgraded_version', states('sensor.desired_version')) }}"
       - service: homeassistant.restart

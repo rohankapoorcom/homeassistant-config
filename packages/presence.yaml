@@ -5,6 +5,7 @@
 #  @description  :  Manages presence detection using a combination of motion
 #                   and door/window sensors.
 ###############################################################################
+---
 homeassistant:
   customize:
     ################################################
@@ -14,89 +15,6 @@ homeassistant:
       customize: &customize
         package: 'presence'
 
-      downstairs: &downstairs
-        <<: *customize
-        detector_location: 'Downstairs'
-
-      upstairs: &upstairs
-        <<: *customize
-        detector_location: 'Upstairs'
-
-    ################################################
-    ## Binary Sensor
-    ################################################
-    binary_sensor.door_window_sensor_158d0001ef6cdb:
-      <<: *downstairs
-      friendly_name: Front Window
-
-    binary_sensor.door_window_sensor_158d000200a9da:
-      <<: *downstairs
-      friendly_name: Front Door
-
-    binary_sensor.motion_sensor_158d0001e07497:
-      <<: *downstairs
-      friendly_name: Server Rack Motion
-
-    binary_sensor.motion_sensor_158d0001e0a7db:
-      <<: *downstairs
-      friendly_name: Kitchen Motion
-
-    binary_sensor.motion_sensor_158d0001de738e:
-      <<: *downstairs
-      friendly_name: Staircase Bottom Motion
-
-    binary_sensor.backwindow_motion_detected:
-      <<: *downstairs
-      friendly_name: Back Window Motion
-
-    binary_sensor.frontdoor_motion_detected:
-      <<: *downstairs
-      friendly_name: Front Door Motion
-
-    binary_sensor.door_window_sensor_158d0001b7bb38:
-      <<: *upstairs
-      friendly_name: Closet Door
-
-    binary_sensor.door_window_sensor_158d0001de6091:
-      <<: *upstairs
-      friendly_name: Bathroom Door
-
-    binary_sensor.motion_sensor_158d0001e50fb5:
-      <<: *upstairs
-      friendly_name: Desk Motion
-
-    binary_sensor.motion_sensor_158d0001e51317:
-      <<: *upstairs
-      friendly_name: Closet Motion
-
-    binary_sensor.motion_sensor_158d0001e05978:
-      <<: *upstairs
-      friendly_name: Bathroom Sink Motion
-
-    binary_sensor.motion_sensor_158d0001e51270:
-      <<: *upstairs
-      friendly_name: Bathroom Motion
-
-    binary_sensor.motion_sensor_158d0001e51287:
-      <<: *upstairs
-      friendly_name: Bathroom Motion 2
-
-    binary_sensor.motion_sensor_158d0001e0ae30:
-      <<: *upstairs
-      friendly_name: Staircase Top Motion
-
-    ################################################
-    ## Input Select
-    ################################################
-    input_select.last_presence_location:
-      <<: *customize
-
-    ################################################
-    ## Automation
-    ################################################
-    automation.update_last_presence_location:
-      <<: *customize
-
     ################################################
     ## Zone
     ################################################
@@ -105,26 +23,6 @@ homeassistant:
 
     zone.work:
       <<: *customize
-
-################################################
-## Input Select
-################################################
-input_select:
-  last_presence_location:
-    name: Last Presence Location
-    options:
-      - Downstairs
-      - Upstairs
-    initial: Downstairs
-    icon: mdi:radar
-
-################################################
-## Device Tracker
-################################################
-#device_tracker:
-#  - platform: google_maps
-#    username: !secret device_tracker.google_maps.username
-#    max_gps_accuracy: 1000
 
 ################################################
 ## Zone
@@ -144,81 +42,3 @@ zone:
 ## Map
 ################################################
 map:
-
-################################################
-## Automation
-################################################
-automation:
-  - id: update_last_presence_location
-    alias: Update Last Presence Location
-    trigger:
-      - platform: event
-        event_type: state_changed
-    condition:
-      - condition: template
-        value_template: "{{ trigger.event.data is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.old_state is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.new_state is not none }}"
-      - condition: template
-        value_template: "{{ trigger.event.data.entity_id is not none }}"
-      - condition: template
-        value_template: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') is not none }}"
-      - condition: template
-        value_template: >
-          {% if is_state_attr(trigger.event.data.entity_id, 'device_class', 'motion') %}
-            {{ trigger.event.data.new_state.state == 'on' }}
-          {% elif is_state_attr(trigger.event.data.entity_id, 'device_class', 'opening') %}
-            true
-          {% else %}
-            false
-          {% endif %}
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.last_presence_location
-        data_template:
-          option: "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}"
-      - service: mqtt.publish
-        data_template:
-          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config"
-          retain: true
-          payload: >-
-            {
-              "name": "{{ state_attr(trigger.event.data.entity_id, 'detector_location') }} Last Seen",
-              "state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
-              "value_template": "{{ "{{" }} value_json.value {{ "}}" }}",
-              "json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
-            }
-      - service: mqtt.publish
-        data_template:
-          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state"
-          retain: true
-          payload: >-
-            {
-              "value": "{{ utcnow() }}"
-            }
-      - service: mqtt.publish
-        data_template:
-          topic: "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
-          retain: true
-          payload: >-
-            {
-              "package": "presence",
-              "mqtt_config_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/config",
-              "mqtt_state_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/state",
-              "mqtt_json_attributes_topic": "homeassistant/sensor/{{ state_attr(trigger.event.data.entity_id, 'detector_location') }}_lastseen/attributes"
-            }
-
-#  - id: turn_off_all_lights_when_leaving_home_zone
-#    alias: Turn off all Lights when Leaving Home Zone
-#    trigger:
-#      - platform: state
-#        entity_id: device_tracker.google_maps_105963854027405298065
-#        from: 'home'
-#        to: 'not_home'
-#        for:
-#          minutes: 5
-#    action:
-#      - service: light.turn_off
-#        entity_id: all

@@ -4,7 +4,7 @@
 #  @package      :  Assistant
 #  @description  :  Manages connections to Google Assistant
 ###############################################################################
-
+---
 google_assistant:
   project_id: !secret google_assistant.project_id
   expose_by_default: false
