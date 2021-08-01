@@ -33,18 +33,22 @@ homeassistant:
 light:
   - platform: switch
     name: Master Bedroom Balcony Lights
+    unique_id: dba2f480-50b1-4fbf-8e36-6f6122815b05
     entity_id: switch.master_bedroom_balcony_lights
 
   - platform: switch
     name: Office Balcony Lights
+    unique_id: df415c72-0494-496c-873d-bc6f185e22c7
     entity_id: switch.office_balcony_lights
 
   - platform: switch
     name: Patio Lights
+    unique_id: d8995f36-4ee1-47e3-bab9-f5158057f845
     entity_id: switch.patio_lights
 
   - platform: group
     name: Backyard Lights
+    unique_id: cfec1cba-3ac7-4304-a3ba-7806b2155865
     entities:
       - light.master_bedroom_balcony_lights
       - light.office_balcony_lights
