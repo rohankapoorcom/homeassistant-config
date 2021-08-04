@@ -13,6 +13,7 @@ from homeassistant.components.input_text import DOMAIN as IN_TXT_DOMAIN
 from homeassistant.components.ozw import DOMAIN as OZW_DOMAIN
 from homeassistant.components.script import DOMAIN as SCRIPT_DOMAIN
 from homeassistant.components.template import DOMAIN as TEMPLATE_DOMAIN
+from homeassistant.components.timer import DOMAIN as TIMER_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_DEVICE_ID,
@@ -45,6 +46,7 @@ from .const import (
     CONF_ALARM_TYPE_OR_ACCESS_CONTROL_ENTITY_ID,
     CONF_LOCK_ENTITY_ID,
     CONF_LOCK_NAME,
+    CONF_PARENT,
     CONF_PATH,
     CONF_SENSOR_NAME,
     DOMAIN,
@@ -160,6 +162,7 @@ async def generate_keymaster_locks(
         config_entry.data.get(CONF_ALARM_TYPE_OR_ACCESS_CONTROL_ENTITY_ID),
         ent_reg,
         door_sensor_entity_id=config_entry.data[CONF_SENSOR_NAME],
+        parent=config_entry.data[CONF_PARENT],
     )
     child_locks = [
         KeymasterLock(
@@ -416,7 +419,7 @@ async def async_reset_code_slot_if_pin_unknown(
         if pin_state and pin_state.state == STATE_UNKNOWN:
             await hass.services.async_call(
                 "script",
-                f"{lock_name}_reset_codeslot",
+                f"keymaster_{lock_name}_reset_codeslot",
                 {ATTR_CODE_SLOT: x},
                 blocking=True,
             )
@@ -439,6 +442,7 @@ async def async_reload_package_platforms(hass: HomeAssistant) -> bool:
         IN_TXT_DOMAIN,
         SCRIPT_DOMAIN,
         TEMPLATE_DOMAIN,
+        TIMER_DOMAIN,
     ]:
         try:
             await hass.services.async_call(domain, SERVICE_RELOAD, blocking=True)

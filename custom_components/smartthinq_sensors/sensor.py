@@ -10,18 +10,32 @@ from .wideq import (
     FEAT_DOOROPEN,
     FEAT_DRYLEVEL,
     FEAT_DUALZONE,
+    FEAT_ENERGY_CURRENT,
     FEAT_ERROR_MSG,
     FEAT_HALFLOAD,
+    FEAT_HOT_WATER_TEMP,
+    FEAT_IN_WATER_TEMP,
+    FEAT_OUT_WATER_TEMP,
     FEAT_PRE_STATE,
     FEAT_PROCESS_STATE,
     FEAT_RUN_STATE,
     FEAT_SPINSPEED,
+    FEAT_STANDBY,
     FEAT_REMOTESTART,
     FEAT_RINSEREFILL,
     FEAT_SALTREFILL,
     FEAT_TUBCLEAN_COUNT,
     FEAT_TEMPCONTROL,
     FEAT_WATERTEMP,
+    FEAT_COOKTOP_LEFT_FRONT_STATE,
+    FEAT_COOKTOP_LEFT_REAR_STATE,
+    FEAT_COOKTOP_CENTER_STATE,
+    FEAT_COOKTOP_RIGHT_FRONT_STATE,
+    FEAT_COOKTOP_RIGHT_REAR_STATE,
+    FEAT_OVEN_LOWER_CURRENT_TEMP,
+    FEAT_OVEN_LOWER_STATE,
+    FEAT_OVEN_UPPER_CURRENT_TEMP,
+    FEAT_OVEN_UPPER_STATE,
 )
 
 from .wideq.device import (
@@ -29,17 +43,21 @@ from .wideq.device import (
     STATE_OPTIONITEM_ON,
     UNIT_TEMP_CELSIUS,
     UNIT_TEMP_FAHRENHEIT,
+    WM_DEVICE_TYPES,
     DeviceType,
 )
 
 from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_HEAT,
     DEVICE_CLASS_LOCK,
     DEVICE_CLASS_OPENING,
     DEVICE_CLASS_PROBLEM,
 )
 
 from homeassistant.const import (
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
+    POWER_WATT,
     STATE_ON,
     STATE_OFF,
     STATE_UNAVAILABLE,
@@ -47,10 +65,15 @@ from homeassistant.const import (
     TEMP_FAHRENHEIT,
 )
 from homeassistant.core import callback
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, LGE_DEVICES
 from . import LGEDevice
+
+# service definition
+SERVICE_REMOTE_START = "remote_start"
+SERVICE_WAKE_UP = "wake_up"
 
 # sensor definition
 ATTR_MEASUREMENT_NAME = "measurement_name"
@@ -71,13 +94,20 @@ ATTR_CURRENT_COURSE = "current_course"
 ATTR_ERROR_STATE = "error_state"
 
 # refrigerator sensor attributes
-ATTR_REFRIGERATOR_TEMP = "refrigerator_temp"
+ATTR_FRIDGE_TEMP = "fridge_temp"
 ATTR_FREEZER_TEMP = "freezer_temp"
 ATTR_TEMP_UNIT = "temp_unit"
 ATTR_DOOR_OPEN = "door_open"
 
 # ac sensor attributes
 ATTR_ROOM_TEMP = "room_temperature"
+
+# range sensor attributes
+ATTR_COOKTOP_STATE = "cooktop_state"
+ATTR_OVEN_LOWER_TARGET_TEMP = "oven_lower_target_temp"
+ATTR_OVEN_UPPER_TARGET_TEMP = "oven_upper_target_temp"
+ATTR_OVEN_STATE = "oven_state"
+ATTR_OVEN_TEMP_UNIT = "oven_temp_unit"
 
 STATE_LOOKUP = {
     STATE_OPTIONITEM_OFF: STATE_OFF,
@@ -100,6 +130,7 @@ DEVICE_ICONS = {
     DeviceType.STYLER: "mdi:palette-swatch-outline",
     DeviceType.DISHWASHER: "mdi:dishwasher",
     DeviceType.REFRIGERATOR: "mdi:fridge-outline",
+    DeviceType.RANGE: "mdi:stove",
 }
 
 RUN_COMPLETED_PREFIX = {
@@ -119,75 +150,81 @@ WASH_DEV_SENSORS = {
         ATTR_VALUE_FN: lambda x: x._power_state,
         ATTR_ENABLED: True,
     },
+    ATTR_CURRENT_COURSE: {
+        ATTR_MEASUREMENT_NAME: "Current course",
+        ATTR_ICON: "mdi:pin-outline",
+        ATTR_VALUE_FN: lambda x: x._current_course,
+        ATTR_ENABLED: True,
+    },
     FEAT_RUN_STATE: {
-        ATTR_MEASUREMENT_NAME: "Run State",
+        ATTR_MEASUREMENT_NAME: "Run state",
         ATTR_ICON: DEFAULT_ICON,
         ATTR_VALUE_FEAT: FEAT_RUN_STATE,
         ATTR_ENABLED: True,
     },
     FEAT_PROCESS_STATE: {
-        ATTR_MEASUREMENT_NAME: "Process State",
+        ATTR_MEASUREMENT_NAME: "Process state",
         ATTR_ICON: DEFAULT_ICON,
         ATTR_VALUE_FEAT: FEAT_PROCESS_STATE,
         ATTR_ENABLED: True,
     },
+    FEAT_SPINSPEED: {
+        ATTR_MEASUREMENT_NAME: "Spin speed",
+        ATTR_ICON: "mdi:rotate-3d",
+        ATTR_VALUE_FEAT: FEAT_SPINSPEED,
+        ATTR_ENABLED: True,
+    },
+    FEAT_WATERTEMP: {
+        ATTR_MEASUREMENT_NAME: "Water temp",
+        ATTR_ICON: "mdi:thermometer-lines",
+        ATTR_VALUE_FEAT: FEAT_WATERTEMP,
+        ATTR_ENABLED: True,
+    },
+    FEAT_TEMPCONTROL: {
+        ATTR_MEASUREMENT_NAME: "Temp control",
+        ATTR_ICON: "mdi:thermometer-lines",
+        ATTR_VALUE_FEAT: FEAT_TEMPCONTROL,
+        ATTR_ENABLED: True,
+    },
+    FEAT_DRYLEVEL: {
+        ATTR_MEASUREMENT_NAME: "Dry level",
+        ATTR_ICON: "mdi:tumble-dryer",
+        ATTR_VALUE_FEAT: FEAT_DRYLEVEL,
+        ATTR_ENABLED: True,
+    },
+    FEAT_ERROR_MSG: {
+        ATTR_MEASUREMENT_NAME: "Error message",
+        ATTR_ICON: "mdi:alert-circle-outline",
+        ATTR_VALUE_FEAT: FEAT_ERROR_MSG,
+        ATTR_ENABLED: True,
+    },
     FEAT_PRE_STATE: {
-        ATTR_MEASUREMENT_NAME: "Pre State",
+        ATTR_MEASUREMENT_NAME: "Pre state",
         ATTR_ICON: DEFAULT_ICON,
         ATTR_VALUE_FEAT: FEAT_PRE_STATE,
     },
-    FEAT_ERROR_MSG: {
-        ATTR_MEASUREMENT_NAME: "Error Message",
-        ATTR_ICON: "mdi:alert-circle-outline",
-        ATTR_VALUE_FEAT: FEAT_ERROR_MSG,
-    },
     FEAT_TUBCLEAN_COUNT: {
-        ATTR_MEASUREMENT_NAME: "Tube Clean Counter",
+        ATTR_MEASUREMENT_NAME: "Tube clean counter",
         ATTR_ICON: DEFAULT_ICON,
         ATTR_VALUE_FEAT: FEAT_TUBCLEAN_COUNT,
     },
-    FEAT_SPINSPEED: {
-        ATTR_MEASUREMENT_NAME: "Spin Speed",
-        ATTR_ICON: "mdi:rotate-3d",
-        ATTR_VALUE_FEAT: FEAT_SPINSPEED,
-    },
-    FEAT_WATERTEMP: {
-        ATTR_MEASUREMENT_NAME: "Water Temp",
-        ATTR_ICON: "mdi:thermometer-lines",
-        ATTR_VALUE_FEAT: FEAT_WATERTEMP,
-    },
-    FEAT_TEMPCONTROL: {
-        ATTR_MEASUREMENT_NAME: "Temp Control",
-        ATTR_ICON: "mdi:thermometer-lines",
-        ATTR_VALUE_FEAT: FEAT_TEMPCONTROL,
-    },
-    FEAT_DRYLEVEL: {
-        ATTR_MEASUREMENT_NAME: "Dry Level",
-        ATTR_ICON: "mdi:tumble-dryer",
-        ATTR_VALUE_FEAT: FEAT_DRYLEVEL,
-    },
     FEAT_HALFLOAD: {
-        ATTR_MEASUREMENT_NAME: "Half Load",
+        ATTR_MEASUREMENT_NAME: "Half load",
         ATTR_ICON: "mdi:circle-half-full",
         ATTR_VALUE_FEAT: FEAT_HALFLOAD,
     },
-    ATTR_CURRENT_COURSE: {
-        ATTR_MEASUREMENT_NAME: "Current Course",
-        ATTR_ICON: "mdi:pin-outline",
-        ATTR_VALUE_FN: lambda x: x._current_course,
-    },
     ATTR_INITIAL_TIME: {
-        ATTR_MEASUREMENT_NAME: "Initial Time",
+        ATTR_MEASUREMENT_NAME: "Initial time",
         ATTR_ICON: "mdi:clock-outline",
         ATTR_VALUE_FN: lambda x: x._initial_time,
     },
     ATTR_REMAIN_TIME: {
-        ATTR_MEASUREMENT_NAME: "Remain Time",
+        ATTR_MEASUREMENT_NAME: "Remain time",
         ATTR_ICON: "mdi:clock-outline",
         ATTR_VALUE_FN: lambda x: x._remain_time,
     },
     ATTR_RESERVE_TIME: {
-        ATTR_MEASUREMENT_NAME: "Reserve Time",
+        ATTR_MEASUREMENT_NAME: "Reserve time",
         ATTR_ICON: "mdi:clock-outline",
         ATTR_VALUE_FN: lambda x: x._reserve_time,
     },
@@ -195,53 +232,57 @@ WASH_DEV_SENSORS = {
 
 WASH_DEV_BINARY_SENSORS = {
     ATTR_RUN_COMPLETED: {
-        ATTR_MEASUREMENT_NAME: "<Run> Completed",
+        ATTR_MEASUREMENT_NAME: "<Run> completed",
         ATTR_VALUE_FN: lambda x: x._run_completed,
         ATTR_ENABLED: True,
     },
     ATTR_ERROR_STATE: {
-        ATTR_MEASUREMENT_NAME: "Error State",
+        ATTR_MEASUREMENT_NAME: "Error state",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_PROBLEM,
         ATTR_VALUE_FN: lambda x: x._error_state,
         ATTR_ENABLED: True,
     },
+    FEAT_STANDBY: {
+        ATTR_MEASUREMENT_NAME: "Standby",
+        ATTR_VALUE_FEAT: FEAT_STANDBY,
+    },
     FEAT_CHILDLOCK: {
-        ATTR_MEASUREMENT_NAME: "Child Lock",
+        ATTR_MEASUREMENT_NAME: "Child lock",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_LOCK,
         ATTR_VALUE_FEAT: FEAT_CHILDLOCK,
         ATTR_INVERT_STATE: True
     },
     FEAT_DOORCLOSE: {
-        ATTR_MEASUREMENT_NAME: "Door Close",
+        ATTR_MEASUREMENT_NAME: "Door close",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OPENING,
         ATTR_VALUE_FEAT: FEAT_DOORCLOSE,
         ATTR_INVERT_STATE: True
     },
     FEAT_DOORLOCK: {
-        ATTR_MEASUREMENT_NAME: "Door Lock",
+        ATTR_MEASUREMENT_NAME: "Door lock",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_LOCK,
         ATTR_VALUE_FEAT: FEAT_DOORLOCK,
         ATTR_INVERT_STATE: True
     },
     FEAT_DOOROPEN: {
-        ATTR_MEASUREMENT_NAME: "Door Open",
+        ATTR_MEASUREMENT_NAME: "Door open",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OPENING,
         ATTR_VALUE_FEAT: FEAT_DOOROPEN,
     },
     FEAT_REMOTESTART: {
-        ATTR_MEASUREMENT_NAME: "Remote Start",
+        ATTR_MEASUREMENT_NAME: "Remote start",
         ATTR_VALUE_FEAT: FEAT_REMOTESTART,
     },
     FEAT_DUALZONE: {
-        ATTR_MEASUREMENT_NAME: "Dual Zone",
+        ATTR_MEASUREMENT_NAME: "Dual zone",
         ATTR_VALUE_FEAT: FEAT_DUALZONE,
     },
     FEAT_RINSEREFILL: {
-        ATTR_MEASUREMENT_NAME: "Rinse Refill",
+        ATTR_MEASUREMENT_NAME: "Rinse refill",
         ATTR_VALUE_FEAT: FEAT_RINSEREFILL,
     },
     FEAT_SALTREFILL: {
-        ATTR_MEASUREMENT_NAME: "Salt Refill",
+        ATTR_MEASUREMENT_NAME: "Salt refill",
         ATTR_VALUE_FEAT: FEAT_SALTREFILL,
     },
 }
@@ -253,15 +294,15 @@ REFRIGERATOR_SENSORS = {
         ATTR_VALUE_FN: lambda x: x._power_state,
         ATTR_ENABLED: True,
     },
-    ATTR_REFRIGERATOR_TEMP: {
-        ATTR_MEASUREMENT_NAME: "Refrigerator Temp",
+    ATTR_FRIDGE_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Fridge temp",
         ATTR_UNIT_FN: lambda x: x._temp_unit,
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
-        ATTR_VALUE_FN: lambda x: x._temp_refrigerator,
+        ATTR_VALUE_FN: lambda x: x._temp_fridge,
         ATTR_ENABLED: True,
     },
     ATTR_FREEZER_TEMP: {
-        ATTR_MEASUREMENT_NAME: "Freezer Temp",
+        ATTR_MEASUREMENT_NAME: "Freezer temp",
         ATTR_UNIT_FN: lambda x: x._temp_unit,
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_VALUE_FN: lambda x: x._temp_freezer,
@@ -271,7 +312,7 @@ REFRIGERATOR_SENSORS = {
 
 REFRIGERATOR_BINARY_SENSORS = {
     ATTR_DOOR_OPEN: {
-        ATTR_MEASUREMENT_NAME: "Door Open",
+        ATTR_MEASUREMENT_NAME: "Door open",
         ATTR_DEVICE_CLASS: DEVICE_CLASS_OPENING,
         ATTR_VALUE_FN: lambda x: x._dooropen_state,
         ATTR_ENABLED: True,
@@ -280,21 +321,129 @@ REFRIGERATOR_BINARY_SENSORS = {
 
 AC_SENSORS = {
     ATTR_ROOM_TEMP: {
-        ATTR_MEASUREMENT_NAME: "Room Temperature",
+        ATTR_MEASUREMENT_NAME: "Room temperature",
         ATTR_UNIT_FN: lambda x: x._temp_unit,
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_VALUE_FN: lambda x: x._curr_temp,
-        ATTR_ENABLED: False,
+    },
+    FEAT_HOT_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Hot water temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_HOT_WATER_TEMP,
+    },
+    FEAT_IN_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "In water temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_IN_WATER_TEMP,
+    },
+    FEAT_OUT_WATER_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Out water temperature",
+        ATTR_UNIT_FN: lambda x: x._temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OUT_WATER_TEMP,
+    },
+    FEAT_ENERGY_CURRENT: {
+        ATTR_MEASUREMENT_NAME: "Energy current",
+        ATTR_UNIT_FN: lambda x: POWER_WATT,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_POWER,
+        ATTR_VALUE_FEAT: FEAT_ENERGY_CURRENT,
     },
 }
 
-WASH_DEVICE_TYPES = [
+RANGE_SENSORS = {
+    DEFAULT_SENSOR: {
+        ATTR_MEASUREMENT_NAME: "Default",
+        ATTR_ICON: DEFAULT_ICON,
+        ATTR_VALUE_FN: lambda x: x._power_state,
+        ATTR_ENABLED: True,
+    },
+    FEAT_COOKTOP_LEFT_FRONT_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop left front state",
+        ATTR_ICON: "mdi:arrow-left-bold-box-outline",
+        ATTR_VALUE_FEAT: FEAT_COOKTOP_LEFT_FRONT_STATE,
+    },
+    FEAT_COOKTOP_LEFT_REAR_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop left rear state",
+        ATTR_ICON: "mdi:arrow-left-bold-box",
+        ATTR_VALUE_FEAT: FEAT_COOKTOP_LEFT_REAR_STATE,
+    },
+    FEAT_COOKTOP_CENTER_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop center state",
+        ATTR_ICON: "mdi:minus-box-outline",
+        ATTR_VALUE_FEAT: FEAT_COOKTOP_CENTER_STATE,
+    },
+    FEAT_COOKTOP_RIGHT_FRONT_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop right front state",
+        ATTR_ICON: "mdi:arrow-right-bold-box-outline",
+        ATTR_VALUE_FEAT: FEAT_COOKTOP_RIGHT_FRONT_STATE,
+    },
+    FEAT_COOKTOP_RIGHT_REAR_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop right rear state",
+        ATTR_ICON: "mdi:arrow-right-bold-box",
+        ATTR_VALUE_FEAT: FEAT_COOKTOP_RIGHT_REAR_STATE,
+    },
+    FEAT_OVEN_LOWER_STATE: {
+        ATTR_MEASUREMENT_NAME: "Oven lower state",
+        ATTR_ICON: "mdi:inbox-arrow-down",
+        ATTR_VALUE_FEAT: FEAT_OVEN_LOWER_STATE,
+        ATTR_ENABLED: True,
+    },
+    FEAT_OVEN_UPPER_STATE: {
+        ATTR_MEASUREMENT_NAME: "Oven upper state",
+        ATTR_ICON: "mdi:inbox-arrow-up",
+        ATTR_VALUE_FEAT: FEAT_OVEN_UPPER_STATE,
+        ATTR_ENABLED: True,
+    },
+    ATTR_OVEN_LOWER_TARGET_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven lower target temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FN: lambda x: x._oven_lower_target_temp,
+        ATTR_ENABLED: True,
+    },
+    FEAT_OVEN_LOWER_CURRENT_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven lower current temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OVEN_LOWER_CURRENT_TEMP,
+        ATTR_ENABLED: True,
+    },
+    ATTR_OVEN_UPPER_TARGET_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven upper target temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FN: lambda x: x._oven_upper_target_temp,
+        ATTR_ENABLED: True,
+    },
+    FEAT_OVEN_UPPER_CURRENT_TEMP: {
+        ATTR_MEASUREMENT_NAME: "Oven upper current temperature",
+        ATTR_UNIT_FN: lambda x: x._oven_temp_unit,
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_VALUE_FEAT: FEAT_OVEN_UPPER_CURRENT_TEMP,
+        ATTR_ENABLED: True,
+    },
+}
+
+RANGE_BINARY_SENSORS = {
+    ATTR_COOKTOP_STATE: {
+        ATTR_MEASUREMENT_NAME: "Cooktop state",
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_HEAT,
+        ATTR_VALUE_FN: lambda x: x._cooktop_state,
+        ATTR_ENABLED: True,
+    },
+    ATTR_OVEN_STATE: {
+        ATTR_MEASUREMENT_NAME: "Oven state",
+        ATTR_DEVICE_CLASS: DEVICE_CLASS_HEAT,
+        ATTR_VALUE_FN: lambda x: x._oven_state,
+        ATTR_ENABLED: True,
+    },
+}
+
+WASH_DEVICE_TYPES = WM_DEVICE_TYPES + [
     DeviceType.DISHWASHER,
-    DeviceType.DRYER,
     DeviceType.STYLER,
-    DeviceType.TOWER_DRYER,
-    DeviceType.TOWER_WASHER,
-    DeviceType.WASHER,
 ]
 
 
@@ -305,8 +454,9 @@ def _sensor_exist(lge_device, sensor_def):
 
     if ATTR_VALUE_FEAT in sensor_def:
         feature = sensor_def[ATTR_VALUE_FEAT]
-        if feature in lge_device.available_features:
-            return True
+        for feat_name in lge_device.available_features.keys():
+            if feat_name == feature:
+                return True
 
     return False
 
@@ -360,6 +510,19 @@ def setup_sensors(hass, config_entry, async_add_entities, type_binary):
         ]
     )
 
+    # add ranges
+    range_sensors = (
+        RANGE_BINARY_SENSORS if type_binary else RANGE_SENSORS
+    )
+    lge_sensors.extend(
+        [
+            LGERangeSensor(lge_device, measurement, definition, type_binary)
+            for measurement, definition in range_sensors.items()
+            for lge_device in lge_devices.get(DeviceType.RANGE, [])
+            if _sensor_exist(lge_device, definition)
+        ]
+    )
+
     async_add_entities(lge_sensors)
 
 
@@ -367,6 +530,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the LGE sensors."""
     _LOGGER.info("Starting LGE ThinQ sensors...")
     setup_sensors(hass, config_entry, async_add_entities, False)
+
+    # register services
+    platform = entity_platform.current_platform.get()
+    platform.async_register_entity_service(
+        SERVICE_REMOTE_START,
+        None,
+        "async_remote_start",
+    )
+    platform.async_register_entity_service(
+        SERVICE_WAKE_UP,
+        None,
+        "async_wake_up",
+    )
 
 
 class LGESensor(CoordinatorEntity):
@@ -389,6 +565,7 @@ class LGESensor(CoordinatorEntity):
         else:
             self._invert_state = False
         self._is_default = self._measurement == DEFAULT_SENSOR
+        self._name = None
 
     @staticmethod
     def format_time(hours, minutes):
@@ -418,12 +595,22 @@ class LGESensor(CoordinatorEntity):
         """Return the name of the sensor."""
         if self._is_default:
             return self._name_slug
-        name = self._def[ATTR_MEASUREMENT_NAME]
-        if self._measurement == ATTR_RUN_COMPLETED:
-            name = name.replace(
-                "<Run>", RUN_COMPLETED_PREFIX.get(self._api.type, "Run")
-            )
-        return f"{self._name_slug} {name}"
+
+        if not self._name:
+            name = None
+            if ATTR_VALUE_FEAT in self._def:
+                feat_key = self._def[ATTR_VALUE_FEAT]
+                feat_name = self._api.available_features.get(feat_key)
+                if feat_name and feat_name != feat_key:
+                    name = feat_name.replace("_", " ").capitalize()
+            if not name:
+                name = self._def[ATTR_MEASUREMENT_NAME]
+                if self._measurement == ATTR_RUN_COMPLETED:
+                    name = name.replace(
+                        "<Run>", RUN_COMPLETED_PREFIX.get(self._api.type, "Run")
+                    )
+            self._name = f"{self._name_slug} {name}"
+        return self._name
 
     @property
     def unique_id(self) -> str:
@@ -518,16 +705,28 @@ class LGESensor(CoordinatorEntity):
 
         return None
 
-    def _get_features_value(self):
+    def _get_features_attributes(self):
         ret_val = {}
         if self._api.state:
             states = self._api.state.device_features
         else:
             states = {}
         features = self._api.available_features
-        for feature in features.values():
-            ret_val[feature] = states.get(feature)
+        for feat_key, feat_name in features.items():
+            ret_val[feat_name] = states.get(feat_key)
         return ret_val
+
+    async def async_remote_start(self):
+        """Call the remote start command for WM devices."""
+        if self._api.type not in WM_DEVICE_TYPES:
+            raise NotImplementedError()
+        await self.hass.async_add_executor_job(self._api.device.remote_start)
+
+    async def async_wake_up(self):
+        """Call the wakeup command for WM devices."""
+        if self._api.type not in WM_DEVICE_TYPES:
+            raise NotImplementedError()
+        await self.hass.async_add_executor_job(self._api.device.wake_up)
 
 
 class LGEWashDeviceSensor(LGESensor):
@@ -552,7 +751,7 @@ class LGEWashDeviceSensor(LGESensor):
             ATTR_RESERVE_TIME: self._reserve_time,
             ATTR_CURRENT_COURSE: self._current_course,
         }
-        features = self._get_features_value()
+        features = self._get_features_attributes()
         data.update(features)
 
         return data
@@ -624,22 +823,22 @@ class LGERefrigeratorSensor(LGESensor):
             return None
 
         data = {
-            ATTR_REFRIGERATOR_TEMP: self._temp_refrigerator,
+            ATTR_FRIDGE_TEMP: self._temp_fridge,
             ATTR_FREEZER_TEMP: self._temp_freezer,
             ATTR_TEMP_UNIT: self._temp_unit,
             ATTR_DOOR_OPEN: self._dooropen_state,
         }
 
         if self._api.state:
-            features = self._get_features_value()
+            features = self._get_features_attributes()
             data.update(features)
 
         return data
 
     @property
-    def _temp_refrigerator(self):
+    def _temp_fridge(self):
         if self._api.state:
-            return self._api.state.temp_refrigerator
+            return self._api.state.temp_fridge
         return None
 
     @property
@@ -676,3 +875,70 @@ class LGEACSensor(LGESensor):
     def _temp_unit(self):
         unit = self._api.device.temperature_unit
         return TEMP_UNIT_LOOKUP.get(unit, TEMP_CELSIUS)
+
+
+class LGERangeSensor(LGESensor):
+    """A sensor to monitor LGE range devices"""
+
+    def __init__(self, device, measurement, definition, is_binary):
+        """Initialize the sensor."""
+        super().__init__(device, measurement, definition, is_binary)
+        
+    @property
+    def device_state_attributes(self):
+        """Return the optional state attributes."""
+        if not self._is_default:
+            return None
+
+        data = {
+            ATTR_OVEN_LOWER_TARGET_TEMP: self._oven_lower_target_temp,
+            ATTR_OVEN_UPPER_TARGET_TEMP: self._oven_upper_target_temp,
+            ATTR_OVEN_TEMP_UNIT: self._oven_temp_unit,
+        }
+        features = self._get_features_attributes()
+        data.update(features)
+
+        return data
+
+    @property
+    def _power_state(self):
+        """Current power state"""
+        if self._api.state:
+            if self._api.state.is_on:
+                return STATE_ON
+        return STATE_OFF
+
+    @property
+    def _cooktop_state(self):
+        """Current cooktop state"""
+        if self._api.state:
+            if self._api.state.is_cooktop_on:
+                return STATE_ON
+        return STATE_OFF
+
+    @property
+    def _oven_state(self):
+        """Current oven state"""
+        if self._api.state:
+            if self._api.state.is_oven_on:
+                return STATE_ON
+        return STATE_OFF
+    
+    @property
+    def _oven_lower_target_temp(self):
+        if self._api.state:
+            return self._api.state.oven_lower_target_temp
+        return None
+
+    @property
+    def _oven_upper_target_temp(self):
+        if self._api.state:
+            return self._api.state.oven_upper_target_temp
+        return None
+
+    @property
+    def _oven_temp_unit(self):
+        if self._api.state:
+            unit = self._api.state.oven_temp_unit
+            return TEMP_UNIT_LOOKUP.get(unit, TEMP_CELSIUS)
+        return TEMP_CELSIUS

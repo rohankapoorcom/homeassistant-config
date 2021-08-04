@@ -6,6 +6,8 @@ Support for LG SmartThinQ device.
 import asyncio
 import logging
 import time
+import voluptuous as vol
+
 from datetime import datetime, timedelta
 from requests import exceptions as reqExc
 from threading import Lock
@@ -14,12 +16,7 @@ from typing import Dict
 from .wideq.core import Client
 from .wideq.core_v2 import ClientV2, CoreV2HttpAdapter
 from .wideq.device import UNIT_TEMP_CELSIUS, UNIT_TEMP_FAHRENHEIT, DeviceType
-from .wideq.ac import AirConditionerDevice
-from .wideq.dishwasher import DishWasherDevice
-from .wideq.dryer import DryerDevice
-from .wideq.refrigerator import RefrigeratorDevice
-from .wideq.styler import StylerDevice
-from .wideq.washer import WasherDevice
+from .wideq.factory import get_lge_device
 
 from .wideq.core_exceptions import (
     InvalidCredentialError,
@@ -28,16 +25,14 @@ from .wideq.core_exceptions import (
     TokenError,
 )
 
-import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
-from homeassistant import config_entries
+from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.const import CONF_REGION, CONF_TOKEN, TEMP_CELSIUS
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import Throttle
-
-from homeassistant.const import CONF_REGION, CONF_TOKEN, TEMP_CELSIUS
 
 from .const import (
     CLIENT,
@@ -55,10 +50,6 @@ from .const import (
 
 ATTR_MODEL = "model"
 ATTR_MAC_ADDRESS = "mac_address"
-
-CLIMATE_DEVICE_TYPES = [
-    DeviceType.AC,
-]
 
 MAX_RETRIES = 3
 MAX_UPDATE_FAIL_ALLOWED = 10
@@ -152,14 +143,14 @@ async def async_setup(hass, config):
     if conf is not None:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data=conf
+                DOMAIN, context={"source": SOURCE_IMPORT}, data=conf
             )
         )
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, config_entry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """
     This class is called by the HomeAssistant framework when a configuration entry is provided.
     """
@@ -222,6 +213,9 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
             " enable the use of ThinQ APIv2"
         )
 
+    # remove device not available anymore
+    await cleanup_orphan_lge_devices(hass, config_entry.entry_id, client)
+
     hass.data.setdefault(DOMAIN, {}).update(
         {CLIENT: client, LGE_DEVICES: lge_devices}
     )
@@ -234,7 +228,7 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry):
     return True
 
 
-async def async_unload_entry(hass, config_entry):
+async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload a config entry."""
     await asyncio.gather(
         *[
@@ -361,14 +355,13 @@ class LGEDevice:
 
     async def _create_coordinator(self):
         """Get the coordinator for a specific device."""
-        should_poll = self._type not in CLIMATE_DEVICE_TYPES
         coordinator = DataUpdateCoordinator(
             self._hass,
             _LOGGER,
             name=f"{DOMAIN}-{self._name}",
             update_method=self.async_device_update,
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=SCAN_INTERVAL if should_poll else None,
+            update_interval=SCAN_INTERVAL
         )
         await coordinator.async_refresh()
         self._coordinator = coordinator
@@ -567,32 +560,22 @@ async def lge_devices_setup(hass, client) -> dict:
         device_id = device.id
         device_name = device.name
         device_type = device.type
+        network_type = device.network_type
         model_name = device.model_name
         device_count += 1
 
-        dev = None
-        if device_type in [DeviceType.WASHER, DeviceType.TOWER_WASHER]:
-            dev = LGEDevice(WasherDevice(client, device), hass)
-        elif device_type in [DeviceType.DRYER, DeviceType.TOWER_DRYER]:
-            dev = LGEDevice(DryerDevice(client, device), hass)
-        elif device_type == DeviceType.STYLER:
-            dev = LGEDevice(StylerDevice(client, device), hass)
-        elif device_type == DeviceType.DISHWASHER:
-            dev = LGEDevice(DishWasherDevice(client, device), hass)
-        elif device_type == DeviceType.REFRIGERATOR:
-            dev = LGEDevice(RefrigeratorDevice(client, device), hass)
-        elif device_type == DeviceType.AC:
-            dev = LGEDevice(AirConditionerDevice(client, device, temp_unit), hass)
-
-        if not dev:
+        lge_dev = get_lge_device(client, device, temp_unit)
+        if not lge_dev:
             _LOGGER.info(
-                "Found unsupported LGE Device. Name: %s - Type: %s - InfoUrl: %s",
+                "Found unsupported LGE Device. Name: %s - Type: %s - NetworkType: %s - InfoUrl: %s",
                 device_name,
                 device_type.name,
+                network_type.name,
                 device.model_info_url,
             )
             continue
 
+        dev = LGEDevice(lge_dev, hass)
         if not await dev.init_device():
             _LOGGER.error(
                 "Error initializing LGE Device. Name: %s - Type: %s - InfoUrl: %s",
@@ -613,3 +596,29 @@ async def lge_devices_setup(hass, client) -> dict:
 
     _LOGGER.info("Founds %s LGE device(s)", str(device_count))
     return wrapped_devices
+
+
+async def cleanup_orphan_lge_devices(hass, entry_id, client):
+    """Delete devices that are not registered in LG client app"""
+
+    # Load lg devices from registry
+    device_registry = await hass.helpers.device_registry.async_get_registry()
+    all_lg_dev_entries = (
+        hass.helpers.device_registry.async_entries_for_config_entry(
+            device_registry, entry_id
+        )
+    )
+
+    # get list of valid devices
+    valid_lg_dev_ids = []
+    for device in client.devices:
+        dev = device_registry.async_get_device({(DOMAIN, device.id)})
+        if dev is not None:
+            valid_lg_dev_ids.append(dev.id)
+
+    # clean-up invalid devices
+    for dev_entry in all_lg_dev_entries:
+        dev_id = dev_entry.id
+        if dev_id in valid_lg_dev_ids:
+            continue
+        device_registry.async_remove_device(dev_id)

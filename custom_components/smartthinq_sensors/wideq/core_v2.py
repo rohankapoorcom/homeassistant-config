@@ -18,12 +18,15 @@ from . import(
     as_list,
     gen_uuid,
     AuthHTTPAdapter,
+    CoreVersion,
     DATA_ROOT,
     DEFAULT_COUNTRY,
     DEFAULT_LANGUAGE,
 )
 from . import core_exceptions as exc
 from .device import DeviceInfo, DEFAULT_TIMEOUT
+
+CORE_VERSION = CoreVersion.CoreV2
 
 # v2
 V2_API_KEY = "VGhpblEyLjAgU0VSVklDRQ=="
@@ -554,31 +557,54 @@ class Session(object):
             {"cmd": "Mon", "cmdOpt": "Stop", "deviceId": device_id, "workId": work_id},
         )
 
-    def set_device_controls(self, device_id, values):
+    def set_device_controls(self, device_id, ctrl_key, command=None, value=None, data=None):
         """Control a device's settings.
 
         `values` is a key/value map containing the settings to update.
         """
+        res = {}
+        payload = None
+        if isinstance(ctrl_key, dict):
+            payload = ctrl_key
+        elif command is not None:
+            payload = {
+                "cmd": ctrl_key,
+                "cmdOpt": command,
+                "value": value or "",
+                "data": data or "",
+            }
 
-        return self.post(
-            "rti/rtiControl",
-            {
-                "cmd": "Control",
-                "cmdOpt": "Set",
-                "value": values,
+        if payload:
+            payload.update({
                 "deviceId": device_id,
                 "workId": gen_uuid(),
-                "data": "",
-            },
-        )
+            })
+            res = self.post("rti/rtiControl", payload)
+            _LOGGER.debug("Set V1 result: %s", str(res))
 
-    def set_device_v2_controls(self, device_id, values):
-        """Control a device's settings based on api V2.
+        return res
 
-        `values` is a key/value map containing the settings to update.
-        """
+    def set_device_v2_controls(self, device_id, ctrl_key, command=None, key=None, value=None):
+        """Control a device's settings based on api V2."""
+
+        res = {}
+        payload = None
         path = f"service/devices/{device_id}/control-sync"
-        return self.post2(path, values)
+        if isinstance(ctrl_key, dict):
+            payload = ctrl_key
+        elif command is not None:
+            payload = {
+                "ctrlKey": ctrl_key,
+                "command": command,
+                "dataKey": key or "",
+                "dataValue": value or "",
+            }
+
+        if payload:
+            res = self.post2(path, payload)
+            _LOGGER.debug("Set V2 result: %s", str(res))
+
+        return res
 
     def get_device_config(self, device_id, key, category="Config"):
         """Get a device configuration option.
@@ -600,7 +626,12 @@ class Session(object):
         )
         return res["returnData"]
 
+    def get_device_v2_settings(self, device_id):
+        """Get a device's settings based on api V2."""
+        return self.get2(f"service/devices/{device_id}")
+
     def delete_permission(self, device_id):
+        """Delete permission on V1 device after a control command"""
         self.post("rti/delControlPermission", {"deviceId": device_id})
 
 
@@ -655,6 +686,11 @@ class ClientV2(object):
             # for debug
             # self._inject_thinq2_device()
             # for debug
+
+    @property
+    def api_version(self):
+        """Return core API version"""
+        return CORE_VERSION
 
     @property
     def gateway(self) -> Gateway:
