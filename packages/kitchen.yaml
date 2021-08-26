@@ -37,6 +37,10 @@ automation:
       path: rohankapoorcom/inovelli-lzw30-red-series-switch.yaml
       input:
         zwave_device: cd14590ea99636c9f80266b42ab036b8
+        config_button:
+          - service: cover.toggle
+            target:
+              entity_id: cover.kitchen_shades
         button_a2:
           - service: light.turn_on
             target:
