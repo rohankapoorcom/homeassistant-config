@@ -41,14 +41,13 @@ automation:
           - service: cover.set_position
             target:
               entity_id: cover.kitchen_shades
-            data:
+            data_template:
               position: >
                 {% if is_state_attr('cover.kitchen_shades', 'current_position', 7) %}
                   100
                 {% else %}
                   7
                 {% endif %}
-
         button_a2:
           - service: light.turn_on
             target:
