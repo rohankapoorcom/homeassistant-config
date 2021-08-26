@@ -38,10 +38,10 @@ automation:
       input:
         zwave_device: cd14590ea99636c9f80266b42ab036b8
         config_button:
-          - service: cover.set_position
+          - service: cover.set_cover_position
             target:
               entity_id: cover.kitchen_shades
-            data_template:
+            data:
               position: >
                 {% if is_state_attr('cover.kitchen_shades', 'current_position', 7) %}
                   100
