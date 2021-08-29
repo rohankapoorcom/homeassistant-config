@@ -141,15 +141,15 @@ automation:
     alias: Manage the kitchen Shades
     description: Automatically open/close the Kitchen Shades based on the Sun Position
     trigger:
-    - platform: sun
-      event: sunset
-    - platform: sun
-      event: sunrise
-      offset: '+1:30:00'
-    - platform: homeassistant
-      event: start
-    - platform: event
-      event_type: automation_reloaded
+      - platform: sun
+        event: sunset
+      - platform: sun
+        event: sunrise
+        offset: '+1:30:00'
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
     action:
       - choose:
           - alias: If it's after sunset or before sunrise, then close the shade
