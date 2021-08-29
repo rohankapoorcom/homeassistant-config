@@ -138,7 +138,7 @@ automation:
                 LED Effect Duration: 30
                 LED Effect Type: Solid
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
-    alias: Manage the kitchen Shades
+    alias: Manage the Kitchen Shades
     description: Automatically open/close the Kitchen Shades based on the Sun Position
     trigger:
       - platform: sun
@@ -160,9 +160,7 @@ automation:
                     after: sunset
                   - condition: sun
                     before: sunrise
-                  - condition: sun
-                    after: sunrise
-                    after_offset: '+1:30:00'
+                    before_offset: '+1:30:00'
             sequence:
               - service: cover.close_cover
                 target:
