@@ -38,16 +38,9 @@ automation:
       input:
         zwave_device: cd14590ea99636c9f80266b42ab036b8
         config_button:
-          - service: cover.set_cover_position
+          - service: cover.toggle
             target:
               entity_id: cover.kitchen_shades
-            data:
-              position: >
-                {% if is_state_attr('cover.kitchen_shades', 'current_position', 7) %}
-                  100
-                {% else %}
-                  7
-                {% endif %}
         button_a2:
           - service: light.turn_on
             target:
@@ -144,3 +137,43 @@ automation:
                 LED Effect Brightness: 20%
                 LED Effect Duration: 30
                 LED Effect Type: Solid
+  - id: ea920c86-437a-4224-8329-7cad4537dc1a
+    alias: Manage the kitchen Shades
+    description: Automatically open/close the Kitchen Shades based on the Sun Position
+    trigger:
+    - platform: sun
+      event: sunset
+    - platform: sun
+      event: sunrise
+      offset: '+1:30:00'
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: automation_reloaded
+    action:
+      - choose:
+          - alias: If it's after sunset or before sunrise, then close the shade
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: sun
+                    after: sunset
+                  - condition: sun
+                    before: sunrise
+                  - condition: sun
+                    after: sunrise
+                    after_offset: '+1:30:00'
+            sequence:
+              - service: cover.close_cover
+                target:
+                  entity_id: cover.kitchen_shades
+          - alias: If it's 90 minutes after sunrise, then open the shade
+            conditions:
+              - condition: sun
+                after: sunrise
+                after_offset: '+1:30:00'
+            sequence:
+              - service: cover.open_cover
+                target:
+                  entity_id: cover.kitchen_shades
+    mode: single
