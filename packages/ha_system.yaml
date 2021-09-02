@@ -97,15 +97,6 @@ homeassistant:
 ################################################
 
 sensor:
-
-  - platform: travisci
-    api_key: !secret sensor.travis.api_key
-    repository:
-      - homeassistant-config
-    branch: master
-    monitored_conditions:
-      - last_build_state
-
   - platform: command_line
     <<: *command_line_sensor_defaults
     name: current_git_commit_id
