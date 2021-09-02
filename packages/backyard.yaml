@@ -45,6 +45,7 @@ light:
 
   - platform: group
     name: Backyard Lights
+    unique_id: cfec1cb1fa-3ac7-4304-a3ba-7806b2155865
     entities:
       - light.master_bedroom_balcony_lights
       - light.office_balcony_lights
