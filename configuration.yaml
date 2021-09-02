@@ -126,5 +126,9 @@ fan:
 
 mobile_app:
 
+energy:
+
+my:
+
 zha:
   device_config: !secret zha.device_config
