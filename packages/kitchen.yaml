@@ -137,6 +137,7 @@ automation:
                 LED Effect Brightness: 20%
                 LED Effect Duration: 30
                 LED Effect Type: Solid
+
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades
     description: Automatically open/close the Kitchen Shades based on the Sun Position
@@ -152,7 +153,7 @@ automation:
         event_type: automation_reloaded
     action:
       - choose:
-          - alias: If it's after sunset or before sunrise, then close the shade
+          - alias: If it's after sunset or before sunrise, then close the shade.
             conditions:
               - condition: or
                 conditions:
@@ -165,7 +166,7 @@ automation:
               - service: cover.close_cover
                 target:
                   entity_id: cover.kitchen_shades
-          - alias: If it's 90 minutes after sunrise, then open the shade
+          - alias: If it's 90 minutes after sunrise, then open the shade.
             conditions:
               - condition: sun
                 after: sunrise
