@@ -84,7 +84,7 @@ automation:
         button_b2:
           - service: light.turn_off
             target:
-              entity_id: light.kitchen_cabinet_lights
+              entity_id: light.dining_room_accent_lights
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
               entity_id: switch.dining_room_accent_lights
