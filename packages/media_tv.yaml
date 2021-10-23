@@ -20,7 +20,6 @@ media_player:
     name: Living Room Shield TV
     host: !secret media_player.living_room_shield_tv.host
 
-
 ################################################
 ## Automation
 ################################################
