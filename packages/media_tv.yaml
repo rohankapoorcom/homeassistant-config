@@ -20,11 +20,6 @@ media_player:
     name: Living Room Shield TV
     host: !secret media_player.living_room_shield_tv.host
 
-notify:
-  - platform: nfandroidtv
-    name: Living Room Shield Tv
-    host: !secret media_player.living_room_shield_tv.host
-
 ################################################
 ## Automation
 ################################################
