@@ -22,6 +22,18 @@ light:
     name: Garage Lights
     entity_id: switch.garage_lights
 
+################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Garage Motion
+    unique_id: e0fcd27b-7ca9-42c3-815e-63d15f0795ed
+    device_class: motion
+    entities:
+      - binary_sensor.garage_lights_motion
+      - binary_sensor.garage_multisensor_motion
+
 automation:
   - id: 8cbaf941-3de6-482e-9226-fbe103e7c84e
     alias: Control the Garage Lights
@@ -33,7 +45,7 @@ automation:
       - platform: event
         event_type: automation_reloaded
       - platform: state
-        entity_id: binary_sensor.garage_lights_motion
+        entity_id: binary_sensor.garage_motion
         from: 'off'
         to: 'on'
       - platform: state
@@ -47,7 +59,7 @@ automation:
               - condition: or
                 conditions:
                   - condition: state
-                    entity_id: binary_sensor.garage_lights_motion
+                    entity_id: binary_sensor.garage_motion
                     state: 'on'
                   - condition: state
                     entity_id: cover.garage_door
@@ -63,7 +75,7 @@ automation:
                   - platform: template
                     value_template: >
                       {{ is_state('cover.garage_door', 'closed')
-                      and is_state('binary_sensor.garage_lights_motion', 'off') }}
+                      and is_state('binary_sensor.garage_motion', 'off') }}
                 continue_on_timeout: false
               - delay:
                   minutes: 10
