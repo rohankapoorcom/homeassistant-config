@@ -35,7 +35,7 @@ jobs:
       # yamllint disable rule:line-length
       - name: Install apt packages
         run: |
-          sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+          sudo add-apt-repository ppa:savoury1/ffmpeg4
           sudo apt update
           sudo apt install -y python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
       # yamllint enable rule:line-length
