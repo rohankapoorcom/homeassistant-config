@@ -20,16 +20,16 @@ jobs:
         uses: frenck/action-yamllint@v1
   home-assistant:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
           architecture: 'x64'
 
       # yamllint disable rule:line-length
@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: |
           bash tests/travis_install.sh
-          python3 -m pip install --disable-pip-version-check google-cloud-pubsub
+          # python3 -m pip install --disable-pip-version-check google-cloud-pubsub
 
       - name: Check Homeassistant Config
         run: |
