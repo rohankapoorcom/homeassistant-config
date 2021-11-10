@@ -29,6 +29,22 @@ binary_sensor:
             and is_state_attr('light.office_lights', 'brightness', 129)
           }}
 
+      office_lights_25_percent:
+        friendly_name: Office Lights 25% Enabled
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 25) }}"
+
+      office_lights_50_percent:
+        friendly_name: Office Lights 50% Enabled
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 50) }}"
+
+      office_lights_75_percent:
+        friendly_name: Office Lights 75% Enabled
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 75) }}"
+
+      office_lights_100_percent:
+        friendly_name: Office Lights 100% Enabled
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 100) }}"
+
 ################################################
 ## Input Boolean
 ################################################
@@ -63,6 +79,34 @@ script:
             data:
               color_temp: 143
               brightness_pct: 20
+  
+  set_office_lights_25_percent:
+    sequence:
+      - service: light.turn_on
+        entity_id: light.office_lights
+        data:
+          brightness_pct: 25
+  
+  set_office_lights_50_percent:
+    sequence:
+      - service: light.turn_on
+        entity_id: light.office_lights
+        data:
+          brightness_pct: 50
+  
+  set_office_lights_75_percent:
+    sequence:
+      - service: light.turn_on
+        entity_id: light.office_lights
+        data:
+          brightness_pct: 75
+
+  set_office_lights_100_percent:
+    sequence:
+      - service: light.turn_on
+        entity_id: light.office_lights
+        data:
+          brightness_pct: 100
 
 ################################################
 ## Automation
