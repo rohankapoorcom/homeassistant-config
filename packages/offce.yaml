@@ -101,7 +101,7 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.office_lights_25_percent
+                entity_id: binary_sensor.office_lights_50_percent
                 state: 'on'
             sequence:
               - service: light.turn_off
@@ -117,7 +117,7 @@ script:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.office_lights_25_percent
+                entity_id: binary_sensor.office_lights_75_percent
                 state: 'on'
             sequence:
               - service: light.turn_off
