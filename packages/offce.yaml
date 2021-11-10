@@ -31,19 +31,19 @@ binary_sensor:
 
       office_lights_25_percent:
         friendly_name: Office Lights 25% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 25) }}"
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 64) }}"
 
       office_lights_50_percent:
         friendly_name: Office Lights 50% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 50) }}"
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 129) }}"
 
       office_lights_75_percent:
         friendly_name: Office Lights 75% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 75) }}"
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 191) }}"
 
       office_lights_100_percent:
         friendly_name: Office Lights 100% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 100) }}"
+        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 255) }}"
 
 ################################################
 ## Input Boolean
