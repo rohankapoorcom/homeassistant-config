@@ -82,31 +82,67 @@ script:
   
   set_office_lights_25_percent:
     sequence:
-      - service: light.turn_on
-        entity_id: light.office_lights
-        data:
-          brightness_pct: 25
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.office_lights_25_percent
+                state: 'on'
+            sequence:
+              - service: light.turn_off
+                entity_id: light.office_lights
+        default:
+          - service: light.turn_on
+            entity_id: light.office_lights
+            data:
+              brightness_pct: 25
   
   set_office_lights_50_percent:
     sequence:
-      - service: light.turn_on
-        entity_id: light.office_lights
-        data:
-          brightness_pct: 50
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.office_lights_25_percent
+                state: 'on'
+            sequence:
+              - service: light.turn_off
+                entity_id: light.office_lights
+        default:
+          - service: light.turn_on
+            entity_id: light.office_lights
+            data:
+              brightness_pct: 50
   
   set_office_lights_75_percent:
     sequence:
-      - service: light.turn_on
-        entity_id: light.office_lights
-        data:
-          brightness_pct: 75
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.office_lights_25_percent
+                state: 'on'
+            sequence:
+              - service: light.turn_off
+                entity_id: light.office_lights
+        default:
+          - service: light.turn_on
+            entity_id: light.office_lights
+            data:
+              brightness_pct: 75
 
   set_office_lights_100_percent:
     sequence:
-      - service: light.turn_on
-        entity_id: light.office_lights
-        data:
-          brightness_pct: 100
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.office_lights_25_percent
+                state: 'on'
+            sequence:
+              - service: light.turn_off
+                entity_id: light.office_lights
+        default:
+          - service: light.turn_on
+            entity_id: light.office_lights
+            data:
+              brightness_pct: 100
 
 ################################################
 ## Automation
