@@ -79,7 +79,7 @@ script:
             data:
               color_temp: 143
               brightness_pct: 20
-  
+
   set_office_lights_25_percent:
     sequence:
       - choose:
@@ -95,7 +95,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 25
-  
+
   set_office_lights_50_percent:
     sequence:
       - choose:
@@ -111,7 +111,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 50
-  
+
   set_office_lights_75_percent:
     sequence:
       - choose:
