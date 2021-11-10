@@ -38,6 +38,7 @@ jobs:
           sudo add-apt-repository ppa:savoury1/ffmpeg4
           sudo apt update
           sudo apt upgrade && sudo apt dist-upgrade
+          sudo apt remove libavutil-dev
           sudo apt install -y python-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev ffmpeg libudev-dev
       # yamllint enable rule:line-length
 
