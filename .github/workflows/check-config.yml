@@ -22,7 +22,9 @@ jobs:
     name: Home Assistant Config Check
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 Run Home Assistant Core Configuration Check
+      - name: Check out configuration from GitHub
+        uses: actions/checkout@v2
+      - name: Run Home Assistant Core Configuration Check
         uses: frenck/action-home-assistant@v1
         with:
           secrets: tests/travis_secrets.yaml
