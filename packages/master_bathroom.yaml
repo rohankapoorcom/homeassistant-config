@@ -89,3 +89,15 @@ automation:
           - service: switch.turn_off
             target:
               entity_id: switch.master_bathroom_fan
+
+  - id: e42f4721-966d-4209-b761-b53dcc737935
+    alias: Master Bathroom Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Master Bathroom.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: 572777ba88a55f72409d0e416dd4c66f
+        config_button:
+          - service: switch.toggle
+            target:
+              entity_id: switch.master_bathroom_towel_warmer
