@@ -101,3 +101,34 @@ automation:
           - service: switch.toggle
             target:
               entity_id: switch.master_bathroom_towel_warmer
+  
+  - id: f99edeb0-3062-4ba6-9584-a7eca41fef12
+    alias: Control the Master Bathroom Towel Warmer
+    description: Utilizes a timer to control the Master Bathroom Towel Warmer
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: homeassistant
+        event: start
+        id: homeassistant_start
+      - platform: state
+        entity_id: switch.master_bathroom_towel_warmer
+        from: 'off'
+        to: 'on'
+        id: master_bathroom_towel_warmer_turned_on
+    action:
+      - choose:
+          - alias: If Home Assistant just started, turn it off
+            conditions:
+              - condition: trigger
+                id: homeassitant_start
+            sequence:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.master_bathroom_towel_warmer
+        default:
+          - delay:
+              minutes: 90
+          - service: switch.turn_off
+            target:
+              entity_id: switch.master_bathroom_towel_warmer
