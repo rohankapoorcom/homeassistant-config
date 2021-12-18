@@ -24,7 +24,7 @@ sensor:
         friendly_name: 'Relative Humidity'
         unit_of_measurement: '%'
         value_template: >
-          {{ states('sensor.hallway_bathroom_humidity') | float - states('sensor.upstairs_humidity') | float }}
+          {{ states('sensor.hallway_bathroom_humidity') | float(0) - states('sensor.upstairs_humidity') | float(0) }}
 
 ################################################
 ## Automation
