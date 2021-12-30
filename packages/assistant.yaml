@@ -51,6 +51,8 @@ google_assistant:
       expose: true
     switch.master_bathroom_fan:
       expose: true
+    switch.master_bathroom_towel_warmer:
+      expose: true
     vacuum.upstairs_vacuum:
       expose: true
     vacuum.downstairs_vacuum:
@@ -80,3 +82,9 @@ google_assistant:
       expose: true
       aliases:
         - Guest Lights
+    light.storage_room_lights:
+      expose: true
+      aliases:
+        - Gym Lights
+    light.garage_lights:
+      expose: true
