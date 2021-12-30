@@ -24,6 +24,8 @@ homeassistant:
 # Enables the frontend
 frontend:
   themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /hacsfiles/lovelace-card-mod/card-mod.js
 
 # Enables configuration UI
 config:
@@ -117,12 +119,12 @@ nest:
 smartir:
   check_updates: false
 
-fan:
-  - platform: smartir
-    name: Master Bedroom Fan
-    unique_id: master_bedroom_fan
-    controller_data: remote.master_bedroom_ir_transmitter_remote
-    device_code: 1140
+# fan:
+#   - platform: smartir
+#     name: Master Bedroom Fan
+#     unique_id: master_bedroom_fan
+#     controller_data: remote.master_bedroom_ir_transmitter_remote
+#     device_code: 1140
 
 mobile_app:
 
