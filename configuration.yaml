@@ -20,6 +20,9 @@ homeassistant:
       command: /usr/local/bin/ldap-auth.sh
       args: ["/usr/local/bin/home-assistant.cfg"]
       meta: true
+    - type: trusted_networks
+      trusted_networks: !secret homeassistant.auth_providers.trusted_networks
+      trusted_users: !secret homeassistant.auth_prodivers.trusted_users
 
 # Enables the frontend
 frontend:
