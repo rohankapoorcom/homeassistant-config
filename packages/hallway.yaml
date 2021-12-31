@@ -38,3 +38,35 @@ light:
   - platform: switch
     name: Stairway Lights
     entity_id: switch.stairway_lights
+
+
+################################################
+## Automations
+################################################
+automation:
+  - id: 0de6a925-9ceb-42fb-b7be-f6621be3ed09
+    alias: Control the Hallway Tablet Charger
+    description: Turn on the Hallway Tablet Charger when the battery is below 40% and turn it off when it's above 85%.
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: numeric_state
+        entity_id: sensor.upstairs_hallway_tablet_battery_level
+    action:
+      - choose:
+        - alias: If the battery is above 85%, then turn off the charger.
+          conditions:
+            - condition: numeric_state
+              entity_id: sensor.upstairs_hallway_tablet_battery_level
+              above: 85
+          sequence:
+            - service: switch.turn_on
+              target:
+                entity_id: switch.hallway_tablet_charger
+        default:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.hallway_tablet_charger
