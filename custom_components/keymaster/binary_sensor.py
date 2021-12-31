@@ -8,15 +8,6 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
 )
 from homeassistant.components.mqtt import async_subscribe, models
-from homeassistant.components.ozw.const import DOMAIN as OZW_DOMAIN
-from homeassistant.components.zwave.const import (
-    DATA_NETWORK as ZWAVE_DATA_NETWORK,
-    DOMAIN as ZWAVE_DOMAIN,
-)
-from homeassistant.components.zwave_js.const import (
-    DATA_CLIENT as ZWAVE_JS_DATA_CLIENT,
-    DOMAIN as ZWAVE_JS_DOMAIN,
-)
 from homeassistant.core import callback
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
@@ -39,8 +30,26 @@ from .helpers import (
 from .lock import KeymasterLock
 
 try:
+    from homeassistant.components.zwave_js.const import (
+        DATA_CLIENT as ZWAVE_JS_DATA_CLIENT,
+        DOMAIN as ZWAVE_JS_DOMAIN,
+    )
+except (ModuleNotFoundError, ImportError):
+    pass
+
+try:
+    from homeassistant.components.ozw.const import DOMAIN as OZW_DOMAIN
+except (ModuleNotFoundError, ImportError):
+    pass
+
+try:
     from openzwave.network import ZWaveNetwork
     from pydispatch import dispatcher
+
+    from homeassistant.components.zwave.const import (
+        DATA_NETWORK as ZWAVE_DATA_NETWORK,
+        DOMAIN as ZWAVE_DOMAIN,
+    )
 
     ZWAVE_NETWORK_READY_STATUSES = (
         ZWaveNetwork.SIGNAL_AWAKE_NODES_QUERIED,
@@ -96,9 +105,12 @@ class BaseNetworkReadySensor(BinarySensorEntity):
         self.primary_lock = primary_lock
         self.child_locks = child_locks
         self.integration_name = integration_name
-        self._is_on = False
-        self._name = generate_binary_sensor_name(self.primary_lock.lock_name)
-        self._unique_id = slugify(self._name)
+
+        self._attr_is_on = False
+        self._attr_name = generate_binary_sensor_name(self.primary_lock.lock_name)
+        self._attr_unique_id = slugify(self._attr_name)
+        self._attr_device_class = DEVICE_CLASS_CONNECTIVITY
+        self._attr_should_poll = False
 
     @callback
     def async_set_is_on_property(
@@ -106,7 +118,7 @@ class BaseNetworkReadySensor(BinarySensorEntity):
     ) -> None:
         """Update state."""
         # Return immediately if we are not changing state
-        if value_to_set == self._is_on:
+        if value_to_set == self._attr_is_on:
             return
 
         if value_to_set:
@@ -114,34 +126,9 @@ class BaseNetworkReadySensor(BinarySensorEntity):
         else:
             _LOGGER.debug("Disconnected from %s network", self.integration_name)
 
-        self._is_on = value_to_set
+        self._attr_is_on = value_to_set
         if write_state:
             self.async_write_ha_state()
-
-    @property
-    def name(self) -> str:
-        """Return name of entity."""
-        return self._name
-
-    @property
-    def unique_id(self) -> str:
-        """Return unique ID of entity."""
-        return self._unique_id
-
-    @property
-    def is_on(self) -> bool:
-        """Return true if the binary sensor is on."""
-        return self._is_on
-
-    @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_CONNECTIVITY
-
-    @property
-    def should_poll(self) -> bool:
-        """Return whether entity should be polled."""
-        return False
 
 
 class ZwaveJSNetworkReadySensor(BaseNetworkReadySensor):
@@ -155,6 +142,7 @@ class ZwaveJSNetworkReadySensor(BaseNetworkReadySensor):
         self.lock_config_entry_id = None
         self._lock_found = True
         self.ent_reg = None
+        self._attr_should_poll = True
 
     async def async_update(self) -> None:
         """Update sensor."""
@@ -186,14 +174,14 @@ class ZwaveJSNetworkReadySensor(BaseNetworkReadySensor):
             ]
         except KeyError:
             _LOGGER.debug("Can't access Z-Wave JS data client.")
-            self._is_on = False
+            self._attr_is_on = False
             return
 
         network_ready = bool(
             client.connected and client.driver and client.driver.controller
         )
 
-        # If network_ready and self._is_on are both true or both false, we don't need
+        # If network_ready and self._attr_is_on are both true or both false, we don't need
         # to do anything since there is nothing to update.
         if not network_ready ^ self.is_on:
             return
@@ -210,11 +198,6 @@ class ZwaveJSNetworkReadySensor(BaseNetworkReadySensor):
                 self.child_locks,
             )
 
-    @property
-    def should_poll(self):
-        """Return whether entity should be polled."""
-        return True
-
 
 class OZWNetworkReadySensor(BaseNetworkReadySensor):
     """Binary sensor to indicate whether or not `ozw` network is ready."""
@@ -226,7 +209,7 @@ class OZWNetworkReadySensor(BaseNetworkReadySensor):
         super().__init__(primary_lock, child_locks, OZW_DOMAIN)
 
     @callback
-    def async_check_ozw_status(self, msg: models.Message):
+    def async_check_ozw_status(self, msg: models.ReceiveMessage):
         """Check OZW network status."""
         if msg.payload:
             try:

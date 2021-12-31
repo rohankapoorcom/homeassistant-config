@@ -7,7 +7,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.const import CONF_REGION, CONF_TOKEN
+from homeassistant.const import CONF_REGION, CONF_TOKEN, __version__
 
 from .const import (
     DOMAIN,
@@ -17,8 +17,9 @@ from .const import (
     CONF_OAUTH_USER_NUM,
     CONF_USE_API_V2,
     CONF_USE_TLS_V1,
+    __min_ha_version__,
 )
-from . import LGEAuthentication
+from . import LGEAuthentication, is_valid_ha_version
 
 CONF_LOGIN = "login_url"
 CONF_URL = "callback_url"
@@ -53,8 +54,6 @@ INIT_SCHEMA = vol.Schema(
         vol.Required(CONF_LANGUAGE): vol.In(_languages_list()),
         # vol.Optional(CONF_TOKEN): str,
         # vol.Required(CONF_USE_API_V2, default=True): bool,
-        vol.Optional(CONF_USE_TLS_V1, default=False): bool,
-        vol.Optional(CONF_EXCLUDE_DH, default=False): bool,
     }
 )
 
@@ -78,16 +77,19 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         self._loginurl = None
 
-    @property
-    def logger(self) -> logging.Logger:
-        """Return logger."""
-        return logging.getLogger(__name__)
-
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user interface"""
 
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
+
+        if not is_valid_ha_version():
+            return self.async_abort(
+                reason="unsupported_version",
+                description_placeholders={
+                    "req_ver": __min_ha_version__, "run_ver": __version__
+                },
+            )
 
         if not user_input:
             return self._show_form()
@@ -210,6 +212,13 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         schema = None
         if step_id == "user":
             schema = INIT_SCHEMA
+            if self.show_advanced_options:
+                schema = schema.extend(
+                    {
+                        vol.Optional(CONF_USE_TLS_V1, default=False): bool,
+                        vol.Optional(CONF_EXCLUDE_DH, default=False): bool,
+                    }
+                )
         elif step_id == "url":
             schema = vol.Schema(
                 {
@@ -223,18 +232,3 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id=step_id, data_schema=schema, errors=errors if errors else {},
         )
-
-    async def async_step_import(self, import_config):
-        """Import a config entry from configuration.yaml."""
-        if self._async_current_entries():
-            _LOGGER.debug("SmartThinQ configuration already present / imported.")
-            return self.async_abort(reason="single_instance_allowed")
-
-        _LOGGER.warning(
-            "Integration configuration using configuration.yaml is not supported."
-            " Please configure integration from HA user interface"
-        )
-        return self.async_abort(reason="single_instance_allowed")
-
-        # self._use_api_v2 = False
-        # return await self.async_step_user(import_config)

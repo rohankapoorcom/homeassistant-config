@@ -10,7 +10,6 @@ from homeassistant.components.input_boolean import DOMAIN as IN_BOOL_DOMAIN
 from homeassistant.components.input_datetime import DOMAIN as IN_DT_DOMAIN
 from homeassistant.components.input_number import DOMAIN as IN_NUM_DOMAIN
 from homeassistant.components.input_text import DOMAIN as IN_TXT_DOMAIN
-from homeassistant.components.ozw import DOMAIN as OZW_DOMAIN
 from homeassistant.components.script import DOMAIN as SCRIPT_DOMAIN
 from homeassistant.components.template import DOMAIN as TEMPLATE_DOMAIN
 from homeassistant.components.timer import DOMAIN as TIMER_DOMAIN
@@ -49,6 +48,8 @@ from .const import (
     CONF_PARENT,
     CONF_PATH,
     CONF_SENSOR_NAME,
+    CONF_SLOTS,
+    CONF_START,
     DOMAIN,
     EVENT_KEYMASTER_LOCK_STATE_CHANGED,
     LOCK_STATE_MAP,
@@ -64,7 +65,7 @@ zwave_js_supported = True
 # At that point, we will not need this try except logic and can remove a bunch
 # of code.
 try:
-    from zwave_js_server.const import ATTR_CODE_SLOT
+    from zwave_js_server.const.command_class.lock import ATTR_CODE_SLOT
 
     from homeassistant.components.zwave_js.const import (
         ATTR_EVENT_LABEL,
@@ -83,6 +84,8 @@ except (ModuleNotFoundError, ImportError):
 # installed on this Home Assistant instance
 try:
     import openzwavemqtt as ozw_module  # noqa: F401
+
+    from homeassistant.components.ozw import DOMAIN as OZW_DOMAIN
 except (ModuleNotFoundError, ImportError):
     ozw_supported = False
 
@@ -148,6 +151,11 @@ def get_node_id(hass: HomeAssistant, entity_id: str) -> Optional[str]:
         return state.attributes[ATTR_NODE_ID]
 
     return None
+
+
+def get_code_slots_list(data: Dict[str, int]) -> List[int]:
+    """Get list of code slots."""
+    return list(range(data[CONF_START], data[CONF_START] + data[CONF_SLOTS]))
 
 
 async def generate_keymaster_locks(
