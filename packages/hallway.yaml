@@ -52,7 +52,7 @@ automation:
         event: start
       - platform: event
         event_type: automation_reloaded
-      - platform: numeric_state
+      - platform: state
         entity_id: sensor.upstairs_hallway_tablet_battery_level
     action:
       - choose:
