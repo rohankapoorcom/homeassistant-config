@@ -62,6 +62,15 @@ automation:
                 entity_id: sensor.upstairs_hallway_tablet_battery_level
                 above: 85
             sequence:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.hallway_tablet_charger
+          - alias: If the battery is below 40%, then turn on the charger.
+            conditions:
+              - condition: numeric_state
+                entity_id: sensor.upstairs_hallway_tablet_battery_level
+                below: 40
+            sequence:
               - service: switch.turn_on
                 target:
                   entity_id: switch.hallway_tablet_charger
