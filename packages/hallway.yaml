@@ -52,8 +52,13 @@ automation:
         event: start
       - platform: event
         event_type: automation_reloaded
-      - platform: state
+      - platform: numeric_state
         entity_id: sensor.upstairs_hallway_tablet_battery_level
+        above: 85
+      - platform: numeric_state
+        entity_id: sensor.upstairs_hallway_tablet_battery_level
+        below: 40
+
     action:
       - choose:
           - alias: If the battery is above 85%, then turn off the charger.
