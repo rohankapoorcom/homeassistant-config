@@ -103,14 +103,6 @@ browser_mod:
   disable:
     - light
 
-vaddio_conferenceshot:
-  - host: !secret vaddio_conferenceshot.host
-    username: !secret vaddio_conferenceshot.username
-    password: !secret vaddio_conferenceshot.password
-  - host: !secret vaddio_roboshot.host
-    username: !secret vaddio_roboshot.username
-    password: !secret vaddio_roboshot.password
-
 script: !include scripts.yaml
 
 nest:
