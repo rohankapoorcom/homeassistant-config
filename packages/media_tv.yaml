@@ -117,3 +117,32 @@ automation:
             duration: 25
             position: top-right
             transparency: 50%
+  
+  - id: 6ed8bef7-8ed6-4278-b79f-fefa9bf2ab8b
+    alias: Control the Living Room TV Remote when Charging
+    description: Turn off the motion detection and screen when the Living Room TV Remote is charging and then turn it on when complete.
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: binary_sensor.living_room_tv_remote_plugged_in
+    action:
+      - choose:
+          - alias: If the Living Room TV Remote is charging, turn off the motion detection and screen
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.living_room_tv_remote_plugged_in
+                state: 'on'
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.living_room_tv_remote_motion_detection
+              - service: light.turn_off
+                entity_id: light.living_room_tv_remote_screen
+        default:
+          - service: switch.turn_on
+            entity_id: switch.living_room_tv_remote_motion_detection
+          - service: light.turn_on
+            entity_id: light.living_room_tv_remote_screen
