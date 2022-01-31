@@ -26,6 +26,9 @@ turn_on_watch_tv:
         3 40 1 && sendevent /dev/input/event5 3 42 0 && sendevent /dev/input/event5
         0 0 0 && sendevent /dev/input/event5 4 4 786979 && sendevent /dev/input/event5
         1 172 0 && sendevent /dev/input/event5 0 0 0
+  - service: switch.turn_off
+    target:
+      entity_id: switch.living_room_conference_camera
   mode: single
   icon: mdi:television
 turn_off_the_tv:
@@ -37,6 +40,9 @@ turn_off_the_tv:
       - ab65d3019b2049668b610bf0c5bc58c2
       - 404bd26637ee4f98939fc2fc8552398f
       - 556fadd7ebff47319b8eaf65a20b6804
+  - service: switch.turn_off
+    target:
+      entity_id: switch.living_room_conference_camera
   mode: single
   icon: mdi:television-off
 turn_on_the_living_room_speakers:
@@ -87,6 +93,9 @@ turn_on_the_living_room_video_conferencing_system:
       device_id:
       - ab65d3019b2049668b610bf0c5bc58c2
       - 404bd26637ee4f98939fc2fc8552398f
+  - service: switch.turn_on
+    target:
+      entity_id: switch.living_room_conference_camera
   - service: media_player.select_source
     target:
       device_id: ab65d3019b2049668b610bf0c5bc58c2

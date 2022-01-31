@@ -37,8 +37,6 @@ DAHUA_ALLOWED_DETAILS = [
     DAHUA_SERIAL_NUMBER
 ]
 
-ENDPOINT_ACCESS_CONTROL = "accessControl.cgi?action=openDoor&UserID=101&Type=Remote&channel="
-
 
 class DahuaVTOClient(asyncio.Protocol):
     requestId: int
@@ -76,11 +74,10 @@ class DahuaVTOClient(asyncio.Protocol):
 
         # This is the hook back into HA
         self.on_receive_vto_event = on_receive_vto_event
-
         self._loop = asyncio.get_event_loop()
 
     def connection_made(self, transport):
-        _LOGGER.debug("Connection established")
+        _LOGGER.debug("VTO connection established")
 
         try:
             self.transport = transport
@@ -93,12 +90,12 @@ class DahuaVTOClient(asyncio.Protocol):
 
     def data_received(self, data):
         try:
-            message = self.parse_response(data)
-            message_id = message.get("id")
+            messages = self.parse_response(data)
+            for message in messages:
+                message_id = message.get("id")
 
-            handler: Callable = self.data_handlers.get(message_id, self.handle_default)
-            handler(message)
-
+                handler: Callable = self.data_handlers.get(message_id, self.handle_default)
+                handler(message)
         except Exception as ex:
             exc_type, exc_obj, exc_tb = sys.exc_info()
 
@@ -109,8 +106,6 @@ class DahuaVTOClient(asyncio.Protocol):
             event_list = params.get("eventList")
 
             for message in event_list:
-                code = message.get("Code")
-
                 for k in self.dahua_details:
                     if k in DAHUA_ALLOWED_DETAILS:
                         message[k] = self.dahua_details.get(k)
@@ -268,6 +263,15 @@ class DahuaVTOClient(asyncio.Protocol):
 
         self.send(DAHUA_CONFIG_MANAGER_GETCONFIG, handle_access_control, request_data)
 
+    async def cancel_call(self):
+        _LOGGER.info("Cancelling call on VTO")
+
+        def cancel(message):
+            _LOGGER.info(f"Got cancel call response: {message}")
+
+        self.send("console.runCmd", cancel, {"command": "hc"})
+        return True
+
     def load_version(self):
         _LOGGER.info("Get version")
 
@@ -328,64 +332,22 @@ class DahuaVTOClient(asyncio.Protocol):
 
         self.send(DAHUA_GLOBAL_KEEPALIVE, handle_keep_alive, request_data)
 
-    def access_control_open_door(self, door_id: int = 1):
-        is_locked = self.lock_status.get(door_id, False)
-        should_unlock = False
-
-        try:
-            if is_locked:
-                _LOGGER.info(f"Access Control - Door #{door_id} is already unlocked, ignoring request")
-
-            else:
-                is_locked = True
-                should_unlock = True
-
-                self.lock_status[door_id] = is_locked
-                self.publish_lock_state(door_id, False)
-
-                url = f"{self.base_url}{ENDPOINT_ACCESS_CONTROL}{door_id}"
-
-                response = requests.get(url, verify=False, auth=self.auth)
-
-                response.raise_for_status()
-
-        except Exception as ex:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-
-            _LOGGER.error(f"Failed to open door, error: {ex}, Line: {exc_tb.tb_lineno}")
-
-        if should_unlock and is_locked:
-            Timer(float(self.hold_time), self.magnetic_unlock, (self, door_id)).start()
-
-    @staticmethod
-    def magnetic_unlock(self, door_id):
-        self.lock_status[door_id] = False
-        self.publish_lock_state(door_id, True)
-
-    def publish_lock_state(self, door_id: int, is_locked: bool):
-        state = "Locked" if is_locked else "Unlocked"
-
-        _LOGGER.info(f"Access Control - {state} magnetic lock #{door_id}")
-
-        message = {
-            "door": door_id,
-            "isLocked": is_locked
-        }
-
-        _LOGGER.info("locked %s", json.dumps(message, indent=4))
-
     @staticmethod
     def parse_response(response):
-        result = None
+        result = []
 
         try:
+            # Messages can look like like the following, note, this was shorted with ...
+            # Note that there can 0 or more events per line. Typically it's 1 event, but sometimes 2 events will arrive.
+            # This example shows 2 events
+            # \x00\x00\x00DHIP*Q\xa8f\x08\x00\x00\x00m\x04\x00\x00\x00\x00\x00\x00m\x04\x00\x00\x00\x00\x00\x00{"id":8,"method":"client.notifyEventStream","params":{"SID":513,"eventList":[{"Action":"Start","Code":"CrossRegionDetection"...},"session":1722306858}\n \x00\x00\x00DHIP*Q\xa8f\x08\x00\x00\x00\xe8\x00\x00\x00\x00\x00\x00\x00\xe8\x00\x00\x00\x00\x00\x00\x00{"id":8,"method":"client.notifyEventStream","params":{"SID":513,"eventList":[{"Action":"Pulse","Code":"IntelliFrame",..."session":1722306858}\n'
+
             response_parts = str(response).split("\\x00")
             for response_part in response_parts:
                 if response_part.startswith("{"):
                     end = response_part.rindex("}") + 1
                     message = response_part[0:end]
-
-                    result = json.loads(message)
+                    result.append(json.loads(message))
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()

@@ -1,0 +1,313 @@
+blueprint:
+  name: ZEN32 (Z-Wave JS)
+  description: Create automations for the Zooz ZEN32 switch using the Z-Wave JS integration.
+  domain: automation
+  input:
+    zooz_switch:
+      name: Zooz Switch
+      description: List of available Zooz ZEN32 switches.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Zooz
+          model: ZEN32
+    scene_5:
+      name: Scene 5/Large Button - Pressed Once
+      description: Action to run when button is pressed once.
+      default: []
+      selector:
+        action: {}
+    scene_5h:
+      name: Scene 5/Large Button - Held
+      description: Action to run when button is held.
+      default: []
+      selector:
+        action: {}
+    scene_5r:
+      name: Scene 5/Large Button - Released
+      description: Action to run when button is released.
+      default: []
+      selector:
+        action: {}
+    scene_52:
+      name: Scene 5/Large Button - Pressed 2x
+      description: Action to run when button is pressed twice.
+      default: []
+      selector:
+        action: {}
+    scene_53:
+      name: Scene 5/Large Button - Pressed 3x
+      description: Action to run when button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    scene_54:
+      name: Scene 5/Large Button - Pressed 4x
+      description: Action to run when button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    scene_55:
+      name: Scene 5/Large Button - Pressed 5x
+      description: Action to run when button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    scene_1:
+      name: Scene 1/Upper Left - Pressed Once
+      description: Action to run when button is pressed once.
+      default: []
+      selector:
+        action: {}
+    scene_1h:
+      name: Scene 1/Upper Left - Held
+      description: Action to run when button is held.
+      default: []
+      selector:
+        action: {}
+    scene_1r:
+      name: Scene 1/Upper Left - Released
+      description: Action to run when button is released.
+      default: []
+      selector:
+        action: {}
+    scene_12:
+      name: Scene 1/Upper Left - Pressed 2x
+      description: Action to run when button is pressed twice.
+      default: []
+      selector:
+        action: {}
+    scene_13:
+      name: Scene 1/Upper Left - Pressed 3x
+      description: Action to run when button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    scene_14:
+      name: Scene 1/Upper Left - Pressed 4x
+      description: Action to run when button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    scene_15:
+      name: Scene 1/Upper Left - Pressed 5x
+      description: Action to run when button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    scene_2:
+      name: Scene 2/Upper Right - Pressed Once
+      description: Action to run when button is pressed once.
+      default: []
+      selector:
+        action: {}
+    scene_2h:
+      name: Scene 2/Upper Right - Held
+      description: Action to run when button is held.
+      default: []
+      selector:
+        action: {}
+    scene_2r:
+      name: Scene 2/Upper Right - Released
+      description: Action to run when button is released.
+      default: []
+      selector:
+        action: {}
+    scene_22:
+      name: Scene 2/Upper Right - Pressed 2x
+      description: Action to run when button is pressed twice.
+      default: []
+      selector:
+        action: {}
+    scene_23:
+      name: Scene 2/Upper Right - Pressed 3x
+      description: Action to run when button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    scene_24:
+      name: Scene 2/Upper Right - Pressed 4x
+      description: Action to run when button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    scene_25:
+      name: Scene 2/Upper Right - Pressed 5x
+      description: Action to run when button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    scene_3:
+      name: Scene 3/Lower Left - Pressed Once
+      description: Action to run when button is pressed once.
+      default: []
+      selector:
+        action: {}
+    scene_3h:
+      name: Scene 3/Lower Left - Held
+      description: Action to run when button is held.
+      default: []
+      selector:
+        action: {}
+    scene_3r:
+      name: Scene 3/Lower Left - Released
+      description: Action to run when button is released.
+      default: []
+      selector:
+        action: {}
+    scene_32:
+      name: Scene 3/Lower Left - Pressed 2x
+      description: Action to run when button is pressed twice.
+      default: []
+      selector:
+        action: {}
+    scene_33:
+      name: Scene 3/Lower Left - Pressed 3x
+      description: Action to run when button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    scene_34:
+      name: Scene 3/Lower Left - Pressed 4x
+      description: Action to run when button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    scene_35:
+      name: Scene 3/Lower Left - Pressed 5x
+      description: Action to run when button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    scene_4:
+      name: Scene 4/Lower Right - Pressed Once
+      description: Action to run when button is pressed once.
+      default: []
+      selector:
+        action: {}
+    scene_4h:
+      name: Scene 4/Lower Right - Held
+      description: Action to run when button is held.
+      default: []
+      selector:
+        action: {}
+    scene_4r:
+      name: Scene 4/Lower Right - Released
+      description: Action to run when button is released.
+      default: []
+      selector:
+        action: {}
+    scene_42:
+      name: Scene 4/Lower Right - Pressed 2x
+      description: Action to run when button is pressed twice.
+      default: []
+      selector:
+        action: {}
+    scene_43:
+      name: Scene 4/Lower Right - Pressed 3x
+      description: Action to run when button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    scene_44:
+      name: Scene 4/Lower Right - Pressed 4x
+      description: Action to run when button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    scene_45:
+      name: Scene 4/Lower Right - Pressed 5x
+      description: Action to run when button is pressed five times.
+      default: []
+      selector:
+        action: {}
+  source_url: https://gist.github.com/Matt-PMCT/338292f2df4c3d9f7fae21158b9895d0
+mode: single
+max_exceeded: silent
+variables:
+  device_id: !input 'zooz_switch'
+trigger:
+- platform: event
+  event_type: zwave_js_value_notification
+condition: '{{ trigger.event.data.device_id == device_id }}'
+action:
+- variables:
+    property_key_name: '{{ trigger.event.data.property_key_name }}'
+    label: '{{ trigger.event.data.label }}'
+    command_class_name: '{{ trigger.event.data.command_class_name }}'
+    value: '{{ trigger.event.data.value }}'
+- service: logbook.log
+  data:
+    name: Z-Wave JS
+    message: 'received event: {{ command_class_name }} - {{ value }} - {{ label }}'
+- choose:
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed'' }}'
+    sequence: !input 'scene_1'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyHeldDown'' }}'
+    sequence: !input 'scene_1h'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyReleased'' }}'
+    sequence: !input 'scene_1r'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed2x'' }}'
+    sequence: !input 'scene_12'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed3x'' }}'
+    sequence: !input 'scene_13'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed4x'' }}'
+    sequence: !input 'scene_14'
+  - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed5x'' }}'
+    sequence: !input 'scene_15'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed'' }}'
+    sequence: !input 'scene_2'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyHeldDown'' }}'
+    sequence: !input 'scene_2h'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyReleased'' }}'
+    sequence: !input 'scene_2r'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed2x'' }}'
+    sequence: !input 'scene_22'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed3x'' }}'
+    sequence: !input 'scene_23'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed4x'' }}'
+    sequence: !input 'scene_24'
+  - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed5x'' }}'
+    sequence: !input 'scene_25'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyPressed'' }}'
+    sequence: !input 'scene_3'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyHeldDown'' }}'
+    sequence: !input 'scene_3h'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyReleased'' }}'
+    sequence: !input 'scene_3r'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyPressed2x'' }}'
+    sequence: !input 'scene_32'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyPressed3x'' }}'
+    sequence: !input 'scene_33'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyPressed4x'' }}'
+    sequence: !input 'scene_34'
+  - conditions: '{{ property_key_name == ''003'' and value == ''KeyPressed5x'' }}'
+    sequence: !input 'scene_35'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyPressed'' }}'
+    sequence: !input 'scene_4'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyHeldDown'' }}'
+    sequence: !input 'scene_4h'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyReleased'' }}'
+    sequence: !input 'scene_4r'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyPressed2x'' }}'
+    sequence: !input 'scene_42'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyPressed3x'' }}'
+    sequence: !input 'scene_43'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyPressed4x'' }}'
+    sequence: !input 'scene_44'
+  - conditions: '{{ property_key_name == ''004'' and value == ''KeyPressed5x'' }}'
+    sequence: !input 'scene_45'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed'' }}'
+    sequence: !input 'scene_5'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyHeldDown'' }}'
+    sequence: !input 'scene_5h'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyReleased'' }}'
+    sequence: !input 'scene_5r'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed2x'' }}'
+    sequence: !input 'scene_52'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed3x'' }}'
+    sequence: !input 'scene_53'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed4x'' }}'
+    sequence: !input 'scene_54'
+  - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
+    sequence: !input 'scene_55'
