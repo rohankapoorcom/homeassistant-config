@@ -146,3 +146,122 @@ automation:
             entity_id: switch.living_room_tv_remote_motion_detection
           - service: light.turn_on
             entity_id: light.living_room_tv_remote_screen
+
+################################################
+## Script
+################################################
+script:
+  turn_on_watch_tv:
+    alias: Turn on the TV
+    sequence:
+    - service: media_player.turn_on
+      target:
+        device_id:
+        - ab65d3019b2049668b610bf0c5bc58c2
+        - 404bd26637ee4f98939fc2fc8552398f
+        - 556fadd7ebff47319b8eaf65a20b6804
+    - service: media_player.select_source
+      target:
+        device_id: ab65d3019b2049668b610bf0c5bc58c2
+      data:
+        source: HDMI-1
+    - service: denonavr.get_command
+      target:
+        device_id: 404bd26637ee4f98939fc2fc8552398f
+      data:
+        command: /goform/formiPhoneAppDirect.xml?MSQUICK1
+    - service: androidtv.adb_command
+      data:
+        entity_id: media_player.living_room_shield_tv
+        command: sendevent /dev/input/event5 4 4 786979 && sendevent /dev/input/event5
+          1 172 1 && sendevent /dev/input/event5 3 40 0 && sendevent /dev/input/event5
+          3 42 1 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5
+          3 40 1 && sendevent /dev/input/event5 3 42 0 && sendevent /dev/input/event5
+          0 0 0 && sendevent /dev/input/event5 4 4 786979 && sendevent /dev/input/event5
+          1 172 0 && sendevent /dev/input/event5 0 0 0
+    - service: switch.turn_off
+      target:
+        entity_id: switch.living_room_conference_camera
+    mode: single
+    icon: mdi:television
+
+  turn_off_the_tv:
+    alias: Turn off the TV
+    sequence:
+    - service: media_player.turn_off
+      target:
+        device_id:
+        - ab65d3019b2049668b610bf0c5bc58c2
+        - 404bd26637ee4f98939fc2fc8552398f
+        - 556fadd7ebff47319b8eaf65a20b6804
+    - service: switch.turn_off
+      target:
+        entity_id: switch.living_room_conference_camera
+    mode: single
+    icon: mdi:television-off
+
+  turn_on_the_living_room_speakers:
+    alias: Turn on the Living Room Speakers
+    sequence:
+    - service: media_player.turn_on
+      target:
+        device_id:
+        - 404bd26637ee4f98939fc2fc8552398f
+    - service: media_player.turn_off
+      target:
+        device_id:
+        - ab65d3019b2049668b610bf0c5bc58c2
+        - 556fadd7ebff47319b8eaf65a20b6804
+    - service: denonavr.get_command
+      target:
+        device_id: 404bd26637ee4f98939fc2fc8552398f
+      data:
+        command: /goform/formiPhoneAppDirect.xml?MSQUICK4
+    mode: single
+    icon: mdi:speaker
+
+  turn_on_the_nintendo_switch:
+    alias: Turn on the Nintendo Switch
+    sequence:
+    - service: media_player.turn_on
+      target:
+        device_id:
+        - ab65d3019b2049668b610bf0c5bc58c2
+        - 404bd26637ee4f98939fc2fc8552398f
+        - 556fadd7ebff47319b8eaf65a20b6804
+    - service: media_player.select_source
+      target:
+        device_id: ab65d3019b2049668b610bf0c5bc58c2
+      data:
+        source: HDMI-1
+    - service: denonavr.get_command
+      target:
+        device_id: 404bd26637ee4f98939fc2fc8552398f
+      data:
+        command: /goform/formiPhoneAppDirect.xml?MSQUICK2
+    mode: single
+    icon: mdi:nintendo-switch
+
+  turn_on_the_living_room_video_conferencing_system:
+    alias: Turn on the Living Room Video Conferencing System
+    sequence:
+    - service: media_player.turn_on
+      target:
+        device_id:
+        - ab65d3019b2049668b610bf0c5bc58c2
+        - 404bd26637ee4f98939fc2fc8552398f
+    - service: switch.turn_on
+      target:
+        entity_id: switch.living_room_conference_camera
+    - service: media_player.select_source
+      target:
+        device_id: ab65d3019b2049668b610bf0c5bc58c2
+      data:
+        source: HDMI-1
+    - service: denonavr.get_command
+      target:
+        device_id: 404bd26637ee4f98939fc2fc8552398f
+      data:
+        command: /goform/formiPhoneAppDirect.xml?MSQUICK3
+    mode: single
+    icon: mdi:video
