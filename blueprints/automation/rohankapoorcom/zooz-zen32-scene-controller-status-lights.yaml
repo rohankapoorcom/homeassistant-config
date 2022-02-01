@@ -1,0 +1,109 @@
+---
+blueprint:
+  name: Zooz ZEN32 Scene Controller Status Lights
+  description: Maps lights on the Zooz ZEN32 Scene Controller buttons to Home Assistant lights
+  domain: automation
+  input:
+    zooz_switch:
+      name: Zooz Switch
+      description: List of available Zooz ZEN32 Scene Controllers
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Zooz
+          model: ZEN32
+    large_button_light:
+      name: Large Button Light
+      description: Light to track status on the large button.
+      selector:
+        entity:
+          domain: light
+    small_1_button_light:
+      name: Upper Left Button Light
+      description: Light to track status on the upper left small button.
+      selector:
+        entity:
+          domain: light
+    small_2_button_light:
+      name: Upper Right Button Light
+      description: Light to track status on the upper right small button.
+      selector:
+        entity:
+          domain: light
+    small_3_button_light:
+      name: Lower Left Button Light
+      description: Light to track status on the lower left small button.
+      selector:
+        entity:
+          domain: light
+    small_4_button_light:
+      name: Upper Left Button Light
+      description: Light to track status on the lower right small button.
+      selector:
+        entity:
+          domain: light
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
+mode: single
+max_exceeded: silent
+variables:
+  large_button_light: !input large_button_light
+  small_1_button_light: !input small_1_button_light
+  small_2_button_light: !input small_2_button_light
+  small_3_button_light: !input small_3_button_light
+  small_4_button_light: !input small_4_button_light
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: state
+    entity_id: !input large_button_light
+  - platform: state
+    entity_id: !input small_1_button_light
+  - platform: state
+    entity_id: !input small_2_button_light
+  - platform: state
+    entity_id: !input small_3_button_light
+  - platform: state
+    entity_id: !input small_4_button_light
+action:
+  - service: zwave_js.set_value
+    target:
+      device_id: !input zooz_switch
+    data_template:
+      command_class: '135'
+      property: 67-2
+      endpoint: '0'
+      value: "{{ is_state(large_button_light, 'on') }}"
+  - service: zwave_js.set_value
+    target:
+      device_id: !input zooz_switch
+    data_template:
+      command_class: '135'
+      property: 68-2
+      endpoint: '0'
+      value: "{{ is_state(small_1_button_light, 'on') }}"
+  - service: zwave_js.set_value
+    target:
+      device_id: !input zooz_switch
+    data_template:
+      command_class: '135'
+      property: 69-2
+      endpoint: '0'
+      value: "{{ is_state(small_2_button_light, 'on') }}"
+  - service: zwave_js.set_value
+    target:
+      device_id: !input zooz_switch
+    data_template:
+      command_class: '135'
+      property: 70-2
+      endpoint: '0'
+      value: "{{ is_state(small_3_button_light, 'on') }}"
+  - service: zwave_js.set_value
+    target:
+      device_id: !input zooz_switch
+    data_template:
+      command_class: '135'
+      property: 71-2
+      endpoint: '0'
+      value: "{{ is_state(small_4_button_light, 'on') }}"
