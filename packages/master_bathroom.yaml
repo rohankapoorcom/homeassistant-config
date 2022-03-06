@@ -121,7 +121,7 @@ automation:
           - alias: If Home Assistant just started, turn it off
             conditions:
               - condition: trigger
-                id: homeassitant_start
+                id: homeassistant_start
             sequence:
               - service: switch.turn_off
                 target:
