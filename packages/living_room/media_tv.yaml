@@ -117,10 +117,10 @@ automation:
             duration: 25
             position: top-right
             transparency: 50%
-  
+
   - id: 6ed8bef7-8ed6-4278-b79f-fefa9bf2ab8b
     alias: Control the Living Room TV Remote when Charging
-    description: Turn off the motion detection and screen when the Living Room TV Remote is charging and then turn it on when complete.
+    description: Turn off the motion detection and screen when the Living Room TV Remote is charging.
     mode: single
     trigger:
       - platform: homeassistant
@@ -157,9 +157,9 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-          - ab65d3019b2049668b610bf0c5bc58c2
-          - 404bd26637ee4f98939fc2fc8552398f
-          - 556fadd7ebff47319b8eaf65a20b6804
+            - ab65d3019b2049668b610bf0c5bc58c2
+            - 404bd26637ee4f98939fc2fc8552398f
+            - 556fadd7ebff47319b8eaf65a20b6804
       - service: media_player.select_source
         target:
           device_id: ab65d3019b2049668b610bf0c5bc58c2
@@ -191,9 +191,9 @@ script:
       - service: media_player.turn_off
         target:
           device_id:
-          - ab65d3019b2049668b610bf0c5bc58c2
-          - 404bd26637ee4f98939fc2fc8552398f
-          - 556fadd7ebff47319b8eaf65a20b6804
+            - ab65d3019b2049668b610bf0c5bc58c2
+            - 404bd26637ee4f98939fc2fc8552398f
+            - 556fadd7ebff47319b8eaf65a20b6804
       - service: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
@@ -206,12 +206,12 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-          - 404bd26637ee4f98939fc2fc8552398f
+            - 404bd26637ee4f98939fc2fc8552398f
       - service: media_player.turn_off
         target:
           device_id:
-          - ab65d3019b2049668b610bf0c5bc58c2
-          - 556fadd7ebff47319b8eaf65a20b6804
+            - ab65d3019b2049668b610bf0c5bc58c2
+            - 556fadd7ebff47319b8eaf65a20b6804
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -226,9 +226,9 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-          - ab65d3019b2049668b610bf0c5bc58c2
-          - 404bd26637ee4f98939fc2fc8552398f
-          - 556fadd7ebff47319b8eaf65a20b6804
+            - ab65d3019b2049668b610bf0c5bc58c2
+            - 404bd26637ee4f98939fc2fc8552398f
+            - 556fadd7ebff47319b8eaf65a20b6804
       - service: media_player.select_source
         target:
           device_id: ab65d3019b2049668b610bf0c5bc58c2
@@ -248,8 +248,8 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-          - ab65d3019b2049668b610bf0c5bc58c2
-          - 404bd26637ee4f98939fc2fc8552398f
+            - ab65d3019b2049668b610bf0c5bc58c2
+            - 404bd26637ee4f98939fc2fc8552398f
       - service: switch.turn_on
         target:
           entity_id: switch.living_room_conference_camera
