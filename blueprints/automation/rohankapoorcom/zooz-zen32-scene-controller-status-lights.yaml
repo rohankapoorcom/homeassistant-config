@@ -73,57 +73,57 @@ trigger:
     entity_id: !input small_4_button_light
 action:
   - choose:
-    - conditions: "{{ not not large_button_light }}"
-      sequence:
-        - service: zwave_js.set_value
-          target:
-            device_id: !input zooz_switch
-          data_template:
-            command_class: '135'
-            property: 67-2
-            endpoint: '0'
-            value: "{{ is_state(large_button_light, 'on') }}"
+      - conditions: "{{ not not large_button_light }}"
+        sequence:
+          - service: zwave_js.set_value
+            target:
+              device_id: !input zooz_switch
+            data_template:
+              command_class: '135'
+              property: 67-2
+              endpoint: '0'
+              value: "{{ is_state(large_button_light, 'on') }}"
   - choose:
-    - conditions: "{{ not not small_1_button_light }}"
-      sequence:
-        - service: zwave_js.set_value
-          target:
-            device_id: !input zooz_switch
-          data_template:
-            command_class: '135'
-            property: 68-2
-            endpoint: '0'
-            value: "{{ is_state(small_1_button_light, 'on') }}"
+      - conditions: "{{ not not small_1_button_light }}"
+        sequence:
+          - service: zwave_js.set_value
+            target:
+              device_id: !input zooz_switch
+            data_template:
+              command_class: '135'
+              property: 68-2
+              endpoint: '0'
+              value: "{{ is_state(small_1_button_light, 'on') }}"
   - choose:
-    - conditions: "{{ not not small_2_button_light }}"
-      sequence:
-        - service: zwave_js.set_value
-          target:
-            device_id: !input zooz_switch
-          data_template:
-            command_class: '135'
-            property: 69-2
-            endpoint: '0'
-            value: "{{ is_state(small_2_button_light, 'on') }}"
+      - conditions: "{{ not not small_2_button_light }}"
+        sequence:
+          - service: zwave_js.set_value
+            target:
+              device_id: !input zooz_switch
+            data_template:
+              command_class: '135'
+              property: 69-2
+              endpoint: '0'
+              value: "{{ is_state(small_2_button_light, 'on') }}"
   - choose:
-    - conditions: "{{ not not small_3_button_light }}"
-      sequence:
-        - service: zwave_js.set_value
-          target:
-            device_id: !input zooz_switch
-          data_template:
-            command_class: '135'
-            property: 70-2
-            endpoint: '0'
-            value: "{{ is_state(small_3_button_light, 'on') }}"
+      - conditions: "{{ not not small_3_button_light }}"
+        sequence:
+          - service: zwave_js.set_value
+            target:
+              device_id: !input zooz_switch
+            data_template:
+              command_class: '135'
+              property: 70-2
+              endpoint: '0'
+              value: "{{ is_state(small_3_button_light, 'on') }}"
   - choose:
-    - conditions: "{{ not not small_4_button_light }}"
-      sequence:
-        - service: zwave_js.set_value
-          target:
-            device_id: !input zooz_switch
-          data_template:
-            command_class: '135'
-            property: 71-2
-            endpoint: '0'
-            value: "{{ is_state(small_4_button_light, 'on') }}"
+      - conditions: "{{ not not small_4_button_light }}"
+        sequence:
+          - service: zwave_js.set_value
+            target:
+              device_id: !input zooz_switch
+            data_template:
+              command_class: '135'
+              property: 71-2
+              endpoint: '0'
+              value: "{{ is_state(small_4_button_light, 'on') }}"
