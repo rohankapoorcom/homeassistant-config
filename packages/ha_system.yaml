@@ -108,10 +108,6 @@ sensor:
     # yamllint disable-line rule:line-length
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
 
-  - platform: version
-    <<: *defaults
-    name: current_version
-
   - platform: command_line
     <<: *command_line_sensor_defaults
     name: desired_version
