@@ -25,7 +25,7 @@ light:
   - platform: switch
     name: Kitchen Lights
     entity_id: switch.kitchen_lights
-    
+
   - platform: group
     name: Kitchen Cabinet Lights
     unique_id: b5d9b202-096a-4fa1-80eb-6d2c4f491374
@@ -55,6 +55,7 @@ automation:
             data:
               brightness_pct: 100
               kelvin: 3000
+              transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
               entity_id: switch.kitchen_lights
@@ -69,6 +70,8 @@ automation:
           - service: light.turn_off
             target:
               entity_id: light.kitchen_cabinet_lights
+            data:
+              transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
               entity_id: switch.kitchen_lights
@@ -85,6 +88,8 @@ automation:
               entity_id: light.kitchen_cabinet_lights
             data:
               brightness_pct: 100
+              kelvin: 3000
+              transition: 2
           - service: light.turn_on
             target:
               entity_id: light.kitchen_lights
@@ -102,6 +107,8 @@ automation:
           - service: light.turn_off
             target:
               entity_id: light.kitchen_cabinet_lights
+            data:
+              transition: 2
           - service: light.turn_off
             target:
               entity_id: light.kitchen_lights
