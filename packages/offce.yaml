@@ -54,6 +54,13 @@ input_boolean:
     icon: mdi:headset
 
 ################################################
+## Light
+################################################
+light:
+  - platform: switch
+    name: Office Closet Lights
+    entity_id: switch.office_closet_lights
+################################################
 ## Script
 ################################################
 script:
