@@ -67,14 +67,9 @@ logbook:
 sun:
 
 mqtt:
-  broker: !secret mqtt.broker
-  port: !secret mqtt.port
   client_id: !secret mqtt.client_id
   certificate: /etc/ssl/certs/ca-certificates.crt
   protocol: 3.1
-  username: !secret mqtt.username
-  password: !secret mqtt.password
-  discovery: true
 
 xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface
