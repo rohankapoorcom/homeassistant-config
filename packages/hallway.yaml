@@ -83,7 +83,7 @@ automation:
           - service: switch.turn_off
             target:
               entity_id: switch.hallway_tablet_charger
-  
+
   - id: '1641371956033'
     alias: Hallway Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Hallway.
