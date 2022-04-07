@@ -1,7 +1,7 @@
 ---
 ignore: |
   automations.yaml
-  blueprints/*
+  blueprints/
   !blueprints/*/rohankapoorcom/*.yaml
   custom_components/
   ip_bans.yaml
