@@ -124,3 +124,7 @@ my:
 
 zha:
   device_config: !secret zha.device_config
+
+backup:
+
+media_source:
