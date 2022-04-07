@@ -15,3 +15,102 @@
       - service: light.turn_off
         target:
           entity_id: light.kitchen_cabinet_lights
+- id: '1644120951513'
+  alias: Stairway Scene Controller
+  description: ''
+  use_blueprint:
+    path: Matt-PMCT/ZoozZen32forZwaveJs.yaml
+    input:
+      zooz_switch: 7829e6b1bbb429e88c159df549586393
+      scene_3:
+      - service: light.turn_off
+        target:
+          area_id:
+          - hallway
+          - hallway_bathroom
+          - e857fce8973b475c9d1b4479c2494139
+          - c74119fdbc01442e8932a5a871e3b700
+          - c04b2ee0de40464288a1a50ab1b110ce
+          - bc081ff944ea41e383a982bca696d6cb
+          - faa7cc1b598b4635bd2b0349b6d0682d
+          - c8e64155949842d5be77f5c329e2496c
+      scene_4:
+      - service: light.turn_off
+        target:
+          area_id:
+          - downstairs_bathroom
+          - f70fb5d3de3649469d6146a3f1422009
+          - 8b6baf03d42142eca2ecfedee50ab9fa
+          - 26f1ffed8937795679d686c14f7974ad
+          - storage_room
+- id: '1649035604702'
+  alias: Garage Scene Controller Scene Controls
+  description: ''
+  use_blueprint:
+    path: IOT_Ninja/zooz-zen30-double-switch-automation-helper.yaml
+    input:
+      zooz_zen30: 91a73ad6fd7d0c4885fedd856cf2701d
+      relay_1x:
+      - service: light.turn_off
+        target:
+          area_id:
+          - hallway_bathroom
+          - e857fce8973b475c9d1b4479c2494139
+          - c74119fdbc01442e8932a5a871e3b700
+          - c04b2ee0de40464288a1a50ab1b110ce
+          - bc081ff944ea41e383a982bca696d6cb
+          - faa7cc1b598b4635bd2b0349b6d0682d
+          - c8e64155949842d5be77f5c329e2496c
+          - downstairs_bathroom
+          - f70fb5d3de3649469d6146a3f1422009
+          - 8b6baf03d42142eca2ecfedee50ab9fa
+          - 26f1ffed8937795679d686c14f7974ad
+          - storage_room
+        data: {}
+      relay_2x:
+      - service: light.turn_off
+        target:
+          area_id:
+          - hallway
+          - hallway_bathroom
+          - e857fce8973b475c9d1b4479c2494139
+          - c74119fdbc01442e8932a5a871e3b700
+          - c04b2ee0de40464288a1a50ab1b110ce
+          - bc081ff944ea41e383a982bca696d6cb
+          - faa7cc1b598b4635bd2b0349b6d0682d
+          - c8e64155949842d5be77f5c329e2496c
+          - downstairs_bathroom
+          - f70fb5d3de3649469d6146a3f1422009
+          - 8b6baf03d42142eca2ecfedee50ab9fa
+          - 26f1ffed8937795679d686c14f7974ad
+          - storage_room
+        data: {}
+- id: '1649041295671'
+  alias: Control Office Closet Lights
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.office_closet_door
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.office_closet_door
+        state: 'on'
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.office_closet_lights
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.office_closet_door
+        state: 'off'
+      sequence:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.office_closet_lights
+    default: []
+  mode: single
