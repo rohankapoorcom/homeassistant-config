@@ -124,6 +124,9 @@ my:
 
 zha:
   device_config: !secret zha.device_config
+  zigpy_config:
+    ota:
+      ikea_provider: true
 
 backup:
 
