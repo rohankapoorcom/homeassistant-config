@@ -1,8 +1,8 @@
 ---
 ignore: |
   automations.yaml
-  blueprints/*/homeassistant/*.yaml
-  blueprints/*/Matt-PMCT/*.yaml
+  blueprints/*
+  !blueprints/*/rohankapoorcom/*.yaml
   custom_components/
   ip_bans.yaml
   packages/hasp/plates/
