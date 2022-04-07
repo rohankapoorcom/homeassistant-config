@@ -8,6 +8,7 @@ import logging
 import os
 import requests
 import uuid
+import xmltodict
 
 from datetime import datetime
 from threading import Lock
@@ -18,6 +19,7 @@ from . import (
     DATA_ROOT,
     DEFAULT_COUNTRY,
     DEFAULT_LANGUAGE,
+    DEFAULT_TIMEOUT,
     EMULATION,
     AuthHTTPAdapter,
     CoreVersion,
@@ -26,7 +28,7 @@ from . import (
     gen_uuid,
 )
 from . import core_exceptions as exc
-from .device import DeviceInfo, DEFAULT_TIMEOUT
+from .device import DeviceInfo
 
 CORE_VERSION = CoreVersion.CoreV2
 
@@ -62,12 +64,15 @@ API2_ERRORS = {
     "0106": exc.NotConnectedError,
     "0100": exc.FailedRequestError,
     "0110": exc.InvalidCredentialError,
+    "9999": exc.NotConnectedError,  # This come as "other errors", we manage as not connected.
     9000: exc.InvalidRequestError,  # Surprisingly, an integer (not a string).
 }
 
-LOG_AUTH_INFO = False
+DEFAULT_TOKEN_VALIDITY = 3600  # seconds
+TOKEN_EXP_LIMIT = 60  # will expire within 60 seconds
+
 MIN_TIME_BETWEEN_UPDATE = 25  # seconds
-TOKEN_EXP_LIMIT = 60  # expire within 60 seconds
+LOG_AUTH_INFO = False
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -104,6 +109,23 @@ def wideq_get(url, **kwargs):
     return s.get(url, **kwargs)
 
 
+def _get_json_resp(response: requests.Response):
+    """Try to get the json content from request response."""
+
+    # first, we try to get the response json content
+    try:
+        return response.json()
+    except ValueError as ex:
+        resp_text = response.text
+        _LOGGER.debug("Error decoding json response %s: %s", resp_text, ex)
+
+    # if fails, we try to convert text from xml to json
+    try:
+        return xmltodict.parse(resp_text)
+    except Exception:
+        raise exc.InvalidResponseError(resp_text) from None
+
+
 def oauth2_signature(message, secret):
     """Get the base64-encoded SHA-1 HMAC digest of a string, as used in
     OAauth2 request signatures.
@@ -119,7 +141,7 @@ def oauth2_signature(message, secret):
 
 
 def thinq2_headers(
-    extra_headers={},
+    extra_headers=None,
     access_token=None,
     user_number=None,
     country=DEFAULT_COUNTRY,
@@ -150,14 +172,15 @@ def thinq2_headers(
     if user_number:
         headers["x-user-no"] = user_number
 
-    return {**headers, **extra_headers}
+    add_headers = extra_headers or {}
+    return {**headers, **add_headers}
 
 
 def thinq2_get(
     url,
     access_token=None,
     user_number=None,
-    headers={},
+    headers=None,
     country=DEFAULT_COUNTRY,
     language=DEFAULT_LANGUAGE,
 ):
@@ -170,14 +193,14 @@ def thinq2_get(
         headers=thinq2_headers(
             access_token=access_token,
             user_number=user_number,
-            extra_headers=headers,
+            extra_headers=headers or {},
             country=country,
             language=language,
         ),
         timeout=DEFAULT_TIMEOUT,
     )
 
-    out = res.json()
+    out = _get_json_resp(res)
     _LOGGER.debug("thinq2_get after: %s", out)
 
     if "resultCode" not in out:
@@ -192,7 +215,7 @@ def lgedm2_post(
     data=None,
     access_token=None,
     user_number=None,
-    headers={},
+    headers=None,
     country=DEFAULT_COUNTRY,
     language=DEFAULT_LANGUAGE,
     is_api_v2=False,
@@ -207,14 +230,14 @@ def lgedm2_post(
         headers=thinq2_headers(
             access_token=access_token,
             user_number=user_number,
-            extra_headers=headers,
+            extra_headers=headers or {},
             country=country,
             language=language,
         ),
         timeout=DEFAULT_TIMEOUT,
     )
 
-    out = res.json()
+    out = _get_json_resp(res)
     _LOGGER.debug("lgedm2_post after: %s", out)
 
     return manage_lge_result(out, is_api_v2)
@@ -254,14 +277,14 @@ def gateway_info(country, language):
     return thinq2_get(V2_GATEWAY_URL, country=country, language=language)
 
 
-def parse_oauth_callback(url):
+def parse_oauth_callback(url: str):
     """Parse the URL to which an OAuth login redirected to obtain two
     tokens: an access token for API credentials, and a refresh token for
     getting updated access tokens.
     """
 
     params = parse_qs(urlparse(url).query)
-    return params["oauth2_backend_url"][0], params["code"][0], params["user_number"][0]
+    return {k: v[0] for k, v in params.items()}
 
 
 def auth_user_login(login_base_url, emp_base_url, username, encrypted_pwd, country, language):
@@ -438,7 +461,7 @@ def auth_request(oauth_url, data, *, log_auth_info=False):
     if log_auth_info:
         _LOGGER.debug("Auth request result: %s", res_data)
     else:
-        _LOGGER.debug("Authorization request completed successful")
+        _LOGGER.debug("Authorization request completed successfully")
 
     return res_data
 
@@ -459,7 +482,7 @@ def auth_code_login(oauth_url, auth_code):
         log_auth_info=LOG_AUTH_INFO,
     )
 
-    return out["access_token"], out["expires_in"], out["refresh_token"]
+    return out["access_token"], out.get("expires_in"), out["refresh_token"]
 
 
 def refresh_auth(oauth_root, refresh_token):
@@ -492,25 +515,30 @@ class Gateway(object):
         gw_info = gateway_info(country, language)
         return cls(gw_info, country, language)
 
-    def oauth_url(self, *, redirect_uri=None, state=None):
+    def oauth_url(self, *, redirect_uri=None, state=None, use_oauth2=True):
         """Construct the URL for users to log in (in a browser) to start an
         authenticated session.
         """
 
         url = urljoin(self.login_base_uri, "login/signIn")
-        query = urlencode(
-            {
-                "country": self.country,
-                "language": self.language,
-                "svc_list": SVC_CODE,
-                "client_id": CLIENT_ID,
-                "division": "ha",
-                "redirect_uri": redirect_uri or OAUTH_REDIRECT_URI,
-                "state": state or uuid.uuid1().hex,
-                "show_thirdparty_login": "LGE,MYLG,GGL,AMZ,FBK,APPL",
-            }
-        )
-        return f"{url}?{query}"
+
+        state_param = "oauth2State" if use_oauth2 else "state"
+        query = {
+            "country": self.country,
+            "language": self.language,
+            "client_id": CLIENT_ID,
+            "svc_list": SVC_CODE,
+            "svc_integrated": "Y",
+            "show_thirdparty_login": "LGE,MYLG,GGL,AMZ,FBK,APPL",
+            "division": "ha:T20",
+            state_param: state or uuid.uuid1().hex,
+            "show_select_country": "N",
+        }
+        if redirect_uri or not use_oauth2:
+            query["redirect_uri"] = redirect_uri or OAUTH_REDIRECT_URI
+
+        url_query = urlencode(query)
+        return f"{url}?{url_query}"
 
     def dump(self):
         return {
@@ -530,19 +558,52 @@ class Auth(object):
         self.refresh_token = refresh_token
         self.oauth_url = oauth_url
         self.access_token = access_token
-        self.token_validity = int(token_validity) if token_validity else 0
+        self.token_validity = int(token_validity) if token_validity else DEFAULT_TOKEN_VALIDITY
         self.user_number = user_number
         self._token_created_on = datetime.utcnow() if access_token else datetime.min
+
+    @staticmethod
+    def oauth_info_from_url(url):
+        """Return authentication info using an OAuth callback URL.
+        """
+        parsed_info = parse_oauth_callback(url)
+
+        oauth_url = parsed_info["oauth2_backend_url"]
+        token_validity = str(DEFAULT_TOKEN_VALIDITY)
+        user_number = None
+        if "refresh_token" in parsed_info:
+            refresh_token = parsed_info["refresh_token"]
+            access_token = parsed_info.get("access_token")
+        elif "code" in parsed_info:
+            auth_code = parsed_info["code"]
+            user_number = parsed_info.get("user_number")
+            access_token, token_validity, refresh_token = auth_code_login(oauth_url, auth_code)
+        else:
+            return {}
+
+        return {
+            "refresh_token": refresh_token,
+            "oauth_url": oauth_url,
+            "access_token": access_token,
+            "token_validity": token_validity,
+            "user_number": user_number,
+        }
 
     @classmethod
     def from_url(cls, gateway, url):
         """Create an authentication using an OAuth callback URL.
         """
-        oauth_url, auth_code, user_number = parse_oauth_callback(url)
-        access_token, token_validity, refresh_token = auth_code_login(oauth_url, auth_code)
+        oauth_info = cls.oauth_info_from_url(url)
+        if not oauth_info:
+            return None
 
         return cls(
-            gateway, refresh_token, oauth_url, access_token, token_validity, user_number
+            gateway,
+            oauth_info["refresh_token"],
+            oauth_info["oauth_url"],
+            oauth_info["access_token"],
+            oauth_info["token_validity"],
+            oauth_info["user_number"],
         )
 
     @classmethod
@@ -642,7 +703,7 @@ class Auth(object):
 
 
 class Session(object):
-    def __init__(self, auth, session_id=None):
+    def __init__(self, auth, session_id=0):
         self.auth = auth
         self.session_id = session_id
         self._common_lang_pack_url = None
@@ -654,6 +715,7 @@ class Session(object):
     def refresh_auth(self):
         """Refresh associated authentication"""
         self.auth = self.auth.refresh()
+        return self.auth
 
     def post(self, path, data=None):
         """Make a POST request to the APIv1 server.
@@ -763,7 +825,7 @@ class Session(object):
             return None
 
         # Check for errors.
-        code = res.get("returnCode")  # returnCode can be missing.
+        code = res["returnCode"]
         if code != "0000":
             raise exc.MonitorError(device_id, code)
 
@@ -897,7 +959,7 @@ class ClientV2(object):
         self._gateway: Optional[Gateway] = gateway
         self._auth: Optional[Auth] = auth
         self._session: Optional[Session] = session
-        self._last_device_update = datetime.now()
+        self._last_device_update = datetime.utcnow()
         self._lock = Lock()
 
         # The last list of devices we got from the server. This is the
@@ -915,7 +977,9 @@ class ClientV2(object):
 
     def _inject_thinq2_device(self):
         """This is used only for debug"""
-        data_file = os.path.dirname(os.path.realpath(__file__)) + "/deviceV2.txt"
+        data_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "deviceV2.txt"
+        )
         try:
             with open(data_file, "r") as f:
                 device_v2 = json.load(f)
@@ -971,7 +1035,7 @@ class ClientV2(object):
     def refresh_devices(self):
         """Refresh the devices information for this client"""
         with self._lock:
-            call_time = datetime.now()
+            call_time = datetime.utcnow()
             difference = (call_time - self._last_device_update).total_seconds()
             if difference <= MIN_TIME_BETWEEN_UPDATE:
                 return
@@ -1043,6 +1107,7 @@ class ClientV2(object):
         return out
 
     def refresh(self, refresh_gateway=False) -> None:
+        """Refresh client connection."""
         if refresh_gateway:
             self._gateway = None
         if not self._gateway:
@@ -1050,6 +1115,13 @@ class ClientV2(object):
         self._auth = self.auth.refresh(True)
         self._session = self.auth.start_session()
         self._load_devices()
+
+    def refresh_auth(self) -> None:
+        """Refresh auth token if requested."""
+        if self._session:
+            self._auth = self._session.refresh_auth()
+        else:
+            self.refresh()
 
     @classmethod
     def from_login(
@@ -1102,19 +1174,11 @@ class ClientV2(object):
             "user_number": self._auth.user_number,
         }
 
-    @classmethod
-    def oauthinfo_from_url(cls, url):
-        """Create an authentication using an OAuth callback URL.
+    @staticmethod
+    def oauthinfo_from_url(url):
+        """Return authentication info from an OAuth callback URL.
         """
-        oauth_url, auth_code, user_number = parse_oauth_callback(url)
-        access_token, _, refresh_token = auth_code_login(oauth_url, auth_code)
-
-        return {
-            "refresh_token": refresh_token,
-            "oauth_url": oauth_url,
-            "access_token": access_token,
-            "user_number": user_number,
-        }
+        return Auth.oauth_info_from_url(url)
 
     @staticmethod
     def _load_json_info(info_url):

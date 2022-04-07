@@ -9,7 +9,7 @@ from .digest import DigestAuth
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
-TIMEOUT_SECONDS = 10
+TIMEOUT_SECONDS = 20
 SECURITY_LIGHT_TYPE = 1
 SIREN_TYPE = 2
 
@@ -104,6 +104,10 @@ class DahuaClient:
         """ get_vendor returns the vendor. Example response: vendor=Dahua """
         return await self.get("/cgi-bin/magicBox.cgi?action=getVendor")
 
+    async def reboot(self) -> dict:
+        """ Reboots the device """
+        return await self.get("/cgi-bin/magicBox.cgi?action=reboot")
+
     async def get_max_extra_streams(self) -> int:
         """ get_max_extra_streams returns the max number of sub streams supported by the camera """
         try:
@@ -151,14 +155,9 @@ class DahuaClient:
         async_get_lighting_v1 will fetch the status of the IR light (InfraRed light)
 
         Example response:
-        table.General.LocalNo=8
-        table.General.LockLoginEnable=false
-        table.General.LockLoginTimes=3
-        table.General.LoginFailLockTime=1800
         table.General.MachineName=Cam4
-        table.General.MaxOnlineTime=3600
         """
-        url = "/cgi-bin/configManager.cgi?action=getConfig&name=General"
+        url = "/cgi-bin/configManager.cgi?action=getConfig&name=General.MachineName"
         return await self.get(url)
 
     async def async_get_config(self, name) -> dict:
@@ -197,6 +196,14 @@ class DahuaClient:
         """
         return await self.async_get_config("MotionDetect")
 
+    async def async_get_video_analyse_rules_for_amcrest(self):
+        """
+        returns the VideoAnalyseRule and if they are enabled or not.
+        Example output:
+          table.VideoAnalyseRule[0][0].Enable=false
+        """
+        return await self.async_get_config("VideoAnalyseRule[0][0].Enable")
+
     async def async_get_ivs_rules(self):
         """
         returns the IVS rules and if they are enabled or not. [0][1] means channel 0, rule 1
@@ -222,15 +229,20 @@ class DahuaClient:
             return await self.get(url, True)
 
     async def async_set_ivs_rule(self, channel: int, index: int, enabled: bool):
-        """ Sets and IVS rules to enabled or disabled """
+        """ Sets and IVS rules to enabled or disabled. This also works for Amcrest smart motion detection"""
         url = "/cgi-bin/configManager.cgi?action=setConfig&VideoAnalyseRule[{0}][{1}].Enable={2}".format(
             channel, index, str(enabled).lower()
         )
         return await self.get(url, True)
 
     async def async_enabled_smart_motion_detection(self, enabled: bool):
-        """ Enables or disabled smart motion detection """
+        """ Enables or disabled smart motion detection for Dahua devices (doesn't work for Amcrest)"""
         url = "/cgi-bin/configManager.cgi?action=setConfig&SmartMotionDetect[0].Enable={0}".format(str(enabled).lower())
+        return await self.get(url, True)
+
+    async def async_set_light_global_enabled(self, enabled: bool):
+        """ Turns the blue ring light on/off for Amcrest doorbells """
+        url = "/cgi-bin/configManager.cgi?action=setConfig&LightGlobal[0].Enable={0}".format(str(enabled).lower())
         return await self.get(url, True)
 
     async def async_get_smart_motion_detection(self) -> dict:
@@ -242,6 +254,15 @@ class DahuaClient:
         table.SmartMotionDetect[0].Sensitivity=Middle
         """
         url = "/cgi-bin/configManager.cgi?action=getConfig&name=SmartMotionDetect"
+        return await self.get(url)
+
+    async def async_get_light_global_enabled(self) -> dict:
+        """
+        Returns the state of the Amcrest blue ring light (if it's on or off)
+        Example output:
+        table.LightGlobal[0].Enable=true
+        """
+        url = "/cgi-bin/configManager.cgi?action=getConfig&name=LightGlobal[0].Enable"
         return await self.get(url)
 
     async def async_set_lighting_v1(self, channel: int, enabled: bool, brightness: int) -> dict:
@@ -656,13 +677,17 @@ class DahuaClient:
                     if response is not None:
                         response.close()
         except asyncio.TimeoutError as exception:
-            _LOGGER.error("TimeoutError fetching information from %s - %s", url, exception)
+            _LOGGER.warning("TimeoutError fetching information from %s", url)
+            raise exception
         except (KeyError, TypeError) as exception:
-            _LOGGER.error("TypeError parsing information from %s - %s", url, exception)
+            _LOGGER.warning("TypeError fetching information from %s", url)
+            raise exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            _LOGGER.debug("ClientError fetching information from %s", url)
             raise exception
         except Exception as exception:  # pylint: disable=broad-except
-            _LOGGER.error("Something really wrong happened! - %s", exception)
+            _LOGGER.warning("Exception fetching information from %s", url)
+            raise exception
 
     @staticmethod
     def to_stream_name(subtype: int) -> str:

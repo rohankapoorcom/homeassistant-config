@@ -10,19 +10,21 @@ from datetime import datetime
 from urllib.parse import urljoin, urlencode, urlparse, parse_qs
 from typing import Any, Dict, Generator, Optional
 
-from . import(
-    as_list,
-    gen_uuid,
-    AuthHTTPAdapter,
-    CoreVersion,
+from . import (
     DATA_ROOT,
     DEFAULT_COUNTRY,
     DEFAULT_LANGUAGE,
+    DEFAULT_TIMEOUT,
+    AuthHTTPAdapter,
+    CoreVersion,
+    as_list,
+    gen_uuid,
 )
 from . import core_exceptions as exc
-from .device import DeviceInfo, DEFAULT_TIMEOUT, DEFAULT_REFRESH_TIMEOUT
+from .device import DeviceInfo
 
 CORE_VERSION = CoreVersion.CoreV1
+DEFAULT_REFRESH_TIMEOUT = 20  # seconds
 
 GATEWAY_URL = "https://kic.lgthinq.com:46030/api/common/gatewayUriList"
 APP_KEY = "wideq"
@@ -135,7 +137,7 @@ def oauth_url(auth_base, country, language):
     return "{}?{}".format(url, query)
 
 
-def parse_oauth_callback(url):
+def parse_oauth_callback(url: str):
     """Parse the URL to which an OAuth login redirected to obtain two
     tokens: an access token for API credentials, and a refresh token for
     getting updated access tokens.
@@ -216,7 +218,8 @@ class Gateway(object):
         gw = gateway_info(country, language)
         return cls(gw["empUri"], gw["thinqUri"], gw["oauthUri"], country, language)
 
-    def get_tokens(self, url):
+    @staticmethod
+    def get_tokens(url):
         """Create an authentication using an OAuth callback URL.
         """
         access_token, refresh_token = parse_oauth_callback(url)
@@ -288,7 +291,8 @@ class Session(object):
 
     def refresh_auth(self):
         """Refresh associated authentication"""
-        return
+        self.auth = self.auth.refresh()
+        return self.auth
 
     @property
     def common_lang_pack_url(self):
@@ -582,6 +586,11 @@ class Client(object):
         self._auth = self.auth.refresh()
         self._session, self._devices = self.auth.start_session()
 
+    def refresh_auth(self) -> None:
+        """Refresh auth token if requested."""
+        if not self._session:
+            self.refresh()
+
     @classmethod
     def from_token(cls, refresh_token, country=None, language=None) -> "Client":
         """Construct a client using just a refresh token.
@@ -598,8 +607,8 @@ class Client(object):
         client.refresh()
         return client
 
-    @classmethod
-    def oauthinfo_from_url(cls, url):
+    @staticmethod
+    def oauthinfo_from_url(url):
         """Create an authentication using an OAuth callback URL.
         """
         access_token, refresh_token = parse_oauth_callback(url)

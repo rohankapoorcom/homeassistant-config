@@ -1,19 +1,25 @@
 """The QueueManager class."""
+from __future__ import annotations
 
 import asyncio
 import time
+from typing import Coroutine
+
+from homeassistant.core import HomeAssistant
 
 from ..exceptions import HacsExecutionStillInProgress
-from .logger import getLogger
+from .logger import get_hacs_logger
 
-_LOGGER = getLogger()
+_LOGGER = get_hacs_logger()
 
 
 class QueueManager:
     """The QueueManager class."""
 
-    running = False
-    queue = []
+    def __init__(self, hass: HomeAssistant) -> None:
+        self.hass = hass
+        self.queue: list[Coroutine] = []
+        self.running = False
 
     @property
     def pending_tasks(self) -> int:
@@ -29,11 +35,11 @@ class QueueManager:
         """Clear the queue."""
         self.queue = []
 
-    def add(self, task) -> None:
+    def add(self, task: Coroutine) -> None:
         """Add a task to the queue."""
         self.queue.append(task)
 
-    async def execute(self, number_of_tasks=None) -> None:
+    async def execute(self, number_of_tasks: int | None = None) -> None:
         """Execute the tasks in the queue."""
         if self.running:
             _LOGGER.debug("Execution is allreay running")

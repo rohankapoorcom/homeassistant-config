@@ -5,14 +5,13 @@ import asyncio
 from typing import Any, Dict
 import logging
 import time
-import json
 
 from datetime import timedelta
 
 from aiohttp import ClientError, ClientResponseError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, Config, HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryNotReady, PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
@@ -34,6 +33,7 @@ from .const import (
     STARTUP_MESSAGE,
     CONF_CHANNEL,
 )
+from .dahua_utils import parse_event
 from .vto import DahuaVTOClient
 
 SCAN_INTERVAL_SECONDS = timedelta(seconds=30)
@@ -111,6 +111,7 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
         self._supports_coaxial_control = False
         self._supports_disarming_linkage = False
         self._supports_smart_motion_detection = False
+        self._supports_lighting = False
         self._serial_number: str
         self._profile_mode = "0"
         self._supports_profile_mode = False
@@ -164,28 +165,29 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Reload the camera information"""
-        try:
-            data = {}
+        data = {}
 
-            if not self.initialized:
+        # Do the one time initialization (do this when Home Assistant starts)
+        if not self.initialized:
+            try:
                 try:
                     await self.client.async_get_snapshot(0)
                     # If able to take a snapshot with index 0 then most likely this cams channel needs to be reset
                     self._channel_number = self._channel
                 except ClientError:
                     pass
+                _LOGGER.info("Using channel number %s", self._channel_number)
 
                 # Find the max number of streams. 1 main stream + n number of sub-streams
                 self._max_streams = await self.client.get_max_extra_streams() + 1
+                _LOGGER.info("Using max streams %s", self._max_streams)
 
-                responses = await asyncio.gather(
-                    self.client.async_get_system_info(),
-                    self.client.async_get_machine_name(),
-                    self.client.get_software_version(),
-                )
-
-                for response in responses:
-                    data.update(response)
+                machine_name = await self.client.async_get_machine_name()
+                sys_info = await self.client.async_get_system_info()
+                version = await self.client.get_software_version()
+                data.update(machine_name)
+                data.update(sys_info)
+                data.update(version)
 
                 device_type = data.get("deviceType", None)
                 # Lorex NVRs return deviceType=31, but the model is in the updateSerial
@@ -211,20 +213,34 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
                     self._supports_coaxial_control = True
                 except ClientResponseError:
                     self._supports_coaxial_control = False
+                _LOGGER.info("Device supports Coaxial Control=%s", self._supports_coaxial_control)
 
                 try:
                     await self.client.async_get_disarming_linkage()
                     self._supports_disarming_linkage = True
                 except ClientError:
                     self._supports_disarming_linkage = False
+                _LOGGER.info("Device supports disarming linkage=%s", self._supports_disarming_linkage)
 
+                # Smart motion detection is enabled/disabled/fetched differently on Dahua devices compared to Amcrest
+                # The following lines are for Dahua devices
                 try:
                     await self.client.async_get_smart_motion_detection()
                     self._supports_smart_motion_detection = True
                 except ClientError:
                     self._supports_smart_motion_detection = False
+                _LOGGER.info("Device supports smart motion detection=%s", self._supports_smart_motion_detection)
 
                 is_doorbell = self.is_doorbell()
+                _LOGGER.info("Device is a doorbell=%s", is_doorbell)
+
+                try:
+                    await self.client.async_get_config_lighting(self._channel, self._profile_mode)
+                    self._supports_lighting = True
+                except ClientError:
+                    self._supports_lighting = False
+                    pass
+                _LOGGER.info("Device supports lighting=%s", self.supports_infrared_light())
 
                 if not is_doorbell:
                     # Start the event listeners for IP cameras
@@ -238,14 +254,20 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
                         # Otherwise we'll get multiple lines of config back
                         self._supports_profile_mode = len(conf) > 1
                     except ClientError:
-                        _LOGGER.warning("Cam does not support profile mode. Will use mode 0")
+                        _LOGGER.info("Cam does not support profile mode. Will use mode 0")
                         self._supports_profile_mode = False
+                    _LOGGER.info("Device supports profile mode=%s", self._supports_profile_mode)
                 else:
-                    # Start the event listeners for door bells (VTO)
+                    # Start the event listeners for doorbells (VTO)
                     await self.async_start_vto_event_listener()
 
                 self.initialized = True
+            except Exception as exception:
+                _LOGGER.error("Failed to initialize device at %s", self._address, exc_info=exception)
+                raise PlatformNotReady("Dahua device at " + self._address + " isn't fully initialized yet")
 
+        # This is the event loop code that's called every n seconds
+        try:
             # We need the profile mode (0=day, 1=night, 2=scene)
             if self._supports_profile_mode and not self.is_doorbell():
                 try:
@@ -261,15 +283,21 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
 
             # Figure out which APIs we need to call and then fan out and gather the results
             coros = [
-                asyncio.ensure_future(self.client.async_get_config_lighting(self._channel, self._profile_mode)),
                 asyncio.ensure_future(self.client.async_get_config_motion_detection()),
             ]
+            if self.supports_infrared_light():
+                coros.append(
+                    asyncio.ensure_future(self.client.async_get_config_lighting(self._channel, self._profile_mode)))
             if self._supports_disarming_linkage:
                 coros.append(asyncio.ensure_future(self.client.async_get_disarming_linkage()))
             if self._supports_coaxial_control:
                 coros.append(asyncio.ensure_future(self.client.async_get_coaxial_control_io_status()))
             if self._supports_smart_motion_detection:
                 coros.append(asyncio.ensure_future(self.client.async_get_smart_motion_detection()))
+            if self.supports_smart_motion_detection_amcrest():
+                coros.append(asyncio.ensure_future(self.client.async_get_video_analyse_rules_for_amcrest()))
+            if self.is_amcrest_doorbell():
+                coros.append(asyncio.ensure_future(self.client.async_get_light_global_enabled()))
 
             # Gather results and update the data map
             results = await asyncio.gather(*coros)
@@ -284,7 +312,9 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
 
             return data
         except Exception as exception:
-            _LOGGER.warning("Failed to sync device state", exc_info=exception)
+            _LOGGER.warning("Failed to sync device state for %s. See README to enable debug logs to get full exception",
+                            self._address)
+            _LOGGER.debug("Failed to sync device state for %s", self._address, exc_info=exception)
             raise UpdateFailed() from exception
 
     def on_receive_vto_event(self, event: dict):
@@ -371,25 +401,14 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
         }
         """
         data = data_bytes.decode("utf-8", errors="ignore")
+        events = parse_event(data)
 
-        for line in data.split("\r\n"):
-            if not line.startswith("Code="):
-                continue
+        if len(events) == 0:
+            return
 
-            event = dict()
-            event["name"] = self.get_device_name()
-            for key_value in line.split(';'):
-                key, value = key_value.split('=')
-                event[key] = value
+        _LOGGER.debug(f"Events received from {self.get_address()} on channel {channel}: {events}")
 
-            # data is a json string, convert it to real json and add it back to the output dic
-            if "data" in event:
-                try:
-                    data = json.loads(event["data"])
-                    event["data"] = data
-                except Exception:  # pylint: disable=broad-except
-                    pass
-
+        for event in events:
             index = 0
             if "index" in event:
                 try:
@@ -403,8 +422,8 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
                 continue
 
             # Put the vent on the HA event bus
+            event["name"] = self.get_device_name()
             event["DeviceName"] = self.get_device_name()
-            _LOGGER.debug(f"Cam Data received from channel {channel}: {event}")
             self.hass.bus.fire("dahua_event_received", event)
 
             # When there's an event start we'll update the a map x to the current timestamp in seconds for the event.
@@ -496,7 +515,9 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
         Returns true if this camera has an infrared light.  For example, the IPC-HDW3849HP-AS-PV does not, but most
         others do. I don't know of a better way to detect this
         """
-        return "-AS-PV" not in self.model and "-AS-NI" not in self.model and "-AS-LED" not in self.model
+        if not self._supports_lighting:
+            return False
+        return "-AS-PV" not in self.model and "-AS-NI" not in self.model
 
     def supports_illuminator(self) -> bool:
         """
@@ -515,7 +536,10 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
 
     def is_smart_motion_detection_enabled(self) -> bool:
         """ Returns true if smart motion detection is enabled """
-        return self.data.get("table.SmartMotionDetect[0].Enable", "").lower() == "true"
+        if self.supports_smart_motion_detection_amcrest():
+            return self.data.get("table.VideoAnalyseRule[0][0].Enable", "").lower() == "true"
+        else:
+            return self.data.get("table.SmartMotionDetect[0].Enable", "").lower() == "true"
 
     def is_siren_on(self) -> bool:
         """ Returns true if the camera siren is on """
@@ -568,6 +592,10 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
 
         return self.data.get("table.Lighting_V2[{0}][{1}][0].Mode".format(self._channel, profile_mode), "") == "Manual"
 
+    def is_ring_light_on(self) -> bool:
+        """Return true if ring light is on for an Amcrest Doorbell"""
+        return self.data.get("table.LightGlobal[0].Enable") == "true"
+
     def get_illuminator_brightness(self) -> int:
         """Return the brightness of the illuminator light, as reported by the camera itself, between 0..255 inclusive"""
 
@@ -605,6 +633,10 @@ class DahuaDataUpdateCoordinator(DataUpdateCoordinator):
     def supports_smart_motion_detection(self) -> bool:
         """ True if smart motion detection is supported"""
         return self._supports_smart_motion_detection
+
+    def supports_smart_motion_detection_amcrest(self) -> bool:
+        """ True if smart motion detection is supported for an amcrest device"""
+        return self.model == "AD410"
 
     def get_vto_client(self) -> DahuaVTOClient:
         """
