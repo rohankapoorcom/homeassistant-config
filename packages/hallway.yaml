@@ -101,7 +101,7 @@ automation:
               transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: switch.hallway_lights_switch
+              entity_id: light.hallway_lights_switch
             data:
               parameter: 16
               value:
@@ -117,7 +117,7 @@ automation:
               transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: switch.hallway_lights_switch
+              entity_id: light.hallway_lights_switch
             data:
               parameter: 16
               value:
