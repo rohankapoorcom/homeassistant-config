@@ -83,3 +83,45 @@ automation:
           - service: switch.turn_off
             target:
               entity_id: switch.hallway_tablet_charger
+  
+  - id: '1641371956033'
+    alias: Hallway Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Hallway.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: 88136be71050b07599ec3caf5928e7a5
+        button_a2:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+              kelvin: 3000
+              transition: 2
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 16
+              value:
+                LED Effect Color: 70
+                LED Effect Brightness: 70%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
+        button_b2:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              transition: 2
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: switch.kitchen_lights
+            data:
+              parameter: 16
+              value:
+                LED Effect Color: 70
+                LED Effect Brightness: 20%
+                LED Effect Duration: 30
+                LED Effect Type: Solid
