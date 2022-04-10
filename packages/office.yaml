@@ -24,9 +24,13 @@ binary_sensor:
       streaming_lights_enabled:
         friendly_name: Streaming Lights Enabled
         value_template: >-
-          {{ is_state_attr('light.elgato_key_light_dbc2', 'brightness', 51)
-            and is_state_attr('light.elgato_key_light_dbc2', 'color_temp', 143)
-            and is_state_attr('light.office_lights', 'brightness', 129)
+          {{ is_state_attr('light.center_key_light', 'brightness', 51)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.left_key_light', 'brightness', 38)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.office_backlighting', 'brightness', 255)
+            and is_state_attr('light.office_backlighting', 'color_temp', 156)
+            and is_state_attr('light.office_lights', 'brightness', 0)
           }}
 
       office_lights_25_percent:
@@ -74,19 +78,27 @@ script:
                 state: 'on'
             sequence:
               - service: light.turn_off
-                entity_id: light.office_lights
+                entity_id: light.center_key_light
               - service: light.turn_off
-                entity_id: light.elgato_key_light_dbc2
+                entity_id: light.left_key_light
+              - service: light.turn_off
+                entity_id: light.office_backlighting
         default:
           - service: light.turn_on
-            data:
-              entity_id: light.office_lights
-              brightness_pct: 50
-          - service: light.turn_on
-            entity_id: light.elgato_key_light_dbc2
+            entity_id: light.center_key_light
             data:
               color_temp: 143
-              brightness_pct: 20
+              brightness: 51
+          - service: light.turn_on
+            entity_id: light.left_key_light
+            data:
+              color_temp: 143
+              brightness: 38
+          - service: light.turn_on
+            entity_id: light.office_backlighting
+            data:
+              color_temp: 156
+              brightness: 255
 
   set_office_lights_25_percent:
     sequence:
