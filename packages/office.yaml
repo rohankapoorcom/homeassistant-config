@@ -30,7 +30,7 @@ binary_sensor:
             and is_state_attr('light.center_key_light', 'color_temp', 143)
             and is_state_attr('light.office_backlighting', 'brightness', 255)
             and is_state_attr('light.office_backlighting', 'color_temp', 156)
-            and is_state_attr('light.office_lights', 'brightness', 0)
+            and is_state('light.office_lights', 'off')
           }}
 
       office_lights_25_percent:
@@ -99,6 +99,8 @@ script:
             data:
               color_temp: 156
               brightness: 255
+          - service: light.turn_off
+            entity_id: light.office_lights
 
   set_office_lights_25_percent:
     sequence:
