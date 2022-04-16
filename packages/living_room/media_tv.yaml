@@ -173,12 +173,7 @@ script:
       - service: androidtv.adb_command
         data:
           entity_id: media_player.living_room_shield_tv
-          command: sendevent /dev/input/event5 4 4 786979 && sendevent /dev/input/event5
-            1 172 1 && sendevent /dev/input/event5 3 40 0 && sendevent /dev/input/event5
-            3 42 1 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5
-            3 40 1 && sendevent /dev/input/event5 3 42 0 && sendevent /dev/input/event5
-            0 0 0 && sendevent /dev/input/event5 4 4 786979 && sendevent /dev/input/event5
-            1 172 0 && sendevent /dev/input/event5 0 0 0
+          command: HOME
       - service: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
