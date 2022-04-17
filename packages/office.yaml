@@ -48,15 +48,17 @@ binary_sensor:
       office_lights_100_percent:
         friendly_name: Office Lights 100% Enabled
         value_template: "{{ is_state_attr('light.office_lights', 'brightness', 255) }}"
-        
+
       office_fan_slow:
         friendly_name: Office Fan Set to Slow
-        value_template: "{{ state_attr('fan.office_fan', 'percentage') > 0 and state_attr('fan.office_fan', 'percentage') <= 27 }}"
-        
+        value_template: >
+          {{ state_attr('fan.office_fan', 'percentage') > 0 and state_attr('fan.office_fan', 'percentage') <= 27 }}
+
       office_fan_medium:
         friendly_name: Office Fan Set to Medium
-        value_template: "{{ state_attr('fan.office_fan', 'percentage') > 27 and state_attr('fan.office_fan', 'percentage') <= 65 }}"
-        
+        value_template: >
+          {{ state_attr('fan.office_fan', 'percentage') > 27 and state_attr('fan.office_fan', 'percentage') <= 65 }}
+  
       office_fan_high:
         friendly_name: Office Fan Set to High
         value_template: "{{ state_attr('fan.office_fan', 'percentage') > 65 }}"
