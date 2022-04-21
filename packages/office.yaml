@@ -52,16 +52,16 @@ binary_sensor:
       office_fan_slow:
         friendly_name: Office Fan Set to Slow
         value_template: >
-          {{ state_attr('fan.office_fan', 'percentage') > 0 and state_attr('fan.office_fan', 'percentage') <= 27 }}
+          {{ state_attr('fan.office_fan', 'percentage') > 0 and state_attr('fan.office_fan', 'percentage') <= 52 }}
 
       office_fan_medium:
         friendly_name: Office Fan Set to Medium
         value_template: >
-          {{ state_attr('fan.office_fan', 'percentage') > 27 and state_attr('fan.office_fan', 'percentage') <= 65 }}
-  
+          {{ state_attr('fan.office_fan', 'percentage') > 52 and state_attr('fan.office_fan', 'percentage') <= 81 }}
+
       office_fan_high:
         friendly_name: Office Fan Set to High
-        value_template: "{{ state_attr('fan.office_fan', 'percentage') > 65 }}"
+        value_template: "{{ state_attr('fan.office_fan', 'percentage') > 81 }}"
 
 ################################################
 ## Input Boolean
