@@ -39,6 +39,8 @@ google_assistant:
         - Dining Lights
     light.living_room_lights:
       expose: true
+    fan.living_room_fan:
+      expose: true
     light.office_lights:
       expose: true
       aliases:
