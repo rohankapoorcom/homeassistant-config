@@ -71,9 +71,9 @@ automation:
                     entity_id: sensor.master_bathroom_relative_humidity
                     above: 20
             sequence:
-              - service: switch.turn_on
+              - service: fan.turn_on
                 target:
-                  entity_id: switch.master_bathroom_fan
+                  entity_id: fan.master_bathroom_fan
               - wait_for_trigger:
                   - platform: template
                     value_template: >
@@ -82,13 +82,13 @@ automation:
                 continue_on_timeout: false
               - delay:
                   minutes: 5
-              - service: switch.turn_off
+              - service: fan.turn_off
                 target:
-                  entity_id: switch.master_bathroom_fan
+                  entity_id: fan.master_bathroom_fan
         default:
-          - service: switch.turn_off
+          - service: fan.turn_off
             target:
-              entity_id: switch.master_bathroom_fan
+              entity_id: fan.master_bathroom_fan
 
   - id: e42f4721-966d-4209-b761-b53dcc737935
     alias: Master Bathroom Light Switch Scene Controls

@@ -43,13 +43,13 @@ google_assistant:
       expose: true
       aliases:
         - Study Lights
-    switch.office_fan:
+    fan.office_fan:
       expose: true
       aliases:
         - Study Fan
     light.master_bathroom_lights:
       expose: true
-    switch.master_bathroom_fan:
+    fan.master_bathroom_fan:
       expose: true
     switch.master_bathroom_towel_warmer:
       expose: true

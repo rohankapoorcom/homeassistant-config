@@ -71,9 +71,9 @@ automation:
                     entity_id: sensor.hallway_bathroom_relative_humidity
                     above: 20
             sequence:
-              - service: switch.turn_on
+              - service: fan.turn_on
                 target:
-                  entity_id: switch.hallway_bathroom_fan
+                  entity_id: fan.hallway_bathroom_fan
               - wait_for_trigger:
                   - platform: template
                     value_template: >
@@ -82,10 +82,10 @@ automation:
                 continue_on_timeout: false
               - delay:
                   minutes: 5
-              - service: switch.turn_off
+              - service: fan.turn_off
                 target:
-                  entity_id: switch.hallway_bathroom_fan
+                  entity_id: fan.hallway_bathroom_fan
         default:
-          - service: switch.turn_off
+          - service: fan.turn_off
             target:
-              entity_id: switch.hallway_bathroom_fan
+              entity_id: fan.hallway_bathroom_fan
