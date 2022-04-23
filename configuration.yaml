@@ -40,9 +40,6 @@ http:
   trusted_proxies:
     - 127.0.0.1
 
-# Checks for available updates
-updater:
-
 # Discover some devices automatically
 discovery:
 
