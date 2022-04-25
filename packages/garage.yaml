@@ -85,3 +85,60 @@ automation:
         default:
           - service: light.turn_off
             entity_id: light.garage_lights
+
+  - id: c0f6513b-6fac-4e3b-bf92-0399e75e67f5
+    alias: Control the Garage Entry Lights
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: binary_sensor.garage_entry_motion_sensor
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: cover.garage_door
+        from: 'closed'
+        to: 'opening'
+    action:
+      - choose:
+          - alias: If it's dark and (there is motion or the garage door is opening or open), then turn on the lights.
+            conditions:
+              - condition: and
+                conditions:
+                  - condition: or
+                    conditions:
+                      - condition: state
+                        entity_id: binary_sensor.garage_entry_motion_sensor
+                        state: 'on'
+                      - condition: state
+                        entity_id: cover.garage_door
+                        state: 'opening'
+                      - condition: state
+                        entity_id: cover.garage_door
+                        state: 'open'
+                  - condition: numeric_state
+                    entity_id: sensor.garage_entry_motion_sensor_illuminance
+                    below: 100
+
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.garage_entry_lights
+              - wait_for_trigger:
+                  - platform: template
+                    value_template: >
+                      {{ is_state('cover.garage_door', 'closed')
+                      and is_state('binary_sensor.garage_entry_motion_sensor', 'off') }}
+                continue_on_timeout: false
+              - delay:
+                  minutes: 1
+              - service: light.turn_off
+                target:
+                  entity_id: light.garage_entry_lights
+        default:
+          - service: light.turn_off
+            entity_id: light.garage_entry_lights
