@@ -100,13 +100,12 @@ light:
           - service: light.turn_off
             entity_id: light.office_lights
         turn_off:
-           - service: light.turn_off
-             entity_id: light.center_key_light
-           - service: light.turn_off
-             entity_id: light.left_key_light
-           - service: light.turn_off
-             entity_id: light.office_backlighting
-
+          - service: light.turn_off
+            entity_id: light.center_key_light
+          - service: light.turn_off
+            entity_id: light.left_key_light
+          - service: light.turn_off
+            entity_id: light.office_backlighting
 
 ################################################
 ## Script
