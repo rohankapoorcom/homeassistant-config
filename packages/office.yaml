@@ -21,18 +21,6 @@ homeassistant:
 binary_sensor:
   - platform: template
     sensors:
-      streaming_lights_enabled:
-        friendly_name: Streaming Lights Enabled
-        value_template: >-
-          {{ is_state_attr('light.center_key_light', 'brightness', 51)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
-            and is_state_attr('light.left_key_light', 'brightness', 38)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
-            and is_state_attr('light.office_backlighting', 'brightness', 255)
-            and is_state_attr('light.office_backlighting', 'color_temp', 156)
-            and is_state('light.office_lights', 'off')
-          }}
-
       office_lights_25_percent:
         friendly_name: Office Lights 25% Enabled
         value_template: "{{ is_state_attr('light.office_lights', 'brightness', 64) }}"
@@ -79,25 +67,21 @@ light:
     name: Office Closet Lights
     entity_id: switch.office_closet_lights
 
-################################################
-## Script
-################################################
-script:
-  toggle_streaming_lights:
-    sequence:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.streaming_lights_enabled
-                state: 'on'
-            sequence:
-              - service: light.turn_off
-                entity_id: light.center_key_light
-              - service: light.turn_off
-                entity_id: light.left_key_light
-              - service: light.turn_off
-                entity_id: light.office_backlighting
-        default:
+  - platform: template
+    lights:
+      office_video_lights:
+        friendly_name: Office Video Lights
+        unique_id: b0ef72e2-eea5-4e16-b71f-793371b1d564
+        value_template: >-
+          {{ is_state_attr('light.center_key_light', 'brightness', 51)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.left_key_light', 'brightness', 38)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.office_backlighting', 'brightness', 255)
+            and is_state_attr('light.office_backlighting', 'color_temp', 156)
+            and is_state('light.office_lights', 'off')
+          }}
+        turn_on:
           - service: light.turn_on
             entity_id: light.center_key_light
             data:
@@ -115,7 +99,19 @@ script:
               brightness: 255
           - service: light.turn_off
             entity_id: light.office_lights
+        turn_off:
+           - service: light.turn_off
+             entity_id: light.center_key_light
+           - service: light.turn_off
+             entity_id: light.left_key_light
+           - service: light.turn_off
+             entity_id: light.office_backlighting
 
+
+################################################
+## Script
+################################################
+script:
   set_office_lights_25_percent:
     sequence:
       - choose:
