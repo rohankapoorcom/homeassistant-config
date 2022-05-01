@@ -101,3 +101,17 @@ automation:
           bedtime_brightness: 10
           wakeup_time: '08:00:00'
           wakeup_time_brightness: 0
+
+  - id: 1e07a741-80f4-4c08-b8cd-7cb33849812d
+    alias: Hallway Bathroom Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Hallway Bathroom.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: b6df24a18353633370965899bb1e9a05
+        button_a:
+          - service: light.turn_on
+            target:
+              entity_id: light.hallway_bathroom_lights
+            data:
+              brightness_pct: 100
