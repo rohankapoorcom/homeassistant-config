@@ -149,4 +149,4 @@ automation:
           bedtime: '01:00:00'
           bedtime_brightness: 10
           wakeup_time: '08:00:00'
-          wakeup_brightness: 0
+          wakeup_time_brightness: 0
