@@ -1,0 +1,75 @@
+---
+blueprint:
+  domain: automation
+  name: Inovelli Red Series LZW31-SN Night Mode
+  description: Set the default brightness at different times for Inovelli Red Series Dimmers that are triggered by motion detectors.
+  input:
+    zwave_device:
+      name: Inovelli Switch
+      description: List of available Inovelli LZW31-SN switch.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Inovelli
+          model: LZW31-SN
+    bedtime:
+      name: Bedtime
+      description: The time to reduce the default brightness.
+      selector:
+        time:
+    bedtime_brightness:
+      name: Bedtime Brightness
+      description: The default brightness to set at Bedtime.
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: '%'
+          mode: slider
+    wakeup_time:
+      name: Wake-up time
+      description: The time to increase the default brightness.
+      selector:
+        time:
+    wakeup_time_brightness:
+      name: Wake-up time Brightness
+      description: The default brightness to set at Wake-up time.
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: '%'
+          mode: slider
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: time
+    at: !input bedtime
+  - platform: time
+    at: !input wakeup_time
+action:
+  - choose:
+      - alias: If it's bedtime, set the lights to dim.
+        conditions:
+          - condition: time
+            after: !input bedtime
+            before: !input wakeup_time
+        sequence:
+          - service: zwave_js.set_config_parameter
+            target:
+              device_id: !input zwave_device
+            data:
+              parameter: Default Level
+              value: !input bedtime_brightness
+    default:
+      - service: zwave_js.set_config_parameter
+        target:
+          device_id: !input zwave_device
+        data:
+          parameter: Default Level
+          value: !input wakeup_time_brightness

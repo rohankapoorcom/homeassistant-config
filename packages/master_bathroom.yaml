@@ -141,34 +141,12 @@ automation:
 
   - id: 61e51665-413b-4958-8a4f-5a7e29066e60
     alias: Adjust the Master Bathroom Brightness
-    description: Configure the startup brightess on the Master Bathroom Lights at different times of the day
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: event
-        event_type: automation_reloaded
-      - platform: time
-        at: '01:00:00'
-      - platform: time
-        at: '08:00:00'
-    action:
-      - choose:
-          - alias: If it's bedtime, set the lights to dim
-            conditions:
-              - condition: time
-                after: '01:00:00'
-                before: '08:00:00'
-            sequence:
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: light.master_bathroom_lights
-                data:
-                  parameter: Default Level
-                  value: 10
-        default:
-          - service: zwave_js.set_config_parameter
-            target:
-              entity_id: light.master_bathroom_lights
-            data:
-              parameter: Default Level
-              value: 0
+    description: Utilizes a blueprint to configure the default brightess on the Master Bathroom Lights at different times of the day.
+    use_blueprint:
+        path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+        input:
+          zwave_device: 572777ba88a55f72409d0e416dd4c66f
+          bedtime: '01:00:00'
+          bedtime_brightness: 10
+          wakeup_time: '08:00:00'
+          wakeup_brightness: 0

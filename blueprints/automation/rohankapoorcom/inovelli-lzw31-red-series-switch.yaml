@@ -9,7 +9,7 @@ blueprint:
   input:
     zwave_device:
       name: Inovelli Switch
-      description: List of available inovelli LZW31-SN switch.
+      description: List of available Inovelli LZW31-SN switch.
       selector:
         device:
           integration: zwave_js
