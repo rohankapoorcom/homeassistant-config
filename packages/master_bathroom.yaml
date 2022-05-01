@@ -141,12 +141,12 @@ automation:
 
   - id: 61e51665-413b-4958-8a4f-5a7e29066e60
     alias: Adjust the Master Bathroom Brightness
-    description: Utilizes a blueprint to configure the default brightess on the Master Bathroom Lights at different times of the day.
+    description: Utilizes a blueprint to configure the default brightess on the Master Bathroom Lights.
     use_blueprint:
-        path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
-        input:
-          zwave_device: 572777ba88a55f72409d0e416dd4c66f
-          bedtime: '01:00:00'
-          bedtime_brightness: 10
-          wakeup_time: '08:00:00'
-          wakeup_time_brightness: 0
+      path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+      input:
+        zwave_device: 572777ba88a55f72409d0e416dd4c66f
+        bedtime: '01:00:00'
+        bedtime_brightness: 10
+        wakeup_time: '08:00:00'
+        wakeup_time_brightness: 0

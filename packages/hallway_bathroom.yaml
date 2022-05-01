@@ -92,15 +92,15 @@ automation:
 
   - id: 0b252966-863d-4f1c-93b8-c4d4154b0aff
     alias: Adjust the Hallway Bathroom Default Brightness
-    description: Utilizes a blueprint to configure the default brightess on the Hallway Bathroom Lights at different times of the day.
+    description: Utilizes a blueprint to configure the default brightess on the Hallway Bathroom Lights.
     use_blueprint:
-        path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
-        input:
-          zwave_device: b6df24a18353633370965899bb1e9a05
-          bedtime: '01:00:00'
-          bedtime_brightness: 10
-          wakeup_time: '08:00:00'
-          wakeup_time_brightness: 0
+      path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+      input:
+        zwave_device: b6df24a18353633370965899bb1e9a05
+        bedtime: '01:00:00'
+        bedtime_brightness: 10
+        wakeup_time: '08:00:00'
+        wakeup_time_brightness: 0
 
   - id: 1e07a741-80f4-4c08-b8cd-7cb33849812d
     alias: Hallway Bathroom Light Switch Scene Controls

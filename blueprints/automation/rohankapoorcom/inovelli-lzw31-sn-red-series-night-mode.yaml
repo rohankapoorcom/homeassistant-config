@@ -2,7 +2,9 @@
 blueprint:
   domain: automation
   name: Inovelli Red Series LZW31-SN Night Mode
-  description: Set the default brightness at different times for Inovelli Red Series Dimmers that are triggered by motion detectors.
+  description: |
+    Set the default brightness at different times for Inovelli Red Series Dimmers
+    that are triggered by motion detectors.
   input:
     zwave_device:
       name: Inovelli Switch
