@@ -85,5 +85,5 @@ action:
         target:
           device_id: !input zwave_device
         data:
-          parameter: Default Level (Z-Wave) 
+          parameter: Default Level (Z-Wave)
           value: !input wakeup_time_brightness

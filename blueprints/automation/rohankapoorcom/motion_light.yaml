@@ -51,8 +51,15 @@ action:
             entity_id: !input motion_entity
             state: 'on'
         sequence:
-          - service: light.turn_on
-            target: !input light_target
+          - choose:
+              - alias: If the light_target is not on, then turn it on.
+                conditions:
+                  - condition: state
+                    entity_id: !input light_target
+                    state: 'off'
+                sequence:
+                  - service: light.turn_on
+                    target: !input light_target
           - wait_for_trigger:
               platform: state
               entity_id: !input motion_entity
