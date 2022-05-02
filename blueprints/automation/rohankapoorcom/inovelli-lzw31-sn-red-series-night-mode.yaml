@@ -39,7 +39,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 100
+          max: 99
           unit_of_measurement: '%'
           mode: slider
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
