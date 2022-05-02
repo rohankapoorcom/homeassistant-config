@@ -99,7 +99,7 @@ automation:
         bedtime: '01:00:00'
         bedtime_brightness: 10
         wakeup_time: '08:00:00'
-        wakeup_time_brightness: 0
+        wakeup_time_brightness: 99
 
   - id: 1e07a741-80f4-4c08-b8cd-7cb33849812d
     alias: Hallway Bathroom Light Switch Scene Controls
