@@ -68,10 +68,22 @@ action:
             data:
               parameter: Default Level
               value: !input bedtime_brightness
+          - service: zwave_js.set_config_parameter
+            target:
+              device_id: !input zwave_device
+            data:
+              parameter: Default Level (Z-Wave)
+              value: !input bedtime_brightness
     default:
       - service: zwave_js.set_config_parameter
         target:
           device_id: !input zwave_device
         data:
           parameter: Default Level
+          value: !input wakeup_time_brightness
+      - service: zwave_js.set_config_parameter
+        target:
+          device_id: !input zwave_device
+        data:
+          parameter: Default Level (Z-Wave) 
           value: !input wakeup_time_brightness
