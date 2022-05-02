@@ -37,8 +37,7 @@ automation:
       path: rohankapoorcom/motion_light.yaml
       input:
         motion_entity: binary_sensor.master_bathroom_motion
-        light_target:
-          entity_id: light.master_bathroom_lights
+        light_target: light.master_bathroom_lights
         no_motion_wait: 300
 
   - id: b281c2da-67a2-44b3-a11f-11d763a4ba46
