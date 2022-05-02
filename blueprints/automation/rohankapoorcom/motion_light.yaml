@@ -71,4 +71,5 @@ action:
               entity_id: !input light_target
     default:
       - service: light.turn_off
-        target: !input light_target
+        target:
+          entity_id: !input light_target
