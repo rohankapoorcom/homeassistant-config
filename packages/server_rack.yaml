@@ -1,0 +1,177 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  05/07/2022
+#  @package      :  Server Rack
+#  @description  :  Manages functionality within the Server Rack
+###############################################################################
+---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'server_rack'
+
+################################################
+## Sensor
+################################################
+sensor:
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.2.1.1.8.1
+    unit_of_measurement: "°F"
+    name: "UPS Battery Temperature"
+    value_template: "{{ value | float / 10.0 }}"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.3.3.1.1.2.2
+    unit_of_measurement: "°F"
+    name: "UPS EnviroSense Temperature"
+    value_template: "{{ value | float / 10.0 }}"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.3.3.2.1.1.2
+    unit_of_measurement: "%"
+    name: "UPS EnviroSense Humidity"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.2.1.33.1.2.5.0
+    unit_of_measurement: "V"
+    name: "UPS Battery Voltage"
+    value_template: "{{ value | float / 10.0 }}"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.2.1.33.1.2.4.0
+    unit_of_measurement: "%"
+    name: "UPS Battery Capacity"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.2.1.33.1.2.3.0
+    unit_of_measurement: "minutes"
+    name: "UPS Runtime Remaining"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.2.1.33.1.3.3.1.3.1
+    unit_of_measurement: "V"
+    name: "UPS AC Input Voltage"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.2.1.33.1.4.4.1.2.1
+    unit_of_measurement: "V"
+    name: "UPS Output Voltage"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.2.1.5.1.1
+    unit_of_measurement: "%"
+    name: "UPS Load"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.2.1.3.1.1
+    unit_of_measurement: "A"
+    name: "UPS Output Current"
+    value_template: "{{ value | float / 100.0 }}"
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.1.1.1.1.1
+    name: "UPS Battery Status"
+    value_template: >
+          {% if value | int == 1 %}
+            Unknown
+          {% elif value | int == 2 %}
+            Normal
+          {% elif value | int == 3 %}
+            Battery Low
+          {% elif value | int == 4 %}
+            Battery Depleted
+          {% else %}
+            Communication Failure
+          {% endif %}
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.1.2.1.4.1
+    name: "UPS Battery Charge Details"
+    value_template: >
+          {% if value | int == 0 %}
+            Float
+          {% elif value | int == 1 %}
+            Charging
+          {% elif value | int == 2 %}
+            Resting
+          {% elif value | int == 3 %}
+            Discharging
+          {% elif value | int == 4 %}
+            Normal
+          {% elif value | int == 5 %}
+            Standby
+          {% else %}
+            Communication Failure
+          {% endif %}
+
+  - platform: snmp
+    host: !secret snmp.ups.host
+    version: 2c
+    community: !secret snmp.ups.community
+    baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.1.1.1.1
+    name: "UPS Source"
+    value_template: >
+          {% if value | int == 0 %}
+            Unknown
+          {% elif value | int == 1 %}
+            Other
+          {% elif value | int == 2 %}
+            None
+          {% elif value | int == 3 %}
+            AC Input
+          {% elif value | int == 4 %}
+            Bypass
+          {% elif value | int == 5 %}
+            Battery
+          {% elif value | int == 6 %}
+            Boosting
+          {% elif value | int == 7 %}
+            Reducing
+          {% elif value | int == 8 %}
+            Second
+          {% elif value | int == 9 %}
+            Economy
+          {% else %}
+            Communication Failure
+          {% endif %}
