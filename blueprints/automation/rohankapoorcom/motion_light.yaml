@@ -58,7 +58,7 @@ action:
                     state: 'off'
                 sequence:
                   - service: light.turn_on
-                    target: 
+                    target:
                       entity_id: !input light_target
           - wait_for_trigger:
               platform: state

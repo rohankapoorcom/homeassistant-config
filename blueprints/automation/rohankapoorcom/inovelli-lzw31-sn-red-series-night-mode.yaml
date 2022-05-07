@@ -25,7 +25,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 100
+          max: 99
           unit_of_measurement: '%'
           mode: slider
     wakeup_time:
