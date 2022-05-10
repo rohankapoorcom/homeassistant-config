@@ -3,7 +3,7 @@ entity_registry.yaml
 .config_entries.json
 .uuid
 *.db
-*.log
+*.log*
 *.conf
 *.crt
 *.key
