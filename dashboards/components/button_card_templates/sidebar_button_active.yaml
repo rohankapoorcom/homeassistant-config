@@ -1,0 +1,7 @@
+sidebar_button_active:
+  template: sidebar_button
+  styles:
+    card:
+      - '--ha-card-background': >-
+          linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color)
+          100%)

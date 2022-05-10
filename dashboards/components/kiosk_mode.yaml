@@ -1,0 +1,6 @@
+hide_header: true
+hide_overflow: true
+mobile_settings:
+  hide_header: false
+  hide_overflow: false
+  custom_width: 1200

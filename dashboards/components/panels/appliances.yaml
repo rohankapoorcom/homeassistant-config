@@ -1,0 +1,278 @@
+type: custom:layout-card
+cards:
+  - type: custom:layout-card
+    layout_type: vertical
+    cards:
+      - type: picture-elements
+        image: /local/images/tripplite.png
+        elements:
+          - type: state-label
+            entity: sensor.ups_ac_input_voltage
+            style:
+              top: 42%
+              left: 85%
+              background-color: green
+              padding: none
+          - type: state-label
+            entity: sensor.ups_source
+            style:
+              top: 30%
+              left: 18%
+              font-size: 18px
+      - type: custom:bar-card
+        entities:
+          - entity: sensor.ups_battery_capacity
+            direction: right
+            name: Battery
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
+        height: 20px
+      - type: glance
+        title: Battery Status
+        entities:
+          - entity: sensor.ups_battery_status
+            name: Health
+            icon: mdi:battery-heart-variant
+          - entity: sensor.ups_runtime_remaining
+            name: Runtime
+            icon: mdi:battery-alert-variant-outline
+          - entity: sensor.ups_battery_charge_details
+            name: Detail
+            icon: mdi:battery-charging
+          - entity: sensor.ups_battery_temperature
+            name: Temp
+          - entity: sensor.ups_source
+            name: Source
+            icon: mdi:power-plug
+        state_color: false
+        show_state: true
+        show_icon: true
+        show_name: true
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            entity: sensor.ups_battery_voltage
+            min: 30
+            max: 54.6
+            name: Battery Voltage
+          - type: gauge
+            entity: sensor.ups_output_voltage
+            min: 100
+            max: 130
+            name: Output Voltage
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            entity: sensor.ups_load
+            min: 0
+            max: 100
+            name: Output Load
+          - type: gauge
+            entity: sensor.ups_output_current
+            min: 0
+            max: 20
+            name: Output Current
+    view_layout:
+      grid-area: left
+  - type: custom:layout-card
+    layout_type: vertical
+    cards:
+      - elements:
+          - attribute: friendly_name
+            entity: sensor.washer
+            style:
+              background-color: rgba(0, 0, 0, 0.3)
+              color: white
+              font-size: 16px
+              left: 0
+              line-height: 32px
+              padding: 0 8px
+              pointer-events: none
+              top: 0
+              transform: initial
+              width: 100%
+            type: state-label
+          - attribute: run_state
+            entity: sensor.washer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 0px 16px
+              pointer-events: none
+              right: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - attribute: current_course
+            entity: sensor.washer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 36px 8px
+              pointer-events: none
+              left: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - attribute: water_temp
+            entity: sensor.washer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 36px 16px
+              pointer-events: none
+              right: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - entity: sensor.washer
+            style:
+              background-color: rgba(0, 0, 0, 0.3)
+              bottom: 0
+              color: white
+              font-size: 16px
+              left: 0
+              line-height: 32px
+              padding: 0 8px
+              pointer-events: none
+              transform: initial
+              width: 100%
+            type: state-label
+          - attribute: remain_time
+            entity: sensor.washer
+            style:
+              bottom: 0
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 0px 44px
+              pointer-events: none
+              right: 0
+              transform: initial
+            type: state-label
+          - entity: sensor.washer
+            icon: mdi:progress-clock
+            style:
+              bottom: 0
+              color: white
+              line-height: 32px
+              padding: 8px 16px
+              right: 0
+              transform: initial
+            type: icon
+        image: /local/images/washer.jpg
+        type: picture-elements
+      - elements:
+          - attribute: friendly_name
+            entity: sensor.dryer
+            style:
+              background-color: rgba(0, 0, 0, 0.3)
+              color: white
+              font-size: 16px
+              left: 0
+              line-height: 32px
+              padding: 0 8px
+              pointer-events: none
+              top: 0
+              transform: initial
+              width: 100%
+            type: state-label
+          - attribute: run_state
+            entity: sensor.dryer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 0px 16px
+              pointer-events: none
+              right: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - attribute: current_course
+            entity: sensor.dryer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 36px 8px
+              pointer-events: none
+              left: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - attribute: temp_control
+            entity: sensor.dryer
+            style:
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 36px 16px
+              pointer-events: none
+              right: 0
+              top: 0
+              transform: initial
+            type: state-label
+          - entity: sensor.dryer
+            style:
+              background-color: rgba(0, 0, 0, 0.3)
+              bottom: 0
+              color: white
+              font-size: 16px
+              left: 0
+              line-height: 32px
+              padding: 0 8px
+              pointer-events: none
+              transform: initial
+              width: 100%
+            type: state-label
+          - attribute: remain_time
+            entity: sensor.dryer
+            style:
+              bottom: 0
+              color: white
+              font-size: 16px
+              line-height: 32px
+              padding: 0px 44px
+              pointer-events: none
+              right: 0
+              transform: initial
+            type: state-label
+          - entity: sensor.dryer
+            icon: mdi:progress-clock
+            style:
+              bottom: 0
+              color: white
+              line-height: 32px
+              padding: 8px 16px
+              right: 0
+              transform: initial
+            type: icon
+        image: /local/images/washer.jpg
+        type: picture-elements
+    view_layout:
+      grid-area: right
+layout_type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr 1fr
+  grid-template-rows: auto
+  grid-template-areas: |
+    "left right"
+  mediaquery:
+    '(max-width: 800px)':
+      grid-template-columns: 1fr
+      grid-template-areas: |
+        "left"
+        "right"
+view_layout:
+  grid-area: main

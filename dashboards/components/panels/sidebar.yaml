@@ -1,0 +1,39 @@
+# lovelace_gen
+
+{% set buttons = [
+  {'name': 'Clock'},
+  {'name': 'Home', 'icon': 'mdi:home', 'path': 'home'},
+  {'name': 'Lights', 'icon': 'mdi:lamp', 'path': 'lights'},
+  {'name': 'Frontyard', 'icon': 'mdi:cctv', 'path': 'cameras_1'},
+  {'name': 'Backyard', 'icon': 'mdi:cctv', 'path': 'cameras_2'},
+  {'name': 'Vacuums', 'icon': 'mdi:robot-vacuum', 'path': 'vacuums'},
+  {'name': 'Appliances', 'icon': 'mdi:washing-machine', 'path': 'appliances'},
+  {'name': 'Music', 'icon': 'mdi:music', 'path': 'music'},
+  {'name': 'TV Remote', 'icon': 'mdi:remote', 'path': 'remote'}
+] %}
+
+type: custom:layout-card
+layout_type: vertical
+cards:
+  {% for button in buttons %}
+    {% if button['name'] == 'Clock' %}
+    - type: custom:digital-clock
+      secondLineFormat: ccc, DD
+    {% else %}
+    - type: custom:button-card
+      {% if button['name'] == active %}
+      template: sidebar_button_active
+      {% else %}
+      template: sidebar_button
+      {% endif %}
+      variables:
+        name: {{ button['name'] }}
+        icon: {{ button['icon'] }}
+        navigation_path: {{ button['path'] }}
+    {% endif %}
+  {% endfor %}
+
+view_layout:
+  grid-area: sidebar
+  show:
+    mediaquery: '(min-width: 1200px)'

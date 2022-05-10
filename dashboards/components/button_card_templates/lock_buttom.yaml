@@ -1,0 +1,41 @@
+lock_button:
+  aspect_ratio: 1/1
+  layout: vertical
+  show_state: true
+  state:
+    - color: '#ff0000'
+      value: unlocked
+    - color: '#ff0000'
+      value: open
+    - color: '#ff0000'
+      value: opening
+    - color: '#00ff00'
+      value: locked
+    - color: '#00ff00'
+      value: closed
+    - color: '#00ff00'
+      value: closing
+  tap_action:
+    action: toggle
+  styles:
+    name:
+      - justify-self: middle
+      - align-self: end
+      - font-size: 1.1rem
+      - padding: 0px 0px 0px 0px
+      - color: var(--primary-text-color)
+      - white-space: normal
+    label:
+      - color: var(--paper-item-icon-color)
+      - padding-left: 1ex
+    card:
+      - border-radius: var(--ha-card-border-radius, 4px)
+      - padding: 6px 6px 6px 6px
+      - margin: 0% 0% 0% 0%
+      - '--ha-card-background': >-
+          linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color)
+          100%)
+      - max-height: 98px
+    state:
+      - font-size: 1.1rem
+      - color: var(--state-color-on, var(--label-badge-text-color, white))

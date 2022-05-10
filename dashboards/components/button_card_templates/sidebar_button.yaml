@@ -1,0 +1,14 @@
+sidebar_button:
+  name: '[[[ return variables.name ]]]'
+  icon: '[[[ return variables.icon ]]]'
+  layout: icon_name
+  tap_action:
+    action: navigate
+    navigation_path: '[[[ return variables.navigation_path ]]]'
+  styles:
+    card:
+      - height: 70px
+      - border-radius: var(--ha-card-border-radius, 4px)
+    grid:
+      - grid-template-areas: '"n i" "s i" "l i"'
+      - grid-template-columns: 1fr 1fr

@@ -1,0 +1,44 @@
+slider_button_card:
+  card:
+    type: custom:slider-button-card
+    entity: '[[entity]]'
+    name: '[[name]]'
+    action_button: '[[action_button]]'
+    styles:
+      card:
+        - border-radius: 10px
+        - padding: 6px 6px 6px 6px
+        - margin: 0% 0% 0% 0%
+        - '--ha-card-background': rgba(0, 0, 0, 0)
+      grid:
+        - grid-template-areas: '"i l l" "n n n"'
+        - grid-template-rows: 33% auto
+        - grid-template-columns: 33% auto
+      icon:
+        - width: 28px
+        - padding: 0px 0px 0px 0px
+        - color: var(--button-card-light-color-no-temperature)
+      label:
+        - font-size: 12px
+        - justify-self: right
+        - padding: 0px 0px 0px 0px
+        - color: var(--secondary-text-color)
+      name:
+        - justify-self: middle
+        - align-self: end
+        - font-size: 14px
+        - padding: 0px 0px 0px 0px
+        - color: var(--primary-text-color)
+        - white-space: normal
+    slider:
+      direction: '[[direction]]'
+      background: gradient
+      toggle_on_click: '[[toggle_on_click]]'
+  default:
+    - direction: left-right
+    - toggle_on_click: false
+    - action_button:
+        mode: custom
+        show: true
+        tap_action:
+          action: toggle

@@ -1,0 +1,162 @@
+# lovelace_gen
+
+kiosk_mode: !include components/kiosk_mode.yaml
+button_card_templates: !include_dir_merge_named components/button_card_templates
+decluttering_templates: !include_dir_merge_named components/decluttering_templates
+
+title: Home
+# views: !include views.yaml
+views:
+  - theme: Backend-selected
+    title: Home
+    path: home
+    icon: mdi:home
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+              - !include
+                - components/panels/sidebar.yaml
+                - active: Home
+              - !include components/panels/home.yaml
+  - theme: Backend-selected
+    icon: mdi:lamp
+    path: lights
+    title: Lights
+    layout:
+      max_width: 1500
+    type: custom:masonry-layout
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Lights
+            - !include components/panels/lights.yaml
+  - theme: Backend-selected
+    icon: mdi:cctv
+    path: cameras_1
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    title: Frontyard
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Frontyard
+            - !include
+              - components/panels/cameras.yaml
+              - cameras:
+                - camera.upper_driveway
+                - camera.driveway
+                - camera.lower_entrance
+                - camera.mail_slot
+                - camera.front_door
+                - camera.doorbell
+  - theme: Backend-selected
+    icon: mdi:cctv
+    path: cameras_2
+    title: 'Backyard'
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Backyard
+            - !include
+              - components/panels/cameras.yaml
+              - cameras:
+                - camera.balcony_left
+                - camera.balcony_center
+                - camera.patio_left
+                - camera.patio_right
+                - camera.garage_1
+                - camera.garage_2
+  - theme: Backend-selected
+    icon: mdi:robot-vacuum
+    panel: false
+    path: vacuums
+    title: Vacuums
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Vacuums
+            - !include components/panels/vacuums.yaml
+  - theme: Backend-selected
+    title: Appliances
+    path: appliances
+    icon: mdi:washing-machine
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Appliances
+            - !include components/panels/appliances.yaml
+  - theme: Backend-selected
+    title: Music
+    path: music
+    icon: mdi:music
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Music
+            - !include components/panels/music.yaml
+  - theme: Backend-selected
+    icon: mdi:remote
+    title: TV Remote
+    path: remote
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: TV Remote
+            - !include components/panels/tv_remote.yaml

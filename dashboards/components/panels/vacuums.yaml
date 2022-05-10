@@ -1,0 +1,195 @@
+type: custom:layout-card
+cards:
+  - cards:
+      - crop:
+          bottom: 0
+          left: 0
+          right: 0
+          top: 0
+        entity: camera.upstairs_vacuum
+        map_scale: 1.2
+        rotate: 0
+        title: Upstairs
+        type: custom:valetudo-map-card
+        min_height: 275
+      - type: custom:vacuum-card
+        stats:
+          default:
+            - entity_id: sensor.upstairs_vacuum_main_filter
+              unit: min
+              subtitle: Filter
+            - entity_id: sensor.upstairs_vacuum_main_brush
+              unit: min
+              subtitle: Main brush
+            - entity_id: sensor.upstairs_vacuum_right_side_brush
+              unit: min
+              subtitle: Side brush
+            - entity_id: sensor.upstairs_vacuum_sensor_cleaning
+              unit: min
+              subtitle: Sensor
+        shortcuts:
+          - icon: mdi:sofa
+            name: Living Room
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["5"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:stove
+            name: Kitchen
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["6"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:table-chair
+            name: Dining Room
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["2"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:floor-plan
+            name: Hallway
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["4"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:toilet
+            name: Hallway Bathroom
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["1"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:bed-king
+            name: Master Bedroom
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["10"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:shower
+            name: Master Bathroom
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["3"], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:monitor
+            name: Office
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": ["8"], "iterations": 1,
+                "customOrder": true}
+        entity: vacuum.upstairs_vacuum
+        compact_view: false
+        show_name: true
+        show_status: true
+        show_toolbar: true
+    type: custom:layout-card
+    layout_type: vertical
+    view_layout:
+      grid_area: left
+  - cards:
+      - crop:
+          bottom: 45
+          left: 30
+          right: 0
+          top: 10
+        entity: camera.downstairs_vacuum
+        map_scale: 1.65
+        title: Downstairs
+        type: custom:valetudo-map-card
+        view_layout: 2
+        min_height: 275
+      - entity: vacuum.downstairs_vacuum
+        type: custom:vacuum-card
+        stats:
+          default:
+            - entity_id: sensor.downstairs_vacuum_main_filter
+              unit: min
+              subtitle: Filter
+            - entity_id: sensor.downstairs_vacuum_main_brush
+              unit: min
+              subtitle: Main brush
+            - entity_id: sensor.downstairs_vacuum_right_side_brush
+              unit: min
+              subtitle: Side brush
+            - entity_id: sensor.downstairs_vacuum_sensor_cleaning
+              unit: min
+              subtitle: Sensor
+        shortcuts:
+          - icon: mdi:floor-plan
+            name: Hallway
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": [16], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:bed-queen
+            name: Guest Room
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": [17], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:shower
+            name: Guest Bathroom
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": [19], "iterations": 1,
+                "customOrder": true}
+          - icon: mdi:cube-outline
+            name: Storage
+            service: mqtt.publish
+            service_data:
+              topic: >-
+                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+              payload: >-
+                {"segment_ids": [18], "iterations": 1,
+                "customOrder": true}
+        compact_view: false
+    type: custom:layout-card
+    layout_type: vertical
+    view_layout:
+      grid_area: right
+layout_type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr 1fr
+  grid-template-rows: auto
+  grid-template-areas: |
+    "left right"
+  mediaquery:
+    '(max-width: 800px)':
+      grid-template-columns: 1fr
+      grid-template-areas: |
+        "left"
+        "right"
+view_layout:
+  grid-area: main

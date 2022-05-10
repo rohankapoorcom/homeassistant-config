@@ -1,0 +1,68 @@
+light_button:
+  aspect_ratio: 4/3
+  color_type: icon
+  hold_action:
+    action: more-info
+    haptic: selection
+  label: >
+    [[[ var bri = entity.attributes.brightness &&
+    Math.round(entity.attributes.brightness / 2.55);  if
+      (entity.state === 'on') return (bri ? (bri+"%") : 'On'); else return "Off"; ]]]
+  layout: icon_label
+  show_label: true
+  show_name: true
+  state:
+    - styles:
+        card:
+          - border: solid 1px var(--paper-item-icon-active-color)
+          - box-shadow: 0px 0px 10px 3px var(--paper-item-icon-active-color)
+        label:
+          - color: var(--paper-item-icon-active-color)
+      value: 'on'
+    - styles:
+        card:
+          - border: solid 1px var(--primary-color)
+          - box-shadow: none
+      value: 'off'
+    - icon: mdi:alert
+      label: Lost
+      styles:
+        card:
+          - border: 'solid 1px #7f7f7f'
+          - box-shadow: none
+        icon:
+          - color: '#ff0000'
+          - opacity: 0.4
+        label:
+          - color: '#7f7f7f'
+        name:
+          - color: '#7f7f7f'
+      value: unavailable
+  styles:
+    card:
+      - border-radius: 10px
+      - padding: 6px 6px 6px 6px
+      - margin: 0% 0% 0% 0%
+      - '--ha-card-background': rgba(0, 0, 0, 0)
+    grid:
+      - grid-template-areas: '"i l l" "n n n"'
+      - grid-template-rows: 33% auto
+      - grid-template-columns: 33% auto
+    icon:
+      - width: 28px
+      - padding: 0px 0px 0px 0px
+      - color: var(--button-card-light-color-no-temperature)
+    label:
+      - font-size: 12px
+      - justify-self: right
+      - padding: 0px 0px 0px 0px
+      - color: var(--secondary-text-color)
+    name:
+      - justify-self: middle
+      - align-self: end
+      - font-size: 14px
+      - padding: 0px 0px 0px 0px
+      - color: var(--primary-text-color)
+      - white-space: normal
+  tap_action:
+    action: toggle

@@ -1,0 +1,57 @@
+# lovelace_gen
+
+{% set views = [
+  {'title': 'Home', 'icon': 'mdi:home'},
+  {'title': 'Lights', 'icon': 'mdi:lamp'},
+  {'title': 'Frontyard', 'icon': 'mdi:cctv', 'panel': 'cameras.yaml', 'arguments': {
+    'cameras': [
+      'camera.upper_driveway',
+      'camera.driveway',
+      'camera.lower_entrance',
+      'camera.mail_slot',
+      'camera.front_door',
+      'camera.doorbell'
+    ]}
+  },
+  {'title': 'Backyard', 'icon': 'mdi:cctv', 'panel': 'cameras.yaml', 'arguments': {
+    'cameras': [
+      'camera.balcony_left',
+      'camera.balcony_center',
+      'camera.patio_left',
+      'camera.patio_right',
+      'camera.garage_1',
+      'camera.garage_2'
+    ]}
+  },
+  {'title': 'Vacuums', 'icon': 'mdi:robot-vacuum'},
+  {'title': 'Appliances', 'icon': 'mdi:washing-machine'},
+  {'title': 'Music', 'icon': 'mdi:music'},
+  {'title': 'TV Remote', 'icon': 'mdi:remote'}
+] %}
+
+
+{% for view in views %}
+- theme: Backend-selected
+  title: {{ view['title'] }}
+  path: {{ view['title'] | lower }}
+  icon: {{ view['icon'] }}
+  type: custom:masonry-layout
+  layout:
+    max_width: 1500
+  badges: []
+  cards:
+    - type: custom:decluttering-card
+      template: sidebar_layout_card
+      variables:
+        - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: {{ view['title'] }}
+            {% if view['panel'] %}
+            - !include 
+              - components/panels/{{ view['panel'] }}
+              - {{ view['arguments'] }}
+            {% else %}
+            - !include components/panels/{{ view['title'] | lower }}.yaml
+            {% endif %}
+{% endfor %}

@@ -1,0 +1,46 @@
+whole_house_media_player_idle_or_off:
+  card:
+    cards:
+      - artwork: full-cover-fit
+        entity: media_player.all_speakers
+        group: true
+        hide:
+          controls: true
+          icon: true
+          info: true
+          name: true
+          power: true
+          progress: true
+          source: true
+          volume: true
+        idle_view:
+          when_idle: true
+          when_standby: true
+        info: scroll
+        tap_action:
+          action: call-service
+          service: spotcast.start
+          service_data:
+            device_name: Whole House
+        tts: false
+        type: custom:mini-media-player
+      - artwork: none
+        entity: media_player.all_speakers
+        group: true
+        hide:
+          source: true
+          volume: true
+        icon: mdi:spotify
+        idle_view:
+          when_idle: true
+          when_standby: true
+        info: scroll
+        tap_action:
+          action: call-service
+          service: spotcast.start
+          service_data:
+            device_name: Whole House
+        tts: false
+        type: custom:mini-media-player
+    type: custom:layout-card
+    layout_type: vertical

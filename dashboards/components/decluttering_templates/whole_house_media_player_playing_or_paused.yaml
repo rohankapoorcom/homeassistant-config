@@ -1,0 +1,113 @@
+whole_house_media_player_playing_or_paused:
+  card:
+    cards:
+      - artwork: full-cover-fit
+        entity: media_player.all_speakers
+        group: true
+        hide:
+          controls: true
+          icon: true
+          info: true
+          name: true
+          power: true
+          progress: true
+          source: true
+          volume: true
+        idle_view:
+          when_idle: true
+          when_standby: true
+        info: scroll
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            card:
+              cards:
+                - color_type: blank-card
+                  type: custom:button-card
+                - color: rgb(66, 134, 244)
+                  color_type: card
+                  icon: mdi:music-note
+                  name: My Lists
+                  styles:
+                    card:
+                      - width: 90px
+                      - height: 70px
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      command: popup
+                      card:
+                        client_id: ef8780ddc8c941e09abf7556e9033b16
+                        limit: 8
+                        random_song: true
+                        type: custom:spotify-card
+                      title: Choose Playlist
+                  type: custom:button-card
+                - color: rgb(66, 134, 244)
+                  color_type: card
+                  icon: mdi:music-note
+                  name: Top Lists
+                  styles:
+                    card:
+                      - width: 90px
+                      - height: 70px
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      command: popup
+                      card:
+                        client_id: ef8780ddc8c941e09abf7556e9033b16
+                        limit: 8
+                        playlist_type: featured
+                        random_song: true
+                        type: custom:spotify-card
+                      title: Choose Playlist
+                  type: custom:button-card
+                - color: rgb(66, 134, 244)
+                  color_type: card
+                  icon: mdi:music-note
+                  name: Daily Mixes
+                  styles:
+                    card:
+                      - width: 90px
+                      - height: 70px
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      command: popup
+                      card:
+                        client_id: ef8780ddc8c941e09abf7556e9033b16
+                        limit: 8
+                        playlist_type: discover-weekly
+                        random_song: true
+                        type: custom:spotify-card
+                      title: Choose Playlist
+                  type: custom:button-card
+                - color_type: blank-card
+                  type: custom:button-card
+              type: horizontal-stack
+            style:
+              .: |
+                :host .content {
+                  height: 110px;
+                  }
+            title: Choose Playlist
+        tts: false
+        type: custom:mini-media-player
+      - artwork: none
+        entity: media_player.all_speakers
+        group: true
+        hide:
+          source: true
+          volume: true
+        icon: mdi:spotify
+        idle_view:
+          when_idle: true
+          when_standby: true
+        info: scroll
+        tap_action: none
+        tts: false
+        type: custom:mini-media-player
+    type: custom:layout-card
+    layout_type: vertical

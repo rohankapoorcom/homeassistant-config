@@ -1,0 +1,25 @@
+# lovelace_gen
+
+type: custom:layout-card
+cards:
+  {% for camera in cameras %}
+  - type: picture-entity
+    aspect_ratio: 50%
+    entity: {{ camera }}
+    show_name: false
+    show_state: false
+  {% endfor %}
+layout_type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr 1fr
+  grid-template-rows: auto
+  grid-template-areas: |
+    "left right"
+  mediaquery:
+    '(max-width: 800px)':
+      grid-template-columns: 1fr
+      grid-template-areas: |
+        "left"
+        "right"
+view_layout:
+  grid-area: main

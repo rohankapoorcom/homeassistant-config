@@ -1,0 +1,27 @@
+whole_house_media_player_instance:
+  card:
+    card:
+      artwork: none
+      entity: '[[entity]]'
+      group: true
+      hide:
+        controls: true
+        info: true
+        power: true
+        progress: true
+        runtime: true
+        source: true
+      icon: '${vars[0] ? ''mdi:speaker-off'' : ''[[icon]]''}'
+      idle_view:
+        when_idle: true
+        when_standby: true
+      info: scroll
+      name: '[[name]]'
+      tap_action: none
+      tts: false
+      type: custom:mini-media-player
+    entities:
+      - '[[entity]]'
+    type: custom:config-template-card
+    variables:
+      - states['[[entity]]'].attributes['is_volume_muted']

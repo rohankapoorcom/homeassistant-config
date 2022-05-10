@@ -1,0 +1,12 @@
+glance_button_card:
+  card:
+    type: glance
+    entities: '[[entities]]'
+    show_icon: true
+    show_state: true
+    show_name: false
+    card_mod:
+      style: |
+        ha-card div.entity {
+          margin-bottom: 0;
+        }

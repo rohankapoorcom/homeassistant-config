@@ -1,0 +1,55 @@
+whole_house_media_player_group:
+  card:
+    cards:
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.living_room_speakers
+          - name: Living Room
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.office_speakers
+          - name: Office
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.master_suite
+          - name: Master Suite
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.hallway_bathroom_mini
+          - name: Hallway Bath
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.downstairs_hallway_mini
+          - name: Downstairs Hall
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.downstairs_bathroom_mini
+          - name: Downstairs Bath
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.guest_room_clock
+          - name: Guest Room
+          - icon: '[[icon]]'
+      - template: whole_house_media_player_instance
+        type: custom:decluttering-card
+        variables:
+          - entity: media_player.storage_room_mini
+          - name: Storage Room
+          - icon: '[[icon]]'
+    type: custom:layout-card
+    layout_type: vertical
+  default:
+    - icon: mdi:speaker-wireless

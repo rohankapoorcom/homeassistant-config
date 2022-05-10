@@ -1,0 +1,30 @@
+remote:
+  variables:
+    source: Receiver Source
+    name: Name of Button
+    script: Name of Script
+  entity: media_player.denon_avr_x4300h
+  name: '[[[ return variables.name ]]]'
+  size: 50%
+  color_type: icon
+  styles:
+    name:
+      - color: var(--paper-item-icon-color)
+    label:
+      - color: var(--paper-item-icon-color)
+      - padding-left: 1ex
+    card:
+      - font-size: 12px
+    icon:
+      - color: |
+          [[[
+            if (states['media_player.denon_avr_x4300h'].attributes.source === variables.source) {
+              return 'var(--paper-item-icon-active-color)';
+            } else  {
+              return 'var(--paper-item-icon-color)';
+            }
+          ]]]
+  tap_action:
+    action: call-service
+    haptic: success
+    service: '[[[ return "script." + variables.script ]]]'

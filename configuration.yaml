@@ -30,6 +30,18 @@ frontend:
   extra_module_url:
     - /hacsfiles/lovelace-card-mod/card-mod.js
 
+lovelace:
+  mode: storage
+  dashboards:
+    my-home:
+      mode: yaml
+      title: Home
+      filename: dashboards/home.yaml
+      show_in_sidebar: true
+      icon: mdi:home
+
+lovelace_gen:
+
 # Enables configuration UI
 config:
 
