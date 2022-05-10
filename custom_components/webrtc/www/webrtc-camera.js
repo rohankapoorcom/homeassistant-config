@@ -10,6 +10,7 @@ class WebRTCCamera extends HTMLElement {
     constructor() {
         super();
         this.subscriptions = [];
+        this.unique_shortcuts_key = null;
     }
 
     set status(value) {
@@ -54,7 +55,7 @@ class WebRTCCamera extends HTMLElement {
 
     static getStubConfig() {
         return {
-            url: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov'
+            url: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4'
         }
     }
 
@@ -284,21 +285,25 @@ class WebRTCCamera extends HTMLElement {
         const pause = document.createElement('ha-icon');
         pause.className = 'pause';
         pause.icon = 'mdi:pause';
-        pause.onclick = () => {
+        const pauseCallback = () => {
             if (video.paused) {
                 video.play().then(() => null, () => null);
             } else {
                 video.pause();
             }
         };
+        pause.addEventListener('click', pauseCallback);
+        pause.addEventListener('touchstart', pauseCallback);
         card.appendChild(pause);
 
         const volume = document.createElement('ha-icon');
         volume.className = 'volume';
         volume.icon = video.muted ? 'mdi:volume-mute' : 'mdi:volume-high';
-        volume.onclick = () => {
+        const volumeCallback = () => {
             video.muted = !video.muted;
         };
+        volume.addEventListener('click', volumeCallback);
+        volume.addEventListener('touchstart', volumeCallback);
         card.appendChild(volume);
 
         video.onvolumechange = () => {
@@ -311,20 +316,24 @@ class WebRTCCamera extends HTMLElement {
 
         // https://stackoverflow.com/questions/43024394/ios10-fullscreen-safari-javascript
         if (this.requestFullscreen) {  // normal browser
-            fullscreen.onclick = () => {
+            const fullscreenCallback = () => {
                 document.fullscreenElement
                     ? document.exitFullscreen() : this.requestFullscreen();
             }
+            fullscreen.addEventListener('click', fullscreenCallback);
+            fullscreen.addEventListener('touchstart', fullscreenCallback);
             this.onfullscreenchange = () => {
                 fullscreen.icon = document.fullscreenElement
                     ? 'mdi:fullscreen-exit' : 'mdi:fullscreen';
             }
         } else {  // Apple Safari...
-            fullscreen.onclick = () => {
+            const fullscreenCallback = () => {
                 document.webkitFullscreenElement
                     ? document.webkitExitFullscreen()
                     : this.webkitRequestFullscreen();
             }
+            fullscreen.addEventListener('click', fullscreenCallback);
+            fullscreen.addEventListener('touchstart', fullscreenCallback);
             this.onwebkitfullscreenchange = () => {
                 fullscreen.icon = document.webkitFullscreenElement
                     ? 'mdi:fullscreen-exit' : 'mdi:fullscreen';
@@ -359,14 +368,14 @@ class WebRTCCamera extends HTMLElement {
             this.setPTZVisibility(true);
         };
 
-        if (this.config.shortcuts && this.config.shortcuts.length > 0) {
-            this.renderShortcuts(card, this.config.shortcuts);
+        if (this.config.shortcuts && this.config.shortcuts.services && this.config.shortcuts.services.length > 0) {
+            this.renderShortcuts(card, this.config.shortcuts.services);
         }
     }
 
     renderShortcuts(card, elements) {
         const shortcuts = document.createElement('div');
-        shortcuts.className = 'shortcuts';
+        shortcuts.className = 'shortcuts-' + this.getUniqueShortcutsKey();
 
         for (var i = 0; i < elements.length; i++) {
             const element = elements[i];
@@ -375,10 +384,12 @@ class WebRTCCamera extends HTMLElement {
             shortcut.className = 'shortcut shortcut-' + i;
             shortcut.setAttribute('title', element.name);
             shortcut.icon = element.icon;
-            shortcut.onclick = () => {
+            const shortcutCallback = () => {
                 const [domain, name] = element.service.split('.');
                 this.hass.callService(domain, name, element.service_data || {});
             };
+            shortcut.addEventListener('click', shortcutCallback);
+            shortcut.addEventListener('touchstart', shortcutCallback);
             shortcuts.appendChild(shortcut);
         }
 
@@ -407,6 +418,14 @@ class WebRTCCamera extends HTMLElement {
             `;
             ptz.appendChild(ptzZoom);
         }
+        if (this.config.ptz.data_home) {
+            const ptzHome = document.createElement('div');
+            ptzHome.className = 'ptz-home';
+            ptzHome.innerHTML = `
+                <ha-icon class="home" icon="mdi:home"></ha-icon>
+            `;
+            ptz.appendChild(ptzHome);
+        }
         card.appendChild(ptz);
 
         const handlePTZ = (ev) => {
@@ -420,6 +439,7 @@ class WebRTCCamera extends HTMLElement {
         const buttons = ptz.querySelectorAll('ha-icon');
         buttons.forEach(function (el) {
             el.addEventListener('click', handlePTZ);
+            el.addEventListener('touchstart', handlePTZ);
         });
     }
 
@@ -435,13 +455,13 @@ class WebRTCCamera extends HTMLElement {
                 width: 100%;
                 height: 100%;
                 position: relative;
-                background: black;
             }
             #video, .fix-safari {
                 width: 100%;
                 height: 100%;
                 display: block;
                 z-index: 0;
+                background: black;
             }
             .box {
                 position: absolute;
@@ -509,6 +529,15 @@ class WebRTCCamera extends HTMLElement {
                 width: 80px;
                 height: 40px;
             }
+            .ptz-home {
+                position: relative;
+                margin-top: 10px;
+                background-color: var( --ha-picture-card-background-color, rgba(0, 0, 0, 0.3) );
+                border-radius: 4px;
+                width: 40px;
+                height: 40px;
+                left: 20px;
+            }
             .show {
                 display: block;
             }
@@ -545,24 +574,49 @@ class WebRTCCamera extends HTMLElement {
                 top: 50%;
                 transform: translateY(-50%);
             }
+            .home {
+                top: 50%;
+                transform: translateY(-50%);
+                margin-left: auto;
+                margin-right: auto;
+                left: 0;
+                right: 0;
+                text-align: center;
+            }
             .state {
                 right: 12px;
                 top: 12px;
                 cursor: default;
                 opacity: 0.4;
             }
-            .shortcuts {
-                position: absolute;
-                top: 12px;
-                left: 0px;
-            }
-            .shortcuts > .shortcut {
-                margin-left: 12px;
-                position: relative;
-                display: inline-block;
-                opacity: .9;
-            }
         `;
+
+        if (this.config.shortcuts && this.config.shortcuts.services && this.config.shortcuts.services.length > 0) {
+            const config = this.config.shortcuts;
+            const map = {
+                "horizontal": "left",
+                "vertical": "top"
+            };
+
+            const orientation = config.orientation && config.orientation in map ? map[config.orientation] : 'left';
+            style.textContent += `
+                .shortcuts-` + this.getUniqueShortcutsKey() + ` {
+                    position: absolute;
+                    top: calc(12px + ` + (config.top ? this.prepareMargin(config.top) : '0px') +`);
+                    left: calc(12px + ` + (config.left ? this.prepareMargin(config.left) : '0px') +`);
+                }
+                .shortcuts-` + this.getUniqueShortcutsKey() + ` > .shortcut {
+                    margin-` + orientation + `: 12px;
+                    position: relative;
+                    display: ` + (orientation === 'left' ? 'inline-' : '') + `block;
+                    opacity: .9;
+                }
+                .shortcuts-` + this.getUniqueShortcutsKey() + ` > .shortcut:first-child {
+                    margin-` + orientation + `: 0px;
+                }
+            `;
+        }
+
         this.appendChild(style);
 
         const card = document.createElement('ha-card');
@@ -722,6 +776,33 @@ class WebRTCCamera extends HTMLElement {
             this.subscriptions.forEach(callback => callback());
             this.subscriptions = [];
         }
+    }
+
+    getUniqueShortcutsKey() {
+        if (this.unique_shortcuts_key !== null) {
+            return this.unique_shortcuts_key;
+        }
+
+        const cyrb = function(str, seed = 0) {
+            let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+            for (let i = 0, ch; i < str.length; i++) {
+                ch = str.charCodeAt(i);
+                h1 = Math.imul(h1 ^ ch, 2654435761);
+                h2 = Math.imul(h2 ^ ch, 1597334677);
+            }
+            h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+            h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+
+            return 4294967296 * (2097151 & h2) + (h1>>>0);
+        };
+
+        this.unique_shortcuts_key = cyrb(JSON.stringify(this.config.shortcuts));
+
+        return this.unique_shortcuts_key;
+    }
+
+    prepareMargin(margin) {
+        return !isNaN(parseFloat(margin)) && isFinite(margin) ? margin + 'px' : margin;
     }
 }
 
