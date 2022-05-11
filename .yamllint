@@ -4,6 +4,7 @@ ignore: |
   blueprints/
   !blueprints/*/rohankapoorcom/*.yaml
   custom_components/
+  dashboards/
   ip_bans.yaml
   packages/hasp/plates/
   packages/down_plate/
