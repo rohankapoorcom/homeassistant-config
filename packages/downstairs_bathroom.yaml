@@ -20,7 +20,7 @@ homeassistant:
 sensor:
   - platform: template
     sensors:
-      hallway_bathroom_relative_humidity:
+      downstairs_bathroom_relative_humidity:
         friendly_name: 'Relative Humidity'
         unit_of_measurement: '%'
         # yamllint disable rule:line-length
