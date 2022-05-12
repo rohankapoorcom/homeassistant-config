@@ -1,0 +1,118 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  05/11/2022
+#  @package      :  Downstairs Bathroom
+#  @description  :  Controls lights and fans in the Downstairs Bathroom.
+###############################################################################
+---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'downstairs_bathroom'
+
+################################################
+## Sensor
+################################################
+sensor:
+  - platform: template
+    sensors:
+      hallway_bathroom_relative_humidity:
+        friendly_name: 'Relative Humidity'
+        unit_of_measurement: '%'
+        # yamllint disable rule:line-length
+        value_template: >
+          {{ states('sensor.downstairs_bathroom_humidity') | float(0) - states('sensor.downstairs_humidity') | float(0) }}
+        # yamllint enable rule:line-length
+
+################################################
+## Automation
+################################################
+automation:
+  - id: 55251546-2ec9-422a-a8cd-761c7c752e32
+    alias: Control the Downstairs Bathroom Lights
+    description: Utilizes the motion_light blueprint for contolling the Downstairs Bathroom Lights.
+    use_blueprint:
+      path: rohankapoorcom/motion_light.yaml
+      input:
+        motion_entity: binary_sensor.downstairs_bathroom_motion
+        light_target: light.downstairs_bathroom_lights
+        no_motion_wait: 60
+
+  - id: 634b14d2-658f-4407-aa76-b444a867c678
+    alias: Control the Downstairs Bathroom Fan
+    description: Utilizes motion and humidity for controlling the Downstairs Bathroom Fan.
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: binary_sensor.downstairs_bathroom_motion
+        from: 'off'
+        to: 'on'
+      - platform: numeric_state
+        entity_id: sensor.downstairs_bathroom_relative_humidity
+        above: 20
+    action:
+      - choose:
+          - alias: If there is motion or high humidity, then turn on the fan.
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: binary_sensor.downstairs_bathroom_motion
+                    state: 'on'
+                  - condition: numeric_state
+                    entity_id: sensor.downstairs_bathroom_relative_humidity
+                    above: 20
+            sequence:
+              - service: fan.turn_on
+                target:
+                  entity_id: fan.downstairs_bathroom_fan
+              - wait_for_trigger:
+                  - platform: template
+                    value_template: >
+                      {{ states('sensor.downstairs_bathroom_relative_humidity') | float <= 10
+                      and is_state('binary_sensor.downstairs_bathroom_motion', 'off') }}
+                continue_on_timeout: false
+              - delay:
+                  minutes: 5
+              - service: fan.turn_off
+                target:
+                  entity_id: fan.downstairs_bathroom_fan
+        default:
+          - service: fan.turn_off
+            target:
+              entity_id: fan.downstairs_bathroom_fan
+
+  - id: 358ac3b0-b113-4024-bd6d-02941d42601c
+    alias: Adjust the Downstairs Bathroom Default Brightness
+    description: Utilizes a blueprint to configure the default brightess on the Downstairs Bathroom Lights.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+      input:
+        zwave_device: 466cd9baee786a896fc2bcbc97887a44
+        bedtime: '01:00:00'
+        bedtime_brightness: 10
+        wakeup_time: '08:00:00'
+        wakeup_time_brightness: 99
+
+  - id: e520d3b3-36f6-4169-8274-9864a7fd216b
+    alias: Downstairs Bathroom Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Downstairs Bathroom.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: 466cd9baee786a896fc2bcbc97887a44
+        button_a:
+          - service: light.turn_on
+            target:
+              entity_id: light.downstairs_bathroom_lights
+            data:
+              brightness_pct: 100

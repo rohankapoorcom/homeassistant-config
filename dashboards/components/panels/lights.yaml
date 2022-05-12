@@ -238,6 +238,19 @@ cards:
         variables:
           - entity: fan.downstairs_bathroom_fan
           - name: Fan
+      - type: custom:decluttering-card
+        template: glance_button_card
+        variables:
+          - entities:
+              - entity: sensor.downstairs_bathroom_temperature
+                name: temp
+      - type: custom:decluttering-card
+        template: glance_button_card
+        variables:
+          - entities:
+              - entity: sensor.downstairs_bathroom_relative_humidity
+                name: Humidity
+                icon: mdi:water-percent
     columns: 4
     square: false
 layout_type: custom:grid-layout
