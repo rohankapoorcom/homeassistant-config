@@ -49,6 +49,8 @@ google_assistant:
       expose: true
       aliases:
         - Study Fan
+    sensor.office_temperature:
+      expose: true
     light.master_bathroom_lights:
       expose: true
     fan.master_bathroom_fan:
