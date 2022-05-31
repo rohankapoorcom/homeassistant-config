@@ -24,9 +24,21 @@ I have a single [Lovelace dashboard](dashboards/home.yaml) that I use for all di
 
 I use many [custom Lovelace cards](www/community) to build my dashboard.
 
-<img alt="Home" src="./docs/img/1.png" width="200"/> <img alt="Lights" src="./docs/img/2.png" width="200"/>
-<img alt="Vacuums" src="./docs/img/5.png" width="200"/> <img alt="Appliances" src="./docs/img/6.png" width="200"/>
-<img alt="Music" src="./docs/img/7.png" width="200"/> <img alt="TV Remote" src="./docs/img/8.png" width="200"/>
+<p align="center">
+    <img alt="Home" src="./docs/img/1.png" width="200"/>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <img alt="Lights" src="./docs/img/2.png" width="200"/>
+</p>
+<p align="center">
+    <img alt="Vacuums" src="./docs/img/5.png" width="200"/>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <img alt="Appliances" src="./docs/img/6.png" width="200"/>
+</p>
+<p align="center">
+    <img alt="Music" src="./docs/img/7.png" width="200"/>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <img alt="TV Remote" src="./docs/img/8.png" width="200"/>
+</p>
 
 ## Contributing
 
