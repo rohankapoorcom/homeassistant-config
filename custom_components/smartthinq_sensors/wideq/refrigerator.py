@@ -4,7 +4,7 @@ import json
 import logging
 from typing import Optional
 
-from . import (
+from .const import (
     FEAT_ECOFRIENDLY,
     FEAT_EXPRESSMODE,
     FEAT_EXPRESSFRIDGE,
@@ -12,16 +12,15 @@ from . import (
     FEAT_ICEPLUS,
     FEAT_SMARTSAVINGMODE,
     FEAT_WATERFILTERUSED_MONTH,
+    STATE_OPTIONITEM_NONE,
+    UNIT_TEMP_FAHRENHEIT,
 )
-
 from .device import (
     LABEL_BIT_OFF,
     LABEL_BIT_ON,
-    STATE_OPTIONITEM_NONE,
-    UNIT_TEMP_FAHRENHEIT,
-    UNITTEMPMODES,
     Device,
     DeviceStatus,
+    UnitTempModes,
 )
 
 FEATURE_DESCR = {
@@ -31,17 +30,17 @@ FEATURE_DESCR = {
 }
 
 REFRTEMPUNIT = {
-    "Ｆ": UNITTEMPMODES.Fahrenheit,
-    "℃": UNITTEMPMODES.Celsius,
-    "˚F": UNITTEMPMODES.Fahrenheit,
-    "˚C": UNITTEMPMODES.Celsius,
+    "Ｆ": UnitTempModes.Fahrenheit,
+    "℃": UnitTempModes.Celsius,
+    "˚F": UnitTempModes.Fahrenheit,
+    "˚C": UnitTempModes.Celsius,
 }
 
 # REFRTEMPUNIT = {
-#     "\uff26": UNITTEMPMODES.Fahrenheit,
-#     "\u2103": UNITTEMPMODES.Celsius,
-#     "\u02daF": UNITTEMPMODES.Fahrenheit,
-#     "\u02daC": UNITTEMPMODES.Celsius,
+#     "\uff26": UnitTempModes.Fahrenheit,
+#     "\u2103": UnitTempModes.Celsius,
+#     "\u02daF": UnitTempModes.Fahrenheit,
+#     "\u02daC": UnitTempModes.Celsius,
 # }
 
 DEFAULT_FRIDGE_RANGE_C = [1, 10]
@@ -290,7 +289,7 @@ class RefrigeratorDevice(Device):
             return False
         return True
 
-    def _set_feature(self, turn_on: bool, state_key, cmd_key):
+    async def _set_feature(self, turn_on: bool, state_key, cmd_key):
         """Switch a feature."""
 
         status_key = self._get_state_key(state_key)
@@ -301,38 +300,38 @@ class RefrigeratorDevice(Device):
         if not status_value:
             return
         keys = self._get_cmd_keys(cmd_key)
-        self.set(keys[0], keys[1], key=keys[2], value=status_value)
+        await self.set(keys[0], keys[1], key=keys[2], value=status_value)
         self._status.update_status(status_key, status_value, True)
 
-    def set_eco_friendly(self, turn_on=False):
+    async def set_eco_friendly(self, turn_on=False):
         """Switch the echo friendly status."""
-        self._set_feature(turn_on, REFR_STATE_ECO_FRIENDLY, CMD_STATE_ECO_FRIENDLY)
+        await self._set_feature(turn_on, REFR_STATE_ECO_FRIENDLY, CMD_STATE_ECO_FRIENDLY)
 
-    def set_ice_plus(self, turn_on=False):
+    async def set_ice_plus(self, turn_on=False):
         """Switch the ice plus status."""
         if self.model_info.is_info_v2:
             return
         if not self.set_values_allowed:
             return
-        self._set_feature(turn_on, REFR_STATE_ICE_PLUS, CMD_STATE_ICE_PLUS)
+        await self._set_feature(turn_on, REFR_STATE_ICE_PLUS, CMD_STATE_ICE_PLUS)
 
-    def set_express_fridge(self, turn_on=False):
+    async def set_express_fridge(self, turn_on=False):
         """Switch the express fridge status."""
         if not self.model_info.is_info_v2:
             return
         if not self.set_values_allowed:
             return
-        self._set_feature(turn_on, REFR_STATE_EXPRESS_FRIDGE, CMD_STATE_EXPRESS_FRIDGE)
+        await self._set_feature(turn_on, REFR_STATE_EXPRESS_FRIDGE, CMD_STATE_EXPRESS_FRIDGE)
 
-    def set_express_mode(self, turn_on=False):
+    async def set_express_mode(self, turn_on=False):
         """Switch the express mode status."""
         if not self.model_info.is_info_v2:
             return
         if not self.set_values_allowed:
             return
-        self._set_feature(turn_on, REFR_STATE_EXPRESS_MODE, CMD_STATE_EXPRESS_MODE)
+        await self._set_feature(turn_on, REFR_STATE_EXPRESS_MODE, CMD_STATE_EXPRESS_MODE)
 
-    def set_fridge_target_temp(self, temp):
+    async def set_fridge_target_temp(self, temp):
         """Set the fridge target temperature."""
         if not self.set_values_allowed:
             return
@@ -345,10 +344,10 @@ class RefrigeratorDevice(Device):
 
         status_key = self._get_state_key(REFR_STATE_FRIDGE_TEMP)
         keys = self._get_cmd_keys(CMD_STATE_FRIDGE_TEMP)
-        self.set(keys[0], keys[1], key=keys[2], value=temp_key)
+        await self.set(keys[0], keys[1], key=keys[2], value=temp_key)
         self._status.update_status(status_key, temp_key, False)
 
-    def set_freezer_target_temp(self, temp):
+    async def set_freezer_target_temp(self, temp):
         """Set the freezer target temperature."""
         if not self.set_values_allowed:
             return
@@ -361,17 +360,17 @@ class RefrigeratorDevice(Device):
 
         status_key = self._get_state_key(REFR_STATE_FREEZER_TEMP)
         keys = self._get_cmd_keys(CMD_STATE_FREEZER_TEMP)
-        self.set(keys[0], keys[1], key=keys[2], value=temp_key)
+        await self.set(keys[0], keys[1], key=keys[2], value=temp_key)
         self._status.update_status(status_key, temp_key, False)
 
     def reset_status(self):
         self._status = RefrigeratorStatus(self, None)
         return self._status
 
-    def poll(self) -> Optional["RefrigeratorStatus"]:
+    async def poll(self) -> Optional["RefrigeratorStatus"]:
         """Poll the device's current state."""
 
-        res = self.device_poll(REFR_ROOT_DATA)
+        res = await self.device_poll(REFR_ROOT_DATA)
         if not res:
             return None
 
@@ -435,7 +434,7 @@ class RefrigeratorStatus(DeviceStatus):
             if not temp_unit:
                 return None
             self._temp_unit = (
-                REFRTEMPUNIT.get(temp_unit, UNITTEMPMODES.Celsius)
+                REFRTEMPUNIT.get(temp_unit, UnitTempModes.Celsius)
             ).value
         return self._temp_unit
 
@@ -611,7 +610,7 @@ class RefrigeratorStatus(DeviceStatus):
         return self._data.get("ActiveSavingStatus", "N/A")
 
     def _update_features(self):
-        result = [
+        _ = [
             self.eco_friendly_state,
             self.ice_plus_status,
             self.express_fridge_status,

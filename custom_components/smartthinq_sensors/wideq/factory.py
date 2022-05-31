@@ -1,14 +1,16 @@
 
 from .ac import AirConditionerDevice
 from .airpurifier import AirPurifierDevice
+from .dehumidifier import DeHumidifierDevice
 from .dishwasher import DishWasherDevice
+from .fan import FanDevice
 from .range import RangeDevice
 from .refrigerator import RefrigeratorDevice
 from .styler import StylerDevice
 from .washerDryer import WMDevice
 
-from .device import(
-    UNIT_TEMP_CELSIUS,
+from .const import UNIT_TEMP_CELSIUS
+from .device_info import (
     WM_DEVICE_TYPES,
     DeviceInfo,
     DeviceType,
@@ -33,8 +35,12 @@ def get_lge_device(client, device: DeviceInfo, temp_unit=UNIT_TEMP_CELSIUS):
         return AirConditionerDevice(client, device, temp_unit)
     if device_type == DeviceType.AIR_PURIFIER:
         return AirPurifierDevice(client, device)
+    if device_type == DeviceType.DEHUMIDIFIER:
+        return DeHumidifierDevice(client, device)
     if device_type == DeviceType.DISHWASHER:
         return DishWasherDevice(client, device)
+    if device_type == DeviceType.FAN:
+        return FanDevice(client, device)
     if device_type == DeviceType.RANGE:
         return RangeDevice(client, device)
     if device_type == DeviceType.REFRIGERATOR:

@@ -2,20 +2,16 @@
 import logging
 from typing import Optional
 
-from . import (
+from .const import (
     FEAT_CHILDLOCK,
     FEAT_ERROR_MSG,
     FEAT_NIGHTDRY,
     FEAT_PRE_STATE,
     FEAT_REMOTESTART,
     FEAT_RUN_STATE,
-)
-
-from .device import (
-    Device,
-    DeviceStatus,
     STATE_OPTIONITEM_NONE,
 )
+from .device import Device, DeviceStatus
 
 STATE_STYLER_POWER_OFF = "@ST_STATE_POWER_OFF_W"
 STATE_STYLER_END = [
@@ -42,10 +38,10 @@ class StylerDevice(Device):
         self._status = StylerStatus(self, None)
         return self._status
 
-    def poll(self) -> Optional["StylerStatus"]:
+    async def poll(self) -> Optional["StylerStatus"]:
         """Poll the device's current state."""
 
-        res = self.device_poll("styler")
+        res = await self.device_poll("styler")
         if not res:
             return None
 
@@ -238,7 +234,7 @@ class StylerStatus(DeviceStatus):
         )
 
     def _update_features(self):
-        result = [
+        _ = [
             self.run_state,
             self.pre_state,
             self.error_msg,
