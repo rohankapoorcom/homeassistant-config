@@ -40,6 +40,8 @@ I use many [custom Lovelace cards](www/community) to build my dashboard.
     <img alt="TV Remote" src="./docs/img/8.png" width="200"/>
 </p>
 
+\* Screenshots use a template from [Design Bolts](https://www.designbolts.com/2020/05/06/free-oneplus-8-pro-mockup-ai-psd-format/).
+
 ## Contributing
 
 I treat my Home Assistant configuration as an active open source project but don't always follow the best practices (with issues and PRs). If there's something you'd like to improve or contribute to it, please feel free to make a PR.
