@@ -30,10 +30,10 @@ cards:
         entities:
           - entity: sensor.upstairs_temperature
             name: Upstairs
-          - entity: sensor.downstairs_temperature
-            name: Downstairs
           - entity: sensor.master_bedroom_temperature
             name: Master Bed
+          - entity: sensor.office_temperature
+            name: Office
           - entity: sensor.garage_temperature
             name: Garage
           - entity: sensor.ups_envirosense_temperature
