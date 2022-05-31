@@ -107,6 +107,20 @@ light:
           - service: light.turn_off
             entity_id: light.office_backlighting
 
+switch:
+  - platform: xap_controller
+    path: /dev/xap800
+    name: Office Mixer
+    baud: 57600
+    XAPType: XAP800
+    switches:
+      'Office Ceiling Mics':
+        - "1:1"
+        - "1:2"
+      'Office Speakers':
+        - "1:3"
+        - "1:4"
+
 ################################################
 ## Script
 ################################################
