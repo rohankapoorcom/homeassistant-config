@@ -28,8 +28,8 @@ cards:
         show_state: true
         type: glance
         entities:
-          - entity: sensor.upstairs_temperature
-            name: Upstairs
+          - entity: sensor.living_room_temperature
+            name: Living Room
           - entity: sensor.master_bedroom_temperature
             name: Master Bed
           - entity: sensor.office_temperature
