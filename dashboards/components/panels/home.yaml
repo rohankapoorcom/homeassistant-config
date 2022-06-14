@@ -29,7 +29,7 @@ cards:
         type: glance
         entities:
           - entity: sensor.living_room_temperature
-            name: Living Room
+            name: Living Rm
           - entity: sensor.master_bedroom_temperature
             name: Master Bed
           - entity: sensor.office_temperature
@@ -86,11 +86,22 @@ cards:
       - type: custom:apexcharts-card
         header:
           show: true
-          title: Air Quality
+          title: U.S. Air Quality Index
           show_states: true
           colorize_states: true
         series:
           - entity: sensor.u_s_air_quality_index
+            name: Exterior
+          - entity: sensor.living_room_us_air_quality_index
+            name: Living Room
+            group_by:
+              func: avg
+              duration: 30min
+          - entity: sensor.master_bedroom_us_air_quality_index
+            name: Master Bedroom
+            group_by:
+              func: avg
+              duration: 30min
     view_layout:
       grid-area: right
 layout_type: custom:grid-layout
