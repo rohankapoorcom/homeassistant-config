@@ -168,8 +168,8 @@ cards:
       - type: custom:decluttering-card
         template: slider_button_card
         variables:
-          - entity: light.storage_room_lights
-          - name: Storage
+          - entity: light.gym_lights
+          - name: Gym
     columns: 4
     square: false
   - type: grid

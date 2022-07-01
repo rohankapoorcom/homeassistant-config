@@ -86,9 +86,9 @@ google_assistant:
       expose: true
       aliases:
         - Guest Lights
-    light.storage_room_lights:
+    light.gym_lights:
       expose: true
-      aliases:
-        - Gym Lights
+    fan.gym_fan:
+      expose: true
     light.garage_lights:
       expose: true
