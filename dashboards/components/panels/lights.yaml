@@ -170,6 +170,11 @@ cards:
         variables:
           - entity: light.gym_lights
           - name: Gym
+      - type: custom:decluttering-card
+        template: slider_button_card
+        variables:
+          - entity: fan.gym_fan
+          - name: Gym Fan
     columns: 4
     square: false
   - type: grid
