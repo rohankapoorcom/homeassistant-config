@@ -6,6 +6,7 @@ import aiohttp
 import async_timeout
 
 from .digest import DigestAuth
+from hashlib import md5
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -53,6 +54,13 @@ class DahuaClient:
             channel,
             subtype,
         )
+        if subtype == 3:
+            url = "rtsp://{0}:{1}@{2}".format(
+                self._username,
+                self._password,
+                self._address,
+            )
+
         return url
 
     async def async_get_snapshot(self, channel_number: int) -> bytes:
@@ -77,7 +85,12 @@ class DahuaClient:
         updateSerial=IPC-HDW5830R-Z
         updateSerialCloudUpgrade=IPC-HDW5830R-Z:07:01:08:70:52:00:09:0E:03:00:04:8F0:00:00:00:00:00:02:00:00:600
         """
-        return await self.get("/cgi-bin/magicBox.cgi?action=getSystemInfo")
+        try:
+            return await self.get("/cgi-bin/magicBox.cgi?action=getSystemInfo")
+        except aiohttp.ClientResponseError as e:
+            not_hashed_id = "{0}_{1}_{2}_{3}".format(self._address, self._rtsp_port, self._username, self._password)
+            unique_cam_id = md5(not_hashed_id.encode('UTF-8')).hexdigest()
+            return {"serialNumber": unique_cam_id}
 
     async def get_device_type(self) -> dict:
         """
@@ -87,22 +100,36 @@ class DahuaClient:
         Some cams might return...
         type=IP Camera
         """
-        return await self.get("/cgi-bin/magicBox.cgi?action=getDeviceType")
+        try:
+            return await self.get("/cgi-bin/magicBox.cgi?action=getDeviceType")
+        except aiohttp.ClientResponseError as e:
+            return {"type": "Generic RTSP"}
 
     async def get_software_version(self) -> dict:
         """
         get_software_version returns the device software version (also known as the firmware version). Example response:
         version=2.800.0000016.0.R,build:2020-06-05
         """
-        return await self.get("/cgi-bin/magicBox.cgi?action=getSoftwareVersion")
+        try:
+            return await self.get("/cgi-bin/magicBox.cgi?action=getSoftwareVersion")
+        except aiohttp.ClientResponseError as e:
+            return {"version": "1.0"}
 
     async def get_machine_name(self) -> dict:
         """ get_machine_name returns the device name. Example response: name=FrontDoorCam """
-        return await self.get("/cgi-bin/magicBox.cgi?action=getMachineName")
+        try:
+            return await self.get("/cgi-bin/magicBox.cgi?action=getMachineName")
+        except aiohttp.ClientResponseError as e:
+            not_hashed_id = "{0}_{1}_{2}_{3}".format(self._address, self._rtsp_port, self._username, self._password)
+            unique_cam_id = md5(not_hashed_id.encode('UTF-8')).hexdigest()
+            return {"name": unique_cam_id}
 
     async def get_vendor(self) -> dict:
         """ get_vendor returns the vendor. Example response: vendor=Dahua """
-        return await self.get("/cgi-bin/magicBox.cgi?action=getVendor")
+        try:
+            return await self.get("/cgi-bin/magicBox.cgi?action=getVendor")
+        except aiohttp.ClientResponseError as e:
+            return {"vendor": "Generic RTSP"}
 
     async def reboot(self) -> dict:
         """ Reboots the device """
@@ -116,7 +143,7 @@ class DahuaClient:
         except aiohttp.ClientResponseError as e:
             pass
         # If we can't fetch, just assume 2 since that's pretty standard
-        return 2
+        return 3
 
     async def async_get_coaxial_control_io_status(self) -> dict:
         """
@@ -136,7 +163,7 @@ class DahuaClient:
         """
         async_get_lighting_v2 will fetch the status of the camera light (also known as the illuminator)
         NOTE: this is not the same as the infrared (IR) light. This is the white visible light on the camera
-        Note all cameras have this feature.
+        Not all cameras have this feature.
 
         Example response:
         table.Lighting_V2[0][2][0].Correction=50
@@ -158,13 +185,21 @@ class DahuaClient:
         table.General.MachineName=Cam4
         """
         url = "/cgi-bin/configManager.cgi?action=getConfig&name=General.MachineName"
-        return await self.get(url)
+        try:
+            return await self.get(url)
+        except aiohttp.ClientResponseError as e:
+            not_hashed_id = "{0}_{1}_{2}_{3}".format(self._address, self._rtsp_port, self._username, self._password)
+            unique_cam_id = md5(not_hashed_id.encode('UTF-8')).hexdigest()
+            return {"table.General.MachineName": unique_cam_id}
 
     async def async_get_config(self, name) -> dict:
         """ async_get_config gets a config by name """
         # example name=Lighting[0][0]
         url = "/cgi-bin/configManager.cgi?action=getConfig&name={0}".format(name)
-        return await self.get(url)
+        try:
+            return await self.get(url)
+        except aiohttp.ClientResponseError as e:
+            return {}
 
     async def async_get_config_lighting(self, channel: int, profile_mode) -> dict:
         """
@@ -194,7 +229,10 @@ class DahuaClient:
         table.MotionDetect[0].DetectVersion=V3.0
         table.MotionDetect[0].Enable=true
         """
-        return await self.async_get_config("MotionDetect")
+        try:
+            return await self.async_get_config("MotionDetect")
+        except aiohttp.ClientResponseError as e:
+            return {"table.MotionDetect[0].Enable": "false"}
 
     async def async_get_video_analyse_rules_for_amcrest(self):
         """
@@ -202,7 +240,10 @@ class DahuaClient:
         Example output:
           table.VideoAnalyseRule[0][0].Enable=false
         """
-        return await self.async_get_config("VideoAnalyseRule[0][0].Enable")
+        try:
+            return await self.async_get_config("VideoAnalyseRule[0][0].Enable")
+        except aiohttp.ClientResponseError as e:
+            return {"table.VideoAnalyseRule[0][0].Enable": "false"}
 
     async def async_get_ivs_rules(self):
         """
@@ -408,6 +449,29 @@ class DahuaClient:
         _LOGGER.debug("Turning light on: %s", url)
         return await self.get(url)
 
+    # async def async_set_lighting_v2_for_amcrest_flood_lights(self, channel: int, enabled: bool, brightness: int, profile_mode: str) -> dict:
+    async def async_set_lighting_v2_for_amcrest_flood_lights(self, channel: int, enabled: bool, profile_mode: str) -> dict:
+        """
+        async_set_lighting_v2_for_amcrest_floodlights will turn on or off the flood light on the camera. If turning on, the brightness will be used.
+        brightness is in the range of 0 to 100 inclusive where 100 is the brightest.
+        NOTE: While the flood lights do support an auto or "smart" mode, the api does not handle this change properly.
+              If one wishes to make the change back to auto, it must be done in the 'Amcrest Smart Home' smartphone app.
+
+        profile_mode: 0=day, 1=night, 2=scene
+        """
+
+        # on = Manual, off = Off
+        mode = "Manual"
+        if not enabled:
+            mode = "Off"
+        url_base = "/cgi-bin/configManager.cgi?action=setConfig"
+        mode_cmnd = f'Lighting_V2[{channel}][{profile_mode}][1].Mode={mode}'
+        # brightness_cmnd = f'Lighting_V2[{channel}][{profile_mode}][1].MiddleLight[0].Light={brightness}'
+        # url = f'{url_base}&{mode_cmnd}&{brightness_cmnd}'
+        url = f'{url_base}&{mode_cmnd}'
+        _LOGGER.debug("Switching light: %s", url)
+        return await self.get(url)
+
     async def async_set_lighting_v2_for_amcrest_doorbells(self, mode: str) -> dict:
         """
         async_set_lighting_v2_for_amcrest_doorbells will turn on or off the white light on Amcrest doorbells
@@ -417,7 +481,7 @@ class DahuaClient:
         cmd = "Off"
         if mode == "on":
             cmd = "ForceOn&Lighting_V2[0][0][1].State=On"
-        elif mode == "strobe" or mode == "flicker":
+        elif mode in ('strobe', 'flicker'):
             cmd = "ForceOn&Lighting_V2[0][0][1].State=Flicker"
 
         url = "/cgi-bin/configManager.cgi?action=setConfig&Lighting_V2[0][0][1].Mode={cmd}".format(cmd=cmd)
@@ -528,7 +592,10 @@ class DahuaClient:
         """
 
         url = "/cgi-bin/configManager.cgi?action=getConfig&name=DisableLinkage"
-        return await self.get(url)
+        try:
+            return await self.get(url)
+        except aiohttp.ClientResponseError as e:
+            return {"table.DisableLinkage.Enable": "false"}
 
     async def async_access_control_open_door(self, door_id: int = 1) -> dict:
         """
@@ -609,6 +676,7 @@ class DahuaClient:
         url = "{0}/cgi-bin/eventManager.cgi?action=attach&codes=[{1}]&heartbeat=5".format(self._base, codes)
         if self._username is not None and self._password is not None:
             response = None
+
             try:
                 auth = DigestAuth(self._username, self._password, self._session)
                 response = await auth.request("GET", url)
@@ -618,7 +686,7 @@ class DahuaClient:
                 async for data, _ in response.content.iter_chunks():
                     on_receive(data, channel)
             except Exception as exception:
-                raise ConnectionError() from exception
+                pass
             finally:
                 if response is not None:
                     response.close()
