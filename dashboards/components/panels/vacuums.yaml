@@ -122,6 +122,8 @@ cards:
           right: 0
           top: 10
         vacuum: valetudo_downstairs_roborock
+        map_scale: 1.65
+        title: Downstairs
         type: custom:valetudo-map-card
         min_height: 275
         show_status: false
