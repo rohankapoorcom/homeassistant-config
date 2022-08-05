@@ -6,25 +6,31 @@ cards:
           left: 0
           right: 0
           top: 0
-        entity: camera.upstairs_vacuum
         map_scale: 1.2
         rotate: 0
         title: Upstairs
         type: custom:valetudo-map-card
+        vacuum: valetudo_upstairs_dreame
         min_height: 275
+        show_status: false
+        show_battery_level: false
+        show_start_button: false
+        show_pause_button: false
+        show_stop_button: false
+        show_locate_button: false
       - type: custom:vacuum-card
         stats:
           default:
-            - entity_id: sensor.upstairs_vacuum_main_filter
+            - entity_id: sensor.valetudo_upstairs_dreame_main_filter
               unit: min
               subtitle: Filter
-            - entity_id: sensor.upstairs_vacuum_main_brush
+            - entity_id: sensor.valetudo_upstairs_dreame_main_brush
               unit: min
               subtitle: Main brush
-            - entity_id: sensor.upstairs_vacuum_right_side_brush
+            - entity_id: sensor.valetudo_upstairs_dreame_right_brush
               unit: min
               subtitle: Side brush
-            - entity_id: sensor.upstairs_vacuum_sensor_cleaning
+            - entity_id: sensor.valetudo_upstairs_dreame_sensor_cleaning
               unit: min
               subtitle: Sensor
         shortcuts:
@@ -100,7 +106,7 @@ cards:
               payload: >-
                 {"segment_ids": ["8"], "iterations": 1,
                 "customOrder": true}
-        entity: vacuum.upstairs_vacuum
+        entity: vacuum.valetudo_upstairs_dreame
         compact_view: false
         show_name: true
         show_status: true
@@ -115,26 +121,29 @@ cards:
           left: 30
           right: 0
           top: 10
-        entity: camera.downstairs_vacuum
-        map_scale: 1.65
-        title: Downstairs
+        vacuum: valetudo_downstairs_roborock
         type: custom:valetudo-map-card
-        view_layout: 2
         min_height: 275
-      - entity: vacuum.downstairs_vacuum
+        show_status: false
+        show_battery_level: false
+        show_start_button: false
+        show_pause_button: false
+        show_stop_button: false
+        show_locate_button: false
+      - entity: vacuum.valetudo_downstairs_roborock
         type: custom:vacuum-card
         stats:
           default:
-            - entity_id: sensor.downstairs_vacuum_main_filter
+            - entity_id: sensor.valetudo_downstairs_roborock_main_filter
               unit: min
               subtitle: Filter
-            - entity_id: sensor.downstairs_vacuum_main_brush
+            - entity_id: sensor.valetudo_downstairs_roborock_main_brush
               unit: min
               subtitle: Main brush
-            - entity_id: sensor.downstairs_vacuum_right_side_brush
+            - entity_id: sensor.valetudo_downstairs_roborock_right_brush
               unit: min
               subtitle: Side brush
-            - entity_id: sensor.downstairs_vacuum_sensor_cleaning
+            - entity_id: sensor.valetudo_downstairs_roborock_sensor_cleaning
               unit: min
               subtitle: Sensor
         shortcuts:
@@ -143,7 +152,7 @@ cards:
             service: mqtt.publish
             service_data:
               topic: >-
-                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
               payload: >-
                 {"segment_ids": [16], "iterations": 1,
                 "customOrder": true}
@@ -152,7 +161,7 @@ cards:
             service: mqtt.publish
             service_data:
               topic: >-
-                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
               payload: >-
                 {"segment_ids": [17], "iterations": 1,
                 "customOrder": true}
@@ -161,7 +170,7 @@ cards:
             service: mqtt.publish
             service_data:
               topic: >-
-                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
               payload: >-
                 {"segment_ids": [19], "iterations": 1,
                 "customOrder": true}
@@ -170,7 +179,7 @@ cards:
             service: mqtt.publish
             service_data:
               topic: >-
-                valetudo/downstairs-rockrobo/MapSegmentationCapability/clean/set
+                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
               payload: >-
                 {"segment_ids": [18], "iterations": 1,
                 "customOrder": true}
