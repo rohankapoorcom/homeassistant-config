@@ -176,8 +176,8 @@ cards:
               payload: >-
                 {"segment_ids": [19], "iterations": 1,
                 "customOrder": true}
-          - icon: mdi:cube-outline
-            name: Storage
+          - icon: mdi:bicycle
+            name: Gym
             service: mqtt.publish
             service_data:
               topic: >-

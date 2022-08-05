@@ -46,8 +46,8 @@ whole_house_media_player_group:
       - template: whole_house_media_player_instance
         type: custom:decluttering-card
         variables:
-          - entity: media_player.storage_room_mini
-          - name: Storage Room
+          - entity: media_player.gym_mini
+          - name: Gym
           - icon: '[[icon]]'
     type: custom:layout-card
     layout_type: vertical
