@@ -11,7 +11,7 @@
 ################################################
 automation:
   - id: 049cbddb-1796-4df9-be5b-7a6e0335015d
-    alias: Control the Gym Tablet Charger
+    alias: Control the Downstairs Hallway Tablet Charger
     description: Utilizes a blueprint to manage charging the Gym Tablet.
     use_blueprint:
       path: rohankapoorcom/tablet-battery-charging.yaml
