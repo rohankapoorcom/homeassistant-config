@@ -57,45 +57,13 @@ light:
 ################################################
 automation:
   - id: 0de6a925-9ceb-42fb-b7be-f6621be3ed09
-    alias: Control the Hallway Tablet Charger
-    description: Turn on the Hallway Tablet Charger when the battery is below 40% and turn it off when it's above 85%.
-    mode: single
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: event
-        event_type: automation_reloaded
-      - platform: numeric_state
-        entity_id: sensor.upstairs_hallway_tablet_battery_level
-        above: 85
-      - platform: numeric_state
-        entity_id: sensor.upstairs_hallway_tablet_battery_level
-        below: 40
-
-    action:
-      - choose:
-          - alias: If the battery is above 85%, then turn off the charger.
-            conditions:
-              - condition: numeric_state
-                entity_id: sensor.upstairs_hallway_tablet_battery_level
-                above: 85
-            sequence:
-              - service: switch.turn_off
-                target:
-                  entity_id: switch.hallway_tablet_charger
-          - alias: If the battery is below 40%, then turn on the charger.
-            conditions:
-              - condition: numeric_state
-                entity_id: sensor.upstairs_hallway_tablet_battery_level
-                below: 40
-            sequence:
-              - service: switch.turn_on
-                target:
-                  entity_id: switch.hallway_tablet_charger
-        default:
-          - service: switch.turn_off
-            target:
-              entity_id: switch.hallway_tablet_charger
+    alias: Control the Upstairs Hallway Tablet Charger
+    description: Utilizes a blueprint to manage charging the Hallway Tablet.
+    use_blueprint:
+      path: rohankapoorcom/tablet-battery-charging.yaml
+      input:
+        battery_entity: sensor.upstairs_hallway_tablet_battery_level
+        switch_entity: switch.upstairs_hallway_tablet_charger
 
   - id: '1641371956033'
     alias: Hallway Light Switch Scene Controls

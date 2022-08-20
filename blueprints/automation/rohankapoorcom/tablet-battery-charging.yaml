@@ -1,0 +1,80 @@
+---
+blueprint:
+  domain: automation
+  name: Tablet Battery Charging
+  description: Keep a tablet's battery between the low and high point.
+  input:
+    battery_entity:
+      name: Battery Sensor
+      description: The sensor entity which tracks the tablet's charge percentage.
+      selector:
+        entity:
+          domain: sensor
+          device_class: battery
+    switch_entity:
+      name: Battery Charger
+      description: The switch entity which turns the charger on/off.
+      selector:
+        entity:
+          domain: switch
+    max_percent:
+      name: Max Percent
+      description: 'The percentage charge that the charger will turn off. (default: 85%)'
+      selector:
+        number:
+          min: 50
+          max: 100
+          unit_of_measurement: '%'
+          mode: slider
+          step: 1
+      default: 85
+    min_percent:
+      name: Min Percent
+      description: 'The percentage charge that the charger will turn on. (default: 40%)'
+      selector:
+        number:
+          min: 0
+          max: 50
+          unit_of_measurement: '%'
+          mode: slider
+          step: 1
+      default: 40
+
+mode: single
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: numeric_state
+    entity_id: !input battery_entity
+    above: !input max_percent
+  - platform: numeric_state
+    entity_id: !input battery_entity
+    below: !input min_percent
+
+action:
+  - choose:
+      - alias: If the battery is above max_percent, then turn off the charger.
+        conditions:
+          - condition: numeric_state
+            entity_id: !input battery_entity
+            above: !input max_percent
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: !input switch_entity
+      - alias: If the battery is below 40%, then turn on the charger.
+        conditions:
+          - condition: numeric_state
+            entity_id: !input battery_entity
+            below: !input min_percent
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input switch_entity
+    default:
+      - service: switch.turn_off
+        target:
+          entity_id: !input switch_entity

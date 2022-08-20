@@ -1,0 +1,20 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/19/2022
+#  @package      :  Gym
+#  @description  :  Manages equipment in the Gym.
+###############################################################################
+---
+
+################################################
+## Automations
+################################################
+automation:
+  - id: dd25ecc8-aaee-4a32-8b38-90b13db78b09
+    alias: Control the Gym Tablet Charger
+    description: Utilizes a blueprint to manage charging the Gym Tablet.
+    use_blueprint:
+      path: rohankapoorcom/tablet-battery-charging.yaml
+      input:
+        battery_entity: sensor.gym_tablet_battery_level
+        switch_entity: switch.gym_tablet_charger
