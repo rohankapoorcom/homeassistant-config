@@ -35,6 +35,10 @@ automation:
         entity_id: binary_sensor.downstairs_bathroom_motion
         from: 'off'
         to: 'on'
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        from: 'off'
+        to: 'on'
     action:
       - service: switch.turn_on
         entity_id: switch.hot_water_pump
