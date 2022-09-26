@@ -77,8 +77,33 @@ sun:
 
 mqtt:
   client_id: !secret mqtt.client_id
-  certificate: /etc/ssl/certs/ca-certificates.crt
+  # certificate: /etc/ssl/certs/ca-certificates.crt
   protocol: 3.1
+
+  sensor:
+    - name: Line 103 Status
+      unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-status
+      state_topic: sip2mqtt/103
+      icon: mdi:bell
+      value_template: "{{ value_json.verb }}"
+
+    - name: Line 103 Caller Number
+      unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-caller-number
+      state_topic: sip2mqtt/103
+      icon: mdi:bell
+      value_template: '{{ value_json.caller.split(" ")[-1] }}'
+
+    - name: Line 103 Caller Name
+      unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-caller-name
+      state_topic: sip2mqtt/103
+      icon: mdi:bell
+      value_template: '{{ value_json.caller.split(" ")[:-1]|join(" ", )}}'
+
+  binary_sensor:
+    - name: Front Door Motion Sensor
+      state_topic: BlueIris/FrontDoorSd/motion
+      unique_id: 749ef54c-b0ad-4118-8906-c820de92bdfc
+      device_class: motion
 
 xiaomi_aqara:
   interface: !secret xiaomi_aqara.interface

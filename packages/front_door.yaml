@@ -15,13 +15,6 @@ homeassistant:
       customize: &customize
         package: 'front_door'
 
-binary_sensor:
-  - platform: mqtt
-    name: Front Door Motion Sensor
-    state_topic: BlueIris/FrontDoorSd/motion
-    unique_id: 749ef54c-b0ad-4118-8906-c820de92bdfc
-    device_class: motion
-
 automation:
   - id: 304cad1d-c405-4479-9177-2beb93c46cae
     alias: Control the Front Door Lights
