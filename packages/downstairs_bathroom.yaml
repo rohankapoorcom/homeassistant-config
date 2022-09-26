@@ -78,7 +78,7 @@ automation:
               - wait_for_trigger:
                   - platform: template
                     value_template: >
-                      {{ states('sensor.downstairs_bathroom_relative_humidity') | float <= 10
+                      {{ states('sensor.downstairs_bathroom_relative_humidity') | float(0) <= 10
                       and is_state('binary_sensor.downstairs_bathroom_motion', 'off') }}
                 continue_on_timeout: false
               - delay:
