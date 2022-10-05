@@ -77,7 +77,7 @@ sun:
 
 mqtt:
   client_id: !secret mqtt.client_id
-  # certificate: /etc/ssl/certs/ca-certificates.crt
+  certificate: /etc/ssl/certs/ca-certificates.crt
   protocol: 3.1
 
   sensor:
