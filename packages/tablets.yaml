@@ -16,10 +16,10 @@ automation:
       - service: button.press
         target:
           entity_id: |
-          {{
-            expand(integration_entities('fullykiosk'))
-            | selectattr('entity_id', 'search', '_restart_browser')
-            | map(attribute='entity_id')
-            | list
-          }}
+            {{
+              expand(integration_entities('fullykiosk'))
+              | selectattr('entity_id', 'search', '_restart_browser')
+              | map(attribute='entity_id')
+              | list
+            }}
     mode: single
