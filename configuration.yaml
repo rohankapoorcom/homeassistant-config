@@ -130,12 +130,6 @@ browser_mod:
 
 script: !include scripts.yaml
 
-nest:
-  client_id: !secret nest.client_id
-  client_secret: !secret nest.client_secret
-  project_id: !secret nest.project_id
-  subscriber_id: !secret nest.subscriber_id
-
 smartir:
   check_updates: false
 
