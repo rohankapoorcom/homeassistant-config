@@ -238,3 +238,19 @@ automation:
                   entity_id: light.office_closet_lights
         default: []
     mode: single
+
+  - id: c6888d4f-2471-450d-a8ee-66a68c388169
+    alias: Office Lights Scene Controls
+    description: Utilizes a blueprint to map track lighting states on the Scene Controller in the Living Room.
+    use_blueprint:
+        path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+        input:
+          zwave_device: bec9907b514903d09df1ba766052f542
+          button_b2:
+            - service: light.turn_off
+              target:
+                area_id:
+                  - c8e64155949842d5be77f5c329e2496c
+
+          
+    
