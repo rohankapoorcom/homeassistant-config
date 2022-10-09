@@ -1,0 +1,26 @@
+blueprint:
+  name: Leak detection & notification
+  description: Send a notification when any configured moisture sensor becomes moist
+  domain: automation
+  input:
+    actions:
+      name: Actions
+      description: Notifications or similar to be run. Use {{ trigger.event.data.new_state.attributes.friendly_name
+        }} in a message for a friendly name of the sensor.
+      selector:
+        action: {}
+  source_url: https://gist.github.com/TurtleFX/213bd28f5cfb1a7cded5eb2e91aa30b8
+trigger:
+- event_data: {}
+  event_type: state_changed
+  platform: event
+condition:
+- condition: template
+  value_template: '{{ trigger.event.data.new_state.attributes.device_class == "moisture"
+    }}'
+- condition: template
+  value_template: '{{ trigger.event.data.new_state.state == "on" }}'
+action:
+- choose: []
+  default: !input 'actions'
+mode: single
