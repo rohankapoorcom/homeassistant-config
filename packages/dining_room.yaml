@@ -95,3 +95,20 @@ automation:
                 LED Effect Brightness: 20%
                 LED Effect Duration: 30
                 LED Effect Type: Solid
+  - id: '1651640486809'
+    alias: Dining Room Light Switch Scene Controls
+    description: 'Utilizes a blueprint to handle Scene Controls in the Dining Room.'
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: 8525cf92ecc18c61aca2fe5074d45727
+        button_a2:
+        - service: light.turn_on
+          data: {}
+          target:
+            entity_id: light.dining_room_accent_lights
+        button_b2:
+        - service: light.turn_off
+          data: {}
+          target:
+            entity_id: light.dining_room_accent_lights

@@ -33,3 +33,24 @@ notify:
     platform: mailgun
     recipient: !secret notify.rohan_email.recipient
     sender: !secret notify.rohan_email.sender
+
+automation:
+
+- id: '1665347764581'
+  alias: Low Battery Warnings
+  description: ''
+  use_blueprint:
+    path: Sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      actions:
+      - if:
+        - condition: template
+          value_template: '{{ sensors | length > 0 }}'
+        then:
+        - service: notify.mobile_app_rohan_s_oneplus_8_pro
+          data:
+            message: The battery of the sensor(s) {{sensors}} is low.
+      exclude:
+        entity_id:
+        - sensor.office_remote_battery_level
+        - sensor.rohan_s_oneplus_8_pro_battery_level
