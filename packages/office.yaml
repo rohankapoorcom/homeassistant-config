@@ -250,4 +250,5 @@ automation:
             - service: light.turn_off
               target:
                 area_id:
-                  - c8e64155949842d5be77f5c329e2496c    
+                  - c8e64155949842d5be77f5c329e2496c
+  
