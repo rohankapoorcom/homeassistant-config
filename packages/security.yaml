@@ -90,28 +90,28 @@ automation:
         id: co_detected
     action:
       - choose:
-        - conditions:
-          - condition: trigger
-            id: smoke_detected
-          sequence:
-          - service: notify.mobile_app_rohan_s_oneplus_8_pro
-            data:
-              title: Smoke Alarm Triggered
-              data:
-                channel: Alarm
-                importance: max
-                visibility: public
-              message: The smoke alarm has triggered at Home
-        - conditions:
-          - condition: trigger
-            id: co_detected
-          sequence:
-          - service: notify.mobile_app_rohan_s_oneplus_8_pro
-            data:
-              title: Carbon Monoxide Alarm Triggered
-              data:
-                channel: Alarm
-                importance: max
-                visibility: public
-              message: Carbon monoxide has been detected at Home
+          - conditions:
+              - condition: trigger
+                id: smoke_detected
+            sequence:
+              - service: notify.mobile_app_rohan_s_oneplus_8_pro
+                data:
+                  title: Smoke Alarm Triggered
+                  data:
+                    channel: Alarm
+                    importance: max
+                    visibility: public
+                  message: The smoke alarm has triggered at Home
+          - conditions:
+              - condition: trigger
+                id: co_detected
+            sequence:
+              - service: notify.mobile_app_rohan_s_oneplus_8_pro
+                data:
+                  title: Carbon Monoxide Alarm Triggered
+                  data:
+                    channel: Alarm
+                    importance: max
+                    visibility: public
+                  message: Carbon monoxide has been detected at Home
     mode: single

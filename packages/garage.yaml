@@ -142,7 +142,7 @@ automation:
         default:
           - service: light.turn_off
             entity_id: light.garage_entry_lights
-  
+
   - id: '1649035604702'
     alias: Garage Scene Controller Scene Controls
     description: 'Utilizes a blueprint to control scenes in the garage.'
@@ -151,35 +151,33 @@ automation:
       input:
         zooz_zen30: 91a73ad6fd7d0c4885fedd856cf2701d
         relay_1x:
-        - service: light.turn_off
-          target:
-            area_id:
-            - hallway_bathroom
-            - e857fce8973b475c9d1b4479c2494139
-            - c74119fdbc01442e8932a5a871e3b700
-            - c04b2ee0de40464288a1a50ab1b110ce
-            - bc081ff944ea41e383a982bca696d6cb
-            - faa7cc1b598b4635bd2b0349b6d0682d
-            - c8e64155949842d5be77f5c329e2496c
-            - downstairs_bathroom
-            - f70fb5d3de3649469d6146a3f1422009
-            - 26f1ffed8937795679d686c14f7974ad
-            - storage_room
-          data: {}
+          - service: light.turn_off
+            target:
+              area_id:
+                - hallway_bathroom
+                - living_room
+                - kitchen
+                - dining_room
+                - master_bathroom
+                - master_bedroom
+                - office
+                - downstairs_bathroom
+                - downstairs_hallway
+                - guest_room
+                - gym
         relay_2x:
-        - service: light.turn_off
-          target:
-            area_id:
-            - hallway
-            - hallway_bathroom
-            - e857fce8973b475c9d1b4479c2494139
-            - c74119fdbc01442e8932a5a871e3b700
-            - c04b2ee0de40464288a1a50ab1b110ce
-            - bc081ff944ea41e383a982bca696d6cb
-            - faa7cc1b598b4635bd2b0349b6d0682d
-            - c8e64155949842d5be77f5c329e2496c
-            - downstairs_bathroom
-            - f70fb5d3de3649469d6146a3f1422009
-            - 26f1ffed8937795679d686c14f7974ad
-            - storage_room
-          data: {}
+          - service: light.turn_off
+            target:
+              area_id:
+                - hallway
+                - hallway_bathroom
+                - living_room
+                - kitchen
+                - dining_room
+                - master_bathroom
+                - master_bedroom
+                - office
+                - downstairs_bathroom
+                - downstairs_hallway
+                - guest_room
+                - gym
