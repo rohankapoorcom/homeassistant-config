@@ -28,7 +28,7 @@ whole_house_media_player_group:
       - template: whole_house_media_player_instance
         type: custom:decluttering-card
         variables:
-          - entity: media_player.downstairs_hallway_mini
+          - entity: media_player.downstairs_hallway_speakers
           - name: Downstairs Hall
           - icon: '[[icon]]'
       - template: whole_house_media_player_instance
@@ -46,7 +46,7 @@ whole_house_media_player_group:
       - template: whole_house_media_player_instance
         type: custom:decluttering-card
         variables:
-          - entity: media_player.gym_mini
+          - entity: media_player.gym_speakers
           - name: Gym
           - icon: '[[icon]]'
     type: custom:layout-card
