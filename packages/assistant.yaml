@@ -92,3 +92,9 @@ google_assistant:
       expose: true
     light.garage_lights:
       expose: true
+    button.desk_preset_2:
+      expose: true
+    button.desk_preset_3:
+      expose: true
+    button.desk_preset_4:
+      expose: true
