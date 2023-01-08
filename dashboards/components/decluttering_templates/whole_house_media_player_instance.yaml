@@ -13,7 +13,7 @@ whole_house_media_player_instance:
         source: true
       icon: '${vars[0] ? ''mdi:speaker-off'' : ''[[icon]]''}'
       idle_view:
-        when_idle: true
+        when_idle: false
         when_standby: true
       info: scroll
       name: '[[name]]'
