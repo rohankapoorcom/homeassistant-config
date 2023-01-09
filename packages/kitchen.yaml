@@ -57,9 +57,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 70
-                All LED Strip Effect - Level: 70
+                All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Rise
         button_b2:
           - service: light.turn_off
             target:
@@ -73,9 +73,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 70
-                All LED Strip Effect - Level: 20
+                All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Fall
         button_a3:
           - service: light.turn_on
             target:
@@ -94,9 +94,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 130
-                All LED Strip Effect - Level: 70
+                All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Rise
         button_b3:
           - service: light.turn_off
             target:
@@ -113,9 +113,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 130
-                All LED Strip Effect - Level: 20
+                All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Fall
         button_a4:
           - service: light.turn_on
             target:
@@ -129,9 +129,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 142
-                All LED Strip Effect - Level: 70
+                All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Rise
         button_b4:
           - service: light.turn_off
             target:
@@ -143,9 +143,9 @@ automation:
               parameter: 99
               value:
                 All LED Strip Effect - Color: 142
-                All LED Strip Effect - Level: 20
+                All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 30
-                All LED Strip Effect - Effect: Solid
+                All LED Strip Effect - Effect: Medium Fall
 
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades
