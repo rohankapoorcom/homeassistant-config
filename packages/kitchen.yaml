@@ -194,4 +194,14 @@ automation:
               - service: cover.open_cover
                 target:
                   entity_id: cover.kitchen_shades
+      - service: zwave_js.bulk_set_partial_config_parameters
+        target:
+          entity_id: light.kitchen_lights
+        data:
+          parameter: 99
+          value:
+            All LED Strip Effect - Color: 170
+            All LED Strip Effect - Level: 50
+            All LED Strip Effect - Duration: 20
+            All LED Strip Effect - Effect: Open/Close
     mode: single
