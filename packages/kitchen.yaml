@@ -54,7 +54,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 70
@@ -70,7 +70,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 20
@@ -91,7 +91,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 70
@@ -110,7 +110,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 20
@@ -126,7 +126,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 70
@@ -140,7 +140,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              parameter: 8
+              parameter: 99
               value:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 20
