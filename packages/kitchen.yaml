@@ -42,6 +42,16 @@ automation:
           - service: cover.toggle
             target:
               entity_id: cover.kitchen_shades
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              entity_id: light.kitchen_lights
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 50
+                All LED Strip Effect - Duration: 20
+                All LED Strip Effect - Effect: Open/Close
         button_a2:
           - service: light.turn_on
             target:
@@ -58,7 +68,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 50
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Rise
         button_b2:
           - service: light.turn_off
@@ -74,7 +84,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 10
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Fall
         button_a3:
           - service: light.turn_on
@@ -95,7 +105,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 50
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Rise
         button_b3:
           - service: light.turn_off
@@ -114,7 +124,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 10
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Fall
         button_a4:
           - service: light.turn_on
@@ -130,7 +140,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 50
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Rise
         button_b4:
           - service: light.turn_off
@@ -144,7 +154,7 @@ automation:
               value:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 10
-                All LED Strip Effect - Duration: 30
+                All LED Strip Effect - Duration: 15
                 All LED Strip Effect - Effect: Medium Fall
 
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
