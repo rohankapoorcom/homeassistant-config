@@ -37,7 +37,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
       input:
-        zwave_device: cd14590ea99636c9f80266b42ab036b8
+        zwave_device: e25098f1e17ab2262e1807b5aa5774ec
         config_button:
           - service: cover.toggle
             target:
