@@ -17,9 +17,6 @@ homeassistant:
     ################################################
     ## Light
     ################################################
-    light.hallway_lights:
-      <<: *customize
-      supported_features: 33
 
     light.stairway_lights:
       <<: *customize
@@ -28,13 +25,6 @@ homeassistant:
 ## Light
 ################################################
 light:
-  - platform: group
-    name: Hallway Lights
-    unique_id: 00592bd8-5689-4280-945a-de12766bd25d
-    entities:
-      - light.hallway_lights_switch
-      - light.entryway_lights
-
   - platform: template
     lights:
       stairway_lights:
@@ -64,45 +54,3 @@ automation:
       input:
         battery_entity: sensor.upstairs_hallway_tablet_battery_level
         switch_entity: switch.upstairs_hallway_tablet_charger
-
-  - id: '1641371956033'
-    alias: Hallway Light Switch Scene Controls
-    description: Utilizes a blueprint to handle Scene Controls in the Hallway.
-    use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
-      input:
-        zwave_device: 88136be71050b07599ec3caf5928e7a5
-        button_a2:
-          - service: light.turn_on
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              brightness_pct: 100
-              kelvin: 3000
-              transition: 2
-          - service: zwave_js.bulk_set_partial_config_parameters
-            target:
-              entity_id: light.hallway_lights_switch
-            data:
-              parameter: 16
-              value:
-                LED Effect Color: 70
-                LED Effect Brightness: 70%
-                LED Effect Duration: 30
-                LED Effect Type: Solid
-        button_b2:
-          - service: light.turn_off
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              transition: 2
-          - service: zwave_js.bulk_set_partial_config_parameters
-            target:
-              entity_id: light.hallway_lights_switch
-            data:
-              parameter: 16
-              value:
-                LED Effect Color: 70
-                LED Effect Brightness: 20%
-                LED Effect Duration: 30
-                LED Effect Type: Solid
