@@ -15,6 +15,10 @@ homeassistant:
       customize: &customize
         package: 'kitchen'
 
+      kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
+        - e25098f1e17ab2262e1807b5aa5774ec
+        - 3a230c9078dd8ced0fbdbbdff3f649e7
+
 ################################################
 ## Light
 ################################################
@@ -37,14 +41,16 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
       input:
-        zwave_device: e25098f1e17ab2262e1807b5aa5774ec
+        zwave_device:
+          <<: *kitchen_light_switch_device_ids
         config_button:
           - service: cover.toggle
             target:
               entity_id: cover.kitchen_shades
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -62,7 +68,8 @@ automation:
               transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -78,7 +85,8 @@ automation:
               transition: 2
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -99,7 +107,8 @@ automation:
               entity_id: light.kitchen_lights
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -118,7 +127,8 @@ automation:
               entity_id: light.kitchen_lights
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -134,7 +144,8 @@ automation:
               brightness_pct: 100
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -148,7 +159,8 @@ automation:
               area_id: kitchen
           - service: zwave_js.bulk_set_partial_config_parameters
             target:
-              entity_id: light.kitchen_lights
+              device_id:
+                <<: *kitchen_light_switch_device_ids
             data:
               parameter: 99
               value:
@@ -196,7 +208,9 @@ automation:
                   entity_id: cover.kitchen_shades
       - service: zwave_js.bulk_set_partial_config_parameters
         target:
-          entity_id: light.kitchen_lights
+          device_id:
+            - e25098f1e17ab2262e1807b5aa5774ec
+            - 3a230c9078dd8ced0fbdbbdff3f649e7
         data:
           parameter: 99
           value:
