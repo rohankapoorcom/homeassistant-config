@@ -35,9 +35,25 @@ automation:
             target:
               entity_id: light.dining_room_accent_lights
         scene_4:
-          - service: light.toggle
-            target:
-              entity_id: light.kitchen_cabinet_lights
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: light.kitchen_cabinet_lights
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    target:
+                      entity_id: light.kitchen_cabinet_lights
+                    data:
+                      transition: 2
+            default:
+              - service: light.turn_on
+                target:
+                  entity_id: light.kitchen_cabinet_lights
+                data:
+                  brightness_pct: 100
+                  kelvin: 3000
+                  transition: 2
         scene_3:
           - service: light.toggle
             target:
