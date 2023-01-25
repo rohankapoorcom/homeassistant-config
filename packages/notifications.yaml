@@ -53,7 +53,7 @@ automation:
           entity_id:
             - sensor.office_remote_battery_level
             - sensor.rohan_s_oneplus_8_pro_battery_level
-  
+
   - id: '4143de0d-c3b5-4e86-9076-ee7422cbf0d6'
     alias: Leak Warnings
     description: ''
