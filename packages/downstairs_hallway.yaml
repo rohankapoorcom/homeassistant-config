@@ -47,3 +47,21 @@ automation:
                 - garage
                 - guest_room
                 - gym
+
+  - id: '1667032713651'
+    alias: Downstairs Hallway Scene Controls
+    description: Utilizes a blueprint to control scenes in the Downstairs Hallway.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: df9d58e09f02db4bcb1a908a1e32e5e5
+        config_button:
+          - service: button.press
+            data: {}
+            target:
+              entity_id: button.downstairs_hallway_tablet_restart_browser
+        button_a2:
+          - service: switch.toggle
+            data: {}
+            target:
+              entity_id: switch.downstairs_hallway_tablet_charger

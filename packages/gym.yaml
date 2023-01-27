@@ -18,3 +18,27 @@ automation:
       input:
         battery_entity: sensor.gym_tablet_battery_level
         switch_entity: switch.gym_tablet_charger
+
+  - id: '1667032908768'
+    alias: Gym Scene Controls
+    description: Utilizes a blueprint to control scenes with the Gym Lightswitch.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      input:
+        zwave_device: 4ef91ee5285ec4ad43cb3dbf25b3faf7
+        config_button:
+          - service: button.press
+            data: {}
+            target:
+              entity_id:
+                - button.gym_tablet_restart_browser
+        button_a2:
+          - service: fan.turn_on
+            data: {}
+            target:
+              entity_id: fan.gym_fan
+        button_b2:
+          - service: fan.turn_off
+            data: {}
+            target:
+              entity_id: fan.gym_fan
