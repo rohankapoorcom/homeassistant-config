@@ -241,7 +241,7 @@ automation:
 
   - id: c6888d4f-2471-450d-a8ee-66a68c388169
     alias: Office Lights Scene Controls
-    description: Utilizes a blueprint to map track lighting states on the Scene Controller in the Living Room.
+    description: Utilizes a blueprint to map track lighting states on the Scene Controller in the Office.
     use_blueprint:
       path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
       input:

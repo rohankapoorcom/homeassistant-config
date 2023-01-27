@@ -16,10 +16,34 @@ homeassistant:
         package: 'living_room_lights'
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: template
+    sensors:
+      living_room_fan_slow:
+        friendly_name: Living Room Fan Set to Slow
+        value_template: >
+          {{ state_attr('fan.living_room_fan', 'percentage') > 0 and state_attr('fan.living_room_fan', 'percentage') <= 52 }}
+
+      living_room_fan_medium:
+        friendly_name: Living Room Fan Set to Medium
+        value_template: >
+          {{ state_attr('fan.living_room_fan', 'percentage') > 52 and state_attr('fan.living_room_fan', 'percentage') <= 81 }}
+
+      living_room_fan_high:
+        friendly_name: Living Room Fan Set to High
+        value_template: "{{ state_attr('fan.living_room_fan', 'percentage') > 81 }}"
+      
+      living_room_fan_off:
+        friendly_name: Living Room Fan Set to High
+        value_template: "{{ is_state('fan.living_room_fan', 'off') }}"
+
+################################################
 ## Automation
 ################################################
 automation:
-  - id: '1643337826040'
+  - id: '8fbfa021-9205-4f56-b3a0-9eea04900c42'
     alias: Living Room Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Living Room.
     use_blueprint:
@@ -27,46 +51,36 @@ automation:
       input:
         zooz_switch: 4418d1607160e581af11597ef65ef295
         scene_1:
-          - service: light.toggle
+          - service: fan.turn_on
             target:
-              entity_id: light.dining_room_lights
+              entity_id: fan.living_room_fan
+            data:
+              percentage: 100
         scene_2:
-          - service: light.toggle
+          - service: fan.turn_on
             target:
-              entity_id: light.dining_room_accent_lights
+              entity_id: fan.living_room_fan
+            data:
+              percentage: 65
         scene_4:
-          - choose:
-              - conditions:
-                  - condition: state
-                    entity_id: light.kitchen_cabinet_lights
-                    state: 'on'
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: light.kitchen_cabinet_lights
-                    data:
-                      transition: 2
-            default:
-              - service: light.turn_on
-                target:
-                  entity_id: light.kitchen_cabinet_lights
-                data:
-                  brightness_pct: 100
-                  kelvin: 3000
-                  transition: 2
-        scene_3:
-          - service: light.toggle
+          - service: fan.turn_off
             target:
-              entity_id: light.kitchen_lights
+              entity_id: fan.living_room_fan
+        scene_3:
+          - service: fan.turn_on
+            target:
+              entity_id: fan.living_room_fan
+            data:
+              percentage: 27
 
-  - id: '1643339651442'
+  - id: '38a41f0a-5b07-4efc-804c-3e19fadc156b'
     alias: Living Room Scene Controller Status Lights
     description: 'Utilizes a blueprint to map track lighting states on the Scene Controller in the Living Room.'
     use_blueprint:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
         zooz_switch: 4418d1607160e581af11597ef65ef295
-        small_1_button_light: light.dining_room_lights
-        small_2_button_light: light.dining_room_accent_lights
-        small_3_button_light: light.kitchen_lights
-        small_4_button_light: light.kitchen_cabinet_lights
+        small_1_button_light: binary_sensor.living_room_fan_slow
+        small_2_button_light: binary_sensor.living_room_fan_medium
+        small_3_button_light: binary_sensor.living_room_fan_high
+        small_4_button_light: binary_sensor.living_room_fan_off
