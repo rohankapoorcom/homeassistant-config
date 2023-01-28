@@ -24,17 +24,19 @@ binary_sensor:
       living_room_fan_slow:
         friendly_name: Living Room Fan Set to Slow
         value_template: >
-          {{ state_attr('fan.living_room_fan', 'percentage') > 0 and state_attr('fan.living_room_fan', 'percentage') <= 52 }}
+          {{ state_attr('fan.living_room_fan', 'percentage') > 0
+          and state_attr('fan.living_room_fan', 'percentage') <= 52 }}
 
       living_room_fan_medium:
         friendly_name: Living Room Fan Set to Medium
         value_template: >
-          {{ state_attr('fan.living_room_fan', 'percentage') > 52 and state_attr('fan.living_room_fan', 'percentage') <= 81 }}
+          {{ state_attr('fan.living_room_fan', 'percentage') > 52
+          and state_attr('fan.living_room_fan', 'percentage') <= 81 }}
 
       living_room_fan_high:
         friendly_name: Living Room Fan Set to High
         value_template: "{{ state_attr('fan.living_room_fan', 'percentage') > 81 }}"
-      
+
       living_room_fan_off:
         friendly_name: Living Room Fan Set to High
         value_template: "{{ is_state('fan.living_room_fan', 'off') }}"
@@ -49,7 +51,7 @@ automation:
     use_blueprint:
       path: Matt-PMCT/ZoozZen32forZwaveJs.yaml
       input:
-        zooz_switch: 4418d1607160e581af11597ef65ef295
+        zooz_switch: f5f0fa81fd632379a87e70da0c55057f
         scene_1:
           - service: fan.turn_on
             target:
@@ -79,7 +81,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
-        zooz_switch: 4418d1607160e581af11597ef65ef295
+        zooz_switch: f5f0fa81fd632379a87e70da0c55057f
         small_1_button_light: binary_sensor.living_room_fan_slow
         small_2_button_light: binary_sensor.living_room_fan_medium
         small_3_button_light: binary_sensor.living_room_fan_high
