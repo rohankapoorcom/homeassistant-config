@@ -82,6 +82,7 @@ automation:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
         zooz_switch: f5f0fa81fd632379a87e70da0c55057f
+        large_button_light: light.living_room_lights
         small_1_button_light: binary_sensor.living_room_fan_high
         small_2_button_light: binary_sensor.living_room_fan_medium
         small_3_button_light: binary_sensor.living_room_fan_slow

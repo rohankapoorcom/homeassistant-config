@@ -102,6 +102,7 @@ automation:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
         zooz_switch: 4418d1607160e581af11597ef65ef295
+        large_button_light: light.hallway_lights
         small_1_button_light: light.dining_room_lights
         small_2_button_light: light.dining_room_accent_lights
         small_3_button_light: light.kitchen_lights

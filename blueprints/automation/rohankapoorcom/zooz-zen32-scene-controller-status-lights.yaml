@@ -75,14 +75,13 @@ action:
   - choose:
       - conditions: "{{ not not large_button_light }}"
         sequence:
-          - service: zwave_js.set_value
+          - service: switch.turn_on
             target:
               device_id: !input zooz_switch
-            data_template:
-              command_class: '135'
-              property: 67-2
-              endpoint: '0'
-              value: "{{ is_state(large_button_light, 'on') }}"
+    default:
+      - service: switch.turn_off
+        target:
+          device_id: !input zooz_switch
   - choose:
       - conditions: "{{ not not small_1_button_light }}"
         sequence:
