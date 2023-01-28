@@ -26,6 +26,21 @@ automation:
       path: Matt-PMCT/ZoozZen32forZwaveJs.yaml
       input:
         zooz_switch: 7829e6b1bbb429e88c159df549586393
+        scene_1:
+          - service: light.turn_on
+            target:
+              entity_id:
+                - light.hallway_lights
+                - light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+              kelvin: 3000
+              transition: 2
+        scene_2:
+          - service: light.turn_on
+            target:
+              area_id:
+                - downstairs_hallway
         scene_3:
           - service: light.turn_off
             target:
