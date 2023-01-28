@@ -76,7 +76,7 @@ action:
       - conditions: "{{ not not large_button_light }}"
         sequence:
           - service: >
-              light.turn_{{ state(large_button_light) }}
+              light.turn_{{ states(large_button_light) }}
             target:
               device_id: !input zooz_switch
   - choose:
