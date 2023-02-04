@@ -224,12 +224,12 @@ automation:
               entity_id: switch.downstairs_hallway_tablet_charger
 
   - id: 'f248725a-26e6-46f7-becd-bc53ccc662ef'
-    alias: Downstairs Hallway Scene Controller Status Lights
-    description: 'Utilizes a blueprint to map track lighting states on the Scene Controller in the Living Room.'
+    alias: Stairway Scene Controller Status Lights
+    description: 'Utilizes a blueprint to map track lighting states on the Scene Controller on the Stairway.'
     use_blueprint:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
-        zooz_switch: df9d58e09f02db4bcb1a908a1e32e5e5
+        zooz_switch: 7829e6b1bbb429e88c159df549586393
         large_button_light: light.stairway_lights
         small_1_button_light: binary_sensor.upstairs_lights_on
         small_2_button_light: binary_sensor.downstairs_lights_on
