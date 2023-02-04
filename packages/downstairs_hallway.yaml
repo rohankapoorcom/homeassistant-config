@@ -77,7 +77,7 @@ binary_sensor:
             | map(attribute='entity_id')
             | list
             | count
-            = 0
+            == 0
           }}
       upstairs_lights_on:
         friendly_name: Upstairs Lights On
@@ -145,7 +145,7 @@ binary_sensor:
             | map(attribute='entity_id')
             | list
             | count
-            > 0
+            == 0
           }}
 
 ################################################
