@@ -9,22 +9,12 @@
 ## Light
 ################################################
 light:
-  - platform: template
-    lights:
-      stairway_lights:
-        friendly_name: Stairway Lights
-        unique_id: 25bb040a-ae44-412d-9f6e-4ecbd1cc7816
-        value_template: >-
-          {{
-            is_state('light.stairway_lights_switch', 'on')
-            or is_state('light.stairway_scene_controller', 'on')
-          }}
-        turn_on:
-          - service: light.turn_on
-            entity_id: light.stairway_lights_switch
-        turn_off:
-          - service: light.turn_off
-            entity_id: light.stairway_lights_switch
+  - platform: group
+    name: Stairway Lights
+    unique_id: 25bb040a-ae44-412d-9f6e-4ecbd1cc7816
+    entities:
+      - light.stairway_lights_switch
+      - light.stairway_scene_controller
 
 ################################################
 ## Binary Sensor
