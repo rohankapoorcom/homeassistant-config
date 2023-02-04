@@ -14,7 +14,7 @@ light:
     unique_id: 25bb040a-ae44-412d-9f6e-4ecbd1cc7816
     entities:
       - light.stairway_lights_switch
-      - light.stairway_scene_controller
+      - light.stairway_lights_aux_switch
 
 ################################################
 ## Binary Sensor
@@ -155,9 +155,11 @@ automation:
     alias: Stairway Scene Controller
     description: 'Utilizes a blueprint to control scenes on the stairway.'
     use_blueprint:
-      path: Matt-PMCT/ZoozZen32forZwaveJs.yaml
+      path: rohankapoorcom/zooz-zen32-scene-controls.yaml
       input:
-        zooz_switch: 7829e6b1bbb429e88c159df549586393
+        zooz_switch:
+          - c27cdc188591fc457df3efb38b698aa2
+          - cba4ca73f091aa4a74a4e5faae5395d9
         scene_1:
           - service: light.turn_on
             target:
@@ -220,7 +222,9 @@ automation:
     use_blueprint:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
-        zooz_switch: 7829e6b1bbb429e88c159df549586393
+        zooz_switch:
+          - c27cdc188591fc457df3efb38b698aa2
+          - cba4ca73f091aa4a74a4e5faae5395d9
         small_1_button_light: binary_sensor.upstairs_lights_on
         small_2_button_light: binary_sensor.downstairs_lights_on
         small_3_button_light: binary_sensor.upstairs_lights_off

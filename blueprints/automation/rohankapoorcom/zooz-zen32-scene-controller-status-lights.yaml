@@ -12,6 +12,7 @@ blueprint:
           integration: zwave_js
           manufacturer: Zooz
           model: ZEN32
+          multiple: true
     large_button_light:
       name: Large Button Light
       description: Light to track status on the large button.
