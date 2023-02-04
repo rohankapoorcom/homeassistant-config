@@ -28,7 +28,7 @@ binary_sensor:
             | map(attribute='entity_id')
             | list
             | count
-            + 
+            +
             expand(states.light)
             | selectattr('entity_id', 'in', area_entities('downstairs_hallway'))
             | selectattr('state', 'eq', 'on')
@@ -75,7 +75,7 @@ binary_sensor:
             | map(attribute='entity_id')
             | list
             | count
-            + 
+            +
             expand(states.light)
             | selectattr('entity_id', 'in', area_entities('hallway_bathroom'))
             | selectattr('state', 'eq', 'on')
