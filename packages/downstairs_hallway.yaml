@@ -5,6 +5,148 @@
 #  @description  :  Manages equipment in the Downstairs Hallway.
 ###############################################################################
 ---
+################################################
+## Light
+################################################
+light:
+  - platform: template
+    lights:
+      stairway_lights:
+        friendly_name: Stairway Lights
+        unique_id: 25bb040a-ae44-412d-9f6e-4ecbd1cc7816
+        value_template: >-
+          {{
+            is_state('light.stairway_lights_switch', 'on')
+            or is_state('light.stairway_scene_controller', 'on')
+          }}
+        turn_on:
+          - service: light.turn_on
+            entity_id: light.stairway_lights_switch
+        turn_off:
+          - service: light.turn_off
+            entity_id: light.stairway_lights_switch
+
+################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: template
+    sensors:
+      downstairs_lights_on:
+        friendly_name: Downstairs Lights On
+        value_template: >
+          {{
+            is_state('light.stairway_lights', 'on')
+            and is_state('light.downstairs_hallway_lights', 'on')
+          }}
+      downstairs_lights_off:
+        friendly_name: Downstairs Lights Off
+        value_template: >
+          {{
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('downstairs_bathroom'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            + 
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('downstairs_hallway'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('garage'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('guest_room'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('gym'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            = 0
+          }}
+      upstairs_lights_on:
+        friendly_name: Upstairs Lights On
+        value_template: >
+          {{
+            is_state('light.hallway_lights', 'on')
+            and is_state('light.kitchen_cabinet_lights', 'on')
+          }}
+      upstairs_lights_off:
+        friendly_name: Upstairs Lights Off
+        value_template: >
+          {{
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('hallway'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            + 
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('hallway_bathroom'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('living_room'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('kitchen'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('dining_room'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('master_bathroom'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('master_bedroom'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            +
+            expand(states.light)
+            | selectattr('entity_id', 'in', area_entities('office'))
+            | selectattr('state', 'eq', 'on')
+            | map(attribute='entity_id')
+            | list
+            | count
+            > 0
+          }}
 
 ################################################
 ## Automations
@@ -80,3 +222,16 @@ automation:
             data: {}
             target:
               entity_id: switch.downstairs_hallway_tablet_charger
+
+  - id: 'f248725a-26e6-46f7-becd-bc53ccc662ef'
+    alias: Downstairs Hallway Scene Controller Status Lights
+    description: 'Utilizes a blueprint to map track lighting states on the Scene Controller in the Living Room.'
+    use_blueprint:
+      path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
+      input:
+        zooz_switch: df9d58e09f02db4bcb1a908a1e32e5e5
+        large_button_light: light.stairway_lights
+        small_1_button_light: binary_sensor.upstairs_lights_on
+        small_2_button_light: binary_sensor.downstairs_lights_on
+        small_3_button_light: binary_sensor.upstairs_lights_off
+        small_4_button_light: binary_sensor.upstairs_lights_off
