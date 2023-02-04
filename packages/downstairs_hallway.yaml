@@ -22,6 +22,13 @@ light:
 binary_sensor:
   - platform: template
     sensors:
+      downstairs_lights_on:
+        friendly_name: Downstairs Lights On
+        value_template: >
+          {{
+            is_state('light.stairway_lights', 'on')
+            and is_state('light.downstairs_hallway_lights', 'on')
+          }}
       downstairs_lights_off:
         friendly_name: Downstairs Lights Off
         value_template: >
@@ -215,6 +222,6 @@ automation:
       input:
         zooz_switch: 7829e6b1bbb429e88c159df549586393
         small_1_button_light: binary_sensor.upstairs_lights_on
-        small_2_button_light: light.stairway_lights
+        small_2_button_light: binary_sensor.downstairs_lights_on
         small_3_button_light: binary_sensor.upstairs_lights_off
         small_4_button_light: binary_sensor.downstairs_lights_off
