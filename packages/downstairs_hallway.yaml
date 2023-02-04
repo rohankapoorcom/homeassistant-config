@@ -230,7 +230,6 @@ automation:
       path: rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
       input:
         zooz_switch: 7829e6b1bbb429e88c159df549586393
-        large_button_light: light.stairway_lights
         small_1_button_light: binary_sensor.upstairs_lights_on
         small_2_button_light: binary_sensor.downstairs_lights_on
         small_3_button_light: binary_sensor.upstairs_lights_off
