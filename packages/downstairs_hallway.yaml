@@ -233,4 +233,4 @@ automation:
         small_1_button_light: binary_sensor.upstairs_lights_on
         small_2_button_light: binary_sensor.downstairs_lights_on
         small_3_button_light: binary_sensor.upstairs_lights_off
-        small_4_button_light: binary_sensor.upstairs_lights_off
+        small_4_button_light: binary_sensor.downstairs_lights_off
