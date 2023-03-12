@@ -17,7 +17,7 @@ homeassistant:
 
     kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
       - e25098f1e17ab2262e1807b5aa5774ec
-      - 3a230c9078dd8ced0fbdbbdff3f649e7
+      - f9923a84b8a3dab105d7695f9d08b6f4
 
 ################################################
 ## Light
