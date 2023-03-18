@@ -98,3 +98,7 @@ google_assistant:
       expose: true
     button.desk_preset_4:
       expose: true
+    cover.master_bedroom_curtains:
+      expose: true
+    cover.master_bedroom_sheers:
+      expose: true
