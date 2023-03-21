@@ -37,7 +37,7 @@ notify:
   - platform: group
     name: Rohan Kapoor
     services:
-      - service: notify.rohan_email
+      - service: rohan_email
       - service: mobile_app_rohan_s_oneplus_8_pro
       - service: notify.mobile_app_rohans_ipad_pro
       - service: notify.mobile_app_rohans_ipad_3
