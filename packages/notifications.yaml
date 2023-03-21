@@ -34,6 +34,15 @@ notify:
     recipient: !secret notify.rohan_email.recipient
     sender: !secret notify.rohan_email.sender
 
+  - platform: group
+    name: Rohan Kapoor
+    services:
+      - service: notify.rohan_email
+      - service: mobile_app_rohan_s_oneplus_8_pro
+      - service: notify.mobile_app_rohans_ipad_pro
+      - service: notify.mobile_app_rohans_ipad_3
+      - service: notify.mobile_app_samsung_z_fold_4
+
 automation:
   - id: '1665347764581'
     alias: Low Battery Warnings
@@ -46,7 +55,7 @@ automation:
               - condition: template
                 value_template: '{{ sensors | length > 0 }}'
             then:
-              - service: notify.mobile_app_rohan_s_oneplus_8_pro
+              - service: notify.rohan_kapoor
                 data:
                   message: The battery of the sensor(s) {{sensors}} is low.
         exclude:
@@ -61,7 +70,7 @@ automation:
       path: TurtleFX/leak-detector-notifier.yaml
       input:
         actions:
-          - service: notify.mobile_app_rohan_s_oneplus_8_pro
+          - service: notify.rohan_kapoor
             data:
               title: Water Leak Detected
               message: "{{trigger.event.data.new_state.attributes.friendly_name}} has detected a leak."
