@@ -178,8 +178,7 @@ sensor:
 
 template:
   - sensor:
-      - name: "DELTA Pro 140012 Time Remaining"
-        state: >
+      - state: >
           {{ ((states('sensor.delta_pro_140012_remain') | as_timestamp - as_timestamp(now())) / 60) | int }}
         unique_id: 44a898ad-76f8-4b4a-8897-2eb7dc2d3e31
         attributes:
@@ -206,4 +205,3 @@ template:
             Battery
           {%- endif -%}
         unique_id: 9cf68e6d-e36e-47cf-a216-99fd474a6e99
-        
