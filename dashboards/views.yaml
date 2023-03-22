@@ -24,7 +24,7 @@
     ]}
   },
   {'title': 'Vacuums', 'icon': 'mdi:robot-vacuum'},
-  {'title': 'Appliances', 'icon': 'mdi:washing-machine'},
+  {'title': 'Power', 'icon': 'mdi:home-battery'},
   {'title': 'Music', 'icon': 'mdi:music'},
   {'title': 'TV Remote', 'icon': 'mdi:remote'}
 ] %}
