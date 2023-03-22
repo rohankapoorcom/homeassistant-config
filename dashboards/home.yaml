@@ -124,7 +124,7 @@ views:
           - cards:
             - !include
               - components/panels/sidebar.yaml
-              - active: Appliances
+              - active: Power
             - !include components/panels/power.yaml
   - theme: Backend-selected
     title: Music
