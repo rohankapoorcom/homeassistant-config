@@ -7,7 +7,7 @@
   {'name': 'Frontyard', 'icon': 'mdi:cctv', 'path': 'cameras_1'},
   {'name': 'Backyard', 'icon': 'mdi:cctv', 'path': 'cameras_2'},
   {'name': 'Vacuums', 'icon': 'mdi:robot-vacuum', 'path': 'vacuums'},
-  {'name': 'Appliances', 'icon': 'mdi:washing-machine', 'path': 'appliances'},
+  {'name': 'Power', 'icon': 'mdi:home-battery', 'path': 'power'},
   {'name': 'Music', 'icon': 'mdi:music', 'path': 'music'},
   {'name': 'TV Remote', 'icon': 'mdi:remote', 'path': 'remote'}
 ] %}

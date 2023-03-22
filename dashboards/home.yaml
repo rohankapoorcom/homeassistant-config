@@ -110,9 +110,9 @@ views:
               - active: Vacuums
             - !include components/panels/vacuums.yaml
   - theme: Backend-selected
-    title: Appliances
-    path: appliances
-    icon: mdi:washing-machine
+    title: Power
+    path: power
+    icon: mdi:home-battery
     type: custom:masonry-layout
     layout:
       max_width: 1500
@@ -125,7 +125,7 @@ views:
             - !include
               - components/panels/sidebar.yaml
               - active: Appliances
-            - !include components/panels/appliances.yaml
+            - !include components/panels/power.yaml
   - theme: Backend-selected
     title: Music
     path: music
