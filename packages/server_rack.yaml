@@ -175,3 +175,35 @@ sensor:
           {% else %}
             Communication Failure
           {% endif %}
+
+template:
+  - sensor:
+      - name: "DELTA Pro 140012 Time Remaining"
+        state: >
+          {{ ((states('sensor.delta_pro_140012_remain') | as_timestamp - as_timestamp(now())) / 60) | int }}
+        unique_id: 44a898ad-76f8-4b4a-8897-2eb7dc2d3e31
+        attributes:
+          friendly_name: >
+            {%- if is_state('binary_sensor.delta_pro_140012_charging', 'on') -%}
+              Charge Time
+            {%- else -%}
+              Runtime
+            {%- endif -%}
+        unit_of_measurement: "minutes"
+        state_class: measurement
+      - name: "DELTA Pro 140012 Power Source"
+        state: >
+          {%- set ac_state = states('sensor.delta_pro_140012_ac_input') -%}
+          {%- set dc_state = states('sensor.delta_pro_140012_dc_input') -%}
+          {%- if (is_number(ac_state) and ac_state | float > 0)
+              and (is_number(dc_state) and dc_state | float > 0) -%}
+            AC/DC Input
+          {%- elif (is_number(ac_state) and ac_state | float > 0) -%}
+            AC Input
+          {%- elif (is_number(dc_state) and dc_state | float > 0) -%}
+            DC Input
+          {%- else -%}
+            Battery
+          {%- endif -%}
+        unique_id: 9cf68e6d-e36e-47cf-a216-99fd474a6e99
+        
