@@ -17,6 +17,7 @@ cards:
         show_start_button: false
         show_pause_button: false
         show_stop_button: false
+        show_home_button: false
         show_locate_button: false
       - type: custom:vacuum-card
         stats:
@@ -131,6 +132,7 @@ cards:
         show_start_button: false
         show_pause_button: false
         show_stop_button: false
+        show_home_button: false
         show_locate_button: false
       - entity: vacuum.valetudo_downstairs_roborock
         type: custom:vacuum-card
