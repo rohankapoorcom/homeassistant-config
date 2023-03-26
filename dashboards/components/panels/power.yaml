@@ -133,7 +133,6 @@ cards:
     layout_type: vertical
     cards:
       - type: custom:power-flow-card
-        title: Power Flow
         entities:
           grid: sensor.eagle_200_meter_power_demand
           solar: sensor.envoy_202250122370_current_power_production
