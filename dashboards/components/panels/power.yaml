@@ -132,15 +132,15 @@ cards:
   - type: custom:layout-card
     layout_type: vertical
     cards:
-      - type: energy-usage-graph
-        title: Energy Usage
-      - type: energy-solar-graph
-        title: Solar Production
       - type: custom:power-flow-card
         title: Power Flow
         entities:
           grid: sensor.eagle_200_meter_power_demand
           solar: sensor.envoy_202250122370_current_power_production
+      - type: energy-usage-graph
+        title: Energy Usage
+      - type: energy-solar-graph
+        title: Solar Production
     view_layout:
       grid-area: right
 layout_type: custom:grid-layout
