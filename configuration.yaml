@@ -6,6 +6,7 @@ homeassistant:
   latitude: !secret homeassistant.latitude
   longitude: !secret homeassistant.longitude
   country: US
+  currency: USD
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 349
   # metric for Metric, imperial for Imperial
