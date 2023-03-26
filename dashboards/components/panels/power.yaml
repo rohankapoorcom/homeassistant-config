@@ -3,27 +3,35 @@ cards:
   - type: custom:layout-card
     layout_type: vertical
     cards:
-      - type: picture-elements
-        image: /local/images/tripplite.png
-        elements:
-          - type: state-label
-            entity: sensor.ups_ac_input_voltage
-            style:
-              top: 42%
-              left: 85%
-              background-color: green
-              padding: none
-          - type: state-label
-            entity: sensor.ups_source
-            style:
-              top: 30%
-              left: 18%
-              font-size: 18px
       - type: custom:bar-card
         entities:
+          - entity: sensor.delta_pro_140012_main_battery
+            direction: right
+            name: Delta Pro Main
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
+          - entity: sensor.delta_pro_140012_extra1_battery
+            direction: right
+            name: Delta Pro Extra 1
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
           - entity: sensor.ups_battery_capacity
             direction: right
-            name: Tripplite UPS
+            name: TrippLite UPS
             icon: mdi:battery
             color: green
             positions:
@@ -35,7 +43,49 @@ cards:
               - {}
         height: 20px
       - type: glance
-        title: Battery Status
+        title: Delta Pro Status
+        entities:
+          - entity: binary_sensor.delta_pro_140012_main_status
+            name: Health
+            icon: mdi:battery-heart-variant
+          - entity: sensor.delta_pro_140012_time_remaining
+            icon: mdi:battery-alert-variant-outline
+          - entity: binary_sensor.delta_pro_140012_charging
+            name: Detail
+            icon: mdi:battery-charging
+          - entity: sensor.delta_pro_140012_main_battery_temperature
+            name: Temp
+          - entity: sensor.delta_pro_140012_power_source
+            name: Source
+            icon: mdi:power-plug
+        state_color: false
+        show_state: true
+        show_icon: true
+        show_name: true
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            entity: sensor.delta_pro_140012_ac_input_current
+            min: 0
+            max: 15
+            name: AC Current In
+          - type: gauge
+            entity: sensor.delta_pro_140012_dc_input_current
+            min: 0
+            max: 15
+            name: DC Current In
+          - type: gauge
+            entity: sensor.delta_pro_140012_ac_output_voltage
+            min: 100
+            max: 130
+            name: Output Voltage
+          - type: gauge
+            entity: sensor.delta_pro_140012_ac_output_current
+            min: 0
+            max: 30
+            name: Output Current
+      - type: glance
+        title: UPS Status
         entities:
           - entity: sensor.ups_battery_status
             name: Health
@@ -63,17 +113,15 @@ cards:
             max: 54.6
             name: Battery Voltage
           - type: gauge
-            entity: sensor.ups_output_voltage
-            min: 100
-            max: 130
-            name: Output Voltage
-      - type: horizontal-stack
-        cards:
-          - type: gauge
             entity: sensor.ups_load
             min: 0
             max: 100
             name: Output Load
+          - type: gauge
+            entity: sensor.ups_output_voltage
+            min: 100
+            max: 130
+            name: Output Voltage
           - type: gauge
             entity: sensor.ups_output_current
             min: 0
@@ -84,81 +132,15 @@ cards:
   - type: custom:layout-card
     layout_type: vertical
     cards:
-      - type: picture-elements
-        image: /local/images/tripplite.png
-        elements:
-          - type: state-label
-            entity: sensor.delta_pro_140012_ac_input_voltage
-            style:
-              top: 42%
-              left: 85%
-              background-color: green
-              padding: none
-          - type: state-label
-            entity: sensor.delta_pro_140012_power_source
-            style:
-              top: 30%
-              left: 18%
-              font-size: 18px
-      - type: custom:bar-card
+      - type: energy-usage-graph
+        title: Energy Usage
+      - type: energy-solar-graph
+        title: Solar Production
+      - type: custom:power-flow-card
+        title: Power Flow
         entities:
-          - entity: sensor.delta_pro_140012_battery
-            direction: right
-            name: Ecoflow Delta Pro
-            icon: mdi:battery
-            color: green
-            positions:
-              icon: 'off'
-              indicator: 'off'
-              name: inside
-              value: inside
-            severity:
-              - {}
-        height: 20px
-      - type: glance
-        title: Battery Status
-        entities:
-          - entity: binary_sensor.delta_pro_140012_main_status
-            name: Health
-            icon: mdi:battery-heart-variant
-          - entity: sensor.delta_pro_140012_time_remaining
-            icon: mdi:battery-alert-variant-outline
-          - entity: binary_sensor.delta_pro_140012_charging
-            name: Detail
-            icon: mdi:battery-charging
-          - entity: sensor.delta_pro_140012_main_battery_temperature
-            name: Temp
-          - entity: sensor.delta_pro_140012_power_source
-            name: Source
-            icon: mdi:power-plug
-        state_color: false
-        show_state: true
-        show_icon: true
-        show_name: true
-      - type: horizontal-stack
-        cards:
-          - type: gauge
-            entity: sensor.delta_pro_140012_ac_input_current
-            min: 0
-            max: 15
-            name: AC Current In
-          - type: gauge
-            entity: sensor.delta_pro_140012_ac_output_voltage
-            min: 100
-            max: 130
-            name: Output Voltage
-      - type: horizontal-stack
-        cards:
-          - type: gauge
-            entity: sensor.delta_pro_140012_dc_input_current
-            min: 0
-            max: 15
-            name: DC Current In
-          - type: gauge
-            entity: sensor.delta_pro_140012_ac_output_current
-            min: 0
-            max: 30
-            name: Output Current
+          grid: sensor.eagle_200_meter_power_demand
+          solar: sensor.envoy_202250122370_current_power_production
     view_layout:
       grid-area: right
 layout_type: custom:grid-layout
