@@ -11,7 +11,6 @@ sensor:
     sensors:
       master_bedroom_us_air_quality_index:
         unique_id: e940b6f3-da35-4600-8fd6-8016debd5218
-        unit_of_measurement: AQI
         device_class: aqi
         value_template: >
           {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
@@ -40,7 +39,6 @@ sensor:
 
       living_room_us_air_quality_index:
         unique_id: e232af2c-99c4-480d-a5cf-79ab5e4b8e1d
-        unit_of_measurement: AQI
         device_class: aqi
         value_template: >
           {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
@@ -69,7 +67,6 @@ sensor:
 
       guest_room_us_air_quality_index:
         unique_id: dcaca7bf-568b-42ba-b9c6-4edb3fdd8cdd
-        unit_of_measurement: AQI
         device_class: aqi
         value_template: >
           {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}

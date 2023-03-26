@@ -5,6 +5,7 @@ homeassistant:
   # Location required to calculate the time the sun rises and sets
   latitude: !secret homeassistant.latitude
   longitude: !secret homeassistant.longitude
+  country: US
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 349
   # metric for Metric, imperial for Imperial
@@ -76,10 +77,6 @@ logbook:
 sun:
 
 mqtt:
-  client_id: !secret mqtt.client_id
-  certificate: /etc/ssl/certs/ca-certificates.crt
-  protocol: 3.1
-
   sensor:
     - name: Line 103 Status
       unique_id: af52d391-499c-462b-9af6-588c42ddd4ed-status
