@@ -23,11 +23,6 @@ homeassistant:
     sensor.exterior_humidity:
       <<: *customize
 
-weather:
-  - platform: darksky
-    api_key: !secret weather.darksky.api_key
-    mode: daily
-
 ################################################
 ## Sensor
 ################################################
@@ -36,11 +31,11 @@ sensor:
     sensors:
 
       exterior_temperature:
-        value_template: "{{state_attr('weather.dark_sky', 'temperature') | round(1, default=0)}}"
+        value_template: "{{state_attr('weather.pirateweather', 'temperature') | round(1, default=0)}}"
         device_class: temperature
         unit_of_measurement: "°F"
 
       exterior_humidity:
-        value_template: "{{state_attr('weather.dark_sky', 'humidity') | round(1, default=0)}}"
+        value_template: "{{state_attr('weather.pirateweather', 'humidity') | round(1, default=0)}}"
         device_class: humidity
         unit_of_measurement: "%"
