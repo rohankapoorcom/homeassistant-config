@@ -10,6 +10,7 @@ cards:
             name: Delta Pro Main
             icon: mdi:battery
             color: green
+            decimal: 0
             positions:
               icon: 'off'
               indicator: 'off'
@@ -22,6 +23,7 @@ cards:
             name: Delta Pro Extra 1
             icon: mdi:battery
             color: green
+            decimal: 0
             positions:
               icon: 'off'
               indicator: 'off'
