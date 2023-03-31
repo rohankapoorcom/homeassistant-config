@@ -36,3 +36,28 @@ automation:
             data: {}
             target:
               entity_id: switch.downstairs_hallway_tablet_charger
+
+  - id: 60f9f9b9-ef6e-494d-af89-fd43cdc92d9e
+    alias: Control the Downstairs Hallway TV
+    description: Turn the Downstairs Hallway TV on/off due to Roku state changes
+    trigger:
+      - platform: state
+        entity_id: media_player.roku_streambar
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.roku_streambar
+                state: 'idle'
+                for:
+                  minutes: 10
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.downstairs_hallway_tv
+          - conditions:
+              - condition: state
+                entity_id: media_player.roku_streambar
+                state: 'on'
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.downstairs_hallway_tv
