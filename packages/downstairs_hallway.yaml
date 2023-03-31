@@ -41,6 +41,10 @@ automation:
     alias: Control the Downstairs Hallway TV
     description: Turn the Downstairs Hallway TV on/off due to Roku state changes
     trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
       - platform: state
         entity_id: media_player.roku_streambar
     action:
