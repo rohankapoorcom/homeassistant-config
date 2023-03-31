@@ -47,6 +47,12 @@ automation:
         event_type: automation_reloaded
       - platform: state
         entity_id: media_player.roku_streambar
+        to: 'on'
+      - platform: state
+        entity_id: media_player.roku_streambar
+        to: 'idle'
+        for:
+          minutes: 11
     action:
       - choose:
           - conditions:
