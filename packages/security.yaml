@@ -52,7 +52,7 @@ automation:
       path: rohankapoorcom/inovelli-lzw31-sn-red-series-lock-notifications.yaml
       input:
         lock_entity: lock.garage_door_lock
-        zwave_device: df9d58e09f02db4bcb1a908a1e32e5e5
+        zwave_device: 5677aabe365f2466dfea234d5770db1b
 
   - id: 278143dd-38fe-41db-bf51-d54369e3ae32
     alias: Turn on Downstairs Hallway Lights when Garage Door Unlocked
