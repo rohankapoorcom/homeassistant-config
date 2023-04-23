@@ -153,7 +153,6 @@ automation:
               target:
                 device_id: 5580d638554510eabf0b5d3dbabe1263
 
-
   - id: 47c666bc-1a15-44ee-9712-d9ae472ad785
     alias: Kitchen Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Kitchen.
