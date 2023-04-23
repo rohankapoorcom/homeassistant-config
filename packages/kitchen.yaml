@@ -177,6 +177,16 @@ automation:
                 All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 20
                 All LED Strip Effect - Effect: Open/close
+        button_a1:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_lights
+            data:
+              brightnesss_pct: 100
+        button_b1:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_lights
         button_a2:
           - service: light.turn_on
             target:
