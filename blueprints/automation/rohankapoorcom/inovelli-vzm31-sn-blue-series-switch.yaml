@@ -1,13 +1,10 @@
 # yamllint disable-line rule:line-length
 ---
 blueprint:
-  name: Inovelli Blue Series VZM31-SN Red Series Switch (Zigbee2MQTT)
+  name: Inovelli Blue Series VZM31-SN Switch (Zigbee2MQTT)
   description: Create automations for the Inovelli Blue Series VZM31-SN Switch.
   domain: automation
   input:
-    zigbee_id:
-      name: Zigbee ID
-      description: Zigbee ID of the Inovellie VZM31-SN switch.
     inovelli_switch:
       name: Inovelli Switch
       description: List of available Inovelli VZM31-SN switch.
@@ -111,16 +108,12 @@ mode: single
 max_exceeded: silent
 variables:
   device_id: !input 'inovelli_switch'
-  zigbee_id: !input 'zigbee_id'
 trigger:
-  - platform: device
-    domain: mqtt
-    type: action
-    device_id: '{{ device_id }}'
-    discovery_id: '{{ zigbee_id }} action_{{trigger.event.data.subtype}}'
+  - platform: mqtt
+    topic: "zigbee2mqtt/{{device_attr(device_id, 'name') }}"
 action:
   - variables:
-      button_id: '{{ trigger.event.data.subtype }}'
+      button_id: '{{ trigger.payload_json.action }}'
   - choose:
       - conditions: '{{ button_id == "config_single" }}'
         sequence: !input 'config_button'
