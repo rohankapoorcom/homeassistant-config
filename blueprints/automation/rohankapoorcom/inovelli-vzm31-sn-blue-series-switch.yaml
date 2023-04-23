@@ -1,7 +1,7 @@
 # yamllint disable-line rule:line-length
 ---
 blueprint:
-  name: Inovelli Red Series VZM31-SN Red Series Switch (Zigbee2MQTT)
+  name: Inovelli Blue Series VZM31-SN Red Series Switch (Zigbee2MQTT)
   description: Create automations for the Inovelli Blue Series VZM31-SN Switch.
   domain: automation
   input:
@@ -12,7 +12,6 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Inovelli
-          model: VZM31-SN
           multiple: true
     config_button:
       name: Config Press 1x
