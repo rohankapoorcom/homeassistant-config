@@ -40,8 +40,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
-        inovelli_switch:
-          - 5580d638554510eabf0b5d3dbabe1263
+        inovelli_switch: 5580d638554510eabf0b5d3dbabe1263
         config_button:
           - service: cover.toggle
             target:
