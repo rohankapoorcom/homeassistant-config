@@ -40,6 +40,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
+        zigbee_id: '0x040d84fffe02b602'
         inovelli_switch: 5580d638554510eabf0b5d3dbabe1263
         config_button:
           - service: cover.toggle
