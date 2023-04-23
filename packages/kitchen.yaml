@@ -181,7 +181,7 @@ automation:
             target:
               entity_id: light.kitchen_lights
             data:
-              brightnesss_pct: 100
+              brightness_pct: 100
         button_b:
           - service: light.turn_off
             target:
