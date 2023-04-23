@@ -12,7 +12,7 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Inovelli
-          multiple: true
+          multiple: false
     config_button:
       name: Config Press 1x
       description: Action to run, when the config button is pressed one time.
@@ -112,7 +112,7 @@ trigger:
   - platform: device
     domain: mqtt
     type: action
-condition: '{{ trigger.event.data.device_id in device_id }}'
+    device_id: '{{ device_id }}'
 action:
   - variables:
       button_id: '{{ trigger.event.data.subtype }}'
