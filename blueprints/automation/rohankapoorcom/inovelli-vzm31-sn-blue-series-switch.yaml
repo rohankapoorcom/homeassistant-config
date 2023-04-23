@@ -110,7 +110,8 @@ variables:
   device_id: !input 'inovelli_switch'
 trigger:
   - platform: mqtt
-    topic: "{{ 'zigbee2mqtt/' + device_attr(device_id, 'name') }}"
+    topic: zigbee2mqtt/+
+condition: "{{ trigger.topic == 'zigbee2mqtt/' + device_attr(device_id, 'name') }}"
 action:
   - variables:
       button_id: '{{ trigger.payload_json.action }}'
