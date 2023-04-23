@@ -35,6 +35,127 @@ light:
 ## Automation
 ################################################
 automation:
+  - id: 3c66912f-0aa1-469f-9b91-93bfa7c2711f
+    alias: Kitchen Light Switch Zigbee Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Kitchen.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
+      input:
+        inovelli_switch:
+          - 5580d638554510eabf0b5d3dbabe1263
+        config_button:
+          - service: cover.toggle
+            target:
+              entity_id: cover.kitchen_shades
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 170
+              level: 50
+              effect: Open/Close
+              duration: 20 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_a2:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+              kelvin: 3000
+              transition: 2
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 70
+              level: 50
+              effect: Medium Rising
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_b2:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              transition: 2
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 70
+              level: 10
+              effect: Medium Falling
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_a3:
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              brightness_pct: 100
+              kelvin: 3000
+              transition: 2
+          - service: light.turn_on
+            target:
+              entity_id: light.kitchen_lights
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 130
+              level: 50
+              effect: Medium Rising
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_b3:
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_cabinet_lights
+            data:
+              transition: 2
+          - service: light.turn_off
+            target:
+              entity_id: light.kitchen_lights
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 130
+              level: 10
+              effect: Medium Falling
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_a4:
+          - service: light.turn_on
+            target:
+              area_id: kitchen
+            data:
+              brightness_pct: 100
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 142
+              level: 50
+              effect: Medium Rising
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+        button_b4:
+          - service: light.turn_off
+            target:
+              area_id: kitchen
+          - service: script.inovelli_blue_notifications
+            data:
+              led: All
+              color: 142
+              level: 10
+              effect: Medium Falling
+              duration: 15 Seconds
+              target:
+                device_id: 5580d638554510eabf0b5d3dbabe1263
+
+
   - id: 47c666bc-1a15-44ee-9712-d9ae472ad785
     alias: Kitchen Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Kitchen.
@@ -57,7 +178,7 @@ automation:
                 All LED Strip Effect - Color: 170
                 All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 20
-                All LED Strip Effect - Effect: Open/Close
+                All LED Strip Effect - Effect: Open/close
         button_a2:
           - service: light.turn_on
             target:
@@ -76,7 +197,7 @@ automation:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Rise
+                All LED Strip Effect - Effect: Medium rise
         button_b2:
           - service: light.turn_off
             target:
@@ -93,7 +214,7 @@ automation:
                 All LED Strip Effect - Color: 70
                 All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Fall
+                All LED Strip Effect - Effect: Medium fall
         button_a3:
           - service: light.turn_on
             target:
@@ -115,7 +236,7 @@ automation:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Rise
+                All LED Strip Effect - Effect: Medium rise
         button_b3:
           - service: light.turn_off
             target:
@@ -135,7 +256,7 @@ automation:
                 All LED Strip Effect - Color: 130
                 All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Fall
+                All LED Strip Effect - Effect: Medium fall
         button_a4:
           - service: light.turn_on
             target:
@@ -152,7 +273,7 @@ automation:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 50
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Rise
+                All LED Strip Effect - Effect: Medium rise
         button_b4:
           - service: light.turn_off
             target:
@@ -167,7 +288,7 @@ automation:
                 All LED Strip Effect - Color: 142
                 All LED Strip Effect - Level: 10
                 All LED Strip Effect - Duration: 15
-                All LED Strip Effect - Effect: Medium Fall
+                All LED Strip Effect - Effect: Medium fall
 
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades
@@ -216,5 +337,14 @@ automation:
             All LED Strip Effect - Color: 170
             All LED Strip Effect - Level: 50
             All LED Strip Effect - Duration: 20
-            All LED Strip Effect - Effect: Open/Close
+            All LED Strip Effect - Effect: Open/close
+      - service: script.inovelli_blue_notifications
+        data:
+          led: All
+          color: 170
+          level: 50
+          effect: Open/Close
+          duration: 20 Seconds
+          target:
+            device_id: 5580d638554510eabf0b5d3dbabe1263
     mode: single
