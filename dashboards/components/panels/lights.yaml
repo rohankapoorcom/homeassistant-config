@@ -135,7 +135,7 @@ cards:
               show: true
               tap_action:
                 action: toggle
-              icon: mdi:swap-vertical
+              icon: mdi:swap-horizontal
       - type: custom:decluttering-card
         template: slider_button_card
         variables:
@@ -147,7 +147,7 @@ cards:
               show: true
               tap_action:
                 action: toggle
-              icon: mdi:swap-vertical
+              icon: mdi:swap-horizontal
     columns: 4
     square: false
   - type: grid
