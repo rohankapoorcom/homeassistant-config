@@ -12,7 +12,7 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Inovelli
-          multiple: false
+          multiple: true
     config_button:
       name: Config Press 1x
       description: Action to run, when the config button is pressed one time.
@@ -111,7 +111,12 @@ variables:
 trigger:
   - platform: mqtt
     topic: zigbee2mqtt/+
-condition: "{{ trigger.topic == 'zigbee2mqtt/' + device_attr(device_id, 'name') }}"
+condition: >
+  {% set ns = namespace(topics=[]) %}
+  {% for id in device_id %}
+    {% set ns.topics = ns.topics + [ 'zigbee2mqtt/' + device_attr(id, 'name') ] %}
+  {% endfor %}
+  {{ topic in ns.topics }}
 action:
   - variables:
       button_id: '{{ trigger.payload_json.action }}'
