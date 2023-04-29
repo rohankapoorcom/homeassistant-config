@@ -116,7 +116,7 @@ condition: >
   {% for id in device_id %}
     {% set ns.topics = ns.topics + [ 'zigbee2mqtt/' + device_attr(id, 'name') ] %}
   {% endfor %}
-  {{ topic in ns.topics }}
+  {{ trigger.topic in ns.topics }}
 action:
   - variables:
       button_id: '{{ trigger.payload_json.action }}'
