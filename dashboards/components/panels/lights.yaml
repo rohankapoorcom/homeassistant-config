@@ -124,6 +124,30 @@ cards:
         variables:
           - entity: fan.master_bedroom_fan
           - name: Fan
+      - type: custom:decluttering-card
+        template: slider_button_card
+        variables:
+          - entity: cover.master_bedroom_sheers
+          - name: Sheers
+          - direction: left-right
+          - action_button:
+              mode: custom
+              show: true
+              tap_action:
+                action: toggle
+              icon: mdi:swap-horizontal
+      - type: custom:decluttering-card
+        template: slider_button_card
+        variables:
+          - entity: cover.master_bedroom_curtains
+          - name: Blackouts
+          - direction: left-right
+          - action_button:
+              mode: custom
+              show: true
+              tap_action:
+                action: toggle
+              icon: mdi:swap-horizontal
     columns: 4
     square: false
   - type: grid
