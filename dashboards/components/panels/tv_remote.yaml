@@ -10,7 +10,7 @@ cards:
             variables:
               source: Shield
               name: TV
-              script: turn_on_watch_tv
+              script: turn_on_watch_living_room_tv
             icon: mdi:television
           - type: custom:button-card
             template: remote
@@ -62,7 +62,7 @@ cards:
             variables:
               source: 'Off'
               name: Power Off
-              script: turn_off_the_tv
+              script: turn_off_the_living_room_tv
             icon: mdi:power
       - type: custom:roku-card
         entity: media_player.shield
@@ -119,7 +119,7 @@ cards:
           show: false
           tap_action:
             action: call-service
-            service: script.turn_on_watch_tv
+            service: script.turn_on_watch_living_room_tv
             haptic: success
         volume_up:
           show: true

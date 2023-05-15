@@ -146,20 +146,15 @@ automation:
 ## Script
 ################################################
 script:
-  turn_on_watch_tv:
-    alias: Turn on the TV
+  turn_on_watch_living_room_tv:
+    alias: Turn on the Living Room TV
     sequence:
       - service: media_player.turn_on
         target:
           device_id:
-            - ab65d3019b2049668b610bf0c5bc58c2
+            - ef1d3c8a3b4dd25bd2df119af1e26994
             - 404bd26637ee4f98939fc2fc8552398f
             - 556fadd7ebff47319b8eaf65a20b6804
-      - service: media_player.select_source
-        target:
-          device_id: ab65d3019b2049668b610bf0c5bc58c2
-        data:
-          source: HDMI-1
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -175,13 +170,13 @@ script:
     mode: single
     icon: mdi:television
 
-  turn_off_the_tv:
-    alias: Turn off the TV
+  turn_off_the_living_room_tv:
+    alias: Turn off the Living Room TV
     sequence:
       - service: media_player.turn_off
         target:
           device_id:
-            - ab65d3019b2049668b610bf0c5bc58c2
+            - ef1d3c8a3b4dd25bd2df119af1e26994
             - 404bd26637ee4f98939fc2fc8552398f
             - 556fadd7ebff47319b8eaf65a20b6804
       - service: switch.turn_off
@@ -200,7 +195,7 @@ script:
       - service: media_player.turn_off
         target:
           device_id:
-            - ab65d3019b2049668b610bf0c5bc58c2
+            - ef1d3c8a3b4dd25bd2df119af1e26994
             - 556fadd7ebff47319b8eaf65a20b6804
       - service: denonavr.get_command
         target:
@@ -216,14 +211,9 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-            - ab65d3019b2049668b610bf0c5bc58c2
+            - ef1d3c8a3b4dd25bd2df119af1e26994
             - 404bd26637ee4f98939fc2fc8552398f
             - 556fadd7ebff47319b8eaf65a20b6804
-      - service: media_player.select_source
-        target:
-          device_id: ab65d3019b2049668b610bf0c5bc58c2
-        data:
-          source: HDMI-1
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -238,7 +228,7 @@ script:
       - service: media_player.turn_on
         target:
           device_id:
-            - ab65d3019b2049668b610bf0c5bc58c2
+            - ef1d3c8a3b4dd25bd2df119af1e26994
             - 404bd26637ee4f98939fc2fc8552398f
       - service: switch.turn_on
         target:
