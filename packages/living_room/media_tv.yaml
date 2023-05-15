@@ -175,7 +175,7 @@ script:
     sequence:
       - service: media_player.turn_off
         target:
-          device_id:
+          entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
             - media_player.shield
@@ -219,6 +219,9 @@ script:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?MSQUICK2
+      - service: switch.turn_off
+        target:
+          entity_id: switch.living_room_conference_camera
     mode: single
     icon: mdi:nintendo-switch
 
