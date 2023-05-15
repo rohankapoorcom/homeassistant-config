@@ -151,10 +151,10 @@ script:
     sequence:
       - service: media_player.turn_on
         target:
-          device_id:
-            - ef1d3c8a3b4dd25bd2df119af1e26994
-            - 404bd26637ee4f98939fc2fc8552398f
-            - 556fadd7ebff47319b8eaf65a20b6804
+          entity_id:
+            - media_player.living_room_tv
+            - media_player.denon_avr_x4300h
+            - media_player.shield
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -176,9 +176,9 @@ script:
       - service: media_player.turn_off
         target:
           device_id:
-            - ef1d3c8a3b4dd25bd2df119af1e26994
-            - 404bd26637ee4f98939fc2fc8552398f
-            - 556fadd7ebff47319b8eaf65a20b6804
+            - media_player.living_room_tv
+            - media_player.denon_avr_x4300h
+            - media_player.shield
       - service: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
@@ -190,13 +190,13 @@ script:
     sequence:
       - service: media_player.turn_on
         target:
-          device_id:
-            - 404bd26637ee4f98939fc2fc8552398f
+          entity_id:
+            - media_player.denon_avr_x4300h
       - service: media_player.turn_off
         target:
-          device_id:
-            - ef1d3c8a3b4dd25bd2df119af1e26994
-            - 556fadd7ebff47319b8eaf65a20b6804
+          entity_id:
+            - media_player.living_room_tv
+            - media_player.shield
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -210,10 +210,10 @@ script:
     sequence:
       - service: media_player.turn_on
         target:
-          device_id:
-            - ef1d3c8a3b4dd25bd2df119af1e26994
-            - 404bd26637ee4f98939fc2fc8552398f
-            - 556fadd7ebff47319b8eaf65a20b6804
+          entity_id:
+            - media_player.living_room_tv
+            - media_player.denon_avr_x4300h
+            - media_player.shield
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -227,9 +227,9 @@ script:
     sequence:
       - service: media_player.turn_on
         target:
-          device_id:
-            - ef1d3c8a3b4dd25bd2df119af1e26994
-            - 404bd26637ee4f98939fc2fc8552398f
+          entity_id:
+            - media_player.living_room_tv
+            - media_player.denon_avr_x4300h
       - service: switch.turn_on
         target:
           entity_id: switch.living_room_conference_camera
@@ -245,3 +245,36 @@ script:
           command: /goform/formiPhoneAppDirect.xml?MSQUICK3
     mode: single
     icon: mdi:video
+
+  turn_on_watch_master_bedroom_room_tv:
+    alias: Turn on the Master Bedroom TV
+    sequence:
+      - service: media_player.turn_on
+        target:
+          entity_id:
+            - media_player.master_bedroom_tv
+            - media_player.denon_avr_x4300h_zone_2
+            - media_player.shield
+      - service: denonavr.get_command
+        target:
+          device_id: 404bd26637ee4f98939fc2fc8552398f
+        data:
+          command: /goform/formiPhoneAppDirect.xml?MSQUICK1
+      - service: androidtv.adb_command
+        data:
+          entity_id: media_player.living_room_shield_tv
+          command: HOME
+    mode: single
+    icon: mdi:television
+
+  turn_off_the_master_bedroom_tv:
+    alias: Turn off the Master Bedroom TV
+    sequence:
+      - service: media_player.turn_off
+        target:
+          entity_id:
+            - media_player.master_bedroom_tv
+            - media_player.denon_avr_x4300h_zone_2
+            - media_player.shield
+    mode: single
+    icon: mdi:television-off
