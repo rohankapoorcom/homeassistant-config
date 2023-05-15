@@ -205,33 +205,3 @@ template:
             Battery
           {%- endif -%}
         unique_id: 9cf68e6d-e36e-47cf-a216-99fd474a6e99
-
-rest:
-  - resource: !secret rest.ecoflow_river_two_max_api.resource
-    scan_interval: 5
-    method: GET
-    headers: !secret rest.ecoflow_river_two_max_api.headers
-    sensor:
-      - name: "River 2 Max Battery"
-        unique_id: 8f09799f-9de2-41e4-bc62-136d15f267aa
-        value_template: "{{ value_json.data.soc }}"
-        unit_of_measurement: "%"
-        state_class: measurement
-        device_class: battery
-      - name: "River 2 Max Runtime"
-        unique_id: 3707f581-92ab-41d7-9716-fccfdc0912ac
-        value_template: "{{ value_json.data.remainTime }}"
-        unit_of_measurement: "minutes"
-        state_class: measurement
-      - name: "River 2 Max Input"
-        unique_id: 0e81adf2-987c-48cb-b14f-32bc480676fe
-        value_template: "{{ value_json.data.wattsInSum }}"
-        unit_of_measurement: "W"
-        state_class: measurement
-        device_class: power
-      - name: "River 2 Max Output"
-        unique_id: 94456ba8-bd59-4829-983d-a6cc218045ba
-        value_template: "{{ value_json.data.wattsOutSum }}"
-        unit_of_measurement: "W"
-        state_class: measurement
-        device_class: power
