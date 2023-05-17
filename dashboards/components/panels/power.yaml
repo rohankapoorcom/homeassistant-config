@@ -43,6 +43,18 @@ cards:
               value: inside
             severity:
               - {}
+          - entity: sensor.river_2_max_main_battery_level
+            direction: right
+            name: River 2 Max
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
         height: 20px
       - type: glance
         title: Delta Pro Status
