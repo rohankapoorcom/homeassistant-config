@@ -25,7 +25,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
       input:
-        zwave_device: df9d58e09f02db4bcb1a908a1e32e5e5
+        zwave_device: 5677aabe365f2466dfea234d5770db1b
         config_button:
           - service: button.press
             data: {}
@@ -36,6 +36,11 @@ automation:
             data: {}
             target:
               entity_id: switch.downstairs_hallway_tablet_charger
+        button_b2:
+          - service: switch.toggle
+            data: {}
+            target:
+              entity_id: switch.downstairs_hallway_tv
 
   - id: 60f9f9b9-ef6e-494d-af89-fd43cdc92d9e
     alias: Control the Downstairs Hallway TV

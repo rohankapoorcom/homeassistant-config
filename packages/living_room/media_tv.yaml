@@ -142,6 +142,35 @@ automation:
           - service: light.turn_on
             entity_id: light.living_room_tv_remote_screen
 
+  - id: 8347dcbb-ff95-4565-9b51-667d405c955c
+    alias: Control the Master Bedroom TV Remote when Charging
+    description: Turn off the motion detection and screen when the Master Bedroom TV Remote is charging.
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
+    action:
+      - choose:
+          - alias: If the Master Bedroom TV Remote is charging, turn off the motion detection and screen
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
+                state: 'on'
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.master_bedroom_tv_remote_motion_detection
+              - service: light.turn_off
+                entity_id: light.master_bedroom_tv_remote_screen
+        default:
+          - service: switch.turn_on
+            entity_id: switch.master_bedroom_tv_remote_motion_detection
+          - service: light.turn_on
+            entity_id: light.master_bedroom_tv_remote_screen
+
 ################################################
 ## Script
 ################################################
