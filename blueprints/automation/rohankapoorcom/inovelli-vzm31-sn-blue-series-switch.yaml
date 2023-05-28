@@ -31,6 +31,30 @@ blueprint:
       default: []
       selector:
         action: {}
+    button_a_held:
+      name: Up/On Held
+      description: Action to run, when the Up button is pressed and held.
+      default: []
+      selector:
+        action: {}
+    button_b_held:
+      name: Down/Off Held
+      description: Action to run, when the Down button is pressed and held.
+      default: []
+      selector:
+        action: {}
+    button_a_released:
+      name: Up/On Press 1x
+      description: Action to run, when the Up button is released after being held.
+      default: []
+      selector:
+        action: {}
+    button_b_released:
+      name: Down/Off Press 1x
+      description: Action to run, when the Down button is released after being held.
+      default: []
+      selector:
+        action: {}
     config_button2:
       name: Config Press 2x
       description: Action to run, when the config button is pressed two times.
@@ -131,6 +155,14 @@ action:
         sequence: !input 'button_a'
       - conditions: '{{ button_id == "down_single" }}'
         sequence: !input 'button_b'
+      - conditions: '{{ button_id == "up_held" }}'
+        sequence: !input 'button_a_held'
+      - conditions: '{{ button_id == "down_held" }}'
+        sequence: !input 'button_b_held'
+      - conditions: '{{ button_id == "up_release" }}'
+        sequence: !input 'button_a_released'
+      - conditions: '{{ button_id == "down_release" }}'
+        sequence: !input 'button_b_released'
       - conditions: '{{ button_id == "config_double" }}'
         sequence: !input 'config_button2'
       - conditions: '{{ button_id == "up_double" }}'
