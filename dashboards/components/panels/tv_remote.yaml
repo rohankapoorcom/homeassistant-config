@@ -99,21 +99,10 @@ cards:
           - icon: mdi:microphone
             tap_action:
               action: call-service
-              service: androidtv.adb_command
+              service: remote.send_command
               service_data:
-                entity_id: media_player.living_room_shield_tv
-                command: >-
-                  sendevent /dev/input/event5 4 4 786977 &&
-                  sendevent /dev/input/event5 1 217 1 && sendevent
-                  /dev/input/event5 3 40 0 && sendevent
-                  /dev/input/event5 3 42 1 && sendevent
-                  /dev/input/event5 0 0 0 && sendevent
-                  /dev/input/event5 3 40 1 && sendevent
-                  /dev/input/event5 3 42 0 && sendevent
-                  /dev/input/event5 0 0 0 && sendevent
-                  /dev/input/event5 4 4 786977 && sendevent
-                  /dev/input/event5 1 217 0 && sendevent
-                  /dev/input/event5 0 0 0
+                entity_id: remote.living_room_shield_tv
+                command: SEARCH
               haptic: success
         power:
           show: false
@@ -150,97 +139,100 @@ cards:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
-              command: UP
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_UP
             haptic: success
         down:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
-              command: DOWN
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_DOWN
             haptic: success
         left:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
-              command: LEFT
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_LEFT
             haptic: success
         right:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
-              command: RIGHT
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_RIGHT
             haptic: success
         home:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
               command: HOME
             haptic: success
         info:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
               command: MENU
             haptic: success
         back:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
               command: BACK
             haptic: success
         select:
           show: true
           tap_action:
             action: call-service
-            service: androidtv.adb_command
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
-              command: CENTER
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_CENTER
             haptic: success
         reverse:
           show: true
           tap_action:
             action: call-service
-            service: media_player.media_previous_track
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
+              command: MEDIA_REWIND
             haptic: success
         play:
           show: true
           tap_action:
             action: call-service
-            service: media_player.media_play_pause
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
+              command: MEDIA_PLAY_PAUSE
             haptic: success
         forward:
           show: true
           tap_action:
             action: call-service
-            service: media_player.media_next_track
+            service: remote.send_command
             service_data:
-              entity_id: media_player.living_room_shield_tv
+              entity_id: remote.living_room_shield_tv
+              command: MEDIA_FAST_FORWARD
             haptic: success
         haptic: success
       - type: horizontal-stack
