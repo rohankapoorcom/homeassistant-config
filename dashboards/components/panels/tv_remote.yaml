@@ -180,6 +180,14 @@ cards:
               entity_id: remote.living_room_shield_tv
               command: HOME
             haptic: success
+          hold_action:
+            action: call-service
+            service: remote.send_command
+            service_data:
+              entity_id: remote.living_room_shield_tv
+              command: HOME
+              hold_secs: 0.5
+            haptic: success
         info:
           show: true
           tap_action:
@@ -198,6 +206,14 @@ cards:
               entity_id: remote.living_room_shield_tv
               command: BACK
             haptic: success
+          hold_action:
+            action: call-service
+            service: remote.send_command
+            service_data:
+              entity_id: remote.living_room_shield_tv
+              command: BACK
+              hold_secs: 0.5
+            haptic: success
         select:
           show: true
           tap_action:
@@ -207,9 +223,24 @@ cards:
               entity_id: remote.living_room_shield_tv
               command: DPAD_CENTER
             haptic: success
+          hold_action:
+            action: call-service
+            service: remote.send_command
+            service_data:
+              entity_id: remote.living_room_shield_tv
+              command: DPAD_CENTER
+              hold_secs: 0.5
+            haptic: success
         reverse:
           show: true
           tap_action:
+            action: call-service
+            service: remote.send_command
+            service_data:
+              entity_id: remote.living_room_shield_tv
+              command: MEDIA_PREVIOUS
+            haptic: success
+          hold_action:
             action: call-service
             service: remote.send_command
             service_data:
@@ -228,6 +259,13 @@ cards:
         forward:
           show: true
           tap_action:
+            action: call-service
+            service: remote.send_command
+            service_data:
+              entity_id: remote.living_room_shield_tv
+              command: MEDIA_NEXT
+            haptic: success
+          hold_action:
             action: call-service
             service: remote.send_command
             service_data:
