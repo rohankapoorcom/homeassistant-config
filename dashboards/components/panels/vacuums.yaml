@@ -42,7 +42,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["5"], "iterations": 1,
+                {"segment_ids": ["8"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:stove
             name: Kitchen
@@ -51,7 +51,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["6"], "iterations": 1,
+                {"segment_ids": ["5"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:table-chair
             name: Dining Room
@@ -60,7 +60,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["2"], "iterations": 1,
+                {"segment_ids": ["4"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:floor-plan
             name: Hallway
@@ -69,7 +69,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["4"], "iterations": 1,
+                {"segment_ids": ["10"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:toilet
             name: Hallway Bathroom
@@ -78,7 +78,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["1"], "iterations": 1,
+                {"segment_ids": ["7"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:bed-king
             name: Master Bedroom
@@ -87,7 +87,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["10"], "iterations": 1,
+                {"segment_ids": ["3"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:shower
             name: Master Bathroom
@@ -96,7 +96,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["3"], "iterations": 1,
+                {"segment_ids": ["2"], "iterations": 1,
                 "customOrder": true}
           - icon: mdi:monitor
             name: Office
@@ -105,7 +105,7 @@ cards:
               topic: >-
                 valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
               payload: >-
-                {"segment_ids": ["8"], "iterations": 1,
+                {"segment_ids": ["9"], "iterations": 1,
                 "customOrder": true}
         entity: vacuum.valetudo_upstairs_dreame
         compact_view: false
