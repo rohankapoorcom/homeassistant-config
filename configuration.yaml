@@ -59,6 +59,7 @@ discovery:
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
+assist_pipeline:
 
 recorder:
   db_url: !secret recorder.db_url
