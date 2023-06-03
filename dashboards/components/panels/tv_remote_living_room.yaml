@@ -10,6 +10,7 @@ cards:
             variables:
               source: Shield
               name: TV
+              media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_watch_living_room_tv
             icon: mdi:television
           - type: custom:button-card
@@ -17,6 +18,7 @@ cards:
             variables:
               source: PC
               name: Music
+              media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_living_room_speakers
             icon: mdi:audio-video
             styles:
@@ -36,6 +38,7 @@ cards:
             variables:
               source: PC
               name: Video Call
+              media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_living_room_video_conferencing_system
             icon: mdi:video
             styles:
@@ -55,6 +58,7 @@ cards:
             variables:
               source: Switch
               name: Switch
+              media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_nintendo_switch
             icon: mdi:nintendo-switch
           - type: custom:button-card
@@ -62,6 +66,7 @@ cards:
             variables:
               source: 'Off'
               name: Power Off
+              media_player_entity: media_player.denon_avr_x4300h
               script: turn_off_the_living_room_tv
             icon: mdi:power
       - type: custom:decluttering-card

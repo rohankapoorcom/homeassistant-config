@@ -3,7 +3,7 @@ remote:
     source: Receiver Source
     name: Name of Button
     script: Name of Script
-  entity: media_player.denon_avr_x4300h
+  entity: '[[[ return variables.media_player_entity ]]]'
   name: '[[[ return variables.name ]]]'
   size: 50%
   color_type: icon
@@ -18,7 +18,7 @@ remote:
     icon:
       - color: |
           [[[
-            if (states['media_player.denon_avr_x4300h'].attributes.source === variables.source) {
+            if (states[variables.media_player_entity].attributes.source === variables.source) {
               return 'var(--paper-item-icon-active-color)';
             } else  {
               return 'var(--paper-item-icon-color)';

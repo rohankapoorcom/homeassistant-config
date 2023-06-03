@@ -12,46 +12,15 @@ cards:
             variables:
               source: Shield
               name: TV
+              media_player_entity: media_player.denon_avr_x4300h_zone_2
               script: turn_on_watch_master_bedroom_tv
             icon: mdi:television
-          - type: custom:button-card
-            template: light_button
-            entity: media_player.living_room_sync_box
-            icon: mdi:led-strip-variant
-            name: Backlight
-            tap_action:
-              action: call-service
-              service: media_player.media_play_pause
-              service_data:
-                entity_id: media_player.living_room_sync_box
-              haptic: success
-            state:
-              - value: playing
-                label: 'On'
-                styles:
-                  card:
-                    - border: >-
-                        solid 1px
-                        var(--paper-item-icon-active-color)
-                    - box-shadow: >-
-                        0px 0px 10px 3px
-                        var(--paper-item-icon-active-color)
-                  label:
-                    - color: var(--paper-item-icon-active-color)
-              - operator: default
-                label: 'Off'
-                styles:
-                  card:
-                    - border: solid 1px var(--primary-color)
-                    - box-shadow: none
-            styles:
-              card:
-                - height: 100px
           - type: custom:button-card
             template: remote
             variables:
               source: 'Off'
               name: Power Off
+              media_player_entity: media_player.denon_avr_x4300h_zone_2
               script: turn_off_the_master_bedroom_tv
             icon: mdi:power
       - type: custom:decluttering-card
