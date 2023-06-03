@@ -3,7 +3,6 @@ remote:
     source: Receiver Source
     name: Name of Button
     script: Name of Script
-  entity: '[[[ return variables.media_player_entity ]]]'
   name: '[[[ return variables.name ]]]'
   size: 50%
   color_type: icon

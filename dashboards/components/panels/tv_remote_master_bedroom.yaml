@@ -9,14 +9,22 @@ cards:
         cards:
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h_zone_2
             variables:
               source: Shield
               name: TV
               media_player_entity: media_player.denon_avr_x4300h_zone_2
               script: turn_on_watch_master_bedroom_tv
             icon: mdi:television
+          - type: 'custom:button-card'
+            color_type: blank-card
+          - type: 'custom:button-card'
+            color_type: blank-card
+          - type: 'custom:button-card'
+            color_type: blank-card
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h_zone_2
             variables:
               source: 'Off'
               name: Power Off

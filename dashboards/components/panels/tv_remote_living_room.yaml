@@ -7,6 +7,7 @@ cards:
         cards:
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h
             variables:
               source: Shield
               name: TV
@@ -15,6 +16,7 @@ cards:
             icon: mdi:television
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h
             variables:
               source: PC
               name: Music
@@ -35,6 +37,7 @@ cards:
                     ]]]
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h
             variables:
               source: PC
               name: Video Call
@@ -55,6 +58,7 @@ cards:
                     ]]]
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h
             variables:
               source: Switch
               name: Switch
@@ -63,6 +67,7 @@ cards:
             icon: mdi:nintendo-switch
           - type: custom:button-card
             template: remote
+            entity: media_player.denon_avr_x4300h
             variables:
               source: 'Off'
               name: Power Off
