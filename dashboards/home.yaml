@@ -159,4 +159,21 @@ views:
             - !include
               - components/panels/sidebar.yaml
               - active: TV Remote
-            - !include components/panels/tv_remote.yaml
+            - !include components/panels/tv_remote_living_room.yaml
+  - theme: Backend-selected
+    icon: mdi:remote
+    title: Master Bedroom TV Remote
+    path: remote
+    type: custom:masonry-layout
+    layout:
+      max_width: 1500
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: None
+            - !include components/panels/tv_remote_master_bedroom.yaml
