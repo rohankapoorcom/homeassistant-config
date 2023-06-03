@@ -286,7 +286,7 @@ script:
         target:
           device_id: ab65d3019b2049668b610bf0c5bc58c2
         data:
-          source: HDMI-1            
+          source: HDMI-1
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
