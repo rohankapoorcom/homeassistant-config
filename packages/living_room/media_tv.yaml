@@ -265,11 +265,6 @@ script:
       - service: switch.turn_on
         target:
           entity_id: switch.living_room_conference_camera
-      - service: media_player.select_source
-        target:
-          device_id: ab65d3019b2049668b610bf0c5bc58c2
-        data:
-          source: HDMI-1
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
@@ -278,7 +273,7 @@ script:
     mode: single
     icon: mdi:video
 
-  turn_on_watch_master_bedroom_room_tv:
+  turn_on_watch_master_bedroom_tv:
     alias: Turn on the Master Bedroom TV
     sequence:
       - service: media_player.turn_on
@@ -287,6 +282,11 @@ script:
             - media_player.master_bedroom_tv
             - media_player.denon_avr_x4300h_zone_2
             - media_player.shield
+      - service: media_player.select_source
+        target:
+          device_id: ab65d3019b2049668b610bf0c5bc58c2
+        data:
+          source: HDMI-1            
       - service: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
