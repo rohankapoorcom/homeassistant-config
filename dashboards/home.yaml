@@ -163,7 +163,7 @@ views:
   - theme: Backend-selected
     icon: mdi:remote
     title: Master Bedroom TV Remote
-    path: master_bedroom_remote
+    path: remote_2
     type: custom:masonry-layout
     layout:
       max_width: 1500
