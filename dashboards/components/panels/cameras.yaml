@@ -12,9 +12,9 @@ cards:
       action: fire-dom-event
       browser_mod:
         service: browser_mod.popup
-        dismissable: true
         data:
           size: fullscreen
+          dismissable: true
           content:
             type: picture-glance
             camera_view: live
