@@ -123,10 +123,6 @@ spotcast:
   sp_dc: !secret spotcast.sp_dc
   sp_key: !secret spotcast.sp_key
 
-browser_mod:
-  disable:
-    - light
-
 script: !include scripts.yaml
 
 smartir:
