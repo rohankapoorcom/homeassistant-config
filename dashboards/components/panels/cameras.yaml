@@ -11,18 +11,10 @@ cards:
     tap_action:
       action: fire-dom-event
       browser_mod:
-        service: browser_mod.popup
+        service: browser_mod.more_info
         data:
-          size: fullscreen
-          dismissable: true
-          content:
-            type: picture-glance
-            camera_view: live
-            camera_image: {{ camera }}
-            entities:
-              - {{ camera }}
-            show_name: false
-            show_state: false
+          large: true
+          entity: {{ camera }}
   {% endfor %}
 layout_type: custom:grid-layout
 layout:
