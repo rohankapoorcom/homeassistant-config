@@ -20,79 +20,83 @@ whole_house_media_player_playing_or_paused:
         tap_action:
           action: fire-dom-event
           browser_mod:
-            command: popup
-            card:
-              cards:
-                - color_type: blank-card
-                  type: custom:button-card
-                - color: rgb(66, 134, 244)
-                  color_type: card
-                  icon: mdi:music-note
-                  name: My Lists
-                  styles:
-                    card:
-                      - width: 90px
-                      - height: 70px
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      command: popup
+            service: browser_mod.popup
+            data:
+              content:
+                cards:
+                  - color_type: blank-card
+                    type: custom:button-card
+                  - color: rgb(66, 134, 244)
+                    color_type: card
+                    icon: mdi:music-note
+                    name: My Lists
+                    styles:
                       card:
-                        client_id: ef8780ddc8c941e09abf7556e9033b16
-                        limit: 8
-                        random_song: true
-                        type: custom:spotify-card
-                      title: Choose Playlist
-                  type: custom:button-card
-                - color: rgb(66, 134, 244)
-                  color_type: card
-                  icon: mdi:music-note
-                  name: Top Lists
-                  styles:
-                    card:
-                      - width: 90px
-                      - height: 70px
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      command: popup
+                        - width: 90px
+                        - height: 70px
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          content:
+                            client_id: ef8780ddc8c941e09abf7556e9033b16
+                            limit: 8
+                            random_song: true
+                            type: custom:spotify-card
+                          title: Choose Playlist
+                    type: custom:button-card
+                  - color: rgb(66, 134, 244)
+                    color_type: card
+                    icon: mdi:music-note
+                    name: Top Lists
+                    styles:
                       card:
-                        client_id: ef8780ddc8c941e09abf7556e9033b16
-                        limit: 8
-                        playlist_type: featured
-                        random_song: true
-                        type: custom:spotify-card
-                      title: Choose Playlist
-                  type: custom:button-card
-                - color: rgb(66, 134, 244)
-                  color_type: card
-                  icon: mdi:music-note
-                  name: Daily Mixes
-                  styles:
-                    card:
-                      - width: 90px
-                      - height: 70px
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      command: popup
+                        - width: 90px
+                        - height: 70px
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          content:
+                            client_id: ef8780ddc8c941e09abf7556e9033b16
+                            limit: 8
+                            playlist_type: featured
+                            random_song: true
+                            type: custom:spotify-card
+                          title: Choose Playlist
+                    type: custom:button-card
+                  - color: rgb(66, 134, 244)
+                    color_type: card
+                    icon: mdi:music-note
+                    name: Daily Mixes
+                    styles:
                       card:
-                        client_id: ef8780ddc8c941e09abf7556e9033b16
-                        limit: 8
-                        playlist_type: discover-weekly
-                        random_song: true
-                        type: custom:spotify-card
-                      title: Choose Playlist
-                  type: custom:button-card
-                - color_type: blank-card
-                  type: custom:button-card
-              type: horizontal-stack
-            style:
-              .: |
-                :host .content {
-                  height: 110px;
-                  }
-            title: Choose Playlist
+                        - width: 90px
+                        - height: 70px
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          content:
+                            client_id: ef8780ddc8c941e09abf7556e9033b16
+                            limit: 8
+                            playlist_type: discover-weekly
+                            random_song: true
+                            type: custom:spotify-card
+                          title: Choose Playlist
+                    type: custom:button-card
+                  - color_type: blank-card
+                    type: custom:button-card
+                type: horizontal-stack
+              style:
+                .: |
+                  :host .content {
+                    height: 110px;
+                    }
+              title: Choose Playlist
         tts: false
         type: custom:mini-media-player
       - artwork: none
