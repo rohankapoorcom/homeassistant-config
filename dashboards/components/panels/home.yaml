@@ -107,6 +107,11 @@ cards:
             group_by:
               func: avg
               duration: 30min
+          - entity: sensor.downstairs_hallway_us_air_quality_index
+            name: Downstairs
+            group_by:
+              func: avg
+              duration: 30min
         apex_config:
           legend:
             show: false
