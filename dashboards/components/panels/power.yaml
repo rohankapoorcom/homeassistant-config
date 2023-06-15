@@ -149,7 +149,7 @@ cards:
       - type: custom:power-flow-card
         entities:
           grid: sensor.eagle_200_meter_power_demand
-          solar: sensor.envoy_202250122370_current_power_production
+          solar: sensor.envoy_202317054288_current_power_production
       - type: energy-usage-graph
         title: Energy Usage
       - type: energy-solar-graph
