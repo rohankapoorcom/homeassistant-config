@@ -92,7 +92,7 @@ sensor:
           {% else %}
             invalid
           {% endif %}
-      
+
       downstairs_hallway_us_air_quality_index:
         unique_id: f9695676-bdbf-48e7-ba93-feadf9ec54eb
         device_class: aqi

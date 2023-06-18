@@ -27,7 +27,6 @@ rest_command:
     content_type: application/x-www-form-urlencoded
     payload: '{"comhead":"video switch","language":0,"source":[2,3]}'
 
-
 ################################################
 ## Automation
 ################################################
@@ -323,7 +322,7 @@ script:
             - media_player.shield
     mode: single
     icon: mdi:television-off
-  
+
   turn_on_the_living_room_tv_light_sync:
     alias: Turn on the Living Room TV Syncbox
     sequence:
@@ -337,7 +336,7 @@ script:
               - service: media_player.media_pause
                 target:
                   entity_id: media_player.living_room_sync_box
-        default:        
+        default:
           - service: rest_command.set_philips_hue_syncbox_input_living_room
           - service: huesyncbox.set_entertainment_area
             data:
@@ -361,7 +360,7 @@ script:
               - service: media_player.media_pause
                 target:
                   entity_id: media_player.living_room_sync_box
-        default:        
+        default:
           - service: huesyncbox.set_entertainment_area
             data:
               entertainment_area: Master Bedroom
