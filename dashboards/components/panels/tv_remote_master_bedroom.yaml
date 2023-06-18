@@ -54,7 +54,7 @@ cards:
             state:
               - value: >
                   [[[
-                    return states['media_player.living_room_sync_box'] === 'playing'
+                    return states['media_player.living_room_sync_box'].state === 'playing'
                     && (states['media_player.living_room_sync_box'].attributes.entertainment_area === 'Master Bedroom')
                   ]]]
                 label: 'On'
