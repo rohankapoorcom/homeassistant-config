@@ -323,3 +323,29 @@ script:
             - media_player.shield
     mode: single
     icon: mdi:television-off
+  
+  turn_on_the_living_room_tv_light_sync:
+    alias: Turn on the Living Room TV Syncbox
+    sequence:
+      - service: rest_command.set_philips_hue_syncbox_input_living_room
+      - service: huesyncbox.set_entertainment_area
+        data:
+          entertainment_area: Living Room
+        target:
+          entity_id: media_player.living_room_sync_box
+      - service: media_player.media_play_pause
+        target:
+          entity_id: media_player.living_room_sync_box
+
+  turn_on_the_master_bedroom_tv_light_sync:
+    alias: Turn on the Master Bedroom TV Syncbox
+    sequence:
+      - service: rest_command.set_philips_hue_syncbox_input_master_bedroom
+      - service: huesyncbox.set_entertainment_area
+        data:
+          entertainment_area: Master Bedroom
+        target:
+          entity_id: media_player.living_room_sync_box
+      - service: media_player.media_play_pause
+        target:
+          entity_id: media_player.living_room_sync_box

@@ -3,7 +3,9 @@ cards:
   - type: custom:layout-card
     layout_type: vertical
     cards:
-      - type: horizontal-stack
+      - type: grid
+        columns: 5
+        square: false
         cards:
           - type: custom:button-card
             template: remote
@@ -81,7 +83,8 @@ cards:
           - shield_remote_entity: remote.living_room_shield_tv
           - volume_media_player_entity: media_player.denon_avr_x4300h
           - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0410370
-      - type: horizontal-stack
+      - type: grid
+        columns: 5
         cards:
           - type: custom:button-card
             template: light_button
@@ -90,12 +93,14 @@ cards:
             name: Backlight
             tap_action:
               action: call-service
-              service: media_player.media_play_pause
-              service_data:
-                entity_id: media_player.living_room_sync_box
+              service: script.turn_on_the_living_room_tv_light_sync
               haptic: success
             state:
-              - value: playing
+              - value: >
+                  [[[
+                    return states['media_player.living_room_sync_box'] === 'playing'
+                    && (states['media_player.living_room_sync_box'].attributes.entertainment_area === 'Living Room')
+                  ]]]
                 label: 'On'
                 styles:
                   card:
@@ -121,6 +126,11 @@ cards:
             variables:
               - entity: light.living_room_lights
               - name: Ceiling
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: fan.living_room_fan
+              - name: Fan
           - type: custom:decluttering-card
             template: slider_button_card
             variables:
