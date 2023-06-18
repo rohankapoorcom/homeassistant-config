@@ -15,6 +15,19 @@ homeassistant:
       customize: &customize
         package: 'media_tv'
 
+rest_command:
+  set_philips_hue_syncbox_input_living_room:
+    url: !secret hdmi_matrix_address
+    method: post
+    content_type: application/x-www-form-urlencoded
+    payload: '{"comhead":"video switch","language":0,"source":[1,3]}'
+  set_philips_hue_syncbox_input_master_bedroom:
+    url: !secret hdmi_matrix_address
+    method: post
+    content_type: application/x-www-form-urlencoded
+    payload: '{"comhead":"video switch","language":0,"source":[2,3]}'
+
+
 ################################################
 ## Automation
 ################################################
