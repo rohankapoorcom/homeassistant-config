@@ -39,44 +39,14 @@ cards:
           - volume_media_player_entity: media_player.denon_avr_x4300h_zone_2
           - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0430370
       - type: grid
-        columns: 4
+        columns: 5
         square: false
         cards:
-          - type: custom:button-card
-            template: light_button
-            entity: media_player.living_room_sync_box
-            icon: mdi:led-strip-variant
-            name: Backlight
-            tap_action:
-              action: call-service
-              service: script.turn_on_the_master_bedroom_tv_light_sync
-              haptic: success
-            state:
-              - value: >
-                  [[[
-                    return states['media_player.living_room_sync_box'].state === 'playing'
-                    && (states['media_player.living_room_sync_box'].attributes.entertainment_area === 'Master Bedroom')
-                  ]]]
-                label: 'On'
-                styles:
-                  card:
-                    - border: >-
-                        solid 1px
-                        var(--paper-item-icon-active-color)
-                    - box-shadow: >-
-                        0px 0px 10px 3px
-                        var(--paper-item-icon-active-color)
-                  label:
-                    - color: var(--paper-item-icon-active-color)
-              - operator: default
-                label: 'Off'
-                styles:
-                  card:
-                    - border: solid 1px var(--primary-color)
-                    - box-shadow: none
-            styles:
-              card:
-                - height: 100px
+          - type: custom:decluttering-card
+            template: hue_sync_button_card
+            variables:
+              - script: script.turn_on_the_master_bedroom_tv_light_sync
+              - entertainment_area: Master Bedroom
           - type: custom:decluttering-card
             template: slider_button_card
             variables:
