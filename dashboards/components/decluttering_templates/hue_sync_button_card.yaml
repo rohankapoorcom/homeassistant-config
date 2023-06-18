@@ -13,7 +13,7 @@ hue_sync_button_card:
       - value: >
           [[[
             return states['media_player.living_room_sync_box'].state === 'playing'
-            && (states['media_player.living_room_sync_box'].attributes.entertainment_area === [[entertainment_area]])
+            && (states['media_player.living_room_sync_box'].attributes.entertainment_area === '[[entertainment_area]]')
           ]]]
         label: 'On'
         styles:
