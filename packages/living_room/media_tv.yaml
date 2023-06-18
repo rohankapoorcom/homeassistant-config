@@ -361,6 +361,7 @@ script:
                 target:
                   entity_id: media_player.living_room_sync_box
         default:
+          - service: rest_command.set_philips_hue_syncbox_input_master_bedroom
           - service: huesyncbox.set_entertainment_area
             data:
               entertainment_area: Master Bedroom
