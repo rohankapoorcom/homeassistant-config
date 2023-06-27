@@ -92,11 +92,11 @@ google_assistant:
       expose: true
     light.garage_lights:
       expose: true
-    button.desk_preset_2:
+    button.standing_desk_preset_1:
       expose: true
-    button.desk_preset_3:
+    button.standing_desk_preset_2:
       expose: true
-    button.desk_preset_4:
+    button.standing_desk_preset_4:
       expose: true
     cover.master_bedroom_curtains:
       expose: true
