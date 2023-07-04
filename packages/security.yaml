@@ -94,7 +94,7 @@ automation:
               - condition: trigger
                 id: smoke_detected
             sequence:
-              - service: notify.mobile_app_rohan_s_oneplus_8_pro
+              - service: notify.rohan_kapoor
                 data:
                   title: Smoke Alarm Triggered
                   data:
@@ -106,7 +106,7 @@ automation:
               - condition: trigger
                 id: co_detected
             sequence:
-              - service: notify.mobile_app_rohan_s_oneplus_8_pro
+              - service: notify.rohan_kapoor
                 data:
                   title: Carbon Monoxide Alarm Triggered
                   data:
