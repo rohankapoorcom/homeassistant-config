@@ -1,0 +1,270 @@
+# yamllint disable-line rule:line-length
+---
+blueprint:
+  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS)
+  description: Create automations based on scenes for the Inovelli Red Series VZW31-SN Switch.
+  domain: automation
+  input:
+    zwave_device:
+      name: Inovelli Switch
+      description: List of available Inovelli VZW31-SN switches.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Inovelli
+          model: VZW31-SN
+          multiple: true
+    config_button:
+      name: Config Press 1x
+      description: Action to run, when the config button is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_a:
+      name: Up/On Press 1x
+      description: Action to run, when the Up button is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_b:
+      name: Down/Off Press 1x
+      description: Action to run, when the Down button is pressed one time.
+      default: []
+      selector:
+        action: {}
+    config_button2:
+      name: Config Press 2x
+      description: Action to run, when the config button is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_a2:
+      name: Up/On Press 2x
+      description: Action to run, when the Up button is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_b2:
+      name: Down/Off Press 2x
+      description: Action to run, when the Down button is pressed two times.
+      default: []
+      selector:
+        action: {}
+    config_button3:
+      name: Config Press 3x
+      description: Action to run, when the config button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    button_a3:
+      name: Up/On Press 3x
+      description: Action to run, when the up button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    button_b3:
+      name: Down/Off Press 3x
+      description: Action to run, when the Down button is pressed three times.
+      default: []
+      selector:
+        action: {}
+    config_button4:
+      name: Config Press 4x
+      description: Action to run, when the config button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    button_a4:
+      name: Up/On Press 4x
+      description: Action to run, when the Up button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    button_b4:
+      name: Down/Off Press 4x
+      description: Action to run, when the Down button is pressed four times.
+      default: []
+      selector:
+        action: {}
+    config_button5:
+      name: Config Press 5x
+      description: Action to run, when the config button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    button_a5:
+      name: Up/On Press 5x
+      description: Action to run, when the Up button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    button_b5:
+      name: Down/Off Press 5x
+      description: Action to run, when the Down button is pressed five times.
+      default: []
+      selector:
+        action: {}
+    aux_config_button:
+      name: Aux Config Press 1x
+      description: Action to run, when the config button is pressed one time on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a:
+      name: Aux Up/On Press 1x
+      description: Action to run, when the Up button is pressed one time on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b:
+      name: Aux Down/Off Press 1x
+      description: Action to run, when the Down button is pressed one time on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_config_button2:
+      name: Aux Config Press 2x
+      description: Action to run, when the config button is pressed two times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a2:
+      name: Aux Up/On Press 2x
+      description: Action to run, when the Up button is pressed two times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b2:
+      name: Aux Down/Off Press 2x
+      description: Action to run, when the Down button is pressed two times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_config_button3:
+      name: Aux Config Press 3x
+      description: Action to run, when the config button is pressed three times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a3:
+      name: Aux Up/On Press 3x
+      description: Action to run, when the up button is pressed three times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b3:
+      name: Aux Down/Off Press 3x
+      description: Action to run, when the Down button is pressed three times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_config_button4:
+      name: Aux Config Press 4x
+      description: Action to run, when the config button is pressed four times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a4:
+      name: Aux Up/On Press 4x
+      description: Action to run, when the Up button is pressed four times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b4:
+      name: Aux Down/Off Press 4x
+      description: Action to run, when the Down button is pressed four times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_config_button5:
+      name: Aux Config Press 5x
+      description: Action to run, when the config button is pressed five times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a5:
+      name: Aux Up/On Press 5x
+      description: Action to run, when the Up button is pressed five times on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b5:
+      name: Aux Down/Off Press 5x
+      description: Action to run, when the Down button is pressed five times on the aux switch.
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
+mode: single
+max_exceeded: silent
+variables:
+  device_id: !input 'zwave_device'
+trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+condition: '{{ trigger.event.data.device_id in device_id }}'
+action:
+  - variables:
+      button_id: '{{ trigger.event.data.property_key_name }}'
+      press_count: '{{ trigger.event.data.value }}'
+  - choose:
+      - conditions: '{{ button_id == "003" and press_count == "KeyPressed" }}'
+        sequence: !input 'config_button'
+      - conditions: '{{ button_id == "002" and press_count == "KeyPressed" }}'
+        sequence: !input 'button_a'
+      - conditions: '{{ button_id == "001" and press_count == "KeyPressed" }}'
+        sequence: !input 'button_b'
+      - conditions: '{{ button_id == "003" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'config_button2'
+      - conditions: '{{ button_id == "002" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'button_a2'
+      - conditions: '{{ button_id == "001" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'button_b2'
+      - conditions: '{{ button_id == "003" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'config_button3'
+      - conditions: '{{ button_id == "002" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'button_a3'
+      - conditions: '{{ button_id == "001" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'button_b3'
+      - conditions: '{{ button_id == "003" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'config_button4'
+      - conditions: '{{ button_id == "002" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'button_a4'
+      - conditions: '{{ button_id == "001" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'button_b4'
+      - conditions: '{{ button_id == "003" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'config_button5'
+      - conditions: '{{ button_id == "002" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'button_a5'
+      - conditions: '{{ button_id == "001" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'button_b5'
+      - conditions: '{{ button_id == "006" and press_count == "KeyPressed" }}'
+        sequence: !input 'aux_config_button'
+      - conditions: '{{ button_id == "005" and press_count == "KeyPressed" }}'
+        sequence: !input 'aux_button_a'
+      - conditions: '{{ button_id == "004" and press_count == "KeyPressed" }}'
+        sequence: !input 'aux_button_b'
+      - conditions: '{{ button_id == "006" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'aux_config_button2'
+      - conditions: '{{ button_id == "005" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'aux_button_a2'
+      - conditions: '{{ button_id == "004" and press_count == "KeyPressed2x" }}'
+        sequence: !input 'aux_button_b2'
+      - conditions: '{{ button_id == "006" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'aux_config_button3'
+      - conditions: '{{ button_id == "005" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'aux_button_a3'
+      - conditions: '{{ button_id == "004" and press_count == "KeyPressed3x" }}'
+        sequence: !input 'aux_button_b3'
+      - conditions: '{{ button_id == "006" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'aux_config_button4'
+      - conditions: '{{ button_id == "005" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'aux_button_a4'
+      - conditions: '{{ button_id == "004" and press_count == "KeyPressed4x" }}'
+        sequence: !input 'aux_button_b4'
+      - conditions: '{{ button_id == "006" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'aux_config_button5'
+      - conditions: '{{ button_id == "005" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'aux_button_a5'
+      - conditions: '{{ button_id == "004" and press_count == "KeyPressed5x" }}'
+        sequence: !input 'aux_button_b5'
