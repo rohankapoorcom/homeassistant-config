@@ -15,6 +15,7 @@ blueprint:
           integration: zwave_js
           manufacturer: Inovelli
           model: LZW31-SN
+          multiple: true
     config_button:
       name: Button C - Config press 1x
       description: Action to run, when the config button is pressed one time.
