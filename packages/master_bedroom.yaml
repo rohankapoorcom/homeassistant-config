@@ -1,0 +1,175 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  07/08/2023
+#  @package      :  Master Bedroom
+#  @description  :  Manages functionality within the Master Bedroom
+###############################################################################
+---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'master_bedroom'
+
+    master_bedroom_light_switch_device_id: &master_bedroom_light_switch_device_id
+      - 5580d638554510eabf0b5d3dbabe1263
+
+################################################
+## Script
+################################################
+script:
+  turn_on_watch_master_bedroom_tv:
+    alias: Turn on the Master Bedroom TV
+    sequence:
+      - service: media_player.turn_on
+        target:
+          entity_id:
+            - media_player.master_bedroom_tv
+            - media_player.denon_avr_x4300h_zone_2
+            - media_player.shield
+      - service: media_player.select_source
+        target:
+          device_id: ab65d3019b2049668b610bf0c5bc58c2
+        data:
+          source: HDMI-1
+      - service: denonavr.get_command
+        target:
+          device_id: 404bd26637ee4f98939fc2fc8552398f
+        data:
+          command: /goform/formiPhoneAppDirect.xml?Z2QUICK1
+      - service: androidtv.adb_command
+        data:
+          entity_id: media_player.living_room_shield_tv
+          command: HOME
+    mode: single
+    icon: mdi:television
+
+  turn_off_the_master_bedroom_tv:
+    alias: Turn off the Master Bedroom TV
+    sequence:
+      - service: media_player.turn_off
+        target:
+          entity_id:
+            - media_player.master_bedroom_tv
+            - media_player.denon_avr_x4300h_zone_2
+            - media_player.shield
+    mode: single
+    icon: mdi:television-off
+
+  turn_on_the_master_bedroom_tv_light_sync:
+    alias: Turn on the Master Bedroom TV Syncbox
+    sequence:
+      - choose:
+          - conditions:
+              - alias: If the synx box is already playing, then pause it.
+                condition: state
+                entity_id: media_player.living_room_sync_box
+                state: 'playing'
+            sequence:
+              - service: media_player.media_pause
+                target:
+                  entity_id: media_player.living_room_sync_box
+        default:
+          - service: rest_command.set_philips_hue_syncbox_input_master_bedroom
+          - service: huesyncbox.set_entertainment_area
+            data:
+              entertainment_area: Master Bedroom
+            target:
+              entity_id: media_player.living_room_sync_box
+          - service: media_player.media_play
+            target:
+              entity_id: media_player.living_room_sync_box
+
+################################################
+## Automation
+################################################
+automation:
+  - id: '1678811559535'
+    alias: Master Bedroom Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Master Bedroom.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
+      input:
+        zwave_device:
+          *master_bedroom_light_switch_device_id
+        config_button:
+          - service: cover.toggle
+            data: {}
+            target:
+              entity_id: cover.master_bedroom_curtains
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              device_id:
+                *master_bedroom_light_switch_device_id
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 40
+                All LED Strip Effect - Duration: 10
+                All LED Strip Effect - Effect: Open/Close
+        button_a2:
+          - service: cover.open_cover
+            data: {}
+            target:
+              entity_id: cover.master_bedroom_sheers
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              device_id:
+                *master_bedroom_light_switch_device_id
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 40
+                All LED Strip Effect - Duration: 10
+                All LED Strip Effect - Effect: Open/Close
+        button_b2:
+          - service: cover.close_cover
+            data: {}
+            target:
+              entity_id: cover.master_bedroom_sheers
+          - service: zwave_js.bulk_set_partial_config_parameters
+            target:
+              device_id:
+                *master_bedroom_light_switch_device_id
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 40
+                All LED Strip Effect - Duration: 10
+                All LED Strip Effect - Effect: Open/Close
+
+  - id: 8347dcbb-ff95-4565-9b51-667d405c955c
+    alias: Control the Master Bedroom TV Remote when Charging
+    description: Turn off the motion detection and screen when the Master Bedroom TV Remote is charging.
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
+    action:
+      - choose:
+          - alias: If the Master Bedroom TV Remote is charging, turn off the motion detection and screen
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
+                state: 'on'
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.master_bedroom_tv_remote_motion_detection
+              - service: light.turn_off
+                entity_id: light.master_bedroom_tv_remote_screen
+        default:
+          - service: switch.turn_on
+            entity_id: switch.master_bedroom_tv_remote_motion_detection
+          - service: light.turn_on
+            entity_id: light.master_bedroom_tv_remote_screen
