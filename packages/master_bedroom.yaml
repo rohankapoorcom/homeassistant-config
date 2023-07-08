@@ -111,7 +111,7 @@ automation:
                 All LED Strip Effect - Color: 170
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
-                All LED Strip Effect - Effect: Open/Close
+                All LED Strip Effect - Effect: Open/close
         button_a2:
           - service: cover.open_cover
             data: {}
@@ -127,7 +127,7 @@ automation:
                 All LED Strip Effect - Color: 170
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
-                All LED Strip Effect - Effect: Open/Close
+                All LED Strip Effect - Effect: Open/close
         button_b2:
           - service: cover.close_cover
             data: {}
@@ -143,7 +143,7 @@ automation:
                 All LED Strip Effect - Color: 170
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
-                All LED Strip Effect - Effect: Open/Close
+                All LED Strip Effect - Effect: Open/close
 
   - id: 8347dcbb-ff95-4565-9b51-667d405c955c
     alias: Control the Master Bedroom TV Remote when Charging
