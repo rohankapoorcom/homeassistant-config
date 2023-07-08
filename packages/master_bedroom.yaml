@@ -16,7 +16,7 @@ homeassistant:
         package: 'master_bedroom'
 
     master_bedroom_light_switch_device_id: &master_bedroom_light_switch_device_id
-      - 5580d638554510eabf0b5d3dbabe1263
+      - 9a1774a5d28bf6aa7c84198969517bd0
 
 ################################################
 ## Script
