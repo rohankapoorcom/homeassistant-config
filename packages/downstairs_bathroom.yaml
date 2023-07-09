@@ -95,7 +95,7 @@ automation:
     alias: Adjust the Downstairs Bathroom Default Brightness
     description: Utilizes a blueprint to configure the default brightess on the Downstairs Bathroom Lights.
     use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+      path: rohankapoorcom/inovelli-red-series-night-mode.yaml
       input:
         zwave_device: 466cd9baee786a896fc2bcbc97887a44
         bedtime: '01:00:00'

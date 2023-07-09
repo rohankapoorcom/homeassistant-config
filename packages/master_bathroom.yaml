@@ -12,7 +12,7 @@ homeassistant:
     ################################################
     package.node_anchors:
       customize: &customize
-        package: 'bathroom'
+        package: 'master_bathroom'
 
 ################################################
 ## Sensor
@@ -93,7 +93,7 @@ automation:
     alias: Master Bathroom Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Master Bathroom.
     use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
       input:
         zwave_device: 572777ba88a55f72409d0e416dd4c66f
         button_a:
@@ -142,7 +142,7 @@ automation:
     alias: Adjust the Master Bathroom Brightness
     description: Utilizes a blueprint to configure the default brightess on the Master Bathroom Lights.
     use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-sn-red-series-night-mode.yaml
+      path: rohankapoorcom/inovelli-red-series-night-mode.yaml
       input:
         zwave_device: 572777ba88a55f72409d0e416dd4c66f
         bedtime: '01:00:00'
