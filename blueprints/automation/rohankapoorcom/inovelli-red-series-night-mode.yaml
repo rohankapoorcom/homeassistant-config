@@ -45,6 +45,8 @@ blueprint:
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-red-series-night-mode.yaml
 mode: single
 max_exceeded: silent
+variables:
+  zwave_device: !input zwave_device
 trigger:
   - platform: homeassistant
     event: start
@@ -67,9 +69,9 @@ action:
               device_id: !input zwave_device
             data:
               parameter: >
-                {% if device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'VZW31-SN' %}
+                {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
                   Default Level (Local)
-                {% elif device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'LZW31-SN' %}
+                {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
                   Default Level
                 {% endif %}
               value: !input bedtime_brightness
@@ -78,9 +80,9 @@ action:
               device_id: !input zwave_device
             data:
               parameter: >
-                {% if device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'VZW31-SN' %}
+                {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
                   Default Level (Remote)
-                {% elif device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'LZW31-SN' %}
+                {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
                   Default Level (Z-Wave)
                 {% endif %}
               value: !input bedtime_brightness
@@ -90,9 +92,9 @@ action:
           device_id: !input zwave_device
         data:
           parameter: >
-            {% if device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'VZW31-SN' %}
+            {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
               Default Level (Local)
-            {% elif device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'LZW31-SN' %}
+            {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
               Default Level
             {% endif %}
           value: !input wakeup_time_brightness
@@ -101,9 +103,9 @@ action:
           device_id: !input zwave_device
         data:
           parameter: >
-            {% if device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'VZW31-SN' %}
+            {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
               Default Level (Remote)
-            {% elif device_attr('572777ba88a55f72409d0e416dd4c66f', 'model') == 'LZW31-SN' %}
+            {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
               Default Level (Z-Wave)
             {% endif %}
           value: !input wakeup_time_brightness
