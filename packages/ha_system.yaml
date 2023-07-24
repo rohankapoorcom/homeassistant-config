@@ -96,27 +96,31 @@ homeassistant:
 ## Sensor
 ################################################
 
-sensor:
-  - platform: command_line
+command_line:
+  - sensor:
     <<: *command_line_sensor_defaults
     name: current_git_commit_id
     command: '/usr/bin/git -C /etc/homeassistant/ rev-parse HEAD'
+    unique_id: e4749685-b2df-480f-993e-db3dfde3fa8e
 
-  - platform: command_line
+  - sensor:
     <<: *command_line_sensor_defaults
     name: current_git_commit_time
     # yamllint disable-line rule:line-length
     command: '/usr/bin/git -C /etc/homeassistant/ log -1 --format="%at" | /usr/bin/xargs -I{} /bin/date -ud @{} +"%Y-%m-%dT%H:%M:%S.000Z"'
+    unique_id: ad9f43e5-5a8c-4d68-898c-f0f9c68d4758
 
-  - platform: command_line
+  - sensor:
     <<: *command_line_sensor_defaults
     name: desired_version
     command: '/bin/cat /etc/homeassistant/.HA_VERSION'
+    unique_id: 736ea24f-9c34-4335-9102-d664a582f77b
 
-  - platform: command_line
+  - sensor:
     <<: *command_line_sensor_defaults
     name: upgraded_version
     command: '/srv/homeassistant/bin/hass --version'
+    unique_id: 3c99ddf8-128e-4563-9a61-883457671bc0
 
 ################################################
 ## Monitoring
