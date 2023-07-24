@@ -104,10 +104,6 @@ mqtt:
       unique_id: 749ef54c-b0ad-4118-8906-c820de92bdfc
       device_class: motion
 
-xiaomi_aqara:
-  interface: !secret xiaomi_aqara.interface
-  gateways: !secret xiaomi_aqara.gateways
-
 automation: !include automations.yaml
 automation old: !include_dir_list automations
 group: !include_dir_named groups
