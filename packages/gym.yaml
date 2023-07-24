@@ -16,7 +16,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/tablet-battery-charging.yaml
       input:
-        battery_entity: sensor.gym_tablet_battery_level
+        battery_entity: sensor.gym_tablet_battery
         switch_entity: switch.gym_tablet_charger
 
   - id: '1667032908768'
