@@ -166,10 +166,10 @@ automation:
             sequence:
               - service: switch.turn_off
                 entity_id: switch.master_bedroom_tv_remote_motion_detection
-              - service: light.turn_off
-                entity_id: light.master_bedroom_tv_remote_screen
+              - service: switch.turn_off
+                entity_id: switch.master_bedroom_tv_remote_screen
         default:
           - service: switch.turn_on
             entity_id: switch.master_bedroom_tv_remote_motion_detection
-          - service: light.turn_on
-            entity_id: light.master_bedroom_tv_remote_screen
+          - service: switch.turn_on
+            entity_id: switch.master_bedroom_tv_remote_screen
