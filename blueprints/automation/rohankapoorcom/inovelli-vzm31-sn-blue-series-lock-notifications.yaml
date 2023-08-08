@@ -25,8 +25,6 @@ trigger:
     entity_id: !input lock_entity
 action:
   - service: script.inovelli_blue_notifications
-    target:
-      device_id: !input inovelli_switch
     data_template:
       led: All
       color: >
@@ -38,3 +36,5 @@ action:
       level: 50
       effect: Solid
       duration: Indefinitely
+      target:
+        device_id: !input inovelli_switch
