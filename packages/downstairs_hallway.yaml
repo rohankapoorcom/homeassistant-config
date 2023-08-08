@@ -25,7 +25,8 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
-        inovelli_switch: 1b083dd3571388e94041b98699fb31cf
+        inovelli_switch:
+          - 1b083dd3571388e94041b98699fb31cf
         config_button:
           - service: button.press
             data: {}
