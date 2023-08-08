@@ -1,0 +1,40 @@
+---
+blueprint:
+  name: Inovelli VZM31-SN Lock Notifications
+  description: Displays the current status of the lock using an Inovelli Blue Series VZM31-SN Dimmer Switch
+  domain: automation
+  input:
+    lock_entity:
+      name: Lock Entity
+      description: List of available lock entities
+      selector:
+        entity:
+          domain: lock
+    inovelli_switch:
+      name: Inovelli Switch
+      description: List of available Inovelli VZM31-SN switches.
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Inovelli
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzm31-sn-blue-series-lock-notifications.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input lock_entity
+action:
+  - service: script.inovelli_blue_notifications
+    target:
+      device_id: !input inovelli_switch
+    data_template:
+      led: All
+      color: >
+        {% if trigger.to_state.state == 'locked' %}
+          Green
+        {% else %}
+          Red
+        {% endif %}
+      level: 50
+      effect: Solid
+      duration: Indefinitely

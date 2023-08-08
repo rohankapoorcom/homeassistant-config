@@ -23,9 +23,9 @@ automation:
     alias: Downstairs Hallway Scene Controls
     description: Utilizes a blueprint to control scenes in the Downstairs Hallway.
     use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
+      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
-        zwave_device: 5677aabe365f2466dfea234d5770db1b
+        inovelli_switch: 1b083dd3571388e94041b98699fb31cf
         config_button:
           - service: button.press
             data: {}
