@@ -71,7 +71,9 @@ automation:
             sequence:
               - service: light.turn_on
                 target:
-                  entity_id: light.garage_lights
+                  entity_id:
+                    - light.garage_lights
+                    - light.garage_door_light
               - wait_for_trigger:
                   - platform: template
                     value_template: >
@@ -82,10 +84,14 @@ automation:
                   minutes: 10
               - service: light.turn_off
                 target:
-                  entity_id: light.garage_lights
+                  entity_id:
+                    - light.garage_lights
+                    - light.garage_door_light
         default:
           - service: light.turn_off
-            entity_id: light.garage_lights
+            entity_id:
+              - light.garage_lights
+              - light.garage_door_light
 
   - id: c0f6513b-6fac-4e3b-bf92-0399e75e67f5
     alias: Control the Garage Entry Lights
