@@ -1,195 +1,273 @@
 type: custom:layout-card
 cards:
-  - cards:
-      - crop:
-          bottom: 0
-          left: 0
-          right: 0
-          top: 0
-        map_scale: 1.2
-        rotate: 0
-        title: Upstairs
-        type: custom:valetudo-map-card
-        vacuum: valetudo_upstairs_dreame
-        min_height: 275
-        show_status: false
-        show_battery_level: false
-        show_start_button: false
-        show_pause_button: false
-        show_stop_button: false
-        show_home_button: false
-        show_locate_button: false
-      - type: custom:vacuum-card
-        stats:
-          default:
-            - entity_id: sensor.valetudo_upstairs_dreame_main_filter
-              unit: min
-              subtitle: Filter
-            - entity_id: sensor.valetudo_upstairs_dreame_main_brush
-              unit: min
-              subtitle: Main brush
-            - entity_id: sensor.valetudo_upstairs_dreame_right_brush
-              unit: min
-              subtitle: Side brush
-            - entity_id: sensor.valetudo_upstairs_dreame_sensor_cleaning
-              unit: min
-              subtitle: Sensor
-        shortcuts:
-          - icon: mdi:sofa
-            name: Living Room
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["8"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:stove
-            name: Kitchen
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["5"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:table-chair
-            name: Dining Room
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["4"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:floor-plan
-            name: Hallway
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["10"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:toilet
-            name: Hallway Bathroom
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["7"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:bed-king
-            name: Master Bedroom
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["3"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:shower
-            name: Master Bathroom
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["2"], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:monitor
-            name: Office
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/upstairs-dreame/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": ["9"], "iterations": 1,
-                "customOrder": true}
-        entity: vacuum.valetudo_upstairs_dreame
-        compact_view: false
-        show_name: true
-        show_status: true
-        show_toolbar: true
-    type: custom:layout-card
+  - type: custom:layout-card
     layout_type: vertical
+    cards:
+      - type: custom:xiaomi-vacuum-map-card
+        map_source:
+          camera: camera.upstairs_vacuum_camera
+        calibration_source:
+          camera: true
+        entity: vacuum.valetudo_upstairs_dreame
+        vacuum_platform: Hypfer/Valetudo
+        map_modes:
+          - template: vacuum_clean_segment
+            predefined_selections:
+              - id: '2'
+                icon:
+                  name: mdi:shower
+                  x: 2427
+                  'y': 3315
+                label:
+                  text: Master Bathroom
+                  x: 2427
+                  'y': 3315
+                  offset_y: 35
+                outline:
+                  - - '2315'
+                    - '3210'
+                  - - '2540'
+                    - '3210'
+                  - - '2540'
+                    - '3420'
+                  - - '2315'
+                    - '3420'
+              - id: '3'
+                icon:
+                  name: mdi:bed-king
+                  x: 2182
+                  'y': 3397
+                label:
+                  text: Master Bedroom
+                  x: 2182
+                  'y': 3397
+                  offset_y: 35
+                outline:
+                  - - '1980'
+                    - '3215'
+                  - - '2385'
+                    - '3215'
+                  - - '2385'
+                    - '3580'
+                  - - '1980'
+                    - '3580'
+              - id: '4'
+                icon:
+                  name: mdi:table-chair
+                  x: 2905
+                  'y': 3315
+                label:
+                  text: Dining Room
+                  x: 2905
+                  'y': 3315
+                  offset_y: 35
+                outline:
+                  - - '2765'
+                    - '3200'
+                  - - '3045'
+                    - '3200'
+                  - - '3045'
+                    - '3430'
+                  - - '2765'
+                    - '3430'
+              - id: '5'
+                icon:
+                  name: mdi:stove
+                  x: 2797
+                  'y': 3705
+                label:
+                  text: Kitchen
+                  x: 2797
+                  'y': 3705
+                  offset_y: 35
+                outline:
+                  - - '2660'
+                    - '3540'
+                  - - '2935'
+                    - '3540'
+                  - - '2935'
+                    - '3870'
+                  - - '2660'
+                    - '3870'
+              - id: '7'
+                icon:
+                  name: mdi:toilet
+                  x: 2627
+                  'y': 3315
+                label:
+                  text: Hallway Bathroom
+                  x: 2627
+                  'y': 3315
+                  offset_y: 35
+                outline:
+                  - - '2585'
+                    - '3215'
+                  - - '2670'
+                    - '3215'
+                  - - '2670'
+                    - '3415'
+                  - - '2585'
+                    - '3415'
+              - id: '8'
+                icon:
+                  name: mdi:sofa
+                  x: 3222
+                  'y': 3495
+                label:
+                  text: Living Room
+                  x: 3222
+                  'y': 3495
+                  offset_y: 35
+                outline:
+                  - - '2960'
+                    - '3200'
+                  - - '3485'
+                    - '3200'
+                  - - '3485'
+                    - '3790'
+                  - - '2960'
+                    - '3790'
+              - id: '9'
+                icon:
+                  name: mdi:monitor
+                  x: 2182
+                  'y': 3752
+                label:
+                  text: Office
+                  x: 2182
+                  'y': 3752
+                  offset_y: 35
+                outline:
+                  - - '1980'
+                    - '3570'
+                  - - '2385'
+                    - '3570'
+                  - - '2385'
+                    - '3935'
+                  - - '1980'
+                    - '3935'
+              - id: '10'
+                icon:
+                  name: mdi:floor-plan
+                  x: 2555
+                  'y': 3670
+                label:
+                  text: Hallway
+                  x: 2555
+                  'y': 3670
+                  offset_y: 35
+                outline:
+                  - - '2395'
+                    - '3420'
+                  - - '2715'
+                    - '3420'
+                  - - '2715'
+                    - '3920'
+                  - - '2395'
+                    - '3920'
+          - template: vacuum_clean_zone
+          - template: vacuum_goto
+        map_locked: true
+        two_finger_pan: true
+        internal_variables:
+          topic: valetudo/upstairs-dreame
     view_layout:
       grid_area: left
-  - cards:
-      - crop:
-          bottom: 45
-          left: 30
-          right: 0
-          top: 10
-        vacuum: valetudo_downstairs_roborock
-        map_scale: 1.65
-        title: Downstairs
-        type: custom:valetudo-map-card
-        min_height: 275
-        show_status: false
-        show_battery_level: false
-        show_start_button: false
-        show_pause_button: false
-        show_stop_button: false
-        show_home_button: false
-        show_locate_button: false
-      - entity: vacuum.valetudo_downstairs_roborock
-        type: custom:vacuum-card
-        stats:
-          default:
-            - entity_id: sensor.valetudo_downstairs_roborock_main_filter
-              unit: min
-              subtitle: Filter
-            - entity_id: sensor.valetudo_downstairs_roborock_main_brush
-              unit: min
-              subtitle: Main brush
-            - entity_id: sensor.valetudo_downstairs_roborock_right_brush
-              unit: min
-              subtitle: Side brush
-            - entity_id: sensor.valetudo_downstairs_roborock_sensor_cleaning
-              unit: min
-              subtitle: Sensor
-        shortcuts:
-          - icon: mdi:floor-plan
-            name: Hallway
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": [16], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:bed-queen
-            name: Guest Room
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": [17], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:shower
-            name: Guest Bathroom
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": [19], "iterations": 1,
-                "customOrder": true}
-          - icon: mdi:bicycle
-            name: Gym
-            service: mqtt.publish
-            service_data:
-              topic: >-
-                valetudo/downstairs-roborock/MapSegmentationCapability/clean/set
-              payload: >-
-                {"segment_ids": [18], "iterations": 1,
-                "customOrder": true}
-        compact_view: false
-    type: custom:layout-card
+  - type: custom:layout-card
     layout_type: vertical
+    cards:
+      - type: custom:xiaomi-vacuum-map-card
+        map_source:
+          camera: camera.downstairs_vacuum_camera
+        calibration_source:
+          camera: true
+        entity: vacuum.valetudo_downstairs_roborock
+        vacuum_platform: Hypfer/Valetudo
+        map_modes:
+          - template: vacuum_clean_segment
+            predefined_selections:
+              - id: '16'
+                icon:
+                  name: mdi:floor-plan
+                  x: 2647
+                  'y': 2290
+                label:
+                  text: Hallway
+                  x: 2647
+                  'y': 2290
+                  offset_y: 35
+                outline:
+                  - - 2110
+                    - 1980
+                  - - 3185
+                    - 1980
+                  - - 3185
+                    - 2600
+                  - - 2110
+                    - 2600
+              - id: '17'
+                icon:
+                  name: mdi:bed-queen
+                  x: 2080
+                  'y': 2422
+                label:
+                  text: Guest Room
+                  x: 2080
+                  'y': 2422
+                  offset_y: 35
+                outline:
+                  - - 1790
+                    - 2245
+                  - - 2370
+                    - 2245
+                  - - 2370
+                    - 2600
+                  - - 1790
+                    - 2600
+              - id: '18'
+                icon:
+                  name: mdi:bicycle
+                  x: 2010
+                  'y': 2082
+                label:
+                  text: Gym
+                  x: 2010
+                  'y': 2082
+                  offset_y: 35
+                outline:
+                  - - 1785
+                    - 1915
+                  - - 2235
+                    - 1915
+                  - - 2235
+                    - 2250
+                  - - 1785
+                    - 2250
+              - id: '19'
+                icon:
+                  name: mdi:shower
+                  x: 2350
+                  'y': 2015
+                label:
+                  text: Guest Bathroom
+                  x: 2350
+                  'y': 2015
+                  offset_y: 35
+                outline:
+                  - - 2245
+                    - 1915
+                  - - 2455
+                    - 1915
+                  - - 2455
+                    - 2115
+                  - - 2245
+                    - 2115
+          - template: vacuum_clean_zone
+          - template: vacuum_goto
+        map_locked: true
+        two_finger_pan: true
+        internal_variables:
+          topic: valetudo/downstairs-roborock
     view_layout:
       grid_area: right
 layout_type: custom:grid-layout
