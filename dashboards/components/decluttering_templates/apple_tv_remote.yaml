@@ -178,7 +178,7 @@ apple_tv_remote:
         service: remote.send_command
         service_data:
           entity_id: '[[apple_tv_remote_entity]]'
-          command: play
+          command: play_pause
         haptic: success
     forward:
       show: true
