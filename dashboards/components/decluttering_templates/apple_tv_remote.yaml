@@ -121,14 +121,7 @@ apple_tv_remote:
           hold_secs: 0.5
         haptic: success
     info:
-      show: true
-      tap_action:
-        action: call-service
-        service: remote.send_command
-        service_data:
-          entity_id: '[[apple_tv_remote_entity]]'
-          command: top_menu
-        haptic: success
+      show: false
     back:
       show: true
       tap_action:
