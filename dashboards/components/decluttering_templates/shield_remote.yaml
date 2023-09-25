@@ -1,8 +1,8 @@
 shield_remote:
   card:
     type: custom:roku-card
-    entity: media_player.shield
-    remote_entity: remote.shield
+    entity: '[[shield_media_player_entity]]'
+    remote_entity: '[[shield_remote_entity]]'
     tv: true
     apps:
       - icon: mdi:netflix
