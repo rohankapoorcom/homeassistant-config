@@ -29,8 +29,6 @@ cards:
             color_type: blank-card
           - type: 'custom:button-card'
             color_type: blank-card
-          - type: 'custom:button-card'
-            color_type: blank-card
           - type: custom:button-card
             template: remote
             entity: media_player.denon_avr_x4300h_zone_2
