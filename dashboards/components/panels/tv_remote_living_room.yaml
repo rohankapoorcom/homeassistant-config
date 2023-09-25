@@ -24,7 +24,7 @@ cards:
               name: Shield
               media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_watch_living_room_tv
-            icon: si:shield
+            icon: si:nvidia
           - type: custom:button-card
             template: remote
             entity: media_player.denon_avr_x4300h
