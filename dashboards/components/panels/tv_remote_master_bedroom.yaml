@@ -11,11 +11,20 @@ cards:
             template: remote
             entity: media_player.denon_avr_x4300h_zone_2
             variables:
+              source: Apple TV
+              name: Apple TV
+              media_player_entity: media_player.denon_avr_x4300h_zone_2
+              script: turn_on_watch_master_bedroom_apple_tv
+            icon: mdi:television
+          - type: custom:button-card
+            template: remote
+            entity: media_player.denon_avr_x4300h_zone_2
+            variables:
               source: Shield
-              name: TV
+              name: Shield
               media_player_entity: media_player.denon_avr_x4300h_zone_2
               script: turn_on_watch_master_bedroom_tv
-            icon: mdi:television
+            icon: si:nvidia
           - type: 'custom:button-card'
             color_type: blank-card
           - type: 'custom:button-card'
