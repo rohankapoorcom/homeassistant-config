@@ -4,7 +4,7 @@ cards:
     layout_type: vertical
     cards:
       - type: grid
-        columns: 5
+        columns: 6
         square: false
         cards:
           - type: custom:button-card
@@ -25,6 +25,8 @@ cards:
               media_player_entity: media_player.denon_avr_x4300h_zone_2
               script: turn_on_watch_master_bedroom_tv
             icon: si:nvidia
+          - type: 'custom:button-card'
+            color_type: blank-card
           - type: 'custom:button-card'
             color_type: blank-card
           - type: 'custom:button-card'
