@@ -32,7 +32,7 @@ apple_tv_remote:
             entity_id: '[[apple_tv_media_player_entity]]'
             source: Plex
           haptic: success
-      - icon: si:primevideo
+      - icon: si:prime
         tap_action:
           action: call-service
           service: media_player.select_source
