@@ -159,7 +159,7 @@ automation:
 ################################################
 script:
   turn_on_watch_living_room_tv:
-    alias: Turn on the Living Room TV
+    alias: Turn on the Living Room Shield TV
     sequence:
       - service: media_player.turn_on
         target:
@@ -183,7 +183,7 @@ script:
     icon: mdi:television
 
   turn_off_the_living_room_tv:
-    alias: Turn off the Living Room TV
+    alias: Turn off the Living Room Shield TV
     sequence:
       - service: media_player.turn_off
         target:
@@ -196,6 +196,34 @@ script:
           entity_id: switch.living_room_conference_camera
     mode: single
     icon: mdi:television-off
+
+  turn_on_watch_living_room_apple_tv:
+    alias: Turn on the Living Room Apple TV
+    sequence:
+      - service: media_player.turn_on
+        target:
+          entity_id:
+            - media_player.living_room_tv
+            - media_player.denon_avr_x4300h
+            - media_player.living_room_apple_tv
+      - service: denonavr.get_command
+        target:
+          device_id: 404bd26637ee4f98939fc2fc8552398f
+        data:
+          command: /goform/formiPhoneAppDirect.xml?MSQUICK3
+      - service: remote.send_command
+        target:
+          entity_id: remote.living_room_apple_tv
+        data:
+          delay_secs: 1
+          command:
+            - wakeup
+            - home
+      - service: switch.turn_off
+        target:
+          entity_id: switch.living_room_conference_camera
+    mode: single
+    icon: mdi:television
 
   turn_on_the_living_room_speakers:
     alias: Turn on the Living Room Speakers
@@ -248,11 +276,22 @@ script:
       - service: switch.turn_on
         target:
           entity_id: switch.living_room_conference_camera
-      - service: denonavr.get_command
+      - service: media_player.select_source
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
-          command: /goform/formiPhoneAppDirect.xml?MSQUICK3
+          source: PC
+      - service: media_player.select_sound_mode
+        target:
+          device_id: 404bd26637ee4f98939fc2fc8552398f
+        data:
+          sound_mode: STEREO
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.3
+        target:
+          entity_id: media_player.denon_avr_x4300h
+
     mode: single
     icon: mdi:video
 
