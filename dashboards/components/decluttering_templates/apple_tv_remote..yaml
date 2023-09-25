@@ -1,0 +1,199 @@
+apple_tv_remote:
+  card:
+    type: custom:roku-card
+    entity: '[[apple_tv_media_player_entity]]'
+    remote_entity: '[[apple_tv_remote_entity]]'
+    tv: true
+    apps:
+      - icon: si:netflix
+        name: Netflix
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          service_data:
+            entity_id: '[[apple_tv_media_player_entity]]'
+            source: Netflix
+          haptic: success
+      - icon: si:youtube
+        name: YouTube
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          service_data:
+            entity_id: '[[apple_tv_media_player_entity]]'
+            source: YouTube
+          haptic: success
+      - icon: si:plex
+        name: Plex
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          service_data:
+            entity_id: '[[apple_tv_media_player_entity]]'
+            source: Plex
+          haptic: success
+      - icon: si:primevideo
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          service_data:
+            entity_id: '[[apple_tv_media_player_entity]]'
+            source: Prime Video
+          haptic: success
+    power:
+      show: false
+    volume_up:
+      show: true
+      tap_action:
+        action: call-service
+        service: media_player.volume_up
+        service_data:
+          entity_id: '[[volume_media_player_entity]]'
+        haptic: success
+    volume_down:
+      show: true
+      tap_action:
+        action: call-service
+        service: media_player.volume_down
+        service_data:
+          entity_id: '[[volume_media_player_entity]]'
+        haptic: success
+    volume_mute:
+      show: true
+      tap_action:
+        action: call-service
+        service: denonavr.get_command
+        service_data:
+          entity_id: '[[volume_media_player_entity]]'
+          command: '[[volume_mute_command]]'
+        haptic: success
+    up:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: up
+        haptic: success
+    down:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: down
+        haptic: success
+    left:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: left
+        haptic: success
+    right:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: right
+        haptic: success
+    home:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: home
+        haptic: success
+      hold_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: home_hold
+          hold_secs: 0.5
+        haptic: success
+    info:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: topmenu
+        haptic: success
+    back:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: menu
+        haptic: success
+    select:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: select
+        haptic: success
+      hold_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: select
+          hold_secs: 0.5
+        haptic: success
+    reverse:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: skip_backward
+        haptic: success
+      hold_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: previous
+        haptic: success
+    play:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: play
+        haptic: success
+    forward:
+      show: true
+      tap_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: skip_forward
+        haptic: success
+      hold_action:
+        action: call-service
+        service: remote.send_command
+        service_data:
+          entity_id: '[[apple_tv_remote_entity]]'
+          command: next
+        haptic: success
+    haptic: success

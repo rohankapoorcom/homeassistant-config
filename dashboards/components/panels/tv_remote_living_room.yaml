@@ -76,13 +76,27 @@ cards:
               media_player_entity: media_player.denon_avr_x4300h
               script: turn_off_the_living_room_tv
             icon: mdi:power
-      - type: custom:decluttering-card
-        template: shield_remote
-        variables:
-          - shield_media_player_entity: media_player.living_room_shield_tv
-          - shield_remote_entity: remote.living_room_shield_tv
-          - volume_media_player_entity: media_player.denon_avr_x4300h
-          - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0410370
+      - type: custom:state-switch
+        entity: template
+        template: "{{ state_attr('media_player.denon_avr_x4300h', 'source') }}"
+        default: Shield
+        states:
+          "Apple TV":
+            type: custom:decluttering-card
+            template: apple_tv_remote
+            variables:
+              - apple_tv_media_player_entity: media_player.living_room_apple_tv
+              - apple_tv_remote_entity: remote.living_room_apple_tv
+              - volume_media_player_entity: media_player.denon_avr_x4300h
+              - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0410370
+          "Shield":
+            type: custom:decluttering-card
+            template: shield_remote
+            variables:
+              - shield_media_player_entity: media_player.living_room_shield_tv
+              - shield_remote_entity: remote.living_room_shield_tv
+              - volume_media_player_entity: media_player.denon_avr_x4300h
+              - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0410370
       - type: grid
         columns: 5
         cards:
