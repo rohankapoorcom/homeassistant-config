@@ -42,7 +42,7 @@ cards:
             icon: mdi:power
       - type: custom:state-switch
         entity: template
-        template: "{{ state_attr('media_player.denon_avr_x4300h', 'source') }}"
+        template: "{{ state_attr('media_player.denon_avr_x4300h_zone_2', 'source') }}"
         default: Shield
         states:
           "Apple TV":
