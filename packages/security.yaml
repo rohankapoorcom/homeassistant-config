@@ -15,12 +15,6 @@ homeassistant:
       customize: &customize
         package: 'security'
 
-zoneminder:
-  host: !secret zoneminder.host
-
-camera:
-  - platform: zoneminder
-
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 
