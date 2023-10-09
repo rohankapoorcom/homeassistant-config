@@ -42,7 +42,7 @@ cards:
                 image:
                   mode: camera
                   layout:
-                    fit: coverpass
+                    fit: cover
                 performance:
                   profile: low
               default:
