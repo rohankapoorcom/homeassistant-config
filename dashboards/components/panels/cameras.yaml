@@ -32,6 +32,12 @@ cards:
                 actions_not:
                   - action: custom:frigate-card-action
                     frigate_card_action: live_substream_off
+            live:
+              show_image_during_load: true
+            image:
+              mode: camera
+              layout:
+                fit: cover
   {% endfor %}
 layout_type: custom:grid-layout
 layout:
