@@ -54,7 +54,6 @@ http:
   trusted_proxies:
     - 127.0.0.1
 
-
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 assist_pipeline:
