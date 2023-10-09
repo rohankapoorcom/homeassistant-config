@@ -6,10 +6,7 @@ ignore: |
   custom_components/
   dashboards/
   ip_bans.yaml
-  packages/hasp/plates/
-  packages/down_plate/
-  packages/up_plate/
-  packages/battery_alert.yaml
+  packages/weatherman.yaml
   scenes.yaml
   themes/
 rules:

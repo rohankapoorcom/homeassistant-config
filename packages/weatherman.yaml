@@ -1,6 +1,12 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  09/12/2023
+#  @package      :  Weatherman
+#  @description  :  Bundles up all relevant data to send over to Weatherman (ESPHome device).
+#                   Based off https://github.com/Madelena/esphome-weatherman-dashboard
+###############################################################################
+---
 template:
-  # Bundle up all the data to send over to Weatherman (ESPHome device).
-
   - trigger:
       platform: time_pattern
       minutes: "/1"
