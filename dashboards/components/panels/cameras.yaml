@@ -20,7 +20,11 @@ cards:
         actions_not:
           - action: custom:frigate-card-action
             frigate_card_action: live_substream_off
-    view: {}
+    view:
+      default: image
+      camera_select: image
+      update_force: false
+      update_seconds: 5
     image:
       mode: camera
     performance:
