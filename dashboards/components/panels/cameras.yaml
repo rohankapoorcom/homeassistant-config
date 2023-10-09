@@ -15,29 +15,60 @@ cards:
         data:
           size: wide
           content:
-            type: custom:frigate-card
-            cameras:
-              - camera_entity: {{ camera }}
-                live_provider: go2rtc
-                go2rtc:
-                  modes:
-                    - webrtc
-                    - mse
-            automations:
-              - conditions:
-                  fullscreen: true
-                actions:
-                  - action: custom:frigate-card-action
-                    frigate_card_action: live_substream_on
-                actions_not:
-                  - action: custom:frigate-card-action
-                    frigate_card_action: live_substream_off
-            live:
-              show_image_during_load: true
-            image:
-              mode: camera
-              layout:
-                fit: cover
+            type: custom:state-switch
+            entity: user
+            default: default
+            states:
+              "Wall Kiosk":
+                type: custom:frigate-card
+                cameras:
+                  - camera_entity: {{ camera }}
+                    live_provider: go2rtc
+                    go2rtc:
+                      modes:
+                        - webrtc
+                        - mse
+                automations:
+                  - conditions:
+                      fullscreen: true
+                    actions:
+                      - action: custom:frigate-card-action
+                        frigate_card_action: live_substream_on
+                    actions_not:
+                      - action: custom:frigate-card-action
+                        frigate_card_action: live_substream_off
+                live:
+                  show_image_during_load: true
+                image:
+                  mode: camera
+                  layout:
+                    fit: coverpass
+                performance:
+                  profile: low
+              default:
+                type: custom:frigate-card
+                cameras:
+                  - camera_entity: {{ camera }}
+                    live_provider: go2rtc
+                    go2rtc:
+                      modes:
+                        - webrtc
+                        - mse
+                automations:
+                  - conditions:
+                      fullscreen: true
+                    actions:
+                      - action: custom:frigate-card-action
+                        frigate_card_action: live_substream_on
+                    actions_not:
+                      - action: custom:frigate-card-action
+                        frigate_card_action: live_substream_off
+                live:
+                  show_image_during_load: true
+                image:
+                  mode: camera
+                  layout:
+                    fit: cover
   {% endfor %}
 layout_type: custom:grid-layout
 layout:
