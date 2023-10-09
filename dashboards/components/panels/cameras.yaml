@@ -5,7 +5,7 @@ cards:
   {% for camera in cameras %}
   - type: picture-entity
     aspect_ratio: 50%
-    entity: {{ camera }}
+    entity: {{ camera.entity_id }}
     show_name: false
     show_state: false
     tap_action:
@@ -14,6 +14,7 @@ cards:
         service: browser_mod.popup
         data:
           size: wide
+          title: {{ camera.name }}
           content:
             type: custom:state-switch
             entity: user
@@ -22,7 +23,7 @@ cards:
               "Wall Kiosk":
                 type: custom:frigate-card
                 cameras:
-                  - camera_entity: {{ camera }}
+                  - camera_entity: {{ camera.entity_id }}
                     live_provider: go2rtc
                     go2rtc:
                       modes:
@@ -48,7 +49,7 @@ cards:
               default:
                 type: custom:frigate-card
                 cameras:
-                  - camera_entity: {{ camera }}
+                  - camera_entity: {{ camera.entity_id }}
                     live_provider: go2rtc
                     go2rtc:
                       modes:
