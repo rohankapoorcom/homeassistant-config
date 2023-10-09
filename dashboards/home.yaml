@@ -60,12 +60,18 @@ views:
             - !include
               - components/panels/cameras.yaml
               - cameras:
-                - camera.upper_driveway
-                - camera.driveway
-                - camera.lower_entrance
-                - camera.mail_slot
-                - camera.front_door
-                - camera.doorbell
+                - name: Upper Driveway
+                  entity_id: camera.upper_driveway
+                - name: Driveway
+                  entity_id: camera.driveway
+                - name: Lower Entrance
+                  entity_id: camera.lower_entrance
+                - name: Mail Slot
+                  entity_id: camera.mail_slot
+                - name: Front Door
+                  entity_id: camera.front_door
+                - name: Doorbell
+                  entity_id: camera.doorbell
   - theme: Backend-selected
     icon: mdi:cctv
     path: cameras_2
@@ -85,12 +91,18 @@ views:
             - !include
               - components/panels/cameras.yaml
               - cameras:
-                - camera.balcony_left
-                - camera.balcony_center
-                - camera.patio_left
-                - camera.patio_right
-                - camera.garage_1
-                - camera.garage_2
+                - name: Balcony Left
+                  entity_id: camera.balcony_left
+                - name: Balcony Center
+                  entity_id: camera.balcony_center
+                - name: Patio Left
+                  entity_id: camera.patio_left
+                - name: Patio Right
+                  entity_id: camera.patio_right
+                - name: Garage 1
+                  entity_id: camera.garage_1
+                - name: Garage 2
+                  entity_id: camera.garage_2
   - theme: Backend-selected
     icon: mdi:robot-vacuum
     panel: false
