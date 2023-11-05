@@ -1,0 +1,53 @@
+---
+blueprint:
+  domain: automation
+  name: Adaptive Lighting Sleep Mode
+  description: |
+    Enable Adaptive Lighting Sleep Mode at specific times for lights
+    that are triggered by motion detectors.
+  input:
+    adaptive_lighting_switch:
+      name: Adaptive Lighting Switch
+      description: List of available Adaptive Lighting Switches
+      selector:
+        entity:
+          integration: adaptive_lighting
+          domain:
+            - switch
+    bedtime:
+      name: Bedtime
+      description: The time to reduce the default brightness.
+      selector:
+        time:
+    wakeup_time:
+      name: Wake-up time
+      description: The time to increase the default brightness.
+      selector:
+        time:
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/adaptive-lighting-sleep-mode.yaml
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: automation_reloaded
+  - platform: time
+    at: !input bedtime
+  - platform: time
+    at: !input wakeup_time
+action:
+  - choose:
+      - alias: If it's bedtime, set the lights to dim.
+        conditions:
+          - condition: time
+            after: !input bedtime
+            before: !input wakeup_time
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input adaptive_lighting_switch
+    default:
+      - service: switch.turn_off
+        target:
+          entity_id: !input adaptive_lighting_switch
