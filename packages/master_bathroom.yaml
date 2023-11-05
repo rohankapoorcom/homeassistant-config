@@ -95,7 +95,8 @@ automation:
     use_blueprint:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
-        inovelli_switch: d80e98e0621de0822a33348e7e141e8b
+        inovelli_switch:
+          - d80e98e0621de0822a33348e7e141e8b
         button_a:
           - service: light.turn_on
             target:
