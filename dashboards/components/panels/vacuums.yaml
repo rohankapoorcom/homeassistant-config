@@ -222,7 +222,7 @@ cards:
     cards:
       - type: custom:xiaomi-vacuum-map-card
         map_source:
-          camera: camera.valetudo_downstairs_vacuum_camera
+          camera: camera.valetudo_downstairs_vacuum_map
         calibration_source:
           camera: true
         entity: vacuum.valetudo_downstairs_vacuum
