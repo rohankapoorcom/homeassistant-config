@@ -5,172 +5,216 @@ cards:
     cards:
       - type: custom:xiaomi-vacuum-map-card
         map_source:
-          camera: camera.upstairs_vacuum_camera
+          camera: camera.valetudo_upstairs_vacuum_map
         calibration_source:
           camera: true
-        entity: vacuum.valetudo_upstairs_dreame
+        entity: vacuum.valetudo_upstairs_vacuum
         vacuum_platform: Hypfer/Valetudo
         map_modes:
           - template: vacuum_clean_segment
             predefined_selections:
-              - id: '2'
+              - id: '1'
                 icon:
                   name: mdi:shower
-                  x: 2427
-                  'y': 3315
+                  x: 2455
+                  'y': 3312
                 label:
                   text: Master Bathroom
-                  x: 2427
-                  'y': 3315
+                  x: 2455
+                  'y': 3312
                   offset_y: 35
                 outline:
-                  - - '2315'
-                    - '3210'
-                  - - '2540'
-                    - '3210'
-                  - - '2540'
-                    - '3420'
-                  - - '2315'
-                    - '3420'
+                  - - 2340
+                    - 3210
+                  - - 2570
+                    - 3210
+                  - - 2570
+                    - 3415
+                  - - 2340
+                    - 3415
+              - id: '2'
+                icon:
+                  name: mdi:toilet
+                  x: 2655
+                  'y': 3312
+                label:
+                  text: Hallway Bathroom
+                  x: 2655
+                  'y': 3312
+                  offset_y: 35
+                outline:
+                  - - 2600
+                    - 3210
+                  - - 2710
+                    - 3210
+                  - - 2710
+                    - 3415
+                  - - 2600
+                    - 3415
               - id: '3'
                 icon:
                   name: mdi:bed-king
-                  x: 2182
-                  'y': 3397
+                  x: 2172
+                  'y': 3392
                 label:
                   text: Master Bedroom
-                  x: 2182
-                  'y': 3397
+                  x: 2172
+                  'y': 3392
                   offset_y: 35
                 outline:
-                  - - '1980'
-                    - '3215'
-                  - - '2385'
-                    - '3215'
-                  - - '2385'
-                    - '3580'
-                  - - '1980'
-                    - '3580'
+                  - - 1995
+                    - 3220
+                  - - 2350
+                    - 3220
+                  - - 2350
+                    - 3565
+                  - - 1995
+                    - 3565
               - id: '4'
                 icon:
-                  name: mdi:table-chair
-                  x: 2905
-                  'y': 3315
-                label:
-                  text: Dining Room
-                  x: 2905
-                  'y': 3315
-                  offset_y: 35
-                outline:
-                  - - '2765'
-                    - '3200'
-                  - - '3045'
-                    - '3200'
-                  - - '3045'
-                    - '3430'
-                  - - '2765'
-                    - '3430'
-              - id: '5'
-                icon:
                   name: mdi:stove
-                  x: 2797
+                  x: 2827
                   'y': 3705
                 label:
                   text: Kitchen
-                  x: 2797
+                  x: 2827
                   'y': 3705
                   offset_y: 35
                 outline:
-                  - - '2660'
-                    - '3540'
-                  - - '2935'
-                    - '3540'
-                  - - '2935'
-                    - '3870'
-                  - - '2660'
-                    - '3870'
-              - id: '7'
-                icon:
-                  name: mdi:toilet
-                  x: 2627
-                  'y': 3315
-                label:
-                  text: Hallway Bathroom
-                  x: 2627
-                  'y': 3315
-                  offset_y: 35
-                outline:
-                  - - '2585'
-                    - '3215'
-                  - - '2670'
-                    - '3215'
-                  - - '2670'
-                    - '3415'
-                  - - '2585'
-                    - '3415'
-              - id: '8'
-                icon:
-                  name: mdi:sofa
-                  x: 3222
-                  'y': 3495
-                label:
-                  text: Living Room
-                  x: 3222
-                  'y': 3495
-                  offset_y: 35
-                outline:
-                  - - '2960'
-                    - '3200'
-                  - - '3485'
-                    - '3200'
-                  - - '3485'
-                    - '3790'
-                  - - '2960'
-                    - '3790'
-              - id: '9'
-                icon:
-                  name: mdi:monitor
-                  x: 2182
-                  'y': 3752
-                label:
-                  text: Office
-                  x: 2182
-                  'y': 3752
-                  offset_y: 35
-                outline:
-                  - - '1980'
-                    - '3570'
-                  - - '2385'
-                    - '3570'
-                  - - '2385'
-                    - '3935'
-                  - - '1980'
-                    - '3935'
-              - id: '10'
+                  - - 2690
+                    - 3540
+                  - - 2965
+                    - 3540
+                  - - 2965
+                    - 3870
+                  - - 2690
+                    - 3870
+              - id: '5'
                 icon:
                   name: mdi:floor-plan
-                  x: 2555
-                  'y': 3670
+                  x: 2592
+                  'y': 3675
                 label:
                   text: Hallway
-                  x: 2555
-                  'y': 3670
+                  x: 2592
+                  'y': 3675
                   offset_y: 35
                 outline:
-                  - - '2395'
-                    - '3420'
-                  - - '2715'
-                    - '3420'
-                  - - '2715'
-                    - '3920'
-                  - - '2395'
-                    - '3920'
+                  - - 2405
+                    - 3420
+                  - - 2780
+                    - 3420
+                  - - 2780
+                    - 3930
+                  - - 2405
+                    - 3930
+              - id: '6'
+                icon:
+                  name: mdi:monitor
+                  x: 2230
+                  'y': 3732
+                label:
+                  text: Office
+                  x: 2230
+                  'y': 3732
+                  offset_y: 35
+                outline:
+                  - - 1995
+                    - 3530
+                  - - 2465
+                    - 3530
+                  - - 2465
+                    - 3935
+                  - - 1995
+                    - 3935
+              - id: '7'
+                icon:
+                  name: mdi:sofa
+                  x: 3260
+                  'y': 3497
+                label:
+                  text: Living Room
+                  x: 3260
+                  'y': 3497
+                  offset_y: 35
+                outline:
+                  - - 2985
+                    - 3205
+                  - - 3535
+                    - 3205
+                  - - 3535
+                    - 3790
+                  - - 2985
+                    - 3790
+              - id: '8'
+                icon:
+                  name: mdi:table-chair
+                  x: 2897
+                  'y': 3322
+                label:
+                  text: Dining Room
+                  x: 2897
+                  'y': 3322
+                  offset_y: 35
+                outline:
+                  - - 2785
+                    - 3205
+                  - - 3010
+                    - 3205
+                  - - 3010
+                    - 3440
+                  - - 2785
+                    - 3440
           - template: vacuum_clean_zone
           - template: vacuum_goto
         map_locked: true
         two_finger_pan: true
         internal_variables:
-          topic: valetudo/upstairs-dreame
+          topic: valetudo/upstairs-vacuum
+        append_icons: true
+        append_tiles: true
+        icons:
+          - icon: mdi:water-check
+            tooltip: Cleaning Mode
+            type: menu
+            menu_id: cleaning_mode
+            icon_id: cleaning_mode
+            entity: select.valetudo_upstairs_vacuum_mode
+            available_values_attribute: options
+            icon_mapping:
+              mop: mdi:water
+              vacuum: mdi:broom
+              vacuum_and_mop: mdi:water-check
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+          - icon: mdi:water-check
+            tooltip: Water
+            type: menu
+            menu_id: water
+            icon_id: water
+            entity: select.valetudo_upstairs_vacuum_water
+            available_values_attribute: options
+            icon_mapping:
+              low: mdi:water-percent
+              medium: mdi:water-percent
+              high: mdi:water-percent
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+        tiles:
+          - tile_id: cleaning_mode
+            entity: select.valetudo_upstairs_vacuum_mode
+            label: Mode
+            icon: mdi:developer-board
+            translations:
+              vacuum_and_mop: both
     view_layout:
       grid_area: left
   - type: custom:layout-card
@@ -186,88 +230,131 @@ cards:
         map_modes:
           - template: vacuum_clean_segment
             predefined_selections:
-              - id: '16'
-                icon:
-                  name: mdi:floor-plan
-                  x: 2647
-                  'y': 2290
-                label:
-                  text: Hallway
-                  x: 2647
-                  'y': 2290
-                  offset_y: 35
-                outline:
-                  - - 2110
-                    - 1980
-                  - - 3185
-                    - 1980
-                  - - 3185
-                    - 2600
-                  - - 2110
-                    - 2600
-              - id: '17'
+              - id: '1'
                 icon:
                   name: mdi:bed-queen
-                  x: 2080
-                  'y': 2422
+                  x: 3180
+                  'y': 2917
                 label:
                   text: Guest Room
-                  x: 2080
-                  'y': 2422
+                  x: 3180
+                  'y': 2917
                   offset_y: 35
                 outline:
-                  - - 1790
-                    - 2245
-                  - - 2370
-                    - 2245
-                  - - 2370
-                    - 2600
-                  - - 1790
-                    - 2600
-              - id: '18'
+                  - - 3020
+                    - 2650
+                  - - 3340
+                    - 2650
+                  - - 3340
+                    - 3185
+                  - - 3020
+                    - 3185
+              - id: '2'
                 icon:
                   name: mdi:bicycle
-                  x: 2010
-                  'y': 2082
+                  x: 3532
+                  'y': 2855
                 label:
                   text: Gym
-                  x: 2010
-                  'y': 2082
+                  x: 3532
+                  'y': 2855
                   offset_y: 35
                 outline:
-                  - - 1785
-                    - 1915
-                  - - 2235
-                    - 1915
-                  - - 2235
-                    - 2250
-                  - - 1785
-                    - 2250
-              - id: '19'
+                  - - 3370
+                    - 2635
+                  - - 3695
+                    - 2635
+                  - - 3695
+                    - 3075
+                  - - 3370
+                    - 3075
+              - id: '4'
                 icon:
                   name: mdi:shower
-                  x: 2350
-                  'y': 2015
+                  x: 3587
+                  'y': 3217
                 label:
-                  text: Guest Bathroom
-                  x: 2350
-                  'y': 2015
+                  text: Bathroom
+                  x: 3587
+                  'y': 3217
                   offset_y: 35
                 outline:
-                  - - 2245
-                    - 1915
-                  - - 2455
-                    - 1915
-                  - - 2455
-                    - 2115
-                  - - 2245
-                    - 2115
+                  - - 3510
+                    - 3090
+                  - - 3665
+                    - 3090
+                  - - 3665
+                    - 3345
+                  - - 3510
+                    - 3345
+              - id: '6'
+                icon:
+                  name: mdi:floor-plan
+                  x: 3192
+                  'y': 3482
+                label:
+                  text: Hallway
+                  x: 3192
+                  'y': 3482
+                  offset_y: 35
+                outline:
+                  - - 3005
+                    - 2955
+                  - - 3380
+                    - 2955
+                  - - 3380
+                    - 4010
+                  - - 3005
+                    - 4010
           - template: vacuum_clean_zone
-          - template: vacuum_goto
         map_locked: true
         two_finger_pan: true
         internal_variables:
-          topic: valetudo/downstairs-roborock
+          topic: valetudo/downstairs-vacuum
+        append_icons: true
+        append_tiles: true
+        icons:
+          - icon: mdi:water-check
+            tooltip: Cleaning Mode
+            type: menu
+            menu_id: cleaning_mode
+            icon_id: cleaning_mode
+            entity: select.valetudo_upstairs_vacuum_mode
+            available_values_attribute: options
+            icon_mapping:
+              mop: mdi:water
+              vacuum: mdi:broom
+              vacuum_and_mop: mdi:water-check
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+          - icon: mdi:water-check
+            tooltip: Water
+            type: menu
+            menu_id: water
+            icon_id: water
+            entity: select.valetudo_upstairs_vacuum_water
+            available_values_attribute: options
+            icon_mapping:
+              low: mdi:water-percent
+              medium: mdi:water-percent
+              high: mdi:water-percent
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+        tiles:
+          - tile_id: cleaning_mode
+            entity: select.valetudo_upstairs_vacuum_mode
+            label: Mode
+            icon: mdi:developer-board
+            translations:
+              vacuum_and_mop: both
     view_layout:
       grid_area: right
 layout_type: custom:grid-layout
