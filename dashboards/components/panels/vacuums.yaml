@@ -222,10 +222,10 @@ cards:
     cards:
       - type: custom:xiaomi-vacuum-map-card
         map_source:
-          camera: camera.downstairs_vacuum_camera
+          camera: camera.valetudo_downstairs_vacuum_camera
         calibration_source:
           camera: true
-        entity: vacuum.valetudo_downstairs_roborock
+        entity: vacuum.valetudo_downstairs_vacuum
         vacuum_platform: Hypfer/Valetudo
         map_modes:
           - template: vacuum_clean_segment
