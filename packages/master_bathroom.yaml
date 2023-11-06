@@ -132,12 +132,39 @@ automation:
               - service: switch.turn_off
                 target:
                   entity_id: switch.master_bathroom_towel_warmer
+              - service: script.inovelli_blue_notifications
+                data:
+                  led: Led 1
+                  color: Red
+                  level: 40
+                  effect: Clear
+                  duration: Indefinitely
+                  target:
+                    device_id: d80e98e0621de0822a33348e7e141e8b
         default:
+          - service: script.inovelli_blue_notifications
+            data:
+              led: Led 1
+              color: Red
+              level: 40
+              effect: Pulse
+              duration: Indefinitely
+              target:
+                device_id: d80e98e0621de0822a33348e7e141e8b
           - delay:
               minutes: 90
           - service: switch.turn_off
             target:
               entity_id: switch.master_bathroom_towel_warmer
+          - service: script.inovelli_blue_notifications
+            data:
+              led: Led 1
+              color: Red
+              level: 40
+              effect: Clear
+              duration: Indefinitely
+              target:
+                device_id: d80e98e0621de0822a33348e7e141e8b
 
   - id: 61e51665-413b-4958-8a4f-5a7e29066e60
     alias: Adjust the Master Bathroom Brightness
