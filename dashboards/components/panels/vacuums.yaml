@@ -218,7 +218,7 @@ cards:
         card_mod:
           style: |
             ha-card {
-              --map-card-internal-zoomer-background: transparent;
+              --map-card-internal-zoomer-background: transparent!important;
             }
 
     view_layout:
@@ -364,7 +364,7 @@ cards:
         card_mod:
           style: |
             ha-card {
-              --map-card-internal-zoomer-background: transparent;
+              --map-card-internal-zoomer-background: transparent!important;
             }
     view_layout:
       grid_area: right
