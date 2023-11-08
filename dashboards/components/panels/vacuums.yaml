@@ -215,6 +215,12 @@ cards:
             icon: mdi:developer-board
             translations:
               vacuum_and_mop: both
+        card_mod:
+          style: |
+            ha-card {
+              --map-card-internal-zoomer-background: transparent;
+            }
+
     view_layout:
       grid_area: left
   - type: custom:layout-card
@@ -355,6 +361,11 @@ cards:
             icon: mdi:developer-board
             translations:
               vacuum_and_mop: both
+        card_mod:
+          style: |
+            ha-card {
+              --map-card-internal-zoomer-background: transparent;
+            }
     view_layout:
       grid_area: right
 layout_type: custom:grid-layout
