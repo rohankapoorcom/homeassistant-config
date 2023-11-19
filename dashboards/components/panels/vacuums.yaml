@@ -238,81 +238,82 @@ cards:
             predefined_selections:
               - id: '1'
                 icon:
-                  name: mdi:bed-queen
-                  x: 3180
-                  'y': 2917
-                label:
-                  text: Guest Room
-                  x: 3180
-                  'y': 2917
-                  offset_y: 35
-                outline:
-                  - - 3020
-                    - 2650
-                  - - 3340
-                    - 2650
-                  - - 3340
-                    - 3185
-                  - - 3020
-                    - 3185
-              - id: '2'
-                icon:
-                  name: mdi:bicycle
-                  x: 3532
-                  'y': 2855
-                label:
-                  text: Gym
-                  x: 3532
-                  'y': 2855
-                  offset_y: 35
-                outline:
-                  - - 3370
-                    - 2635
-                  - - 3695
-                    - 2635
-                  - - 3695
-                    - 3075
-                  - - 3370
-                    - 3075
-              - id: '4'
-                icon:
-                  name: mdi:shower
-                  x: 3587
-                  'y': 3217
-                label:
-                  text: Bathroom
-                  x: 3587
-                  'y': 3217
-                  offset_y: 35
-                outline:
-                  - - 3510
-                    - 3090
-                  - - 3665
-                    - 3090
-                  - - 3665
-                    - 3345
-                  - - 3510
-                    - 3345
-              - id: '6'
-                icon:
                   name: mdi:floor-plan
-                  x: 3192
-                  'y': 3482
+                  x: 3067
+                  'y': 3232
                 label:
                   text: Hallway
-                  x: 3192
-                  'y': 3482
+                  x: 3067
+                  'y': 3232
                   offset_y: 35
                 outline:
-                  - - 3005
-                    - 2955
-                  - - 3380
-                    - 2955
-                  - - 3380
-                    - 4010
-                  - - 3005
-                    - 4010
+                  - - 2540
+                    - 2995
+                  - - 3595
+                    - 2995
+                  - - 3595
+                    - 3470
+                  - - 2540
+                    - 3470
+              - id: '2'
+                icon:
+                  name: mdi:bed-queen
+                  x: 3620
+                  'y': 3160
+                label:
+                  text: Guest Room
+                  x: 3620
+                  'y': 3160
+                  offset_y: 35
+                outline:
+                  - - 3345
+                    - 2995
+                  - - 3895
+                    - 2995
+                  - - 3895
+                    - 3325
+                  - - 3345
+                    - 3325
+              - id: '4'
+                icon:
+                  name: mdi:bicycle
+                  x: 3732
+                  'y': 3492
+                label:
+                  text: Gym
+                  x: 3732
+                  'y': 3492
+                  offset_y: 35
+                outline:
+                  - - 3565
+                    - 3350
+                  - - 3900
+                    - 3350
+                  - - 3900
+                    - 3635
+                  - - 3565
+                    - 3635
+              - id: '5'
+                icon:
+                  name: mdi:shower
+                  x: 3332
+                  'y': 3575
+                label:
+                  text: Guest Bathroom
+                  x: 3332
+                  'y': 3575
+                  offset_y: 35
+                outline:
+                  - - 3210
+                    - 3475
+                  - - 3455
+                    - 3475
+                  - - 3455
+                    - 3675
+                  - - 3210
+                    - 3675
           - template: vacuum_clean_zone
+          - template: vacuum_goto
         map_locked: true
         two_finger_pan: true
         internal_variables:
