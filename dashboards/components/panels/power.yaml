@@ -98,6 +98,21 @@ cards:
             min: 0
             max: 30
             name: Output Current
+      - type: grid
+        title: Delta Pro Inputs
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: switch.ecoflow_delta_pro_ac
+              - name: AC Charger
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: switch.ecoflow_delta_pro_dc
+              - name: DC Charger
+        columns: 4
+        square: false
       - type: glance
         title: UPS Status
         entities:
