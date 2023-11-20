@@ -225,10 +225,10 @@ cards:
     view_layout:
       grid_area: left
   - type: custom:layout-card
-    title: Downstairs
     layout_type: vertical
     cards:
       - type: custom:xiaomi-vacuum-map-card
+        title: Downstairs
         map_source:
           camera: camera.valetudo_downstairs_vacuum_map
         calibration_source:
