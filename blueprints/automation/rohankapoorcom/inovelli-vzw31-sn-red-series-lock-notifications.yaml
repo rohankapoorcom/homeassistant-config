@@ -29,7 +29,7 @@ action:
     target:
       device_id: !input zwave_device
     data_template:
-      parameter: 16
+      parameter: 99
       value:
         "All LED Strip Effect - Color": >
           {% if trigger.to_state.state == 'locked' %}
