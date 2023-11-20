@@ -42,6 +42,10 @@ automation:
           - service: light.toggle
             target:
               entity_id: light.dining_room_accent_lights
+        scene_3:
+          - service: light.toggle
+            target:
+              entity_id: light.kitchen_lights
         scene_4:
           - choose:
               - conditions:
@@ -62,10 +66,10 @@ automation:
                   brightness_pct: 100
                   kelvin: 3000
                   transition: 2
-        scene_3:
+        scene_5:
           - service: light.toggle
             target:
-              entity_id: light.kitchen_lights
+              entity_id: light.hallway_lights
 
   - id: '1643339651442'
     alias: Upstairs Hallway Scene Controller Status Lights
