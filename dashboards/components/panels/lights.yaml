@@ -82,8 +82,27 @@ cards:
       - type: custom:decluttering-card
         template: slider_button_card
         variables:
-          - entity: light.tv_backlighting
-          - name: TV LEDs
+          - entity: cover.living_room_sheers
+          - name: Sheers
+          - direction: left-right
+          - action_button:
+              mode: custom
+              show: true
+              tap_action:
+                action: toggle
+              icon: mdi:swap-horizontal
+      - type: custom:decluttering-card
+        template: slider_button_card
+        variables:
+          - entity: cover.living_room_curtains
+          - name: Blackouts
+          - direction: left-right
+          - action_button:
+              mode: custom
+              show: true
+              tap_action:
+                action: toggle
+              icon: mdi:swap-horizontal
     columns: 4
     square: false
   - type: grid

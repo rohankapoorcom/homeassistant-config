@@ -41,6 +41,10 @@ google_assistant:
       expose: true
     fan.living_room_fan:
       expose: true
+    cover.living_room_curtains:
+      expose: true
+    cover.living_room_sheers:
+      expose: true
     light.office_lights:
       expose: true
       aliases:
@@ -57,9 +61,9 @@ google_assistant:
       expose: true
     switch.master_bathroom_towel_warmer:
       expose: true
-    vacuum.valetudo_upstairs_dreame:
+    vacuum.valetudo_upstairs_vacuum:
       expose: true
-    vacuum.valetudo_downstairs_roborock:
+    vacuum.valetudo_downstairs_vacuum:
       expose: true
     climate.downstairs:
       expose: true
