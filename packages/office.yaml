@@ -107,19 +107,45 @@ light:
           - service: light.turn_off
             entity_id: light.office_backlighting
 
+mqtt:
+  switch:
+    - command_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input L/setMute"
+      name: Office Ceiling Mic Left
+      icon: mdi:microphone
+      payload_off: 1
+      payload_on: 0
+      state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input L/MUTE"
+      unique_id: bbd9f1db-3cd8-460e-9b6b-b86591aff118
+
+    - command_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/setMute"
+      name: Office Ceiling Mic Right
+      icon: mdi:microphone
+      payload_off: 1
+      payload_on: 0
+      state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/MUTE"
+      unique_id: 2c2afa34-a4c5-45e4-b4cf-518b022191f5
+
 switch:
-  - platform: xap_controller
-    path: /dev/xap800
-    name: Office Mixer
-    baud: 57600
-    XAPType: XAP800
-    switches:
-      'Office Ceiling Mics':
-        - "1:1"
-        - "1:2"
-      'Office Speakers':
-        - "1:3"
-        - "1:4"
+  - platform: group
+    name: Office Ceiling Mics
+    unique_id: B48AD44A_1_2_mute
+    entities:
+      - switch.office_ceiling_mic_left
+      - switch.office_ceiling_mic_right
+
+# switch:
+#   - platform: xap_controller
+#     path: /dev/xap800
+#     name: Office Mixer
+#     baud: 57600
+#     XAPType: XAP800
+#     switches:
+#       'Office Ceiling Mics':
+#         - "1:1"
+#         - "1:2"
+#       'Office Speakers':
+#         - "1:3"
+#         - "1:4"
 
 ################################################
 ## Script
