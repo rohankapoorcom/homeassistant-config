@@ -129,13 +129,40 @@ mqtt:
       state_on: "0"
       unique_id: 2c2afa34-a4c5-45e4-b4cf-518b022191f5
 
+    - command_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers L/setMute"
+      name: Office Speakers Left
+      icon: mdi:microphone
+      payload_off: "[1]"
+      payload_on: "[0]"
+      state_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers L/MUTE"
+      state_off: "1"
+      state_on: "0"
+      unique_id: 16ad2569-6239-41ae-bc8b-c107d38c0610
+
+    - command_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers R/setMute"
+      name: Office Speakers Right
+      icon: mdi:microphone
+      payload_off: "[1]"
+      payload_on: "[0]"
+      state_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers R/MUTE"
+      state_off: "1"
+      state_on: "0"
+      unique_id: 89441b74-3c43-4369-b41c-40769dd0cc7e
+
 switch:
   - platform: group
     name: Office Ceiling Mics
-    unique_id: B48AD44A_1_2_mute
+    unique_id: 183f2a1a-bd93-4a81-bacf-b1be9a78a9f0
     entities:
       - switch.office_ceiling_mic_left
       - switch.office_ceiling_mic_right
+
+  - platform: group
+    name: Office Speakers
+    unique_id: 883923a8-a574-4957-906b-ceeb2c987151
+    entities:
+      - switch.office_speakers_left
+      - switch.office_speakers_right
 
 # switch:
 #   - platform: xap_controller
