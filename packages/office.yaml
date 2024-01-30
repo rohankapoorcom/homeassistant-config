@@ -115,6 +115,8 @@ mqtt:
       payload_off: "[1]"
       payload_on: "[0]"
       state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input L/MUTE"
+      state_off: "1"
+      state_on: "0"
       unique_id: bbd9f1db-3cd8-460e-9b6b-b86591aff118
 
     - command_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/setMute"
@@ -123,6 +125,8 @@ mqtt:
       payload_off: "[1]"
       payload_on: "[0]"
       state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/MUTE"
+      state_off: "1"
+      state_on: "0"
       unique_id: 2c2afa34-a4c5-45e4-b4cf-518b022191f5
 
 switch:
