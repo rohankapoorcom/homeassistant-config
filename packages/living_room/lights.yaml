@@ -14,7 +14,7 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         package: 'living_room_lights'
-      
+
     living_room_light_switch_device_id: &living_room_light_switch_device_id
       - 257a7b48517ba7c9cc28fa70842c24f6
 
@@ -90,7 +90,7 @@ automation:
         small_2_button_light: binary_sensor.living_room_fan_medium
         small_3_button_light: binary_sensor.living_room_fan_slow
         small_4_button_light: binary_sensor.living_room_fan_off
-  
+
   - id: '023bc818-9231-4450-b15b-1dc7692f3fbb'
     alias: Living Room Light Switch Scene Controls
     description: Utilizes a blueprint to handle Scene Controls in the Living Room.
