@@ -36,7 +36,7 @@ cards:
             name: Office
           - entity: sensor.garage_temperature
             name: Garage
-          - entity: sensor.ups_envirosense_temperature
+          - entity: sensor.server_rack_exhaust_fan_temperature_1
             name: Server Rack
         state_color: false
       - type: custom:simple-thermostat
