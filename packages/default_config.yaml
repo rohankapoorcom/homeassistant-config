@@ -1,0 +1,28 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  02/07/2024
+#  @package      :  Default Config
+#  @description  :  Load a subset of the default_config from Home Assistant
+#                   https://www.home-assistant.io/integrations/default_config/
+###############################################################################
+---
+
+# Defaults
+assist_pipeline:
+backup:
+config:
+conversation:
+energy:
+history:
+homeassistant_alerts:
+image_upload:
+logbook:
+media_source:
+mobile_app:
+my:
+sun:
+
+# Helpers
+input_button:
+counter:
+schedule:

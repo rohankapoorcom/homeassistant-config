@@ -44,19 +44,12 @@ lovelace:
 
 lovelace_gen:
 
-# Enables configuration UI
-config:
-
 http:
   # Uncomment this if you are using SSL or running in Docker etc
   ip_ban_enabled: false
   use_x_forwarded_for: true
   trusted_proxies:
     - 127.0.0.1
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
-assist_pipeline:
 
 recorder:
   db_url: !secret recorder.db_url
@@ -65,15 +58,6 @@ recorder:
     entities:
       - sensor.upstairs_roborock_map
       - sensor.downstairs_roborock_map
-
-# Enables support for tracking state changes over time.
-history:
-
-# View all events in a logbook
-logbook:
-
-# Track the sun
-sun:
 
 mqtt:
   sensor:
@@ -127,13 +111,3 @@ smartir:
 #     unique_id: master_bedroom_fan
 #     controller_data: remote.master_bedroom_ir_transmitter_remote
 #     device_code: 1140
-
-mobile_app:
-
-energy:
-
-my:
-
-backup:
-
-media_source:
