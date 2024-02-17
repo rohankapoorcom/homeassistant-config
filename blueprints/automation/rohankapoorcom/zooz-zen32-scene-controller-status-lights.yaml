@@ -83,7 +83,7 @@ action:
             target:
               device_id: !input zooz_switch
   - choose:
-      - conditions: 
+      - conditions:
           - "{{ not not small_1_button_light }}"
           - "{{ has_value(small_1_button_light) }}"
         sequence:
@@ -96,7 +96,7 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_1_button_light, 'on') }}"
   - choose:
-      - conditions: 
+      - conditions:
           - "{{ not not small_2_button_light }}"
           - "{{ has_value(small_2_button_light) }}"
         sequence:
@@ -109,7 +109,7 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_2_button_light, 'on') }}"
   - choose:
-      - conditions: 
+      - conditions:
           - "{{ not not small_3_button_light }}"
           - "{{ has_value(small_3_button_light) }}"
         sequence:
@@ -122,7 +122,7 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_3_button_light, 'on') }}"
   - choose:
-      - conditions: 
+      - conditions:
           - "{{ not not small_4_button_light }}"
           - "{{ has_value(small_4_button_light) }}"
         sequence:
