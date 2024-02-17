@@ -133,24 +133,24 @@ system_health:
 
 automation:
 
-  - id: update_configuration_if_travis_build_is_successful
-    alias: Update configuration if travis build is successful
-    trigger:
-      - entity_id: sensor.rohankapoorcom_homeassistant_config_last_build_state
-        platform: state
-        to: 'passed'
-    condition:
-      - condition: template
-        value_template: >
-          {{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit Branch', 'master') }}
-      - condition: template
-        # yamllint disable-line rule:line-length
-        value_template: "{{ not is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
-      - condition: template
-        # yamllint disable-line rule:line-length
-        value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Committed Date') }}"
-    action:
-      - service: script.pull_and_restart_homeassistant
+  # - id: update_configuration_if_travis_build_is_successful
+  #   alias: Update configuration if travis build is successful
+  #   trigger:
+  #     - entity_id: sensor.rohankapoorcom_homeassistant_config_last_build_state
+  #       platform: state
+  #       to: 'passed'
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {{ is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit Branch', 'master') }}
+  #     - condition: template
+  #       # yamllint disable-line rule:line-length
+  #       value_template: "{{ not is_state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Commit SHA', states('sensor.current_git_commit_id')) }}"
+  #     - condition: template
+  #       # yamllint disable-line rule:line-length
+  #       value_template: "{{ states('sensor.current_git_commit_time') < state_attr('sensor.rohankapoorcom_homeassistant_config_last_build_state', 'Committed Date') }}"
+  #   action:
+  #     - service: script.pull_and_restart_homeassistant
 
 ################################################
 ## Shell Command
