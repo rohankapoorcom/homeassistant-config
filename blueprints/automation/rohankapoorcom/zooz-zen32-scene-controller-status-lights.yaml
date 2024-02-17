@@ -74,14 +74,18 @@ trigger:
     entity_id: !input small_4_button_light
 action:
   - choose:
-      - conditions: "{{ not not large_button_light }}"
+      - conditions:
+          - "{{ not not large_button_light }}"
+          - "{{ has_value(large_button_light) }}"
         sequence:
           - service: >
               homeassistant.turn_{{ states(large_button_light) }}
             target:
               device_id: !input zooz_switch
   - choose:
-      - conditions: "{{ not not small_1_button_light }}"
+      - conditions: 
+          - "{{ not not small_1_button_light }}"
+          - "{{ has_value(small_1_button_light) }}"
         sequence:
           - service: zwave_js.set_value
             target:
@@ -92,7 +96,9 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_1_button_light, 'on') }}"
   - choose:
-      - conditions: "{{ not not small_2_button_light }}"
+      - conditions: 
+          - "{{ not not small_2_button_light }}"
+          - "{{ has_value(small_2_button_light) }}"
         sequence:
           - service: zwave_js.set_value
             target:
@@ -103,7 +109,9 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_2_button_light, 'on') }}"
   - choose:
-      - conditions: "{{ not not small_3_button_light }}"
+      - conditions: 
+          - "{{ not not small_3_button_light }}"
+          - "{{ has_value(small_3_button_light) }}"
         sequence:
           - service: zwave_js.set_value
             target:
@@ -114,7 +122,9 @@ action:
               endpoint: '0'
               value: "{{ is_state(small_3_button_light, 'on') }}"
   - choose:
-      - conditions: "{{ not not small_4_button_light }}"
+      - conditions: 
+          - "{{ not not small_4_button_light }}"
+          - "{{ has_value(small_4_button_light) }}"
         sequence:
           - service: zwave_js.set_value
             target:
