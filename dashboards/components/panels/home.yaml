@@ -76,45 +76,13 @@ cards:
   - type: custom:layout-card
     layout_type: vertical
     cards:
-      - type: custom:weather-chart-card
+      - type: custom:weather-card
+        current: true
+        details: true
         entity: weather.pirateweather
-        show_main: true
-        show_temperature: true
-        show_current_condition: true
-        show_attributes: true
-        show_time: false
-        show_day: false
-        show_date: false
-        show_humidity: true
-        show_pressure: true
-        show_wind_direction: true
-        show_wind_speed: true
-        show_sun: true
-        show_feels_like: true
-        use_12hour_format: true
-        animated_icons: true
-        icon_style: style2
-        forecast:
-          precipitation_type: rainfall
-          labels_font_size: '11'
-          precip_bar_size: '100'
-          style: style2
-          show_wind_forecast: true
-          condition_icons: true
-          round_temp: false
-          type: hourly
-        units:
-          pressure: ''
-          speed: ''
-        title: ''
-        temp: sensor.weather_station_outdoor_temperature
-        feels_like: sensor.weather_station_feels_like_temperature
-        press: sensor.weather_station_relative_pressure
-        humid: sensor.weather_station_humidity
-        uv: sensor.weather_station_uv_index
-        winddir: sensor.weather_station_wind_direction
-        windspeed: sensor.weather_station_wind_speed
-
+        forecast: true
+        icons: /hacsfiles/weather-card/icons/
+        number_of_forecasts: '5'
       - type: custom:apexcharts-card
         header:
           show: true
