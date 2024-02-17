@@ -41,7 +41,7 @@ notify:
       - service: mobile_app_rohan_s_oneplus_8_pro
       - service: mobile_app_rohans_ipad_pro
       - service: mobile_app_rohans_ipad_3
-      - service: notify.mobile_app_rohan_s_samsung_z_fold_4
+      - service: mobile_app_rohan_s_samsung_z_fold_4
 
 automation:
   - id: '1665347764581'
