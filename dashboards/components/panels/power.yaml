@@ -5,7 +5,7 @@ cards:
     cards:
       - type: custom:bar-card
         entities:
-          - entity: sensor.delta_pro_140012_main_battery
+          - entity: sensor.server_rack_backup_main_battery
             direction: right
             name: Delta Pro Main
             icon: mdi:battery
@@ -18,7 +18,7 @@ cards:
               value: inside
             severity:
               - {}
-          - entity: sensor.delta_pro_140012_extra1_battery
+          - entity: sensor.server_rack_backup_extra1_battery
             direction: right
             name: Delta Pro Extra 1
             icon: mdi:battery
@@ -59,17 +59,17 @@ cards:
       - type: glance
         title: Delta Pro Status
         entities:
-          - entity: binary_sensor.delta_pro_140012_main_status
+          - entity: binary_sensor.server_rack_backup_main_status
             name: Health
             icon: mdi:battery-heart-variant
-          - entity: sensor.delta_pro_140012_time_remaining
+          - entity: sensor.server_rack_backup_time_remaining
             icon: mdi:battery-alert-variant-outline
-          - entity: binary_sensor.delta_pro_140012_charging
+          - entity: binary_sensor.server_rack_backup_charging
             name: Detail
             icon: mdi:battery-charging
-          - entity: sensor.delta_pro_140012_main_battery_temperature
+          - entity: sensor.server_rack_backup_main_battery_temperature
             name: Temp
-          - entity: sensor.delta_pro_140012_power_source
+          - entity: sensor.server_rack_backup_power_source
             name: Source
             icon: mdi:power-plug
         state_color: false
@@ -79,22 +79,22 @@ cards:
       - type: horizontal-stack
         cards:
           - type: gauge
-            entity: sensor.delta_pro_140012_ac_input_current
+            entity: sensor.server_rack_backup_ac_input_current
             min: 0
             max: 15
             name: AC Current In
           - type: gauge
-            entity: sensor.delta_pro_140012_dc_input_current
+            entity: sensor.server_rack_backup_dc_input_current
             min: 0
             max: 15
             name: DC Current In
           - type: gauge
-            entity: sensor.delta_pro_140012_ac_output_voltage
+            entity: sensor.server_rack_backup_ac_output_voltage
             min: 100
             max: 130
             name: Output Voltage
           - type: gauge
-            entity: sensor.delta_pro_140012_ac_output_current
+            entity: sensor.server_rack_backup_ac_output_current
             min: 0
             max: 30
             name: Output Current
