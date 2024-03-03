@@ -24,6 +24,12 @@ cards:
             icon: mdi:battery
             color: green
             decimal: 0
+          - entity: sensor.server_rack_backup_extra2_battery
+            direction: right
+            name: Delta Pro Extra 2
+            icon: mdi:battery
+            color: green
+            decimal: 0
             positions:
               icon: 'off'
               indicator: 'off'
