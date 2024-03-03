@@ -32,20 +32,20 @@ template:
                 {{ cond_now }}
             {% endif %}
 
-          # weather_condition_0: >
-          #   {% set cond0 = state_attr('weather.hourly_weather', 'forecast')[0].condition %}
-          #   {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
-          #   {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
-          #   {% set cond0_time = as_timestamp(state_attr('weather.hourly_weather', 'forecast')[0].datetime) %}
-          #   {% if cond0_time < next_rising and next_rising < next_setting %}
-          #       {% if cond0 == 'sunny' %} night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
-          #   {% else %}
-          #       {{ cond0 }}
-          #   {% endif %}
-          # weather_temperature_0: >
-          #   {{ state_attr('weather.hourly_weather', 'forecast')[0].temperature | round }}
-          # weather_timestamp_0: >
-          #   {{ as_timestamp(state_attr('weather.hourly_weather', 'forecast')[0].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(state_attr('weather.hourly_weather', 'forecast')[0].datetime) | timestamp_custom('%p') }}
+          weather_condition_0: >
+            {% set cond0 = forecast[0].condition %}
+            {% set next_setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+            {% set next_rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+            {% set cond0_time = as_timestamp(forecast[0].datetime) %}
+            {% if cond0_time < next_rising and next_rising < next_setting %}
+                {% if cond0 == 'sunny' %} night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+            {% else %}
+                {{ cond0 }}
+            {% endif %}
+          weather_temperature_0: >
+            {{ forecast[0].temperature | round }}
+          weather_timestamp_0: >
+            {{ as_timestamp(forecast[0].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[0].datetime) | timestamp_custom('%p') }}
 
           # weather_condition_1: >
           #   {% set cond1 = state_attr('weather.hourly_weather', 'forecast')[1].condition %}
