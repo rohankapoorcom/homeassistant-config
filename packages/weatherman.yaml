@@ -47,7 +47,7 @@ template:
           weather_humidity_0: >
             {{ forecast[1].humidity | round }}
           weather_precipitation_0: >
-            {{ forecast[1].precipitation | round }}
+            {{ forecast[1].precipitation }}
           weather_timestamp_0: >
             {{ as_timestamp(forecast[1].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[1].datetime) | timestamp_custom('%p') }}
 
@@ -66,7 +66,7 @@ template:
           weather_humidity_1: >
             {{ forecast[2].humidity | round }}
           weather_precipitation_1: >
-            {{ forecast[2].precipitation | round }}
+            {{ forecast[2].precipitation }}
           weather_timestamp_1: >
             {{ as_timestamp(forecast[2].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[2].datetime) | timestamp_custom('%p') }}
 
@@ -85,7 +85,7 @@ template:
           weather_humidity_2: >
             {{ forecast[3].humidity | round }}
           weather_precipitation_2: >
-            {{ forecast[3].precipitation | round }}
+            {{ forecast[3].precipitation }}
           weather_timestamp_2: >
             {{ as_timestamp(forecast[3].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[3].datetime) | timestamp_custom('%p') }}
 
@@ -104,6 +104,6 @@ template:
           weather_humidity_3: >
             {{ forecast[4].humidity | round }}
           weather_precipitation_3: >
-            {{ forecast[4].precipitation | round }}
+            {{ forecast[4].precipitation }}
           weather_timestamp_3: >
             {{ as_timestamp(forecast[4].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[4].datetime) | timestamp_custom('%p') }}
