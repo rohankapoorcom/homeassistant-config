@@ -107,3 +107,8 @@ template:
             {{ forecast[4].precipitation }}
           weather_timestamp_3: >
             {{ as_timestamp(forecast[4].datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast[4].datetime) | timestamp_custom('%p') }}
+
+          sunrise_timestamp: >
+            {{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom('%I:%M %p') }}
+          sunset_timestamp: >
+            {{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%I:%M %p') }}
