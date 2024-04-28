@@ -36,8 +36,8 @@ light:
 ################################################
 automation:
   - id: 6eb0e509-5d18-401a-87e1-d05a7b3854f6
-    alias: Mark Dishwasher as Clean
-    description: "Set Dishwasher to Clean when power usage drops off after running"
+    alias: Update Dishwasher Display
+    description: "Set Dishwasher Display status based on power usage"
     use_blueprint:
       path: >-
         sbyx/notify-or-do-something-when-an-appliance-like-a-dishwasher-or-washing-machine-finishes.yaml
@@ -46,12 +46,75 @@ automation:
         starting_threshold: 25
         finishing_threshold: 15
         actions:
-          - service: input_boolean.turn_on
+          - service: open_epaper_link.drawcustom
+            data:
+              background: white
+              rotate: 0
+              ttl: 300
+              dither: false
+              payload:
+                - type: text
+                  value: Clean
+                  font: ppb.ttf
+                  x: 178
+                  "y": 64
+                  size: 70
+                  color: red
+                  anchor: mm
+                - type: text
+                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
+                  font: ppb.ttf
+                  x: 148
+                  "y": 110
+                  size: 15
+                  color: black
+                  anchor: mt
+                - type: icon
+                  value: silverware-clean
+                  x: 40
+                  "y": 64
+                  size: 60
+                  color: black
+                  anchor: mm
             target:
-              entity_id: input_boolean.dishwasher_is_clean
+              entity_id:
+                - open_epaper_link.0000021f85043b1c
         starting_hysteresis: 5
-        finishing_hysteresis: 5
+        finishing_hysteresis: 10
         pre_actions:
+          - service: open_epaper_link.drawcustom
+            data:
+              background: white
+              rotate: 0
+              ttl: 300
+              dither: false
+              payload:
+                - type: text
+                  value: Washing
+                  font: ppb.ttf
+                  x: 178
+                  "y": 64
+                  size: 70
+                  color: red
+                  anchor: mm
+                - type: text
+                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
+                  font: ppb.ttf
+                  x: 148
+                  "y": 110
+                  size: 15
+                  color: black
+                  anchor: mt
+                - type: icon
+                  value: silverware-clean
+                  x: 40
+                  "y": 64
+                  size: 60
+                  color: black
+                  anchor: mm
+            target:
+              entity_id:
+                - open_epaper_link.0000021f85043b1c
 
   - id: 035831df-c284-4935-93fd-a337e2890b8c
     alias: Hallway Light Switch (Kitchen) Zigbee Scene Controls
@@ -62,60 +125,39 @@ automation:
         inovelli_switch:
           - a7a4f8a1f6c1b0d3cf9496e0aa1ae1c4
         config_button:
-          - service: input_boolean.turn_off
+          - service: open_epaper_link.drawcustom
+            data:
+              background: white
+              rotate: 0
+              ttl: 300
+              dither: false
+              payload:
+                - type: text
+                  value: Dirty
+                  font: ppb.ttf
+                  x: 178
+                  "y": 64
+                  size: 70
+                  color: red
+                  anchor: mm
+                - type: text
+                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
+                  font: ppb.ttf
+                  x: 148
+                  "y": 110
+                  size: 15
+                  color: black
+                  anchor: mt
+                - type: icon
+                  value: silverware-clean
+                  x: 50
+                  "y": 64
+                  size: 60
+                  color: black
+                  anchor: mm
             target:
-              entity_id: input_boolean.dishwasher_is_clean
-
-  - id: 61db2c80-f34e-4d73-b9e1-b6ed273a325c
-    alias: Update Dishwasher Display
-    description: Show the Clean / Dirty state of the dishwasher
-    trigger:
-      - platform: state
-        entity_id: input_boolean.dishwasher_is_clean
-    action:
-      - service: open_epaper_link.drawcustom
-        data:
-          background: white
-          rotate: 0
-          ttl: 300
-          dither: false
-          payload:
-            - type: text
-              value: >
-                {% if is_state("input_boolean.dishwasher_is_clean", "on") -%}
-                  Clean
-                {%- else -%}
-                  Dirty
-                {%- endif %}
-              font: ppb.ttf
-              x: 178
-              "y": 64
-              size: 70
-              color: red
-              anchor: mm
-            - type: text
-              value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
-              font: ppb.ttf
-              x: 148
-              "y": 110
-              size: 15
-              color: black
-              anchor: mt
-            - type: icon
-              value: silverware-clean
-              x: >
-                {% if is_state("input_boolean.dishwasher_is_clean", "on") -%}
-                  40
-                {%- else -%}
-                  50
-                {%- endif %}
-              "y": 64
-              size: 60
-              color: black
-              anchor: mm
-        target:
-          entity_id:
-            - open_epaper_link.0000021f85043b1c
+              entity_id:
+                - open_epaper_link.0000021f85043b1c
 
   - id: 3c66912f-0aa1-469f-9b91-93bfa7c2711f
     alias: Kitchen Light Switch Zigbee Scene Controls
