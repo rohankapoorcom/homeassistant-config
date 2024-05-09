@@ -50,7 +50,7 @@ script:
           dither: false
           payload:
             - type: text
-              value: {{ state }}
+              value: "{{ state }}"
               font: ppb.ttf
               x: 220
               y: 64
