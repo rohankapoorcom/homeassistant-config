@@ -32,6 +32,81 @@ light:
       - light.kitchen_cabinet_upper_lights
 
 ################################################
+## Script
+################################################
+script:
+  update_dishwasher_display:
+    description: "Update the dishwasher display with the current state"
+    fields:
+      state:
+        description: "The current state of the dishwasher (Clean, Dirty, Running)"
+        example: Running
+    sequence:
+      - service: open_epaper_link.drawcustom
+        data:
+          background: white
+          rotate: 0
+          ttl: 300
+          dither: false
+          payload:
+            - type: text
+              value: {{ state }}
+              font: ppb.ttf
+              x: 220
+              y: 64
+              size: 70
+              color: red
+              anchor: mm
+            - type: text
+              value: As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}
+              font: ppb.ttf
+              x: 375
+              y: 160
+              size: 15
+              color: black
+              anchor: rs
+            - type: icon
+              value: silverware-clean
+              x: 40
+              y: 64
+              size: 60
+              color: black
+              anchor: mm
+            - type: text
+              value: Dirty
+              font: ppb.ttf
+              x: 15
+              y: 130
+              size: 15
+              color: black
+              anchor: ls
+            - type: text
+              value: Clean
+              font: ppb.ttf
+              x: 100
+              y: 130
+              size: 15
+              color: black
+              anchor: ls
+            - type: icon
+              value: arrow-down
+              x: 33
+              y: 160
+              size: 25
+              color: red
+              anchor: ms
+            - type: icon
+              value: arrow-down
+              x: 125
+              y: 160
+              size: 25
+              color: red
+              anchor: ms
+        target:
+          entity_id:
+            - open_epaper_link.00007E1F8BCCB294
+
+################################################
 ## Automation
 ################################################
 automation:
@@ -46,118 +121,48 @@ automation:
         starting_threshold: 25
         finishing_threshold: 15
         actions:
-          - service: open_epaper_link.drawcustom
+          - service: script.update_dishwasher_display
             data:
-              background: white
-              rotate: 0
-              ttl: 300
-              dither: false
-              payload:
-                - type: text
-                  value: Clean
-                  font: ppb.ttf
-                  x: 178
-                  "y": 64
-                  size: 70
-                  color: red
-                  anchor: mm
-                - type: text
-                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
-                  font: ppb.ttf
-                  x: 148
-                  "y": 110
-                  size: 15
-                  color: black
-                  anchor: mt
-                - type: icon
-                  value: silverware-clean
-                  x: 40
-                  "y": 64
-                  size: 60
-                  color: black
-                  anchor: mm
-            target:
-              entity_id:
-                - open_epaper_link.0000021f85043b1c
+              state: Clean
         starting_hysteresis: 5
         finishing_hysteresis: 10
         pre_actions:
-          - service: open_epaper_link.drawcustom
+          - service: script.update_dishwasher_display
             data:
-              background: white
-              rotate: 0
-              ttl: 300
-              dither: false
-              payload:
-                - type: text
-                  value: Washing
-                  font: ppb.ttf
-                  x: 178
-                  "y": 64
-                  size: 70
-                  color: red
-                  anchor: mm
-                - type: text
-                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
-                  font: ppb.ttf
-                  x: 148
-                  "y": 110
-                  size: 15
-                  color: black
-                  anchor: mt
-                - type: icon
-                  value: silverware-clean
-                  x: 40
-                  "y": 64
-                  size: 60
-                  color: black
-                  anchor: mm
-            target:
-              entity_id:
-                - open_epaper_link.0000021f85043b1c
+              state: Washing
 
   - id: 035831df-c284-4935-93fd-a337e2890b8c
-    alias: Hallway Light Switch (Kitchen) Zigbee Scene Controls
-    description: Utilizes a blueprint to handle Scene Controls in the Kitchen (Hallway Light Switch).
-    use_blueprint:
-      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
-      input:
-        inovelli_switch:
-          - a7a4f8a1f6c1b0d3cf9496e0aa1ae1c4
-        config_button:
-          - service: open_epaper_link.drawcustom
-            data:
-              background: white
-              rotate: 0
-              ttl: 300
-              dither: false
-              payload:
-                - type: text
-                  value: Dirty
-                  font: ppb.ttf
-                  x: 178
-                  "y": 64
-                  size: 70
-                  color: red
-                  anchor: mm
-                - type: text
-                  value: "As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}"
-                  font: ppb.ttf
-                  x: 148
-                  "y": 110
-                  size: 15
-                  color: black
-                  anchor: mt
-                - type: icon
-                  value: silverware-clean
-                  x: 50
-                  "y": 64
-                  size: 60
-                  color: black
-                  anchor: mm
-            target:
-              entity_id:
-                - open_epaper_link.0000021f85043b1c
+    alias: Dishwasher Display Button Triggers
+    description: Change the dishwasher display based on buttons triggered
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: sensor.00007e1f8bccb294_wakeup_reason
+        to: 'BUTTON1'
+        id: clean_button
+      - platform: state
+        entity_id: sensor.00007e1f8bccb294_wakeup_reason
+        to: 'BUTTON2'
+        id: dirty_button
+    action:
+      - choose:
+          - alias: If the clean_button was clicked, set the display to Clean
+            conditions:
+              - condition: trigger
+                id: clean_button
+            sequence:
+              - service: script.update_dishwasher_display
+                data:
+                  state: Clean
+          - alias: If the dirty_button was clicked, set the display to Dirty
+            conditions:
+              - condition: trigger
+                id: dirty_button
+            sequence:
+              - service: script.update_dishwasher_display
+                data:
+                  state: Dirty
 
   - id: 3c66912f-0aa1-469f-9b91-93bfa7c2711f
     alias: Kitchen Light Switch Zigbee Scene Controls
