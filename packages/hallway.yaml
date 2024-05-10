@@ -83,3 +83,13 @@ automation:
         small_2_button_light: light.dining_room_accent_lights
         small_3_button_light: light.kitchen_lights
         small_4_button_light: light.kitchen_cabinet_lights
+
+  - id: 56be5167-15a8-4243-ae8d-c4b8b82b3e9e
+    alias: Control the Hallway Closet Lights
+    description: Utilizes the motion_light blueprint for contolling the Hallway Closet Lights.
+    use_blueprint:
+      path: rohankapoorcom/motion_light.yaml
+      input:
+        motion_entity: binary_sensor.upstairs_hallway_closet_door_window_door_is_open
+        light_target: light.upstairs_hallway_closet_lights
+        no_motion_wait: 0
