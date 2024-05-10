@@ -75,3 +75,48 @@ automation:
             sequence:
               - service: switch.turn_on
                 entity_id: switch.downstairs_hallway_tv
+
+  - id: 825c80a1-794c-4f3c-95a9-077ebee85d58
+    alias: Update Water Heater Cleaning Status
+    description: Show the last cleaning time on the water heater display
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+      - platform: state
+        entity_id: input_datetime.water_heater_last_cleaning
+    action:
+      - service: open_epaper_link.drawcustom
+        data:
+          background: white
+          rotate: 0
+          ttl: 300
+          dither: true
+          payload:
+            - type: text
+              value: "Last Cleaned"
+              font: ppb.ttf
+              x: 148
+              "y": 32
+              size: 30
+              color: red
+              anchor: mm
+            - type: text
+              value: "{{ (states('input_datetime.water_heater_last_cleaning') | as_datetime).strftime('%a %m/%d/%Y') }}"
+              font: ppb.ttf
+              x: 148
+              "y": 96
+              size: 30
+              color: red
+              anchor: mm
+            - type: line
+              x_start: 0
+              x_end: 296
+              y_start: 64
+              y_end: 64
+              width: 5
+              fill: black
+        target:
+          entity_id:
+            - open_epaper_link.0000021f85043b1c
