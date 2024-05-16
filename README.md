@@ -77,5 +77,5 @@ SOFTWARE.
 [home-assistant]: https://home-assistant.io
 [issue]: https://github.com/rohankapoorcom/homeassistant-config/issues
 [license-shield]: https://img.shields.io/github/license/rohankapoorcom/homeassistant-config.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2023.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg
 [last-commit-shield]: https://img.shields.io/github/last-commit/rohankapoorcom/homeassistant-config.svg
