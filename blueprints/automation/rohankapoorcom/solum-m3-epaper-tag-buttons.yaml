@@ -10,7 +10,6 @@ blueprint:
       selector:
         entity:
           filter:
-            integration: open_epaper_link
             domain: open_epaper_link
           multiple: false
     button_1:
