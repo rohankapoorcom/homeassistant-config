@@ -134,29 +134,18 @@ automation:
   - id: 035831df-c284-4935-93fd-a337e2890b8c
     alias: Dishwasher Display Button Triggers
     description: Change the dishwasher display based on buttons triggered
-    mode: restart
-    max_exceeded: silent
-    trigger:
-      - platform: event
-        event_type: open_epaper_link_event
-        event_data:
-          device_id: 00007E1F8BCCB294
-    action:
-      - variables:
-          button_id: '{{ trigger.event.data.type }}'
-      - choose:
-          - alias: If the clean_button was clicked, set the display to Clean
-            conditions: '{{ button_id == "BUTTON1" }}'
-            sequence:
-              - service: script.update_dishwasher_display
-                data:
-                  state: Clean
-          - alias: If the dirty_button was clicked, set the display to Dirty
-            conditions: '{{ button_id == "BUTTON2" }}'
-            sequence:
-              - service: script.update_dishwasher_display
-                data:
-                  state: Dirty
+    use_blueprint:
+      path: rohankapoorcom/solum-m3-epaper-tag-buttons.yaml
+      input:
+        epaper_tag: open_epaper_link.00007E1F8BCCB294
+        button_1:
+          - service: script.update_dishwasher_display
+            data:
+              state: Clean
+        button_2:
+          - service: script.update_dishwasher_display
+            data:
+              state: Dirty
 
   - id: 3c66912f-0aa1-469f-9b91-93bfa7c2711f
     alias: Kitchen Light Switch Zigbee Scene Controls

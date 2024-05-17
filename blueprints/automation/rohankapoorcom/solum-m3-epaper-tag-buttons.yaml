@@ -1,0 +1,44 @@
+---
+blueprint:
+  name: Solum M3 OpenEPaperLink EPaper Tag Buttons
+  description: Create automations for the buttons on the Solum M3 EPaper tag running OpenEPaperLink.
+  domain: automation
+  input:
+    epaper_tag:
+      name: EPaper Tag
+      description: The EPaper Tag to trigger from.
+      selector:
+        entity:
+          filter:
+            integration: open_epaper_link
+            domain: open_epaper_link
+          multiple: false
+    button_1:
+      name: Button 1 - Right Button
+      description: Action to run, when the right button is pressed.
+      default: []
+      selector:
+        action: {}
+    button_2:
+      name: Button 2 - Left Button
+      description: Action to run, when the right button is pressed.
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/solum-m3-epaper-tag-buttons.yaml
+mode: single
+max_exceeded: silent
+variables:
+  epaper_tag: !input 'epaper_tag'
+trigger:
+  - platform: event
+    event_type: open_epaper_link_event
+condition: "{{ trigger.event.data.device_id == state_attr(epaper_tag, 'unique_id') }}"
+action:
+  - variables:
+      button_id: '{{ trigger.event.data.type }}'
+  - choose:
+      - conditions: '{{ button_id == "BUTTON1" }}'
+        sequence: !input button_1
+      - conditions: '{{ button_id == "BUTTON2" }}'
+        sequence: !input button_2
