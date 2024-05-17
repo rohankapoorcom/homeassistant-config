@@ -137,28 +137,22 @@ automation:
     mode: restart
     max_exceeded: silent
     trigger:
-      - platform: state
-        entity_id: sensor.00007e1f8bccb294_wakeup_reason
-        to: 'BUTTON1'
-        id: clean_button
-      - platform: state
-        entity_id: sensor.00007e1f8bccb294_wakeup_reason
-        to: 'BUTTON2'
-        id: dirty_button
+      - platform: event
+        event_type: open_epaper_link_event
+        event_data:
+          device_id: 00007E1F8BCCB294
     action:
+      - variables:
+          button_id: '{{ trigger.event.data.type }}'
       - choose:
           - alias: If the clean_button was clicked, set the display to Clean
-            conditions:
-              - condition: trigger
-                id: clean_button
+            conditions: '{{ button_id == "BUTTON1" }}'
             sequence:
               - service: script.update_dishwasher_display
                 data:
                   state: Clean
           - alias: If the dirty_button was clicked, set the display to Dirty
-            conditions:
-              - condition: trigger
-                id: dirty_button
+            conditions: '{{ button_id == "BUTTON2" }}'
             sequence:
               - service: script.update_dishwasher_display
                 data:
