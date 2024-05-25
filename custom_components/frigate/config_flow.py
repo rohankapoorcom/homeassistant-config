@@ -16,10 +16,12 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import FrigateApiClient, FrigateApiClientError
 from .const import (
+    CONF_ENABLE_WEBRTC,
     CONF_MEDIA_BROWSER_ENABLE,
     CONF_NOTIFICATION_PROXY_ENABLE,
     CONF_NOTIFICATION_PROXY_EXPIRE_AFTER_SECONDS,
     CONF_RTMP_URL_TEMPLATE,
+    CONF_RTSP_URL_TEMPLATE,
     DEFAULT_HOST,
     DOMAIN,
 )
@@ -82,7 +84,7 @@ class FrigateFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: ign
         self,
         user_input: dict[str, Any] | None = None,
         errors: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:  # pylint: disable=unused-argument
+    ) -> dict[str, Any]:
         """Show the configuration form."""
         if user_input is None:
             user_input = {}
@@ -107,7 +109,7 @@ class FrigateFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: ign
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
     ) -> FrigateOptionsFlowHandler:
-        """Get the Hyperion Options flow."""
+        """Get the Frigate Options flow."""
         return FrigateOptionsFlowHandler(config_entry)
 
 
@@ -133,6 +135,14 @@ class FrigateOptionsFlowHandler(config_entries.OptionsFlow):  # type: ignore[mis
             )
 
         schema: dict[Any, Any] = {
+            # Whether to enable webrtc as the medium for camera streaming
+            vol.Optional(
+                CONF_ENABLE_WEBRTC,
+                default=self._config_entry.options.get(
+                    CONF_ENABLE_WEBRTC,
+                    False,
+                ),
+            ): bool,
             # The input URL is not validated as being a URL to allow for the
             # possibility the template input won't be a valid URL until after
             # it's rendered.
@@ -140,6 +150,16 @@ class FrigateOptionsFlowHandler(config_entries.OptionsFlow):  # type: ignore[mis
                 CONF_RTMP_URL_TEMPLATE,
                 default=self._config_entry.options.get(
                     CONF_RTMP_URL_TEMPLATE,
+                    "",
+                ),
+            ): str,
+            # The input URL is not validated as being a URL to allow for the
+            # possibility the template input won't be a valid URL until after
+            # it's rendered.
+            vol.Optional(
+                CONF_RTSP_URL_TEMPLATE,
+                default=self._config_entry.options.get(
+                    CONF_RTSP_URL_TEMPLATE,
                     "",
                 ),
             ): str,

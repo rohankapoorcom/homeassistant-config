@@ -6,10 +6,11 @@ https://github.com/blakeblackshear/frigate-hass-integration
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import timedelta
 import logging
 import re
-from typing import Any, Callable, Final
+from typing import Any, Final
 
 from awesomeversion import AwesomeVersion
 
@@ -37,6 +38,7 @@ from .const import (
     ATTR_CLIENT,
     ATTR_CONFIG,
     ATTR_COORDINATOR,
+    ATTRIBUTE_LABELS,
     CONF_CAMERA_STATIC_IMAGE_HEIGHT,
     DOMAIN,
     FRIGATE_RELEASES_URL,
@@ -48,14 +50,7 @@ from .const import (
     STATUS_RUNNING,
     STATUS_STARTING,
 )
-from .views import (
-    JSMPEGProxyView,
-    NotificationsProxyView,
-    SnapshotsProxyView,
-    ThumbnailsProxyView,
-    VodProxyView,
-    VodSegmentProxyView,
-)
+from .views import async_setup as views_async_setup
 from .ws_api import async_setup as ws_api_async_setup
 
 SCAN_INTERVAL = timedelta(seconds=5)
@@ -77,8 +72,7 @@ def get_frigate_device_identifier(
     """Get a device identifier."""
     if camera_name:
         return (DOMAIN, f"{entry.entry_id}:{slugify(camera_name)}")
-    else:
-        return (DOMAIN, entry.entry_id)
+    return (DOMAIN, entry.entry_id)
 
 
 def get_frigate_entity_unique_id(
@@ -110,7 +104,8 @@ def get_cameras_and_objects(
     camera_objects = set()
     for cam_name, cam_config in config["cameras"].items():
         for obj in cam_config["objects"]["track"]:
-            camera_objects.add((cam_name, obj))
+            if obj not in ATTRIBUTE_LABELS:
+                camera_objects.add((cam_name, obj))
 
         # add an artificial all label to track
         # all objects for this camera
@@ -118,6 +113,17 @@ def get_cameras_and_objects(
             camera_objects.add((cam_name, "all"))
 
     return camera_objects
+
+
+def get_cameras_and_audio(config: dict[str, Any]) -> set[tuple[str, str]]:
+    """Get cameras and audio tuples."""
+    camera_audio = set()
+    for cam_name, cam_config in config["cameras"].items():
+        if cam_config.get("audio", {}).get("enabled_in_config", False):
+            for audio in cam_config.get("audio", {}).get("listen", []):
+                camera_audio.add((cam_name, audio))
+
+    return camera_audio
 
 
 def get_cameras_zones_and_objects(config: dict[str, Any]) -> set[tuple[str, str]]:
@@ -158,34 +164,33 @@ def get_zones(config: dict[str, Any]) -> set[str]:
     return cameras_zones
 
 
+def decode_if_necessary(data: str | bytes) -> str:
+    """Decode a string if necessary."""
+    return data.decode("utf-8") if isinstance(data, bytes) else data
+
+
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
     """Set up this integration using YAML is not supported."""
     integration = await async_get_integration(hass, DOMAIN)
     _LOGGER.info(
-        STARTUP_MESSAGE.format(
-            title=NAME,
-            integration_version=integration.version,
-        )
+        STARTUP_MESSAGE,
+        NAME,
+        integration.version,
     )
 
     hass.data.setdefault(DOMAIN, {})
 
     ws_api_async_setup(hass)
-
-    session = async_get_clientsession(hass)
-    hass.http.register_view(JSMPEGProxyView(session))
-    hass.http.register_view(NotificationsProxyView(session))
-    hass.http.register_view(SnapshotsProxyView(session))
-    hass.http.register_view(ThumbnailsProxyView(session))
-    hass.http.register_view(VodProxyView(session))
-    hass.http.register_view(VodSegmentProxyView(session))
+    views_async_setup(hass)
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
-
-    client = FrigateApiClient(entry.data.get(CONF_URL), async_get_clientsession(hass))
+    client = FrigateApiClient(
+        entry.data.get(CONF_URL),
+        async_get_clientsession(hass),
+    )
     coordinator = FrigateDataUpdateCoordinator(hass, client=client)
     await coordinator.async_config_entry_first_refresh()
 
@@ -195,7 +200,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except FrigateApiClientError as exc:
         raise ConfigEntryNotReady from exc
 
-    if AwesomeVersion(server_version) <= AwesomeVersion(FRIGATE_VERSION_ERROR_CUTOFF):
+    if AwesomeVersion(server_version.split("-")[0]) <= AwesomeVersion(
+        FRIGATE_VERSION_ERROR_CUTOFF
+    ):
         _LOGGER.error(
             "Using a Frigate server (%s) with version %s <= %s which is not "
             "compatible -- you must upgrade: %s",
@@ -221,6 +228,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     current_devices: set[tuple[str, str]] = set({get_frigate_device_identifier(entry)})
     for item in get_cameras_and_zones(config):
         current_devices.add(get_frigate_device_identifier(entry, item))
+
+    if config.get("birdseye", {}).get("restream", False):
+        current_devices.add(get_frigate_device_identifier(entry, "birdseye"))
 
     device_registry = dr.async_get(hass)
     for device_entry in dr.async_entries_for_config_entry(
@@ -263,6 +273,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if entity_id:
             entity_registry.async_remove(entity_id)
 
+    # Cleanup camera snapshot entities (replaced with image entities).
+    for cam_name, obj_name in get_cameras_and_objects(config, False):
+        unique_id = get_frigate_entity_unique_id(
+            entry.entry_id,
+            "camera_snapshots",
+            f"{cam_name}_{obj_name}",
+        )
+        entity_id = entity_registry.async_get_entity_id("camera", DOMAIN, unique_id)
+        if entity_id:
+            entity_registry.async_remove(entity_id)
+
     # Rename / change ID of object count sensors.
     for cam_name, obj_name in get_cameras_zones_and_objects(config):
         unique_id = get_frigate_entity_unique_id(
@@ -286,7 +307,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 name=new_name,
             )
 
-    hass.config_entries.async_setup_platforms(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_entry_updated))
 
     return True
@@ -410,7 +431,7 @@ class FrigateEntity(Entity):  # type: ignore[misc]
     @property
     def available(self) -> bool:
         """Return the availability of the entity."""
-        return self._available
+        return self._available and super().available
 
     def _get_model(self) -> str:
         """Get the Frigate device model string."""
@@ -447,14 +468,16 @@ class FrigateMQTTEntity(FrigateEntity):
             self._topic_map,
         )
         self._sub_state = await async_subscribe_topics(self.hass, state)
+        await super().async_added_to_hass()
 
     async def async_will_remove_from_hass(self) -> None:
         """Cleanup prior to hass removal."""
         async_unsubscribe_topics(self.hass, self._sub_state)
         self._sub_state = None
+        await super().async_will_remove_from_hass()
 
     @callback  # type: ignore[misc]
     def _availability_message_received(self, msg: ReceiveMessage) -> None:
         """Handle a new received MQTT availability message."""
-        self._available = msg.payload == "online"
+        self._available = decode_if_necessary(msg.payload) == "online"
         self.async_write_ha_state()

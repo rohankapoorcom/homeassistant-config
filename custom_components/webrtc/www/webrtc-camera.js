@@ -1,817 +1,653 @@
-/**
- * - IntersectionObserver - iOS 12.2+
- *   https://caniuse.com/?search=IntersectionObserver
- * - WebRTC Unified Plan SDP - iOS 12.2+ (iOS 11 supports only Plan B)
- *   https://webkit.org/blog/8672/on-the-road-to-webrtc-1-0-including-vp8/
- * - MediaSource - iPad OS 13+
- *   https://caniuse.com/?search=MediaSource
- */
-class WebRTCCamera extends HTMLElement {
-    constructor() {
-        super();
-        this.subscriptions = [];
-        this.unique_shortcuts_key = null;
+/** Chrome 63+, Safari 11.1+ */
+import {VideoRTC} from './video-rtc.js?v=1.8.0';
+import {DigitalPTZ} from './digital-ptz.js?v=3.3.0';
+
+class WebRTCCamera extends VideoRTC {
+    /**
+     * Step 1. Called by the Hass, when config changed.
+     * @param {Object} config
+     */
+    setConfig(config) {
+        if (!config.url && !config.entity && !config.streams) throw new Error('Missing `url` or `entity` or `streams`');
+
+        if (config.background) this.background = config.background;
+
+        if (config.intersection === 0) this.visibilityThreshold = 0;
+        else this.visibilityThreshold = config.intersection || 0.75;
+
+        /**
+         * @type {{
+         *     url: string,
+         *     entity: string,
+         *     mode: string,
+         *     media: string,
+         *
+         *     streams: Array<{
+         *         name: string,
+         *         url: string,
+         *         entity: string,
+         *         mode: string,
+         *         media: string,
+         *     }>,
+         *
+         *     title: string,
+         *     poster: string,
+         *     poster_remote: boolean,
+         *     muted: boolean,
+         *     intersection: number,
+         *     ui: boolean,
+         *     style: string,
+         *     background: boolean,
+         *
+         *     server: string,
+         *
+         *     mse: boolean,
+         *     webrtc: boolean,
+         *
+         *     digital_ptz:{
+         *         mouse_drag_pan: boolean,
+         *         mouse_wheel_zoom: boolean,
+         *         mouse_double_click_zoom: boolean,
+         *         touch_pinch_zoom: boolean,
+         *         touch_drag_pan: boolean,
+         *         touch_tap_drag_zoom: boolean,
+         *         persist: boolean|string,
+         *     },
+         *     ptz:{
+         *         opacity: number|string,
+         *         service: string,
+         *         data_left, data_up, data_right, data_down, data_zoom_in, data_zoom_out, data_home
+         *     },
+         *     shortcuts:Array<{ name:string, icon:string }>,
+         * }} config
+         */
+        this.config = Object.assign({
+            mode: config.mse === false ? 'webrtc' : config.webrtc === false ? 'mse' : this.mode,
+            media: this.media,
+            streams: [{url: config.url, entity: config.entity}],
+            poster_remote: config.poster && (config.poster.indexOf('://') > 0 || config.poster.charAt(0) === '/'),
+        }, config);
+
+        this.streamID = -1;
+        this.nextStream(false);
     }
 
-    set status(value) {
-        const header = this.querySelector('.header');
-        header.innerText = value;
-        header.style.display = value ? 'block' : 'none';
+    set hass(hass) {
+        // if card in vertical stack - `hass` property assign after `onconnect`
+        super.hass = hass;
+        this.onconnect();
     }
 
-    set readyState(value) {
-        const state = this.querySelector('.state');
-        switch (value) {
-            case 'websocket':
-                state.icon = 'mdi:download-network-outline';
-                break;
-            case 'mse':
-                state.icon = 'mdi:play-network-outline';
-                break;
-
-            case 'webrtc-pending':  // init WebRTC
-                state.icon = 'mdi:lan-pending';
-                break;
-            case 'webrtc-connecting':  // connect to LAN or WAN IP
-                state.icon = 'mdi:lan-connect';
-                break;
-            case 'webrtc-loading':  // load video stream
-                state.icon = 'mdi:lan-check';
-                break;
-            case 'webrtc-restart':  // restart WebRTC
-                state.icon = 'mdi:lan-disconnect';
-                break;
-            case 'webrtc':  // video stream switched to WebRTC
-                state.icon = 'mdi:webrtc';
-                break;
-        }
+    /**
+     * Called by the Hass to calculate default card height.
+     */
+    getCardSize() {
+        return 5; // x 50px
     }
 
-    get isOpera() {
-        // this integraion https://github.com/thomasloven/hass-fontawesome
-        // breaks the `!!window.opera` check in all browsers
-        return (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
-    }
-
+    /**
+     * Called by the Hass to get defaul card config
+     * @return {{url: string}}
+     */
     static getStubConfig() {
-        return {
-            url: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4'
+        return {'url': ''};
+    }
+
+    setStatus(mode, status) {
+        const divMode = this.querySelector('.mode').innerText;
+        if (mode === 'error' && divMode !== 'Loading..' && divMode !== 'Loading...') return;
+
+        this.querySelector('.mode').innerText = mode;
+        this.querySelector('.status').innerText = status || '';
+    }
+
+    /** @param reload {boolean} */
+    nextStream(reload) {
+        this.streamID = (this.streamID + 1) % this.config.streams.length;
+
+        const stream = this.config.streams[this.streamID];
+        this.config.url = stream.url;
+        this.config.entity = stream.entity;
+        this.mode = stream.mode || this.config.mode;
+        this.media = stream.media || this.config.media;
+
+        if (reload) {
+            this.ondisconnect();
+            setTimeout(() => this.onconnect(), 100); // wait ws.close event
         }
     }
 
-    async initMSE(hass, pc = null) {
-        const ts = Date.now();
-
-        const data = await hass.callWS({
-            type: 'auth/sign_path',
-            path: '/api/webrtc/ws'
-        });
-
-        let url = 'ws' + hass.hassUrl(data.path).substr(4);
-        if (this.config.url) url += '&url=' + encodeURIComponent(this.config.url);
-        if (this.config.entity) url += '&entity=' + this.config.entity;
-
-        const video = this.querySelector('#video');
-        const ws = this.ws = new WebSocket(url);
-        ws.binaryType = 'arraybuffer';
-
-        let mediaSource, sourceBuffer;
-
-        this.subscriptions.push(() => {
-            this.ws.onclose = null;
-            this.ws.close();
-            console.debug("Closing websocket");
-        });
-
-        ws.onopen = async () => {
-            this.readyState = 'websocket';
-
-            if (this.config.mse !== false) {
-                if ('MediaSource' in window) {
-                    mediaSource = new MediaSource();
-                    video.src = URL.createObjectURL(mediaSource);
-                    video.srcObject = null;
-
-                    mediaSource.onsourceopen = () => {
-                        ws.send(JSON.stringify({type: 'mse'}));
-                    }
-                } else {
-                    console.warn("MediaSource doesn't supported");
-                }
-            }
-
-            if (this.config.webrtc !== false && !this.isOpera) {
-                this.readyState = 'webrtc-pending';
-
-                if (!pc) pc = this.initWebRTC(hass);
-
-                const offer = await pc.createOffer({iceRestart: true})
-                await pc.setLocalDescription(offer);
-                this.subscriptions.push(() => {
-                    pc.close();
-                    pc = null;
-                    console.debug("Closing RTCPeerConnection");
-                });
-            }
-        }
-        ws.onmessage = ev => {
-            if (typeof ev.data === 'string') {
-                const data = JSON.parse(ev.data);
-                if (data.type === 'mse') {
-                    console.debug("Received MSE codecs:", data.codecs);
-
-                    try {
-                        sourceBuffer = mediaSource.addSourceBuffer(
-                            `video/mp4; codecs="${data.codecs}"`);
-                        this.readyState = 'mse';
-                    } catch (e) {
-                        this.status = `ERROR: ${e}`;
-                    }
-                } else if (data.type === 'webrtc') {
-                    console.debug("Received WebRTC SDP");
-
-                    // remove docker IP-address
-                    const sdp = data.sdp.replace(
-                        /a=candidate.+? 172\.\d+\.\d+\.1 .+?\r\n/g, ''
-                    );
-                    pc.setRemoteDescription(
-                        new RTCSessionDescription({
-                            type: 'answer', sdp: sdp
-                        })
-                    );
-                } else if (data.error) {
-                    this.status = `ERROR: ${data.error}`;
-                }
-            } else if (sourceBuffer) {
-                try {
-                    sourceBuffer.appendBuffer(ev.data);
-                } catch (e) {
-                }
-                // all the magic is here
-                if (!video.paused && video.seekable.length) {
-                    if (video.seekable.end(0) - video.currentTime > 0.5) {
-                        console.debug("Auto seek to livetime");
-                        video.currentTime = video.seekable.end(0);
-                    }
-                }
-            }
-        }
-        ws.onclose = () => {
-            // reconnect no more than once every 15 seconds
-            const delay = 15000 - Math.min(Date.now() - ts, 15000);
-            console.debug(`Reconnect in ${delay} ms`);
-
-            setTimeout(() => {
-                if (this.isConnected) {
-                    this.status = "Restart connection";
-                    this.initMSE(hass, pc);
-                }
-            }, delay);
-        }
+    /** @return {string} */
+    get streamName() {
+        return this.config.streams[this.streamID].name || `S${this.streamID}`;
     }
 
-    initWebRTC(hass) {
-        const video = document.createElement('video');
-        video.onloadeddata = () => {
-            if (video.readyState >= 1) {
-                console.debug("Switch to WebRTC")
+    oninit() {
+        super.oninit();
+        this.renderMain();
+        this.renderDigitalPTZ();
+        this.renderPTZ();
+        this.renderCustomUI();
+        this.renderShortcuts();
+        this.renderStyle();
+    }
 
-                const mainVideo = this.querySelector('#video');
-                mainVideo.srcObject = video.srcObject;
+    onconnect() {
+        if (!this.config || !this.hass) return false;
+        if (!this.isConnected || this.ws || this.pc) return false;
 
-                // disable autorestart ws connection
-                this.ws.onclose = null;
-                this.ws.close();
+        const divMode = this.querySelector('.mode').innerText;
+        if (divMode === 'Loading..') return;
 
-                this.readyState = 'webrtc';
-            }
-        }
+        this.setStatus('Loading..');
 
-        const pc = new RTCPeerConnection({
-            iceServers: this.config.ice_servers || [{
-                urls: 'stun:stun.l.google.com:19302'
-            }],
-            iceCandidatePoolSize: 20
-        });
-
-        pc.onicecandidate = async (ev) => {
-            if (ev.candidate) return;
-
-            try {
-                // only for debug purpose
-                const iceTransport = pc.getSenders()[0].transport.iceTransport;
-                iceTransport.onselectedcandidatepairchange = () => {
-                    const pair = iceTransport.getSelectedCandidatePair();
-                    const type = pair.remote.type === 'host' ? 'LAN' : 'WAN';
-
-                    this.readyState = 'webrtc-connecting';
-                    // this.status = `Connecting over ${type}`;
-                    console.debug(`Connecting over ${type}`);
-                }
-            } catch (e) {
-                // Hi to Safari and Firefox...
+        this.hass.callWS({
+            type: 'auth/sign_path', path: '/api/webrtc/ws'
+        }).then(data => {
+            if (this.config.poster && !this.config.poster_remote) {
+                this.video.poster = this.hass.hassUrl(data.path) + '&poster=' + encodeURIComponent(this.config.poster);
             }
 
-            // this.status = "Trying to start stream";
+            this.wsURL = 'ws' + this.hass.hassUrl(data.path).substring(4);
 
-            try {
-                this.ws.send(JSON.stringify({
-                    type: 'webrtc',
-                    sdp: pc.localDescription.sdp
-                }));
-            } catch (e) {
-                console.warn(e);
-            }
-        }
-
-        pc.ontrack = (ev) => {
-            if (video.srcObject === null) {
-                video.srcObject = ev.streams[0];
+            if (this.config.entity) {
+                this.wsURL += '&entity=' + this.config.entity;
+            } else if (this.config.url) {
+                this.wsURL += '&url=' + encodeURIComponent(this.config.url);
             } else {
-                video.srcObject.addTrack(ev.track);
+                this.setStatus('IMG');
+                return;
             }
-        }
 
-        pc.onconnectionstatechange = async (ev) => {
-            // https://developer.mozilla.org/en-US/docs/Web/API/RTCOfferOptions/iceRestart
-            console.debug("WebRTC state:", pc.connectionState);
-            if (pc.connectionState === 'failed') {
-                if (this.ws.readyState === WebSocket.OPEN) {
-                    this.readyState = 'webrtc-restart';
-                    // this.status = "Restart connection";
-
-                    const offer = await pc.createOffer({iceRestart: true})
-                    await pc.setLocalDescription(offer);
-                } else {
-                    if (this.isConnected) {
-                        video.src = '';
-                        this.initMSE(hass, pc);
-                    }
-                }
-            } else if (pc.connectionState === 'connected') {
-                this.readyState = 'webrtc-loading';
-                // this.status = "Loading video";
+            if (this.config.server) {
+                this.wsURL += '&server=' + encodeURIComponent(this.config.server);
             }
-        }
 
-        // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-        const isFirefox = typeof InstallTrigger !== 'undefined';
-
-        // recvonly don't work with Firefox
-        // https://github.com/pion/webrtc/issues/717
-        // sendrecv don't work with some Android mobile phones and tablets
-        // and Firefox can't play video with Bunny even with sendrecv
-        const direction = !isFirefox ? 'recvonly' : 'sendrecv';
-
-        pc.addTransceiver('video', {'direction': direction});
-        if (this.config.audio !== false) {
-            pc.addTransceiver('audio', {'direction': direction});
-        }
-
-        return pc;
-    }
-
-    renderCustomGUI(card) {
-        const video = this.querySelector('#video');
-        video.controls = false;
-        video.style.pointerEvents = 'none';
-        video.style.opacity = 0;
-
-        const spinner = document.createElement('ha-circular-progress');
-        spinner.active = true;
-        spinner.className = 'spinner'
-        card.appendChild(spinner);
-
-        const pause = document.createElement('ha-icon');
-        pause.className = 'pause';
-        pause.icon = 'mdi:pause';
-        const pauseCallback = () => {
-            if (video.paused) {
-                video.play().then(() => null, () => null);
+            if (super.onconnect()) {
+                this.setStatus('Loading...');
             } else {
-                video.pause();
+                this.setStatus('error', 'unable to connect');
             }
-        };
-        pause.addEventListener('click', pauseCallback);
-        pause.addEventListener('touchstart', pauseCallback);
-        card.appendChild(pause);
-
-        const volume = document.createElement('ha-icon');
-        volume.className = 'volume';
-        volume.icon = video.muted ? 'mdi:volume-mute' : 'mdi:volume-high';
-        const volumeCallback = () => {
-            video.muted = !video.muted;
-        };
-        volume.addEventListener('click', volumeCallback);
-        volume.addEventListener('touchstart', volumeCallback);
-        card.appendChild(volume);
-
-        video.onvolumechange = () => {
-            volume.icon = video.muted ? 'mdi:volume-mute' : 'mdi:volume-high';
-        };
-
-        const fullscreen = document.createElement('ha-icon');
-        fullscreen.className = 'fullscreen';
-        fullscreen.icon = 'mdi:fullscreen';
-
-        // https://stackoverflow.com/questions/43024394/ios10-fullscreen-safari-javascript
-        if (this.requestFullscreen) {  // normal browser
-            const fullscreenCallback = () => {
-                document.fullscreenElement
-                    ? document.exitFullscreen() : this.requestFullscreen();
-            }
-            fullscreen.addEventListener('click', fullscreenCallback);
-            fullscreen.addEventListener('touchstart', fullscreenCallback);
-            this.onfullscreenchange = () => {
-                fullscreen.icon = document.fullscreenElement
-                    ? 'mdi:fullscreen-exit' : 'mdi:fullscreen';
-            }
-        } else {  // Apple Safari...
-            const fullscreenCallback = () => {
-                document.webkitFullscreenElement
-                    ? document.webkitExitFullscreen()
-                    : this.webkitRequestFullscreen();
-            }
-            fullscreen.addEventListener('click', fullscreenCallback);
-            fullscreen.addEventListener('touchstart', fullscreenCallback);
-            this.onwebkitfullscreenchange = () => {
-                fullscreen.icon = document.webkitFullscreenElement
-                    ? 'mdi:fullscreen-exit' : 'mdi:fullscreen';
-            }
-        }
-        // iPhone doesn't support fullscreen
-        if (navigator.platform !== 'iPhone') card.appendChild(fullscreen);
-
-        video.addEventListener('loadeddata', () => {
-            const hasAudio =
-                (video.srcObject && video.srcObject.getAudioTracks().length) ||
-                video.mozHasAudio || video.webkitAudioDecodedByteCount ||
-                (video.audioTracks && video.audioTracks.length);
-            volume.style.display = hasAudio ? 'block' : 'none';
-            pause.style.display = 'block';
-            video.style.opacity = 1;
-        });
-        video.onpause = () => {
-            pause.icon = 'mdi:play';
-            this.setPTZVisibility(false);
-        };
-        video.onplay = () => {
-            pause.icon = 'mdi:pause';
-            this.setPTZVisibility(true);
-        };
-        video.onwaiting = () => {
-            spinner.style.display = 'block';
-            this.setPTZVisibility(false);
-        };
-        video.onplaying = () => {
-            spinner.style.display = 'none';
-            this.setPTZVisibility(true);
-        };
-
-        if (this.config.shortcuts && this.config.shortcuts.services && this.config.shortcuts.services.length > 0) {
-            this.renderShortcuts(card, this.config.shortcuts.services);
-        }
-    }
-
-    renderShortcuts(card, elements) {
-        const shortcuts = document.createElement('div');
-        shortcuts.className = 'shortcuts-' + this.getUniqueShortcutsKey();
-
-        for (var i = 0; i < elements.length; i++) {
-            const element = elements[i];
-
-            const shortcut = document.createElement('ha-icon');
-            shortcut.className = 'shortcut shortcut-' + i;
-            shortcut.setAttribute('title', element.name);
-            shortcut.icon = element.icon;
-            const shortcutCallback = () => {
-                const [domain, name] = element.service.split('.');
-                this.hass.callService(domain, name, element.service_data || {});
-            };
-            shortcut.addEventListener('click', shortcutCallback);
-            shortcut.addEventListener('touchstart', shortcutCallback);
-            shortcuts.appendChild(shortcut);
-        }
-
-        card.appendChild(shortcuts);
-    }
-
-    renderPTZ(card, hass) {
-        const ptz = document.createElement('div');
-        ptz.className = 'ptz';
-        ptz.style.opacity = this.config.ptz.opacity || '0.4';
-        const ptzMove = document.createElement('div');
-        ptzMove.className = 'ptz-move';
-        ptzMove.innerHTML = `
-            <ha-icon class="right" icon="mdi:arrow-right"></ha-icon>
-            <ha-icon class="left" icon="mdi:arrow-left"></ha-icon>
-            <ha-icon class="up" icon="mdi:arrow-up"></ha-icon>
-            <ha-icon class="down" icon="mdi:arrow-down"></ha-icon>
-        `;
-        ptz.appendChild(ptzMove);
-        if (this.config.ptz.data_zoom_in && this.config.ptz.data_zoom_out) {
-            const ptzZoom = document.createElement('div');
-            ptzZoom.className = 'ptz-zoom';
-            ptzZoom.innerHTML = `
-                <ha-icon class="zoom_in" icon="mdi:plus"></ha-icon>
-                <ha-icon class="zoom_out" icon="mdi:minus"></ha-icon>
-            `;
-            ptz.appendChild(ptzZoom);
-        }
-        if (this.config.ptz.data_home) {
-            const ptzHome = document.createElement('div');
-            ptzHome.className = 'ptz-home';
-            ptzHome.innerHTML = `
-                <ha-icon class="home" icon="mdi:home"></ha-icon>
-            `;
-            ptz.appendChild(ptzHome);
-        }
-        card.appendChild(ptz);
-
-        const handlePTZ = (ev) => {
-            const [domain, service] = this.config.ptz.service.split('.', 2);
-            const data = this.config.ptz['data_' + ev.target.className];
-            if (data) {
-                this.hass.callService(domain, service, data);
-            }
-        }
-
-        const buttons = ptz.querySelectorAll('ha-icon');
-        buttons.forEach(function (el) {
-            el.addEventListener('click', handlePTZ);
-            el.addEventListener('touchstart', handlePTZ);
+        }).catch(er => {
+            this.setStatus('error', er);
         });
     }
 
-    async renderGUI(hass) {
-        const style = document.createElement('style');
-        style.textContent = `
+    onopen() {
+        const result = super.onopen();
+
+        this.onmessage['stream'] = msg => {
+            switch (msg.type) {
+                case 'error':
+                    this.setStatus('error', msg.value);
+                    break;
+                case 'mse':
+                case 'hls':
+                case 'mp4':
+                case 'mjpeg':
+                    this.setStatus(msg.type.toUpperCase(), this.config.title || '');
+                    break;
+            }
+        };
+
+        return result;
+    }
+
+    onpcvideo(ev) {
+        super.onpcvideo(ev);
+
+        if (this.pcState !== WebSocket.CLOSED) {
+            this.setStatus('RTC', this.config.title || '');
+        }
+    }
+
+    renderMain() {
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.innerHTML = `
+        <style>
             ha-card {
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
+                width: 100%;
+                height: 100%;
                 margin: auto;
                 overflow: hidden;
-                width: 100%;
-                height: 100%;
                 position: relative;
-            }
-            #video, .fix-safari {
-                width: 100%;
-                height: 100%;
-                display: block;
-                z-index: 0;
-                background: black;
-            }
-            .box {
-                position: absolute;
-                left: 0px;
-                right: 0px;
-                top: 0px;
-                background-color: var( --ha-picture-card-background-color, rgba(0, 0, 0, 0.3) );
-                pointer-events: none;
-            }
-            .header {
-                color: var(--ha-picture-card-text-color, white);
-                margin: 14px 16px;
-                display: none;
-                font-size: 16px;
-                line-height: 20px;
-                word-wrap: break-word;
-            }
-            .spinner {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                --mdc-theme-primary: white;
             }
             ha-icon {
                 color: white;
-                position: absolute;
                 cursor: pointer;
             }
-            .pause {
-                right: 5px;
-                bottom: 5px;
-                display: none;
+            .player {
+                background-color: black;
+                height: 100%;
+                position: relative; /* important for Safari */
             }
-            .fullscreen {
-                left: 5px;
-                bottom: 5px;
+            .player:active {
+                cursor: move; /* important for zoom-controller */
             }
-            .volume {
-                right: 35px;
-                bottom: 5px;
-                display: none;
+            .player .ptz-transform {
+                height: 100%;
             }
-            .ptz {
+            .header {
                 position: absolute;
-                top: 50%;
+                top: 6px;
+                left: 10px;
                 right: 10px;
-                transform: translateY(-50%);
-                transition: opacity .3s ease-in-out;
-                display: none;
-                z-index: 10;
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                pointer-events: none;
             }
-            .ptz-move {
-                position: relative;
-                background-color: var( --ha-picture-card-background-color, rgba(0, 0, 0, 0.3) );
-                border-radius: 50%;
-                width: 80px;
-                height: 80px;
+            .mode {
+                cursor: pointer;
+                opacity: 0.6;
+                pointer-events: auto;
             }
-            .ptz-zoom {
-                position: relative;
-                margin-top: 10px;
-                background-color: var( --ha-picture-card-background-color, rgba(0, 0, 0, 0.3) );
-                border-radius: 4px;
-                width: 80px;
-                height: 40px;
-            }
-            .ptz-home {
-                position: relative;
-                margin-top: 10px;
-                background-color: var( --ha-picture-card-background-color, rgba(0, 0, 0, 0.3) );
-                border-radius: 4px;
-                width: 40px;
-                height: 40px;
-                left: 20px;
-            }
-            .show {
-                display: block;
-            }
-            .ptz:hover {
-                opacity: 1 !important;
-            }
-            .up {
-                top: 5px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .down {
-                bottom: 5px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .left {
-                left: 5px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .right {
-                right: 5px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .zoom_out {
-                left: 5px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .zoom_in {
-                right: 5px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .home {
-                top: 50%;
-                transform: translateY(-50%);
-                margin-left: auto;
-                margin-right: auto;
-                left: 0;
-                right: 0;
-                text-align: center;
-            }
-            .state {
-                right: 12px;
-                top: 12px;
-                cursor: default;
-                opacity: 0.4;
-            }
+        </style>
+        <ha-card class="card">
+            <div class="player">
+                <div class="ptz-transform"></div>
+            </div>
+            <div class="header">
+                <div class="status"></div>
+                <div class="mode"></div>
+            </div>
+        </ha-card>
         `;
 
-        if (this.config.shortcuts && this.config.shortcuts.services && this.config.shortcuts.services.length > 0) {
-            const config = this.config.shortcuts;
-            const map = {
-                "horizontal": "left",
-                "vertical": "top"
-            };
+        this.querySelector = selectors => this.shadowRoot.querySelector(selectors);
+        this.querySelector('.ptz-transform').appendChild(this.video);
 
-            const orientation = config.orientation && config.orientation in map ? map[config.orientation] : 'left';
-            style.textContent += `
-                .shortcuts-` + this.getUniqueShortcutsKey() + ` {
+        const mode = this.querySelector('.mode');
+        mode.addEventListener('click', () => this.nextStream(true));
+
+        if (this.config.muted) this.video.muted = true;
+        if (this.config.poster_remote) this.video.poster = this.config.poster;
+    }
+
+    renderDigitalPTZ() {
+        if (this.config.digital_ptz === false) return;
+        new DigitalPTZ(
+            this.querySelector('.player'),
+            this.querySelector('.player .ptz-transform'),
+            this.video,
+            Object.assign({}, this.config.digital_ptz, {persist_key: this.config.url})
+        );
+    }
+
+    renderPTZ() {
+        if (!this.config.ptz || !this.config.ptz.service) return;
+
+        let hasMove = false;
+        let hasZoom = false;
+        let hasHome = false;
+        for (const prefix of ['', '_start', '_end', '_long']) {
+            hasMove = hasMove || this.config.ptz['data' + prefix + '_right'];
+            hasMove = hasMove || this.config.ptz['data' + prefix + '_left'];
+            hasMove = hasMove || this.config.ptz['data' + prefix + '_up'];
+            hasMove = hasMove || this.config.ptz['data' + prefix + '_down'];
+
+            hasZoom = hasZoom || this.config.ptz['data' + prefix + '_zoom_in'];
+            hasZoom = hasZoom || this.config.ptz['data' + prefix + '_zoom_out'];
+
+            hasHome = hasHome || this.config.ptz['data' + prefix + '_home'];
+        }
+
+        const card = this.querySelector('.card');
+        card.insertAdjacentHTML('beforebegin', `
+            <style>
+                .ptz {
                     position: absolute;
-                    top: calc(12px + ` + (config.top ? this.prepareMargin(config.top) : '0px') +`);
-                    left: calc(12px + ` + (config.left ? this.prepareMargin(config.left) : '0px') +`);
+                    top: 50%;
+                    right: 10px;
+                    transform: translateY(-50%);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    transition: opacity .3s ease-in-out;
+                    opacity: ${parseFloat(this.config.ptz.opacity) || 0.4};
                 }
-                .shortcuts-` + this.getUniqueShortcutsKey() + ` > .shortcut {
-                    margin-` + orientation + `: 12px;
+                .ptz:hover {
+                    opacity: 1 !important;
+                }
+                .ptz-move {
                     position: relative;
-                    display: ` + (orientation === 'left' ? 'inline-' : '') + `block;
-                    opacity: .9;
+                    background-color: rgba(0, 0, 0, 0.3);
+                    border-radius: 50%;
+                    width: 80px;
+                    height: 80px;
+                    display: ${hasMove ? 'block' : 'none'};
                 }
-                .shortcuts-` + this.getUniqueShortcutsKey() + ` > .shortcut:first-child {
-                    margin-` + orientation + `: 0px;
+                .ptz-zoom {
+                    position: relative;
+                    width: 80px;
+                    height: 40px;
+                    background-color: rgba(0, 0, 0, 0.3);
+                    border-radius: 4px;
+                    display: ${hasZoom ? 'block' : 'none'};
                 }
-            `;
-        }
-
-        this.appendChild(style);
-
-        const card = document.createElement('ha-card');
-        card.innerHTML = `
-            <div class="fix-safari">
-                <video id="video" autoplay controls playsinline></video>
+                .ptz-home {
+                    position: relative;
+                    width: 40px;
+                    height: 40px;
+                    background-color: rgba(0, 0, 0, 0.3);
+                    border-radius: 4px;
+                    align-self: center;
+                    display: ${hasHome ? 'block' : 'none'};
+                }
+                .up {
+                    position: absolute;
+                    top: 5px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+                .down {
+                    position: absolute;
+                    bottom: 5px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+                .left {
+                    position: absolute;
+                    left: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                .right {
+                    position: absolute;
+                    right: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                .zoom_out {
+                    position: absolute;
+                    left: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                .zoom_in {
+                    position: absolute;
+                    right: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                .home {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            </style>
+        `);
+        card.insertAdjacentHTML('beforeend', `
+            <div class="ptz">
+                <div class="ptz-move">
+                    <ha-icon class="right" icon="mdi:arrow-right"></ha-icon>
+                    <ha-icon class="left" icon="mdi:arrow-left"></ha-icon>
+                    <ha-icon class="up" icon="mdi:arrow-up"></ha-icon>
+                    <ha-icon class="down" icon="mdi:arrow-down"></ha-icon>
+                </div>
+                <div class="ptz-zoom">
+                    <ha-icon class="zoom_in" icon="mdi:plus"></ha-icon>
+                    <ha-icon class="zoom_out" icon="mdi:minus"></ha-icon>
+                </div>
+                <div class="ptz-home">
+                    <ha-icon class="home" icon="mdi:home"></ha-icon>
+                </div>
             </div>
-            <div class="box">
-                <div class="header"></div>
-            </div>
-            <ha-icon class="state"></ha-icon>
-        `;
-        this.appendChild(card);
+        `);
 
-        const video = this.querySelector('#video');
-        video.muted = this.config.muted !== false;
-        video.poster = this.config.poster || '';
-
-        // video.onstalled = video.onerror = () => {
-        //     video.srcObject = new MediaStream(video.srcObject.getTracks());
-        //     video.play().then(() => null, () => null);
-        // };
-
-        video.addEventListener('playing', () => {
-            if (video.readyState >= 1) {
-                this.status = this.config.title || '';
-                this.setPTZVisibility(true);
-            }
-        });
-        video.addEventListener('waiting', () => {
-            this.setPTZVisibility(false);
-        });
-
-        video.onpause = () => {
-            this.setPTZVisibility(false);
+        const handle = path => {
+            const data = this.config.ptz['data_' + path];
+            if (!data) return;
+            const [domain, service] = this.config.ptz.service.split('.', 2);
+            this.hass.callService(domain, service, data);
         };
-
-        video.onplay = () => {
-            this.setPTZVisibility(true);
-        };
-        // fix MSE in Safari
-        video.addEventListener('ended', () => {
-            console.debug("Auto resume on ended");
-            video.play().then(() => null, () => null);
-        });
-
-        this.initPageVisibilityListener();
-
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        // console.debug("Video integsects:", entry.isIntersecting);
-                        if (entry.isIntersecting) {
-                            video.play().then(() => null, () => null);
-                        } else {
-                            video.pause();
-                        }
-                    });
-                },
-                {threshold: this.config.intersection || 0.5}
-            );
-            observer.observe(video);
-        }
-
-        if (this.config.ui) {
-            this.renderCustomGUI(card);
-        } else {
-            // fix Chrome blinking while loading MSE
-            // let mouseover = false;
-            // video.onwaiting = () => {
-            //     if (!mouseover) video.controls = false;
-            // }
-            // video.onplaying = () => {
-            //     if (!mouseover) video.controls = true;
-            // }
-            // video.onmouseover = () => {
-            //     mouseover = true;
-            // }
-            // video.onmouseout = () => {
-            //     mouseover = false;
-            // }
-        }
-
-        if (this.config.ptz) {
-            this.renderPTZ(card, hass);
-        }
-    }
-
-    setPTZVisibility(show) {
         const ptz = this.querySelector('.ptz');
-        if (ptz) {
-            if (show) {
-                ptz.classList.add('show');
-            } else {
-                ptz.classList.remove('show');
+        for (const [start, end] of [['touchstart', 'touchend'], ['mousedown', 'mouseup']]) {
+            ptz.addEventListener(start, startEvt => {
+                const {className} = startEvt.target;
+                startEvt.preventDefault();
+                handle('start_' + className);
+                window.addEventListener(end, endEvt => {
+                    endEvt.preventDefault();
+                    handle('end_' + className);
+                    if (endEvt.timeStamp - startEvt.timeStamp > 400) {
+                        handle('long_' + className);
+                    } else {
+                        handle(className);
+                    }
+                }, {once: true});
+            });
+        }
+    }
+
+    saveScreenshot() {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.video.videoWidth;
+        canvas.height = this.video.videoHeight;
+        canvas.getContext('2d').drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+        const ts = new Date().toISOString().substring(0, 19).replaceAll('-', '').replaceAll(':', '');
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/jpeg');
+        a.download = `snapshot_${ts}.jpeg`;
+        a.click();
+    }
+
+    renderCustomUI() {
+        if (!this.config.ui) return;
+
+        this.video.controls = false;
+        this.video.style.pointerEvents = 'none';
+
+        const card = this.querySelector('.card');
+        card.insertAdjacentHTML('beforebegin', `
+            <style>
+                .spinner {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                .controls {
+                    position: absolute;
+                    left: 5px;
+                    right: 5px;
+                    bottom: 5px;
+                    display: flex;
+                }
+                .space {
+                    width: 100%;
+                }
+                .volume {
+                    display: none;
+                }
+                .stream {
+                    padding-top: 2px;
+                    margin-left: 2px;
+                    font-weight: 400;
+                    font-size: 20px;
+                    color: white;
+                    display: none;
+                    cursor: pointer;
+                }
+            </style>
+        `);
+        card.insertAdjacentHTML('beforeend', `
+            <div class="ui">
+                <ha-circular-progress class="spinner"></ha-circular-progress>
+                <div class="controls">
+                    <ha-icon class="fullscreen" icon="mdi:fullscreen"></ha-icon>
+                    <ha-icon class="screenshot" icon="mdi:floppy"></ha-icon>
+                    <ha-icon class="pictureinpicture" icon="mdi:picture-in-picture-bottom-right"></ha-icon>
+                    <span class="stream">${this.streamName}</span>
+                    <span class="space"></span>
+                    <ha-icon class="play" icon="mdi:play"></ha-icon>
+                    <ha-icon class="volume" icon="mdi:volume-high"></ha-icon>
+                </div>
+            </div>
+        `);
+
+        const video = this.video;
+
+        const fullscreen = this.querySelector('.fullscreen');
+        if (this.requestFullscreen) {
+            this.addEventListener('fullscreenchange', () => {
+                fullscreen.icon = document.fullscreenElement ? 'mdi:fullscreen-exit' : 'mdi:fullscreen';
+            });
+        } else if (video.webkitEnterFullscreen) {
+            this.requestFullscreen = () => new Promise((resolve, reject) => {
+                try {
+                    video.webkitEnterFullscreen();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+            video.addEventListener('webkitendfullscreen', () => {
+                setTimeout(() => this.play(), 1000); // fix bug in iOS
+            });
+        } else {
+            fullscreen.style.display = 'none';
+        }
+
+        const pip = this.querySelector('.pictureinpicture');
+        if (video.requestPictureInPicture) {
+            video.addEventListener('enterpictureinpicture', () => {
+                pip.icon = 'mdi:rectangle';
+                this.background = true;
+            });
+            video.addEventListener('leavepictureinpicture', () => {
+                pip.icon = 'mdi:picture-in-picture-bottom-right';
+                this.background = this.config.background;
+                this.play();
+            });
+        } else {
+            pip.style.display = 'none';
+        }
+
+        const ui = this.querySelector('.ui');
+        ui.addEventListener('click', ev => {
+            const icon = ev.target.icon;
+            if (icon === 'mdi:play') {
+                this.play();
+            } else if (icon === 'mdi:volume-mute') {
+                video.muted = false;
+            } else if (icon === 'mdi:volume-high') {
+                video.muted = true;
+            } else if (icon === 'mdi:fullscreen') {
+                this.requestFullscreen().catch(console.warn);
+            } else if (icon === 'mdi:fullscreen-exit') {
+                document.exitFullscreen().catch(console.warn);
+            } else if (icon === 'mdi:floppy') {
+                this.saveScreenshot();
+            } else if (icon === 'mdi:picture-in-picture-bottom-right') {
+                video.requestPictureInPicture().catch(console.warn);
+            } else if (icon === 'mdi:rectangle') {
+                document.exitPictureInPicture().catch(console.warn);
+            } else if (ev.target.className === 'stream') {
+                this.nextStream(true);
+                ev.target.innerText = this.streamName;
             }
-        }
+        });
+
+        const spinner = this.querySelector('.spinner');
+        video.addEventListener('waiting', () => {
+            spinner.style.display = 'block';
+        });
+        video.addEventListener('playing', () => {
+            spinner.style.display = 'none';
+        });
+
+        const play = this.querySelector('.play');
+        video.addEventListener('play', () => {
+            play.style.display = 'none';
+        });
+        video.addEventListener('pause', () => {
+            play.style.display = 'block';
+        });
+
+        const volume = this.querySelector('.volume');
+        video.addEventListener('loadeddata', () => {
+            volume.style.display = this.hasAudio ? 'block' : 'none';
+        });
+        video.addEventListener('volumechange', () => {
+            volume.icon = video.muted ? 'mdi:volume-mute' : 'mdi:volume-high';
+        });
+
+        const stream = this.querySelector('.stream');
+        stream.style.display = this.config.streams.length > 1 ? 'block' : 'none';
     }
 
-    setConfig(config) {
-        if (typeof config.url !== 'string' && typeof config.entity !== 'string') {
-            throw new Error('Missing `url` or `entity`');
-        }
-        if (config.ptz && !config.ptz.service) {
-            throw new Error("Missing `service` for `ptz`");
-        }
-        if (!('RTCPeerConnection' in window)) {
-            throw new Error("Unsupported browser"); // macOS Desktop app
-        }
+    renderShortcuts() {
+        if (!this.config.shortcuts) return;
 
-        this.config = config;
-    }
+        // backward compatibility with `services` property
+        const services = this.config.shortcuts.services || this.config.shortcuts;
 
-    getCardSize() {
-        return 5;
-    }
+        const icons = services.map((value, index) => `
+            <ha-icon data-index="${index}" icon="${value.icon}" title="${value.name}"></ha-icon>
+        `).join('');
 
-    initPageVisibilityListener() {
-        var hidden, visibilityChange;
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-            hidden = "hidden";
-            visibilityChange = "visibilitychange";
-        } else if (typeof document.msHidden !== "undefined") {
-            hidden = "msHidden";
-            visibilityChange = "msvisibilitychange";
-        } else if (typeof document.webkitHidden !== "undefined") {
-            hidden = "webkitHidden";
-            visibilityChange = "webkitvisibilitychange";
-        }
-
-        document.addEventListener(visibilityChange, () => {
-            if (!document[hidden] && this.isConnected) {
-                this.connectedCallback();
-            } else {
-                this.disconnectedCallback();
+        const card = this.querySelector('.card');
+        card.insertAdjacentHTML('beforebegin', `
+        <style>
+            .shortcuts {
+                position: absolute;
+                top: 5px;
+                left: 5px;
             }
-        }, false);
-    }
+        </style>
+        `);
+        card.insertAdjacentHTML('beforeend', `
+        <div class="shortcuts">${icons}</div>
+        `);
 
-    async connectedCallback() {
-        if (!this.config) return;
-
-        if (this.childElementCount === 0) {
-            await this.renderGUI(this.hass);
-        }
-
-        if (this.ws && this.config.background === true) return;
-
-        if (!this.ws || [this.ws.CLOSING, this.ws.CLOSED].includes(this.ws.readyState)) {
-            await this.initMSE(this.hass);
-        }
-    }
-
-    disconnectedCallback() {
-        if (this.config.background !== true) {
-            this.subscriptions.forEach(callback => callback());
-            this.subscriptions = [];
-        }
-    }
-
-    getUniqueShortcutsKey() {
-        if (this.unique_shortcuts_key !== null) {
-            return this.unique_shortcuts_key;
-        }
-
-        const cyrb = function(str, seed = 0) {
-            let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-            for (let i = 0, ch; i < str.length; i++) {
-                ch = str.charCodeAt(i);
-                h1 = Math.imul(h1 ^ ch, 2654435761);
-                h2 = Math.imul(h2 ^ ch, 1597334677);
+        const shortcuts = this.querySelector('.shortcuts');
+        shortcuts.addEventListener('click', ev => {
+            const value = services[ev.target.dataset.index];
+            if(value.more_info !== undefined) {
+                const event = new Event('hass-more-info', {
+                    bubbles: true,
+                    cancelable: true,
+                    composed: true,
+                });
+                event.detail = { entityId: value.more_info };
+                ev.target.dispatchEvent(event);
             }
-            h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
-            h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-
-            return 4294967296 * (2097151 & h2) + (h1>>>0);
-        };
-
-        this.unique_shortcuts_key = cyrb(JSON.stringify(this.config.shortcuts));
-
-        return this.unique_shortcuts_key;
+            if(value.service !== undefined) {
+                const [domain, name] = value.service.split('.');
+                this.hass.callService(domain, name, value.service_data || {});
+            }
+        });
     }
 
-    prepareMargin(margin) {
-        return !isNaN(parseFloat(margin)) && isFinite(margin) ? margin + 'px' : margin;
+    renderStyle() {
+        if (!this.config.style) return;
+
+        const style = document.createElement('style');
+        style.innerText = this.config.style;
+        const card = this.querySelector('.card');
+        card.insertAdjacentElement('beforebegin', style);
+    }
+
+    get hasAudio() {
+        return (
+            (this.video.srcObject && this.video.srcObject.getAudioTracks && this.video.srcObject.getAudioTracks().length) ||
+            (this.video.mozHasAudio || this.video.webkitAudioDecodedByteCount) ||
+            (this.video.audioTracks && this.video.audioTracks.length)
+        );
     }
 }
 
 customElements.define('webrtc-camera', WebRTCCamera);
 
-window.customCards = window.customCards || [];
-window.customCards.push({
+const card = {
     type: 'webrtc-camera',
     name: 'WebRTC Camera',
     preview: false,
-    description: 'WebRTC Camera allows you to watch RTSP-camera stream without any delay',
-});
+    description: 'WebRTC camera allows you to view the stream of almost any camera without delay',
+};
+// Apple iOS 12 doesn't support `||=`
+if (window.customCards) window.customCards.push(card);
+else window.customCards = [card];
+
