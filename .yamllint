@@ -8,6 +8,7 @@ ignore: |
   ip_bans.yaml
   packages/weatherman.yaml
   scenes.yaml
+  scripts.yaml
   themes/
 rules:
   braces:
