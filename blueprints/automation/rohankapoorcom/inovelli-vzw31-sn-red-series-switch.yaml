@@ -104,6 +104,42 @@ blueprint:
       default: []
       selector:
         action: {}
+    config_button_hold:
+      name: Config Press Held Down
+      description: Action to run, when the config button is held down.
+      default: []
+      selector:
+        action: {}
+    button_a_hold:
+      name: Up/On Press Held Down
+      description: Action to run, when the Up button is held down.
+      default: []
+      selector:
+        action: {}
+    button_b_hold:
+      name: Down/Off Press Held Down
+      description: Action to run, when the Down button is held down.
+      default: []
+      selector:
+        action: {}
+    config_button_release:
+      name: Config Press Hold Release
+      description: Action to run, when the config button is released after being held down.
+      default: []
+      selector:
+        action: {}
+    button_a_release:
+      name: Up/On Press Hold Release
+      description: Action to run, when the Up button is released after being held down.
+      default: []
+      selector:
+        action: {}
+    button_b_release:
+      name: Down/Off Press Hold Release
+      description: Action to run, when the Down button is released after being held down.
+      default: []
+      selector:
+        action: {}
     aux_config_button:
       name: Aux Config Press 1x
       description: Action to run, when the config button is pressed one time on the aux switch.
@@ -194,6 +230,42 @@ blueprint:
       default: []
       selector:
         action: {}
+    aux_config_button_hold:
+      name: Aux Config Press Held Down
+      description: Action to run, when the config button is held down on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a_hold:
+      name: Aux Up/On Press Held Down
+      description: Action to run, when the Up button is held down on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b_hold:
+      name: Aux Down/Off Press Held Down
+      description: Action to run, when the Down button is held down on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_config_button_release:
+      name: Aux Config Press Hold Release
+      description: Action to run, when the config button is released after being held down on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_a_release:
+      name: Aux Up/On Press Hold Release
+      description: Action to run, when the Up button is released after being held down on the aux switch.
+      default: []
+      selector:
+        action: {}
+    aux_button_b_release:
+      name: Aux Down/Off Press Hold Release
+      description: Action to run, when the Down button is released after being held down on the aux switch.
+      default: []
+      selector:
+        action: {}
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
 mode: single
 max_exceeded: silent
@@ -238,6 +310,18 @@ action:
         sequence: !input 'button_a5'
       - conditions: '{{ button_id == "001" and press_count == "KeyPressed5x" }}'
         sequence: !input 'button_b5'
+      - conditions: '{{ button_id == "003" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'config_button_hold'
+      - conditions: '{{ button_id == "002" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'button_a_hold'
+      - conditions: '{{ button_id == "001" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'button_b_hold'
+      - conditions: '{{ button_id == "003" and press_count == "KeyReleased" }}'
+        sequence: !input 'config_button_release'
+      - conditions: '{{ button_id == "002" and press_count == "KeyReleased" }}'
+        sequence: !input 'button_a_release'
+      - conditions: '{{ button_id == "001" and press_count == "KeyReleased" }}'
+        sequence: !input 'button_b_release'
       - conditions: '{{ button_id == "006" and press_count == "KeyPressed" }}'
         sequence: !input 'aux_config_button'
       - conditions: '{{ button_id == "005" and press_count == "KeyPressed" }}'
@@ -268,3 +352,15 @@ action:
         sequence: !input 'aux_button_a5'
       - conditions: '{{ button_id == "004" and press_count == "KeyPressed5x" }}'
         sequence: !input 'aux_button_b5'
+      - conditions: '{{ button_id == "006" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'aux_config_button_hold'
+      - conditions: '{{ button_id == "005" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'aux_button_a_hold'
+      - conditions: '{{ button_id == "004" and press_count == "KeyHeldDown" }}'
+        sequence: !input 'aux_button_b_hold'
+      - conditions: '{{ button_id == "006" and press_count == "KeyReleased" }}'
+        sequence: !input 'aux_config_button_release'
+      - conditions: '{{ button_id == "005" and press_count == "KeyReleased" }}'
+        sequence: !input 'aux_button_a_release'
+      - conditions: '{{ button_id == "004" and press_count == "KeyReleased" }}'
+        sequence: !input 'aux_button_b_release'
