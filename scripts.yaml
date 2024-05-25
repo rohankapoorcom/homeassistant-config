@@ -1,0 +1,6 @@
+inovelli_blue_notifications:
+  alias: Inovelli Blue Notifications
+  use_blueprint:
+    path: zanix/inovelli_blue_led_zigbee2mqtt.yaml
+  mode: parallel
+  max: 100

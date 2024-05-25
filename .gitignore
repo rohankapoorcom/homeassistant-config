@@ -12,3 +12,5 @@ tts
 __pycache__
 .idea
 .vscode
+custom_components/open_epaper_link/open_epaper_link.*.jpg
+custom_components/open_epaper_link/lastapinteraction.txt
