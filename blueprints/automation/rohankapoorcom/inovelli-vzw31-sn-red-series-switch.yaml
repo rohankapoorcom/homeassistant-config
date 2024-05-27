@@ -104,39 +104,39 @@ blueprint:
       default: []
       selector:
         action: {}
-    config_button_hold:
+    config_button_held:
       name: Config Press Held Down
-      description: Action to run, when the config button is held down.
+      description: Action to run, when the config button is pressed and held.
       default: []
       selector:
         action: {}
-    button_a_hold:
+    button_a_held:
       name: Up/On Press Held Down
-      description: Action to run, when the Up button is held down.
+      description: Action to run, when the Up button is pressed and held.
       default: []
       selector:
         action: {}
-    button_b_hold:
+    button_b_held:
       name: Down/Off Press Held Down
-      description: Action to run, when the Down button is held down.
+      description: Action to run, when the Down button is pressed and held.
       default: []
       selector:
         action: {}
-    config_button_release:
+    config_button_released:
       name: Config Press Hold Release
-      description: Action to run, when the config button is released after being held down.
+      description: Action to run, when the config button is released after being held.
       default: []
       selector:
         action: {}
-    button_a_release:
+    button_a_released:
       name: Up/On Press Hold Release
-      description: Action to run, when the Up button is released after being held down.
+      description: Action to run, when the Up button is released after being held.
       default: []
       selector:
         action: {}
-    button_b_release:
+    button_b_released:
       name: Down/Off Press Hold Release
-      description: Action to run, when the Down button is released after being held down.
+      description: Action to run, when the Down button is released after being held.
       default: []
       selector:
         action: {}
@@ -230,39 +230,39 @@ blueprint:
       default: []
       selector:
         action: {}
-    aux_config_button_hold:
+    aux_config_button_held:
       name: Aux Config Press Held Down
-      description: Action to run, when the config button is held down on the aux switch.
+      description: Action to run, when the config button is pressed and held on the aux switch.
       default: []
       selector:
         action: {}
-    aux_button_a_hold:
+    aux_button_a_held:
       name: Aux Up/On Press Held Down
-      description: Action to run, when the Up button is held down on the aux switch.
+      description: Action to run, when the Up button is pressed and held on the aux switch.
       default: []
       selector:
         action: {}
-    aux_button_b_hold:
+    aux_button_b_held:
       name: Aux Down/Off Press Held Down
-      description: Action to run, when the Down button is held down on the aux switch.
+      description: Action to run, when the Down button is pressed and held on the aux switch.
       default: []
       selector:
         action: {}
-    aux_config_button_release:
+    aux_config_button_released:
       name: Aux Config Press Hold Release
-      description: Action to run, when the config button is released after being held down on the aux switch.
+      description: Action to run, when the config button is released after being held on the aux switch.
       default: []
       selector:
         action: {}
-    aux_button_a_release:
+    aux_button_a_released:
       name: Aux Up/On Press Hold Release
-      description: Action to run, when the Up button is released after being held down on the aux switch.
+      description: Action to run, when the Up button is released after being held on the aux switch.
       default: []
       selector:
         action: {}
-    aux_button_b_release:
+    aux_button_b_released:
       name: Aux Down/Off Press Hold Release
-      description: Action to run, when the Down button is released after being held down on the aux switch.
+      description: Action to run, when the Down button is released after being held on the aux switch.
       default: []
       selector:
         action: {}
@@ -311,17 +311,17 @@ action:
       - conditions: '{{ button_id == "001" and press_count == "KeyPressed5x" }}'
         sequence: !input 'button_b5'
       - conditions: '{{ button_id == "003" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'config_button_hold'
+        sequence: !input 'config_button_held'
       - conditions: '{{ button_id == "002" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'button_a_hold'
+        sequence: !input 'button_a_held'
       - conditions: '{{ button_id == "001" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'button_b_hold'
+        sequence: !input 'button_b_held'
       - conditions: '{{ button_id == "003" and press_count == "KeyReleased" }}'
-        sequence: !input 'config_button_release'
+        sequence: !input 'config_button_released'
       - conditions: '{{ button_id == "002" and press_count == "KeyReleased" }}'
-        sequence: !input 'button_a_release'
+        sequence: !input 'button_a_released'
       - conditions: '{{ button_id == "001" and press_count == "KeyReleased" }}'
-        sequence: !input 'button_b_release'
+        sequence: !input 'button_b_released'
       - conditions: '{{ button_id == "006" and press_count == "KeyPressed" }}'
         sequence: !input 'aux_config_button'
       - conditions: '{{ button_id == "005" and press_count == "KeyPressed" }}'
@@ -353,14 +353,14 @@ action:
       - conditions: '{{ button_id == "004" and press_count == "KeyPressed5x" }}'
         sequence: !input 'aux_button_b5'
       - conditions: '{{ button_id == "006" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_config_button_hold'
+        sequence: !input 'aux_config_button_held'
       - conditions: '{{ button_id == "005" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_button_a_hold'
+        sequence: !input 'aux_button_a_held'
       - conditions: '{{ button_id == "004" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_button_b_hold'
+        sequence: !input 'aux_button_b_held'
       - conditions: '{{ button_id == "006" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_config_button_release'
+        sequence: !input 'aux_config_button_released'
       - conditions: '{{ button_id == "005" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_button_a_release'
+        sequence: !input 'aux_button_a_released'
       - conditions: '{{ button_id == "004" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_button_b_release'
+        sequence: !input 'aux_button_b_released'
