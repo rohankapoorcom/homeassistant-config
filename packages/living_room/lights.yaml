@@ -27,18 +27,18 @@ binary_sensor:
       living_room_fan_slow:
         friendly_name: Living Room Fan Set to Slow
         value_template: >
-          {{ state_attr('fan.living_room_fan', 'percentage') > 0
-          and state_attr('fan.living_room_fan', 'percentage') <= 52 }}
+          {% set living_room_fan_percentage = state_attr('fan.living_room_fan', 'percentage') | int(0) %}
+          {{ living_room_fan_percentage > 0 and living_room_fan_percentage <= 52 }}
 
       living_room_fan_medium:
         friendly_name: Living Room Fan Set to Medium
         value_template: >
-          {{ state_attr('fan.living_room_fan', 'percentage') > 52
-          and state_attr('fan.living_room_fan', 'percentage') <= 81 }}
+          {% set living_room_fan_percentage = state_attr('fan.living_room_fan', 'percentage') | int(0) %}
+          {{ living_room_fan_percentage > 52 and living_room_fan_percentage <= 81 }}
 
       living_room_fan_high:
         friendly_name: Living Room Fan Set to High
-        value_template: "{{ state_attr('fan.living_room_fan', 'percentage') > 81 }}"
+        value_template: "{{ state_attr('fan.living_room_fan', 'percentage') | int(0) > 81 }}"
 
       living_room_fan_off:
         friendly_name: Living Room Fan Set to High
