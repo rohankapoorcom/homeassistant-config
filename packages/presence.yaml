@@ -37,8 +37,3 @@ zone:
     latitude: !secret zone.work.latitude
     longitude: !secret zone.work.longitude
     radius: 250
-
-################################################
-## Map
-################################################
-map:
