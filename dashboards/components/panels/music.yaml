@@ -1,5 +1,5 @@
 type: iframe
-url: /musicassistant
+url: /api/ingress/musicassistant/
 # type: custom:layout-card
 # cards:
 #   - entities:
