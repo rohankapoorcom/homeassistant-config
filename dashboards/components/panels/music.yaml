@@ -1,90 +1,92 @@
-type: custom:layout-card
-cards:
-  - entities:
-      - default: idle
-        entity: media_player.all_speakers
-        states:
-          idle:
-            template: whole_house_media_player_idle_or_off
-            type: custom:decluttering-card
-          'off':
-            template: whole_house_media_player_idle_or_off
-            type: custom:decluttering-card
-          playing:
-            template: whole_house_media_player_playing_or_paused
-            type: custom:decluttering-card
-          paused:
-            template: whole_house_media_player_playing_or_paused
-            type: custom:decluttering-card
-        type: custom:state-switch
-    show_header_toggle: false
-    type: entities
-    view_layout:
-      grid_area: left
-  - type: entities
-    entities:
-      - default: idle
-        entity: media_player.all_speakers
-        states:
-          idle:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-            variables:
-              - icon: mdi:speaker-off
-          'off':
-            entity: false
-            type: custom:template-entity-row
-          playing:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-          paused:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-          unavailable:
-            entity: false
-            type: custom:template-entity-row
-        type: custom:state-switch
-    card_mod:
-      style: |
-        ha-card .card-content {
-          margin: 0;
-          position: absolute;
-          top: 50%;
-          '-ms-transform': translateY(-50%);
-          transform: translateY(-50%);
-        }
-    view_layout:
-      grid_area: right
-      show:
-        mediaquery: '(min-width: 800px)'
-  - type: entities
-    entities:
-      - default: idle
-        entity: media_player.all_speakers
-        states:
-          idle:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-            variables:
-              - icon: mdi:speaker-off
-          'off':
-            entity: false
-            type: custom:template-entity-row
-          playing:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-          paused:
-            template: whole_house_media_player_group
-            type: custom:decluttering-card
-          unavailable:
-            entity: false
-            type: custom:template-entity-row
-        type: custom:state-switch
-    view_layout:
-      grid_area: right
-      show:
-        mediaquery: '(max-width: 800px)'
-layout_type: custom:grid-layout
+type: iframe
+url: /musicassistant
+# type: custom:layout-card
+# cards:
+#   - entities:
+#       - default: idle
+#         entity: media_player.all_speakers
+#         states:
+#           idle:
+#             template: whole_house_media_player_idle_or_off
+#             type: custom:decluttering-card
+#           'off':
+#             template: whole_house_media_player_idle_or_off
+#             type: custom:decluttering-card
+#           playing:
+#             template: whole_house_media_player_playing_or_paused
+#             type: custom:decluttering-card
+#           paused:
+#             template: whole_house_media_player_playing_or_paused
+#             type: custom:decluttering-card
+#         type: custom:state-switch
+#     show_header_toggle: false
+#     type: entities
+#     view_layout:
+#       grid_area: left
+#   - type: entities
+#     entities:
+#       - default: idle
+#         entity: media_player.all_speakers
+#         states:
+#           idle:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#             variables:
+#               - icon: mdi:speaker-off
+#           'off':
+#             entity: false
+#             type: custom:template-entity-row
+#           playing:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#           paused:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#           unavailable:
+#             entity: false
+#             type: custom:template-entity-row
+#         type: custom:state-switch
+#     card_mod:
+#       style: |
+#         ha-card .card-content {
+#           margin: 0;
+#           position: absolute;
+#           top: 50%;
+#           '-ms-transform': translateY(-50%);
+#           transform: translateY(-50%);
+#         }
+#     view_layout:
+#       grid_area: right
+#       show:
+#         mediaquery: '(min-width: 800px)'
+#   - type: entities
+#     entities:
+#       - default: idle
+#         entity: media_player.all_speakers
+#         states:
+#           idle:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#             variables:
+#               - icon: mdi:speaker-off
+#           'off':
+#             entity: false
+#             type: custom:template-entity-row
+#           playing:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#           paused:
+#             template: whole_house_media_player_group
+#             type: custom:decluttering-card
+#           unavailable:
+#             entity: false
+#             type: custom:template-entity-row
+#         type: custom:state-switch
+#     view_layout:
+#       grid_area: right
+#       show:
+#         mediaquery: '(max-width: 800px)'
+# layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr
   grid-template-rows: auto
