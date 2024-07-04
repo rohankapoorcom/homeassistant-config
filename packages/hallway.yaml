@@ -86,7 +86,7 @@ automation:
 
   - id: 56be5167-15a8-4243-ae8d-c4b8b82b3e9e
     alias: Control the Hallway Closet Lights
-    description: Utilizes the motion_light blueprint for contolling the Hallway Closet Lights.
+    description: Utilizes the motion_light blueprint for controlling the Hallway Closet Lights.
     use_blueprint:
       path: rohankapoorcom/motion_light.yaml
       input:
