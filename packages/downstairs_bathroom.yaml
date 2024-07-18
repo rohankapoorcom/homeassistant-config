@@ -95,24 +95,8 @@ automation:
     alias: Adjust the Downstairs Bathroom Default Brightness
     description: Utilizes a blueprint to configure the default brightess on the Downstairs Bathroom Lights.
     use_blueprint:
-      path: rohankapoorcom/inovelli-red-series-night-mode.yaml
+      path: rohankapoorcom/adaptive-lighting-sleep-mode.yaml
       input:
-        zwave_device: 466cd9baee786a896fc2bcbc97887a44
+        adaptive_lighting_switch: switch.adaptive_lighting_sleep_mode_downstairs_bathroom
         bedtime: '01:00:00'
-        bedtime_brightness: 10
         wakeup_time: '08:00:00'
-        wakeup_time_brightness: 99
-
-  - id: e520d3b3-36f6-4169-8274-9864a7fd216b
-    alias: Downstairs Bathroom Light Switch Scene Controls
-    description: Utilizes a blueprint to handle Scene Controls in the Downstairs Bathroom.
-    use_blueprint:
-      path: rohankapoorcom/inovelli-lzw31-red-series-switch.yaml
-      input:
-        zwave_device: 466cd9baee786a896fc2bcbc97887a44
-        button_a:
-          - service: light.turn_on
-            target:
-              entity_id: light.downstairs_bathroom_lights
-            data:
-              brightness_pct: 100
