@@ -300,21 +300,21 @@ script:
     sequence:
       - choose:
           - conditions:
-              - alias: If the synx box is already playing, then pause it.
+              - alias: If the sync box is already running, then stop it.
                 condition: state
-                entity_id: media_player.living_room_sync_box
-                state: 'playing'
+                entity_id: switch.living_room_sync_box_light_sync
+                state: 'on'
             sequence:
-              - service: media_player.media_pause
+              - service: switch.turn_off
                 target:
-                  entity_id: media_player.living_room_sync_box
+                  entity_id: switch.living_room_sync_box_light_sync
         default:
           - service: rest_command.set_philips_hue_syncbox_input_living_room
-          - service: huesyncbox.set_entertainment_area
+          - service: select.select_option
             data:
-              entertainment_area: Living Room
+              option: Living Room
             target:
-              entity_id: media_player.living_room_sync_box
-          - service: media_player.media_play
+              entity_id: select.living_room_sync_box_entertainment_area
+          - service: switch.turn_on
             target:
-              entity_id: media_player.living_room_sync_box
+              entity_id: switch.living_room_sync_box_light_sync
