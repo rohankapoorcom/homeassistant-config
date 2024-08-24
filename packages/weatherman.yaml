@@ -44,7 +44,7 @@ template:
         forecast_daily_template: "{{daily_forecast}}"
         ozone_template: "{{state_attr('weather.hourly_weather', 'ozone')}}"
         cloud_coverage_template: "{{state_attr('weather.hourly_weather', 'cloud_coverage')}}"
-        pressure_template: "{{states('sensor.weather_station_absolute_pressure' | float)}}"
+        pressure_template: "{{states('sensor.weather_station_absolute_pressure') | float}}"
         pressure_unit: "inHg"
         wind_bearing_template: "{{state_attr('weather.hourly_weather', 'wind_bearing')}}"
         wind_gust_speed_template: "{{state_attr('weather.hourly_weather', 'wind_gust_speed')}}"
