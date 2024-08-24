@@ -51,7 +51,7 @@ template:
         wind_speed_template: "{{state_attr('weather.hourly_weather', 'wind_speed')}}"
         wind_speed_unit: "mph"
         visibility_template: "{{state_attr('weather.hourly_weather', 'visibility')}}"
-        visbility_unit: "mi"
+        visibility_unit: "mi"
         precipitation_unit: "in"
 
     sensor:
