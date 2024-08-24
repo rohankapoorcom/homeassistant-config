@@ -79,7 +79,7 @@ cards:
       - type: custom:weather-card
         current: true
         details: true
-        entity: weather.pirateweather
+        entity: weather.local_weather
         forecast: true
         icons: /hacsfiles/weather-card/icons/
         number_of_forecasts: '5'
