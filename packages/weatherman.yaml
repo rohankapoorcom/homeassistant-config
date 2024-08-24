@@ -33,6 +33,7 @@ template:
 
     weather:
       - name: Local Weather
+        unique_id: 33b0c094-0824-4cb6-9104-4d7cacfb7d78
         temperature_template: "{{states('sensor.weather_station_outdoor_temperature') | float }}"
         temperature_unit: "{{state_attr('sensor.weather_station_outdoor_temperature', 'unit_of_measurement')}}"
         humidity_template: "{{states('sensor.weather_station_humidity') | float }}"
@@ -42,6 +43,7 @@ template:
 
     sensor:
       - name: Weatherman Data
+        unique_id: d52ad688-880d-47d2-a30e-5dae145ac073
         state: "OK"
         attributes:
           weather_condition_now: >
