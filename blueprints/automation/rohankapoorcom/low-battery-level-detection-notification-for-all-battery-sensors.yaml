@@ -68,14 +68,6 @@ variables:
         {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
       {% endif %}
     {% endfor %}
-    # {% for state in states.binary_sensor
-    #   | selectattr('attributes.device_class', '==', 'battery')
-    #   | selectattr('state', '==', 'on')
-    # %}
-    #   {% if not state.entity_id in exclude.entity_id %}
-    #     {% set result.sensors = result.sensors + [state.name] %}
-    #   {% endif %}
-    # {% endfor %}
     {{result.sensors|join(', ')}}
 trigger:
   - platform: time
