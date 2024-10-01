@@ -220,6 +220,7 @@ cards:
           style: |
             ha-card {
               --map-card-internal-zoomer-background: transparent!important;
+              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
             }
 
     view_layout:
@@ -368,6 +369,7 @@ cards:
           style: |
             ha-card {
               --map-card-internal-zoomer-background: transparent!important;
+              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
             }
     view_layout:
       grid_area: right
