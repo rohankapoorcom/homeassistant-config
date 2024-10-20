@@ -7,8 +7,8 @@
 ---
 
 shell_command:
-  print_label: "/bin/bash /etc/homeassistant/shell_command/print_label.sh '{{content}}' '{{copies}}'"
-  print_tape_label: "/bin/bash /etc/homeassistant/shell_command/print_tape_label.sh '{{content}}' '{{copies}}'"
+  print_label: "/bin/bash /etc/homeassistant/shell_command/print_label.sh {{content}} {{copies}}"
+  print_tape_label: "/bin/bash /etc/homeassistant/shell_command/print_tape_label.sh {{content}} {{copies}}"
 
 automation:
   - id: c4fdcb6b-1b34-4445-950e-122605812a25
