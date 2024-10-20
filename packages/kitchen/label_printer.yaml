@@ -7,8 +7,8 @@
 ---
 
 shell_command:
-  print_label: "/etc/homeassistant/shell_command/print_label.sh '{{content}}' '{{copies}}'"
-  print_tape_label: "/etc/homeassistant/shell_command/print_tape_label.sh '{{content}}' '{{copies}}'"
+  print_label: "/bin/bash /etc/homeassistant/shell_command/print_label.sh '{{content}}' '{{copies}}'"
+  print_tape_label: "/bin/bash /etc/homeassistant/shell_command/print_tape_label.sh '{{content}}' '{{copies}}'"
 
 automation:
   - id: c4fdcb6b-1b34-4445-950e-122605812a25
@@ -19,8 +19,8 @@ automation:
     action:
       - service: shell_command.print_label
         data:
-          content: "{{states('input_text.label_text')}}"
-          copies: "{{states('input_number.label_copies') | round(0) }}"
+          content: "{{ states('input_text.label_text') }}"
+          copies: "{{ states('input_number.label_copies') | round(0) }}"
 
   - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
     alias: Print Tape Label
@@ -30,5 +30,5 @@ automation:
     action:
       - service: shell_command.print_tape_label
         data:
-          content: "{{states('input_text.label_text')}}"
-          copies: "{{states('input_number.label_copies') | round(0) }}"
+          content: "{{ states('input_text.label_text') }}"
+          copies: "{{ states('input_number.label_copies') | round(0) }}"
