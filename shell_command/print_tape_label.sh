@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh -o StrictHostKeyChecking=accept-new -i /srv/homeassistant/.ssh/id_ed25519 lprint@001-lprint-01.dev.rohankapoor.com "convert -size 400x200 -background white -fill black -font 'AvantGarde-Book' -gravity Center label:'$1' tape.png;/snap/bin/lprint -d 'DYMO LabelWriter 450 DUO Tape' tape.png -n '$2'"
+/usr/bin/ssh -o StrictHostKeyChecking=accept-new -i /srv/homeassistant/.ssh/id_ed25519 lprint@001-lprint-01.dev.rohankapoor.com "convert -size 400x200 -background white -fill black -font 'AvantGarde-Book' -gravity Center label:'$1' tape.png;/snap/bin/lprint -d 'DYMO LabelWriter 450 DUO Tape' tape.png -n '$2'"
