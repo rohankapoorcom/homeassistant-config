@@ -15,8 +15,8 @@ homeassistant:
       customize: &customize
         package: 'living_room_lights'
 
-    living_room_light_switch_device_id: &living_room_light_switch_device_id
-      - 257a7b48517ba7c9cc28fa70842c24f6
+      living_room_light_switch_device_id: &living_room_light_switch_device_id
+        - 257a7b48517ba7c9cc28fa70842c24f6
 
 ################################################
 ## Binary Sensor
