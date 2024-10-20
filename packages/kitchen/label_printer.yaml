@@ -20,7 +20,7 @@ automation:
       - service: shell_command.print_label
         data:
           content: "{{states('input_text.label_text')}}"
-          copies: "{{states('input_number.label_copies')}}"
+          copies: "{{states('input_number.label_copies') | round(0) }}"
 
   - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
     alias: Print Tape Label
@@ -31,4 +31,4 @@ automation:
       - service: shell_command.print_tape_label
         data:
           content: "{{states('input_text.label_text')}}"
-          copies: "{{states('input_number.label_copies')}}"
+          copies: "{{states('input_number.label_copies') | round(0) }}"
