@@ -1,0 +1,34 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  08/16/2024
+#  @package      :  Kitchen Label Printer
+#  @description  :  Logic for handling the label printer in the kitchen.
+###############################################################################
+---
+
+shell_command:
+  print_label: "shell_command/print_label.sh '{{content}}' '{{copies}}'"
+  print_tape_label: "shell_command/print_tape_label.sh '{{content}}' '{{copies}}'"
+
+automation:
+  - id: c4fdcb6b-1b34-4445-950e-122605812a25
+    alias: Print Main Label
+    trigger:
+      - platform: state
+        entity_id: input_button.print_main_label
+    action:
+      - service: shell_command.print_label
+        data:
+          content: "{{states('input_text.label_text')}}"
+          copies: "{{states('input_number.label_copies')}}"
+
+  - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
+    alias: Print Tape Label
+    trigger:
+      - platform: state
+        entity_id: input_button.print_tape_label
+    action:
+      - service: shell_command.print_tape_label
+        data:
+          content: "{{states('input_text.label_text')}}"
+          copies: "{{states('input_number.label_copies')}}"
