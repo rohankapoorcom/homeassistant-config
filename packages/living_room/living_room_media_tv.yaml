@@ -13,7 +13,7 @@ homeassistant:
 
     package.node_anchors:
       customize: &customize
-        package: 'media_tv'
+        package: 'living_room_media_tv'
 
 rest_command:
   set_philips_hue_syncbox_input_living_room:
