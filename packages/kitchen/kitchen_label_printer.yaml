@@ -5,6 +5,15 @@
 #  @description  :  Logic for handling the label printer in the kitchen.
 ###############################################################################
 ---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'kitchen_label_printer'
 
 shell_command:
   print_label: "/bin/bash /etc/homeassistant/shell_command/print_label.sh '{{content}}' '{{copies}}'"

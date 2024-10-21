@@ -13,7 +13,7 @@ homeassistant:
 
     package.node_anchors:
       customize: &customize
-        package: 'kitchen'
+        package: 'kitchen_lights'
 
     kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
       - 5580d638554510eabf0b5d3dbabe1263
