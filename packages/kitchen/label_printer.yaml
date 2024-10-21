@@ -19,7 +19,11 @@ automation:
     action:
       - service: shell_command.print_label
         data:
-          content: "{{ states('input_text.label_text') }}"
+          content: >
+            {{ states('input_text.label_text') }}
+            {%- if is_state('input_boolean.print_date', 'on') -%}
+              \n{{ states('input_datetime.label_date') }}
+            {%- endif -%}
           copies: "{{ states('input_number.label_copies') | round(0) }}"
 
   - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
@@ -30,5 +34,25 @@ automation:
     action:
       - service: shell_command.print_tape_label
         data:
-          content: "{{ states('input_text.label_text') }}"
+          content: >
+            {{ states('input_text.label_text') }}
+            {%- if is_state('input_boolean.print_date', 'on') -%}
+              \n{{ states('input_datetime.label_date') }}
+            {%- endif -%}
           copies: "{{ states('input_number.label_copies') | round(0) }}"
+
+  - id: blah
+    alias: Set Label Date to Today at Midnight
+    trigger:
+      - time:
+        at: "00:00:00"
+      - platform: homeassistant
+        event: start
+      - platform: event
+        event_type: automation_reloaded
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.label_date
+        data:
+          date: "{{ now().strftime('%Y-%m-%d') }}"
