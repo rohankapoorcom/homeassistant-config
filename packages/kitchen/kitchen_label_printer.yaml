@@ -50,10 +50,10 @@ automation:
             {%- endif -%}
           copies: "{{ states('input_number.label_copies') | round(0) }}"
 
-  - id: blah
+  - id: 828c11ac-62c2-49da-891c-7d6b99cd88c4
     alias: Set Label Date to Today at Midnight
     trigger:
-      - time:
+      - platform: time
         at: "00:00:00"
       - platform: homeassistant
         event: start
