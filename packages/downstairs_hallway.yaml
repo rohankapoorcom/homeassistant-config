@@ -12,7 +12,7 @@
 automation:
   - id: 049cbddb-1796-4df9-be5b-7a6e0335015d
     alias: Control the Downstairs Hallway Tablet Charger
-    description: Utilizes a blueprint to manage charging the Gym Tablet.
+    description: Utilizes a blueprint to manage charging the Downstairs Hallway Tablet.
     use_blueprint:
       path: rohankapoorcom/tablet-battery-charging.yaml
       input:
@@ -120,3 +120,13 @@ automation:
         target:
           entity_id:
             - open_epaper_link.0000021f85043b1c
+
+  - id: 8c282f4e-961c-47d1-9684-cbdef479d216
+    alias: Control the Under Stairs Closet Lights
+    description: Utilizes the motion_light blueprint for controlling the Under Stairs Closet Lights.
+    use_blueprint:
+      path: rohankapoorcom/motion_light.yaml
+      input:
+        motion_entity: binary_sensor.under_stairs_closet_door_window_door_is_open
+        light_target: light.under_stairs_closet_lights
+        no_motion_wait: 0
