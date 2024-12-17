@@ -97,12 +97,6 @@ automation:
       input:
         inovelli_switch:
           - d80e98e0621de0822a33348e7e141e8b
-        button_a:
-          - service: light.turn_on
-            target:
-              entity_id: light.master_bathroom_lights
-            data:
-              brightness_pct: 100
         config_button:
           - service: switch.toggle
             target:

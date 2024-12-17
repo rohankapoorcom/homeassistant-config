@@ -100,3 +100,83 @@ automation:
         adaptive_lighting_switch: switch.adaptive_lighting_sleep_mode_downstairs_bathroom
         bedtime: '01:00:00'
         wakeup_time: '08:00:00'
+
+  - id: c9c77d3e-8f32-4d60-ac07-247717b746ad
+    alias: Downstairs Bathroom Light Switch Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Downstairs Bathroom.
+    use_blueprint:
+      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
+      input:
+        inovelli_switch:
+          - 33460b8b136ed24ff7e8b0cc47d6e2c5
+        config_button:
+          - service: switch.toggle
+            target:
+              entity_id: switch.downstairs_bathroom_towel_warmer
+
+  - id: 85f136e3-f4a8-42fa-b8b6-9d419f3ffbcb
+    alias: Notify when the Downstairs Bathroom Towel Warmer is on
+    description: Notify when the Downstairs Bathroom Towel Warmer is on
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: switch.downstairs_bathroom_towel_warmer
+    action:
+      - choose:
+          - alias: If the Towel Warmer is on, set the notification
+            conditions:
+              - condition: state
+                entity_id: switch.downstairs_bathroom_towel_warmer
+                state: "on"
+            sequence:
+              - service: script.inovelli_blue_notifications
+                data:
+                  led: Led 1
+                  color: Red
+                  level: 40
+                  effect: Pulse
+                  duration: Indefinitely
+                  target:
+                    device_id: 33460b8b136ed24ff7e8b0cc47d6e2c5
+        default:
+          - service: script.inovelli_blue_notifications
+            data:
+              led: Led 1
+              color: Red
+              level: 40
+              effect: Clear
+              duration: Indefinitely
+              target:
+                device_id: 33460b8b136ed24ff7e8b0cc47d6e2c5
+
+  - id: d47d0430-2b3b-40eb-8ea0-f0bf1e61b5b7
+    alias: Control the Downtairs Bathroom Towel Warmer
+    description: Utilizes a timer to control the Downtairs Bathroom Towel Warmer
+    mode: restart
+    max_exceeded: silent
+    trigger:
+      - platform: homeassistant
+        event: start
+        id: homeassistant_start
+      - platform: state
+        entity_id: switch.downstairs_bathroom_towel_warmer
+        from: 'off'
+        to: 'on'
+        id: downstairs_bathroom_towel_warmer_turned_on
+    action:
+      - choose:
+          - alias: If Home Assistant just started, turn it off
+            conditions:
+              - condition: trigger
+                id: homeassistant_start
+            sequence:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.downstairs_bathroom_towel_warmer
+        default:
+          - delay:
+              minutes: 120
+          - service: switch.turn_off
+            target:
+              entity_id: switch.downstairs_bathroom_towel_warmer
