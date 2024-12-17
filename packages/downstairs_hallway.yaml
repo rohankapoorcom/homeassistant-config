@@ -92,7 +92,7 @@ automation:
           background: white
           rotate: 0
           ttl: 300
-          dither: true
+          dither: false
           payload:
             - type: text
               value: "Last Cleaned"
