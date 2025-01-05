@@ -21,6 +21,7 @@ media_source:
 mobile_app:
 my:
 sun:
+system_health:
 
 # Helpers
 input_button:
