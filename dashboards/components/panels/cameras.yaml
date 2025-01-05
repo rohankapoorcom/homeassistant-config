@@ -30,7 +30,8 @@ cards:
                         - mse
                 automations:
                   - conditions:
-                      fullscreen: true
+                      - condition: fullscreen
+                        fullscreen: true
                     actions:
                       - action: custom:frigate-card-action
                         frigate_card_action: live_substream_on
@@ -56,7 +57,8 @@ cards:
                         - mse
                 automations:
                   - conditions:
-                      fullscreen: true
+                      - condition: fullscreen
+                        fullscreen: true
                     actions:
                       - action: custom:frigate-card-action
                         frigate_card_action: live_substream_on
