@@ -43,8 +43,8 @@ cards:
                   mode: camera
                   layout:
                     fit: cover
-                performance:
-                  profile: low
+                profiles:
+                  - low-performance
               default:
                 type: custom:frigate-card
                 cameras:
