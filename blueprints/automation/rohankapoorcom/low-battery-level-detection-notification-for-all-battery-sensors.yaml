@@ -68,7 +68,7 @@ variables:
         {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
       {% endif %}
     {% endfor %}
-    # {{result.sensors|join(', ')}}
+    {{result.sensors}}
 trigger:
   - platform: time
     at: !input 'time'
