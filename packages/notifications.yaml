@@ -23,12 +23,6 @@ mailgun:
   api_key: !secret mailgun.api_key
 
 notify:
-  - name: FirebasePush
-    platform: html5
-    vapid_prv_key: !secret notify.gcm.vapid_prv_key
-    vapid_pub_key: !secret notify.gcm.vapid_pub_key
-    vapid_email: !secret notify.gcm.vapid_email
-
   - name: rohan_email
     platform: mailgun
     recipient: !secret notify.rohan_email.recipient
@@ -56,8 +50,12 @@ automation:
                 value_template: '{{ sensors | length > 0 }}'
             then:
               - service: notify.rohan_kapoor
-                data:
-                  message: The battery of the sensor(s) {{sensors}} is low.
+                data_template:
+                  message: |
+                    The battery of the sensor(s) is low:
+                    {% for sensor in sensors -%}
+                    {{ sensor }}
+                    {% endfor %}
         exclude:
           entity_id:
             - sensor.office_remote_battery_level
