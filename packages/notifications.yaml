@@ -51,6 +51,7 @@ automation:
             then:
               - service: notify.rohan_kapoor
                 data_template:
+                  title: "Low Battery Notification"
                   message: |
                     The battery of the sensor(s) is low:
                     {% for sensor in sensors -%}
