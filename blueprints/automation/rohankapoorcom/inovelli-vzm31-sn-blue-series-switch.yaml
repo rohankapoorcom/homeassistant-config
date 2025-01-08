@@ -13,6 +13,12 @@ blueprint:
           integration: mqtt
           manufacturer: Inovelli
           multiple: true
+    command_path_base:
+      name: Default Command Path Base
+      description: Set the base path for the MQTT command path. This is `zigbee2mqtt` by default.
+      default: zigbee2mqtt
+      selector:
+        text:
     config_button:
       name: Config Press 1x
       description: Action to run, when the config button is pressed one time.
@@ -143,16 +149,19 @@ blueprint:
 mode: single
 max_exceeded: silent
 variables:
+  command_path_base: !input 'command_path_base'
   device_id: !input 'inovelli_switch'
+trigger_variables:
+  command_path_base: !input 'command_path_base'
 trigger:
   - platform: mqtt
-    topic: zigbee2mqtt/+
+    topic: "{{command_path_base}}/+"
 condition:
   - condition: template
     value_template: >
       {% set ns = namespace(topics=[]) %}
       {% for id in device_id %}
-        {% set ns.topics = ns.topics + [ 'zigbee2mqtt/' + device_attr(id, 'name') ] %}
+        {% set ns.topics = ns.topics + [ '{{command_path_base}}/' + device_attr(id, 'name') ] %}
       {% endfor %}
       {{ trigger.topic in ns.topics }}
   - condition: template
