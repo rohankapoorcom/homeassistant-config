@@ -10,7 +10,7 @@ homeassistant:
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 349
   # metric for Metric, imperial for Imperial
-  unit_system: imperial
+  unit_system: us_customary
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/Los_Angeles
   customize: !include customize.yaml
