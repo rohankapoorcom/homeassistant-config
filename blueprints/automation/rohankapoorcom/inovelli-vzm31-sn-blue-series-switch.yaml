@@ -161,7 +161,7 @@ condition:
     value_template: >
       {% set ns = namespace(topics=[]) %}
       {% for id in device_id %}
-        {% set ns.topics = ns.topics + [ '{{command_path_base}}/' + device_attr(id, 'name') ] %}
+        {% set ns.topics = ns.topics + [ command_path_base + "/" + device_attr(id, 'name') ] %}
       {% endfor %}
       {{ trigger.topic in ns.topics }}
   - condition: template
