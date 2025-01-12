@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ${{ needs.prepare-versions.outputs.matrix}}
+        version: ${{ fromJSON(needs.prepare-versions.outputs.matrix) }}
     steps:
       - name: Check out configuration from GitHub
         uses: actions/checkout@v4
