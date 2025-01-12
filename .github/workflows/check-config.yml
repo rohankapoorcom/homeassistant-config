@@ -40,7 +40,7 @@ jobs:
               "is in your repository."
             version="[\"stable\", \"beta\", \"dev\"]"
           fi
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "matrix=${version}" >> "$GITHUB_OUTPUT"
 
   home-assistant:
     name: Home Assistant Core ${{ matrix.version }} Config Check
