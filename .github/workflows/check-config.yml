@@ -24,7 +24,7 @@ jobs:
     needs: [yamllint]
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.determine_version.outputs.version }}
+      matrix: ${{ steps.determine_version.outputs.matrix }}
     steps:
       - name: Check out configuration from Github
         uses: actions/checkout@v4
