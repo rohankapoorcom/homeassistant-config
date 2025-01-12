@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Run yamllint
         uses: frenck/action-yamllint@v1
+
   prepare-versions:
     name: Prepare matrix of versions
     needs: [yamllint]
@@ -40,7 +41,7 @@ jobs:
             version="[\"stable\", \"beta\", \"dev\"]"
           fi
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-        
+
   home-assistant:
     name: Home Assistant Core ${{ matrix.version }} Config Check
     needs: [yamllint, prepare-versions]
