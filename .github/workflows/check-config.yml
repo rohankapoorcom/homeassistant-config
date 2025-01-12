@@ -32,8 +32,8 @@ jobs:
         shell: bash
         id: determine_version
         run: |
-          if [[ -f ".HA_VERSION" ]]; then
-            version="[\"$(<'.HA_VERSION')\", \"stable\", \"beta\", \"dev\"]"
+          if [[ -f "./.HA_VERSION" ]]; then
+            version="[\"$(<'./.HA_VERSION')\", \"stable\", \"beta\", \"dev\"]"
           else
             echo "::warning ::No specific version found; Using "\
               "['stable', 'beta', 'dev'] instead. Ensure the '.HA_VERSION' file"\
@@ -56,3 +56,4 @@ jobs:
         uses: frenck/action-home-assistant@v1
         with:
           secrets: tests/travis_secrets.yaml
+          version: "${{ matrix.version }}"
