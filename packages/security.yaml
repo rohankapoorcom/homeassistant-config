@@ -73,12 +73,12 @@ automation:
       - id: smoke_detected
         platform: state
         entity_id: binary_sensor.fire_alarm
-        to: on
+        to: 'on'
 
       - id: co_detected
         platform: state
         entity_id: binary_sensor.co_alarm
-        to: on
+        to: 'on'
         
     action:
       - service: noonlight.create_alarm
