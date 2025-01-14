@@ -79,7 +79,7 @@ automation:
         platform: state
         entity_id: binary_sensor.co_alarm
         to: 'on'
-        
+
     action:
       - service: noonlight.create_alarm
         data:
