@@ -50,7 +50,7 @@ I treat my Home Assistant configuration as an active open source project but don
 
 The MIT License (MIT)
 
-Copyright (c) 2018-2023 Rohan Kapoor
+Copyright (c) 2025 Rohan Kapoor
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,5 +77,5 @@ SOFTWARE.
 [home-assistant]: https://home-assistant.io
 [issue]: https://github.com/rohankapoorcom/homeassistant-config/issues
 [license-shield]: https://img.shields.io/github/license/rohankapoorcom/homeassistant-config.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg
 [last-commit-shield]: https://img.shields.io/github/last-commit/rohankapoorcom/homeassistant-config.svg
