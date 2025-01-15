@@ -40,6 +40,23 @@ switch:
         friendly_name: Enable Kitchen Glass Break Sensor
         unique_id: 176a235e-8807-4360-91a2-7b36bce15554
 
+      enable_master_bedroom_glass_break_sensor:
+        value_template: "{{ is_state('select.master_bedroom_glass_break_sensor_enable_detection', 'Enable') }}"
+        turn_on:
+          action: select.select_option
+          target:
+            entity_id: select.master_bedroom_glass_break_sensor_enable_detection
+          data:
+            option: Enable
+        turn_off:
+          action: select.select_option
+          target:
+            entity_id: select.master_bedroom_glass_break_sensor_enable_detection
+          data:
+            option: Disable
+        friendly_name: Enable Master Bedroom Glass Break Sensor
+        unique_id: 09dc1a2b-74cb-4399-9312-be69574516ab
+
 automation:
   - id: d69e14ae-1236-4948-8084-bc162861cbcf
     alias: Show Front Door Lock Status
