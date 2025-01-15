@@ -23,7 +23,7 @@ stream:
 switch:
   - platform: template
     switches:
-      enable_ktichen_glass_break_sensor:
+      enable_kitchen_glass_break_sensor:
         value_template: "{{ is_state('select.kitchen_glass_break_sensor_enable_detection', 'Enable') }}"
         turn_on:
           action: select.select_option
