@@ -20,6 +20,26 @@ ffmpeg:
 
 stream:
 
+switch:
+  - platform: template
+    switches:
+      enable_ktichen_glass_break_sensor:
+        value_template: "{{ is_state('select.kitchen_glass_break_sensor_enable_detection', 'Enable') }}"
+        turn_on:
+          action: select.select_option
+          target:
+            entity_id: select.kitchen_glass_break_sensor_enable_detection
+          data:
+            option: Enable
+        turn_off:
+          action: select.select_option
+          target:
+            entity_id: select.kitchen_glass_break_sensor_enable_detection
+          data:
+            option: Disable
+        friendly_name: Enable Kitchen Glass Break Sensor
+        unique_id: 176a235e-8807-4360-91a2-7b36bce15554
+
 automation:
   - id: d69e14ae-1236-4948-8084-bc162861cbcf
     alias: Show Front Door Lock Status
