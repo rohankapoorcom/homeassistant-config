@@ -32,17 +32,17 @@ blueprint:
 mode: restart
 max_exceeded: silent
 
-trigger:
-  - platform: homeassistant
+triggers:
+  - trigger: homeassistant
     event: start
-  - platform: event
+  - trigger: event
     event_type: automation_reloaded
-  - platform: state
+  - trigger: state
     entity_id: !input motion_entity
     from: 'off'
     to: 'on'
 
-action:
+actions:
   - choose:
       - alias: If there is motion, then turn on the light_target.
         conditions:
@@ -57,7 +57,7 @@ action:
                     entity_id: !input light_target
                     state: 'off'
                 sequence:
-                  - service: light.turn_on
+                  - action: light.turn_on
                     target:
                       entity_id: !input light_target
           - wait_for_trigger:
@@ -66,10 +66,10 @@ action:
               from: 'on'
               to: 'off'
           - delay: !input no_motion_wait
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               entity_id: !input light_target
     default:
-      - service: light.turn_off
+      - action: light.turn_off
         target:
           entity_id: !input light_target

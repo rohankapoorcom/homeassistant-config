@@ -21,11 +21,11 @@ blueprint:
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-black-series-lock-notifications.yaml
 mode: single
 max_exceeded: silent
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id: !input lock_entity
-action:
-  - service: zwave_js.set_config_parameter
+actions:
+  - action: zwave_js.set_config_parameter
     target:
       device_id: !input zwave_device
     data_template:

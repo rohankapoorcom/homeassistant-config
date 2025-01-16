@@ -9,11 +9,11 @@ automation:
   - id: f126138c-bb79-4a9c-957a-a727ab53f95f
     alias: Restart Fully Kiosk Browsers
     description: Restart all tablets once a day to make sure that they don't get stuck.
-    trigger:
-      - platform: time
+    triggers:
+      - trigger: time
         at: '03:00:00'
-    action:
-      - service: button.press
+    actions:
+      - action: button.press
         target:
           entity_id: |
             {{

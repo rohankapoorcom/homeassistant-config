@@ -42,19 +42,19 @@ blueprint:
 
 mode: single
 
-trigger:
-  - platform: homeassistant
+triggers:
+  - trigger: homeassistant
     event: start
-  - platform: event
+  - trigger: event
     event_type: automation_reloaded
-  - platform: numeric_state
+  - trigger: numeric_state
     entity_id: !input battery_entity
     above: !input max_percent
-  - platform: numeric_state
+  - trigger: numeric_state
     entity_id: !input battery_entity
     below: !input min_percent
 
-action:
+actions:
   - choose:
       - alias: If the battery is above max_percent, then turn off the charger.
         conditions:
@@ -62,7 +62,7 @@ action:
             entity_id: !input battery_entity
             above: !input max_percent
         sequence:
-          - service: switch.turn_off
+          - action: switch.turn_off
             target:
               entity_id: !input switch_entity
       - alias: If the battery is below 40%, then turn on the charger.
@@ -71,10 +71,10 @@ action:
             entity_id: !input battery_entity
             below: !input min_percent
         sequence:
-          - service: switch.turn_on
+          - action: switch.turn_on
             target:
               entity_id: !input switch_entity
     default:
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: !input switch_entity

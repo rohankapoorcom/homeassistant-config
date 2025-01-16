@@ -57,17 +57,17 @@ fan:
         percentage_template: >
           {{ (state_attr('light.living_room_fan', 'brightness') | float(0) * 0.392)  | round(0)}}
         turn_on:
-          service: light.turn_on
+          action: light.turn_on
           target:
             entity_id:
               - light.living_room_fan
         turn_off:
-          service: light.turn_off
+          action: light.turn_off
           target:
             entity_id:
               - light.living_room_fan
         set_percentage:
-          service: light.turn_on
+          action: light.turn_on
           data:
             brightness_pct: "{{ percentage }}"
           target:
@@ -87,23 +87,23 @@ automation:
       input:
         zooz_switch: f5f0fa81fd632379a87e70da0c55057f
         scene_1:
-          - service: fan.turn_on
+          - action: fan.turn_on
             target:
               entity_id: fan.living_room_fan
             data:
               percentage: 100
         scene_2:
-          - service: fan.turn_on
+          - action: fan.turn_on
             target:
               entity_id: fan.living_room_fan
             data:
               percentage: 65
         scene_4:
-          - service: fan.turn_off
+          - action: fan.turn_off
             target:
               entity_id: fan.living_room_fan
         scene_3:
-          - service: fan.turn_on
+          - action: fan.turn_on
             target:
               entity_id: fan.living_room_fan
             data:
@@ -131,11 +131,11 @@ automation:
         zwave_device:
           *living_room_light_switch_device_id
         config_button:
-          - service: cover.toggle
+          - action: cover.toggle
             data: {}
             target:
               entity_id: cover.living_room_curtains
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *living_room_light_switch_device_id
@@ -147,11 +147,11 @@ automation:
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
         button_a2:
-          - service: cover.open_cover
+          - action: cover.open_cover
             data: {}
             target:
               entity_id: cover.living_room_sheers
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *living_room_light_switch_device_id
@@ -163,11 +163,11 @@ automation:
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
         button_b2:
-          - service: cover.close_cover
+          - action: cover.close_cover
             data: {}
             target:
               entity_id: cover.living_room_sheers
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *living_room_light_switch_device_id
@@ -182,17 +182,17 @@ automation:
   - id: 3f0b4ba4-678b-4b37-b956-440b78c98dbe
     alias: Manage the Living Room Curtains
     description: Automatically open/close the Living Room Curtains based on the Sun Position
-    trigger:
-      - platform: sun
+    triggers:
+      - trigger: sun
         event: sunset
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    action:
+    actions:
       - choose:
           - alias: If it's after sunset or before sunrise, then close the shade.
             conditions:
@@ -205,7 +205,7 @@ automation:
                     before_offset: '+1:30:00'
             sequence:
               - wait_template: "{{ is_state('binary_sensor.living_room_windows', 'off') }}"
-              - service: cover.close_cover
+              - action: cover.close_cover
                 target:
                   entity_id: cover.living_room_curtains
           - alias: If it's 90 minutes after sunrise, then open the shade.
@@ -214,10 +214,10 @@ automation:
                 after: sunrise
                 after_offset: '+1:30:00'
             sequence:
-              - service: cover.open_cover
+              - action: cover.open_cover
                 target:
                   entity_id: cover.living_room_curtains
-      - service: zwave_js.bulk_set_partial_config_parameters
+      - action: zwave_js.bulk_set_partial_config_parameters
         target:
           device_id:
             *living_room_light_switch_device_id

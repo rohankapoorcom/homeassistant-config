@@ -92,29 +92,29 @@ light:
             and is_state('light.office_lights', 'off')
           }}
         turn_on:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.center_key_light
             data:
               color_temp: 143
               brightness: 51
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.left_key_light
             data:
               color_temp: 143
               brightness: 38
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.office_backlighting
             data:
               color_temp: 156
               brightness: 255
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.office_lights
         turn_off:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.center_key_light
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.left_key_light
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.office_backlighting
 
 mqtt:
@@ -200,10 +200,10 @@ script:
                 entity_id: binary_sensor.office_lights_25_percent
                 state: 'on'
             sequence:
-              - service: light.turn_off
+              - action: light.turn_off
                 entity_id: light.office_lights
         default:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.office_lights
             data:
               brightness_pct: 25
@@ -216,10 +216,10 @@ script:
                 entity_id: binary_sensor.office_lights_50_percent
                 state: 'on'
             sequence:
-              - service: light.turn_off
+              - action: light.turn_off
                 entity_id: light.office_lights
         default:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.office_lights
             data:
               brightness_pct: 50
@@ -232,10 +232,10 @@ script:
                 entity_id: binary_sensor.office_lights_75_percent
                 state: 'on'
             sequence:
-              - service: light.turn_off
+              - action: light.turn_off
                 entity_id: light.office_lights
         default:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.office_lights
             data:
               brightness_pct: 75
@@ -248,23 +248,23 @@ script:
                 entity_id: binary_sensor.office_lights_100_percent
                 state: 'on'
             sequence:
-              - service: light.turn_off
+              - action: light.turn_off
                 entity_id: light.office_lights
         default:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.office_lights
             data:
               brightness_pct: 100
 
   set_office_fan_off:
     sequence:
-      - service: fan.turn_off
+      - action: fan.turn_off
         target:
           entity_id: fan.office_fan
 
   set_office_fan_slow:
     sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         target:
           entity_id: fan.office_fan
         data:
@@ -272,7 +272,7 @@ script:
 
   set_office_fan_medium:
     sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         target:
           entity_id: fan.office_fan
         data:
@@ -280,7 +280,7 @@ script:
 
   set_office_fan_high:
     sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         target:
           entity_id: fan.office_fan
         data:
@@ -296,11 +296,11 @@ automation:
       Switches Sentinal to route voice communication audio over to theJabra Headset
       or the Ceiling Speakers
     mode: single
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_boolean.sentinal_headset_enabled
-    action:
-      - service: switch.turn_on
+    actions:
+      - action: switch.turn_on
         target:
           entity_id: >
             {% if trigger.to_state.state == 'on' %}
@@ -312,17 +312,17 @@ automation:
   - id: '1649041295671'
     alias: Control Office Closet Lights by Door Sensor
     description: When the Office Closet Door opens, turn on the light; when closed, turn it off.
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.office_closet_door
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state
                 entity_id: binary_sensor.office_closet_door
                 state: 'on'
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 target:
                   entity_id: light.office_closet_lights
           - conditions:
@@ -330,7 +330,7 @@ automation:
                 entity_id: binary_sensor.office_closet_door
                 state: 'off'
             sequence:
-              - service: light.turn_off
+              - action: light.turn_off
                 target:
                   entity_id: light.office_closet_lights
         default: []
@@ -344,7 +344,7 @@ automation:
       input:
         zwave_device: bec9907b514903d09df1ba766052f542
         button_b2:
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               area_id:
                 - office

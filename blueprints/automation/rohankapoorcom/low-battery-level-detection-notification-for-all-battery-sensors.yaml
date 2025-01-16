@@ -69,13 +69,13 @@ variables:
       {% endif %}
     {% endfor %}
     {{result.sensors}}
-trigger:
-  - platform: time
+triggers:
+  - trigger: time
     at: !input 'time'
-condition:
+conditions:
   - condition: template
     value_template: '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday()) }}'
-action:
+actions:
   - choose: []
     default: !input 'actions'
 mode: single

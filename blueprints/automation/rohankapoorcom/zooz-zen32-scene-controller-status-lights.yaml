@@ -57,28 +57,28 @@ variables:
   small_2_button_light: !input small_2_button_light
   small_3_button_light: !input small_3_button_light
   small_4_button_light: !input small_4_button_light
-trigger:
-  - platform: homeassistant
+triggers:
+  - trigger: homeassistant
     event: start
-  - platform: event
+  - trigger: event
     event_type: automation_reloaded
-  - platform: state
+  - trigger: state
     entity_id: !input large_button_light
-  - platform: state
+  - trigger: state
     entity_id: !input small_1_button_light
-  - platform: state
+  - trigger: state
     entity_id: !input small_2_button_light
-  - platform: state
+  - trigger: state
     entity_id: !input small_3_button_light
-  - platform: state
+  - trigger: state
     entity_id: !input small_4_button_light
-action:
+actions:
   - choose:
       - conditions:
           - "{{ not not large_button_light }}"
           - "{{ has_value(large_button_light) }}"
         sequence:
-          - service: >
+          - action: >
               homeassistant.turn_{{ states(large_button_light) }}
             target:
               device_id: !input zooz_switch
@@ -87,7 +87,7 @@ action:
           - "{{ not not small_1_button_light }}"
           - "{{ has_value(small_1_button_light) }}"
         sequence:
-          - service: zwave_js.set_value
+          - action: zwave_js.set_value
             target:
               device_id: !input zooz_switch
             data_template:
@@ -100,7 +100,7 @@ action:
           - "{{ not not small_2_button_light }}"
           - "{{ has_value(small_2_button_light) }}"
         sequence:
-          - service: zwave_js.set_value
+          - action: zwave_js.set_value
             target:
               device_id: !input zooz_switch
             data_template:
@@ -113,7 +113,7 @@ action:
           - "{{ not not small_3_button_light }}"
           - "{{ has_value(small_3_button_light) }}"
         sequence:
-          - service: zwave_js.set_value
+          - action: zwave_js.set_value
             target:
               device_id: !input zooz_switch
             data_template:
@@ -126,7 +126,7 @@ action:
           - "{{ not not small_4_button_light }}"
           - "{{ has_value(small_4_button_light) }}"
         sequence:
-          - service: zwave_js.set_value
+          - action: zwave_js.set_value
             target:
               device_id: !input zooz_switch
             data_template:

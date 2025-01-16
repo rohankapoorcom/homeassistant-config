@@ -42,7 +42,7 @@ script:
         description: "The current state of the dishwasher (Clean, Dirty, Running)"
         example: Running
     sequence:
-      - service: open_epaper_link.drawcustom
+      - action: open_epaper_link.drawcustom
         data:
           background: white
           rotate: 0
@@ -121,13 +121,13 @@ automation:
         starting_threshold: 25
         finishing_threshold: 15
         actions:
-          - service: script.update_dishwasher_display
+          - action: script.update_dishwasher_display
             data:
               state: Clean
         starting_hysteresis: 5
         finishing_hysteresis: 10
         pre_actions:
-          - service: script.update_dishwasher_display
+          - action: script.update_dishwasher_display
             data:
               state: Running
 
@@ -139,11 +139,11 @@ automation:
       input:
         epaper_tag: open_epaper_link.00007E1F8BCCB294
         button_1:
-          - service: script.update_dishwasher_display
+          - action: script.update_dishwasher_display
             data:
               state: Clean
         button_2:
-          - service: script.update_dishwasher_display
+          - action: script.update_dishwasher_display
             data:
               state: Dirty
 
@@ -155,10 +155,10 @@ automation:
       input:
         inovelli_switch: *kitchen_light_switch_device_ids
         config_button:
-          - service: cover.toggle
+          - action: cover.toggle
             target:
               entity_id: cover.kitchen_shades
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 170
@@ -169,14 +169,14 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_a2:
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id: light.kitchen_cabinet_lights
             data:
               brightness_pct: 100
               kelvin: 3000
               transition: 2
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 70
@@ -187,12 +187,12 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_b2:
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               entity_id: light.kitchen_cabinet_lights
             data:
               transition: 2
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 70
@@ -203,17 +203,17 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_a3:
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id: light.kitchen_cabinet_lights
             data:
               brightness_pct: 100
               kelvin: 3000
               transition: 2
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id: light.kitchen_lights
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 130
@@ -224,15 +224,15 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_b3:
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               entity_id: light.kitchen_cabinet_lights
             data:
               transition: 2
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               entity_id: light.kitchen_lights
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 130
@@ -243,12 +243,12 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_a4:
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               area_id: kitchen
             data:
               brightness_pct: 100
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 142
@@ -259,10 +259,10 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_b4:
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               area_id: kitchen
-          - service: script.inovelli_blue_notifications
+          - action: script.inovelli_blue_notifications
             data:
               led: All
               color: 142
@@ -276,17 +276,17 @@ automation:
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades
     description: Automatically open/close the Kitchen Shades based on the Sun Position
-    trigger:
-      - platform: sun
+    triggers:
+      - trigger: sun
         event: sunset
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    action:
+    actions:
       - choose:
           - alias: If it's after sunset or before sunrise, then close the shade.
             conditions:
@@ -298,7 +298,7 @@ automation:
                     before: sunrise
                     before_offset: '+1:30:00'
             sequence:
-              - service: cover.close_cover
+              - action: cover.close_cover
                 target:
                   entity_id: cover.kitchen_shades
           - alias: If it's 90 minutes after sunrise, then open the shade.
@@ -307,10 +307,10 @@ automation:
                 after: sunrise
                 after_offset: '+1:30:00'
             sequence:
-              - service: cover.open_cover
+              - action: cover.open_cover
                 target:
                   entity_id: cover.kitchen_shades
-      - service: script.inovelli_blue_notifications
+      - action: script.inovelli_blue_notifications
         data:
           led: All
           color: 170

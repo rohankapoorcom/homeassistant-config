@@ -28,17 +28,17 @@ automation:
         inovelli_switch:
           - 1b083dd3571388e94041b98699fb31cf
         config_button:
-          - service: button.press
+          - action: button.press
             data: {}
             target:
               entity_id: button.downstairs_hallway_tablet_restart_browser
         button_a2:
-          - service: switch.toggle
+          - action: switch.toggle
             data: {}
             target:
               entity_id: switch.downstairs_hallway_tablet_charger
         button_b2:
-          - service: switch.toggle
+          - action: switch.toggle
             data: {}
             target:
               entity_id: switch.downstairs_hallway_tv
@@ -46,48 +46,48 @@ automation:
   - id: 60f9f9b9-ef6e-494d-af89-fd43cdc92d9e
     alias: Control the Downstairs Hallway TV
     description: Turn the Downstairs Hallway TV on/off due to Roku state changes
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: state
+      - trigger: state
         entity_id: media_player.roku_streambar
         to: 'on'
-      - platform: state
+      - trigger: state
         entity_id: media_player.roku_streambar
         to: 'idle'
         for:
           minutes: 10
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state
                 entity_id: media_player.roku_streambar
                 state: 'idle'
             sequence:
-              - service: switch.turn_off
+              - action: switch.turn_off
                 entity_id: switch.downstairs_hallway_tv
           - conditions:
               - condition: state
                 entity_id: media_player.roku_streambar
                 state: 'on'
             sequence:
-              - service: switch.turn_on
+              - action: switch.turn_on
                 entity_id: switch.downstairs_hallway_tv
 
   - id: 825c80a1-794c-4f3c-95a9-077ebee85d58
     alias: Update Water Heater Cleaning Status
     description: Show the last cleaning time on the water heater display
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: state
+      - trigger: state
         entity_id: input_datetime.water_heater_last_cleaning
-    action:
-      - service: open_epaper_link.drawcustom
+    actions:
+      - action: open_epaper_link.drawcustom
         data:
           background: white
           rotate: 0
