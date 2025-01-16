@@ -1,5 +1,6 @@
 type: iframe
 url: /api/ingress/musicassistant/
+aspect_ratio: 100%
 # type: custom:layout-card
 # cards:
 #   - entities:
