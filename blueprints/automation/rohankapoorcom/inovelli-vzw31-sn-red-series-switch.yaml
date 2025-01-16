@@ -271,11 +271,11 @@ mode: single
 max_exceeded: silent
 variables:
   device_id: !input 'zwave_device'
-trigger:
-  - platform: event
+triggers:
+  - trigger: event
     event_type: zwave_js_value_notification
 condition: '{{ trigger.event.data.device_id in device_id }}'
-action:
+actions:
   - variables:
       button_id: '{{ trigger.event.data.property_key_name }}'
       press_count: '{{ trigger.event.data.value }}'

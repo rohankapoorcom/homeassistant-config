@@ -27,16 +27,16 @@ blueprint:
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/adaptive-lighting-sleep-mode.yaml
 mode: single
 max_exceeded: silent
-trigger:
-  - platform: homeassistant
+triggers:
+  - trigger: homeassistant
     event: start
-  - platform: event
+  - trigger: event
     event_type: automation_reloaded
-  - platform: time
+  - trigger: time
     at: !input bedtime
-  - platform: time
+  - trigger: time
     at: !input wakeup_time
-action:
+actions:
   - choose:
       - alias: If it's bedtime, set the lights to dim.
         conditions:
@@ -44,10 +44,10 @@ action:
             after: !input bedtime
             before: !input wakeup_time
         sequence:
-          - service: switch.turn_on
+          - action: switch.turn_on
             target:
               entity_id: !input adaptive_lighting_switch
     default:
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: !input adaptive_lighting_switch

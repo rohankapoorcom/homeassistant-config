@@ -7,21 +7,21 @@
 ###############################################################################
 ---
 template:
-  - trigger:
-      - platform: time_pattern
+  - triggers:
+      - trigger: time_pattern
         minutes: "/1"
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: event_template_reloaded
-    action:
-      - service: weather.get_forecasts
+    actions:
+      - action: weather.get_forecasts
         data:
           type: hourly
         target:
           entity_id: weather.pirateweather
         response_variable: hourly_weather
-      - service: weather.get_forecasts
+      - action: weather.get_forecasts
         data:
           type: daily
         target:

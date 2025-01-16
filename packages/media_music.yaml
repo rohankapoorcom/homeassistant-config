@@ -22,7 +22,7 @@ homeassistant:
         entity_id: media_player.all_speakers
 
       trigger_roku_keypress: &trigger_roku_keypress
-        - platform: event
+        - trigger: event
           event_type: roku_command
 
       roku_event_data: &roku_event_data
@@ -41,7 +41,7 @@ homeassistant:
         vol_up: 'true'
 
       turn_on_speakers: &turn_on_speakers
-        service: remote.turn_on
+        action: remote.turn_on
         data_template:
           entity_id: "{{ entity_id }}"
           activity: "{{ state_attr(entity_id, 'music_activity_id') }}"
@@ -142,7 +142,7 @@ emulated_roku:
 ## Media Player
 ################################################
 media_player:
-  - platform: universal
+  - trigger: universal
     name: All Speakers
     children:
       - media_player.whole_house
@@ -154,25 +154,25 @@ media_player:
       - media_player.upstairs_speakers
     commands:
       turn_on:
-        service: switch.turn_on
+        action: switch.turn_on
         data:
           entity_id: switch.upstairs_speakers
       turn_off:
-        service: switch.turn_off
+        action: switch.turn_off
         data:
           entity_id: switch.upstairs_speakers
       volume_up:
-        service: script.harmony_volume
+        action: script.harmony_volume
         data_template:
           <<: *increment_volume
           entity_id: remote.upstairs_hub
       volume_down:
-        service: script.harmony_volume
+        action: script.harmony_volume
         data_template:
           <<: *decrement_volume
           entity_id: remote.upstairs_hub
       volume_mute:
-        service: media_player.volume_mute
+        action: media_player.volume_mute
         data_template:
           entity_id: media_player.upstairs_speakers
           is_volume_muted: "{{ not state_attr('media_player.upstairs_speakers', 'is_volume_muted') }}"
@@ -188,28 +188,28 @@ media_player:
       - media_player.denon_avr_x4300h
     commands:
       turn_on:
-        service: switch.turn_on
+        action: switch.turn_on
         data:
           entity_id: switch.downstairs_speakers
       turn_off:
-        service: switch.turn_off
+        action: switch.turn_off
         data:
           entity_id: switch.downstairs_speakers
       volume_up:
-        service: media_player.volume_up
+        action: media_player.volume_up
         data:
           entity_id: media_player.denon_avr_x4300h
       volume_down:
-        service: media_player.volume_up
+        action: media_player.volume_up
         data:
           entity_id: media_player.denon_avr_x4300h
       volume_mute:
-        service: media_player.volume_mute
+        action: media_player.volume_mute
         data_template:
           entity_id: media_player.denon_avr_x4300h
           is_volume_muted: "{{ not state_attr('media_player.denon_avr_x4300h', 'is_volume_muted') }}"
       volume_set:
-        service: media_player.volume_set
+        action: media_player.volume_set
         data_template:
           entity_id: media_player.denon_avr_x4300h
           volume_level: '{{ volume_level }}'
@@ -253,11 +253,11 @@ switch:
           {% set entity_id = "remote.upstairs_hub" %}
           {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
         turn_on:
-          service: script.harmony_music_turn_on
+          action: script.harmony_music_turn_on
           data:
             entity_id: remote.upstairs_hub
         turn_off:
-          service: remote.turn_off
+          action: remote.turn_off
           data:
             entity_id: remote.upstairs_hub
 
@@ -268,12 +268,12 @@ switch:
           {% set entity_id = "remote.upstairs_hub" %}
           {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'pc_activity_name')) }}
         turn_on:
-          service: remote.turn_on
+          action: remote.turn_on
           data_template:
             entity_id: remote.upstairs_hub
             activity: "{{ state_attr('remote.upstairs_hub', 'pc_activity_id') }}"
         turn_off:
-          service: remote.turn_off
+          action: remote.turn_off
           data:
             entity_id: remote.upstairs_hub
 
@@ -284,11 +284,11 @@ switch:
           {% set entity_id = "remote.living_room_hub" %}
           {{ is_state_attr(entity_id, 'current_activity', state_attr(entity_id, 'music_activity_name')) }}
         turn_on:
-          service: script.harmony_music_turn_on
+          action: script.harmony_music_turn_on
           data:
             entity_id: remote.living_room_hub
         turn_off:
-          service: remote.turn_off
+          action: remote.turn_off
           data:
             entity_id: remote.living_room_hub
 
@@ -320,13 +320,13 @@ automation:
   ################################################
   - id: turn_on_speakers_if_chromecast_audio_playing
     alias: Turn on Speakers if Chromecast Audio Playing
-    trigger:
+    triggers:
       - <<: *media_player_entity
         platform: state
         to: 'playing'
-      - platform: state
+      - trigger: state
         entity_id: input_select.last_presence_location
-    condition:
+    conditions:
       - condition: state
         <<: *media_player_entity
         state: 'playing'
@@ -342,8 +342,8 @@ automation:
           -%}
             {{ is_state(item.entity_id, 'off') }}
           {%- endfor -%}
-    action:
-      - service: script.harmony_music_turn_on
+    actions:
+      - action: script.harmony_music_turn_on
         # This should only evaluate to one remote
         data_template:
           entity_id: >
@@ -356,7 +356,7 @@ automation:
 
   - id: turn_off_speakers_when_chromecast_audio_stops_playing
     alias: Turn off Speakers when Chromecast Audio Stops Playing
-    trigger:
+    triggers:
       - <<: *media_player_entity
         platform: state
         to: 'off'
@@ -372,7 +372,7 @@ automation:
         to: 'idle'
         for:
           minutes: 10
-    condition:
+    conditions:
       condition: or
       conditions:
         - condition: state
@@ -384,8 +384,8 @@ automation:
         - condition: state
           <<: *media_player_entity
           state: 'idle'
-    action:
-      - service: python_script.media_music_turn_off_speakers
+    actions:
+      - action: python_script.media_music_turn_off_speakers
         data_template:
           entities: >
             {%- for item in states.remote if (
@@ -399,12 +399,12 @@ automation:
   # Turns them off in not
   - id: evaluate_and_turn_off_speakers_when_presence_location_changes
     alias: Evaluate and Turn off Speakers when Presence Location Changes
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         minutes: '/5'
         seconds: 00
-    action:
-      service: python_script.media_music_turn_off_speakers
+    actions:
+      action: python_script.media_music_turn_off_speakers
       data_template:
         entities: >
           {%- for sensor in states.sensor if (
@@ -427,35 +427,35 @@ automation:
   ################################################
   - id: playpause_chromecast_audio
     alias: Play/Pause Chromecast Audio
-    trigger:
+    triggers:
       - <<: *trigger_roku_keypress
         event_data:
           <<: *roku_event_data
           key: Play
-    action:
-      - service: media_player.media_play_pause
+    actions:
+      - action: media_player.media_play_pause
         <<: *media_player_entity
 
   - id: rewind_chromecast_audio
     alias: Rewind Chromecast Audio
-    trigger:
+    triggers:
       - <<: *trigger_roku_keypress
         event_data:
           <<: *roku_event_data
           key: Rev
-    action:
-      - service: media_player.media_previous_track
+    actions:
+      - action: media_player.media_previous_track
         <<: *media_player_entity
 
   - id: skip_chromecast_audio
     alias: Skip Chromecast Audio
-    trigger:
+    triggers:
       - <<: *trigger_roku_keypress
         event_data:
           <<: *roku_event_data
           key: Fwd
-    action:
-      - service: media_player.media_next_track
+    actions:
+      - action: media_player.media_next_track
         <<: *media_player_entity
 
   ################################################
@@ -463,17 +463,17 @@ automation:
   ################################################
   - id: restore_speakers_playing_at_startup
     alias: Restore Speakers Playing at Startup
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: platform_discovered
         event_data:
-          service: harmony
-      - platform: time_pattern
+          action: harmony
+      - trigger: time_pattern
         minutes: '/5'
-    action:
-      - service: input_number.set_value
+    actions:
+      - action: input_number.set_value
         data_template:
           entity_id: input_number.speakers_playing
           value: >
@@ -502,7 +502,7 @@ script:
         value_template: "{{ is_state(entity_id, 'on') }}"
       - condition: template
         value_template: "{{ state_attr(entity_id, 'volume_device') is not none }}"
-      - service: remote.send_command
+      - action: remote.send_command
         data_template:
           entity_id: "{{ entity_id }}"
           command: "{{ 'VolumeUp' if vol_up == 'true' else 'VolumeDown' }}"
@@ -523,7 +523,7 @@ script:
           {% endif %}
         data_template:
           entity_id: "{{ entity_id }}"
-      - service: input_number.set_value
+      - action: input_number.set_value
         data_template:
           entity_id: input_number.speakers_playing
           value: >
@@ -542,11 +542,11 @@ script:
   harmony_music_turn_on_first_time:
     alias: Turn on Speakers (Music) First Time
     sequence:
-      - service: media_player.media_pause
+      - action: media_player.media_pause
         <<: *media_player_entity
       - <<: *turn_on_speakers
       - wait_template: "{{ is_state(entity_id, 'on') }}"
         timeout: '00:00:08'
       - delay: '0:00:05'
-      - service: media_player.media_play
+      - action: media_player.media_play
         <<: *media_player_entity

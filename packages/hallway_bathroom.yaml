@@ -45,19 +45,19 @@ automation:
     description: Utilizes motion and humidity for controlling the Hallway Bathroom Fan.
     mode: restart
     max_exceeded: silent
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.hallway_bathroom_motion
         from: 'off'
         to: 'on'
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.hallway_bathroom_relative_humidity
         above: 20
-    action:
+    actions:
       - choose:
           - alias: If there is motion or high humidity, then turn on the fan.
             conditions:
@@ -70,22 +70,22 @@ automation:
                     entity_id: sensor.hallway_bathroom_relative_humidity
                     above: 20
             sequence:
-              - service: fan.turn_on
+              - action: fan.turn_on
                 target:
                   entity_id: fan.hallway_bathroom_fan
               - wait_for_trigger:
-                  - platform: template
+                  - trigger: template
                     value_template: >
                       {{ states('sensor.hallway_bathroom_relative_humidity') | float <= 10
                       and is_state('binary_sensor.hallway_bathroom_motion', 'off') }}
                 continue_on_timeout: false
               - delay:
                   minutes: 5
-              - service: fan.turn_off
+              - action: fan.turn_off
                 target:
                   entity_id: fan.hallway_bathroom_fan
         default:
-          - service: fan.turn_off
+          - action: fan.turn_off
             target:
               entity_id: fan.hallway_bathroom_fan
 
@@ -107,7 +107,7 @@ automation:
       input:
         zwave_device: b6df24a18353633370965899bb1e9a05
         button_a:
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id: light.hallway_bathroom_lights
             data:

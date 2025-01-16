@@ -231,17 +231,17 @@ mode: single
 max_exceeded: silent
 variables:
   device_id: !input 'zooz_switch'
-trigger:
-  - platform: event
+triggers:
+  - trigger: event
     event_type: zwave_js_value_notification
 condition: '{{ trigger.event.data.device_id in device_id }}'
-action:
+actions:
   - variables:
       property_key_name: '{{ trigger.event.data.property_key_name }}'
       label: '{{ trigger.event.data.label }}'
       command_class_name: '{{ trigger.event.data.command_class_name }}'
       value: '{{ trigger.event.data.value }}'
-  - service: logbook.log
+  - action: logbook.log
     data:
       name: Z-Wave JS
       message: 'received event: {{ command_class_name }} - {{ value }} - {{ label }}'

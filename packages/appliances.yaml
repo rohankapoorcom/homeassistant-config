@@ -22,23 +22,23 @@ homeassistant:
 automation:
   - id: 22220e6d-5b70-4718-8a3c-7080f270f928
     alias: Turn on the Hot Water Pump when there is motion in any of the bathrooms
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.master_bathroom_motion
         from: 'off'
         to: 'on'
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.hallway_bathroom_motion
         from: 'off'
         to: 'on'
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.downstairs_bathroom_motion
         from: 'off'
         to: 'on'
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion
         from: 'off'
         to: 'on'
-    action:
-      - service: switch.turn_on
+    actions:
+      - action: switch.turn_on
         entity_id: switch.hot_water_pump

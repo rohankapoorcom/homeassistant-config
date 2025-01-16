@@ -39,38 +39,38 @@ automation:
       input:
         emulated_roku_name: 4t8k7RAjE3TBcfheQvCATZ
         up_action:
-          - service: media_player.select_source
+          - action: media_player.select_source
             target:
               entity_id: media_player.living_room_shield_tv
             data:
               source: Netflix
         right_action:
-          - service: media_player.select_source
+          - action: media_player.select_source
             target:
               entity_id: media_player.living_room_shield_tv
             data:
               source: Plex
         down_action:
-          - service: media_player.select_source
+          - action: media_player.select_source
             target:
               entity_id: media_player.living_room_shield_tv
             data:
               source: YouTube
         left_action:
-          - service: androidtv.adb_command
+          - action: androidtv.adb_command
             target:
               entity_id: media_player.living_room_shield_tv
             data:
               # yamllint disable-line rule:line-length
               command: "am start -a android.intent.action.VIEW -d -n com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity"
         home_action:
-          - service: media_player.select_source
+          - action: media_player.select_source
             target:
               entity_id: media_player.living_room_shield_tv
             data:
               source: "com.hbo.hbonow"
         search_action:
-          - service: androidtv.adb_command
+          - action: androidtv.adb_command
             target:
               entity_id: media_player.living_room_shield_tv
             data:
@@ -78,12 +78,12 @@ automation:
 
   - id: c8ff656a-e0d6-4b26-9840-0da9863b1867
     alias: Living Room Shield TV Notify Washer
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.washer_wash_completed
         to: 'on'
-    action:
-      - service: notify.living_room_shield_tv
+    actions:
+      - action: notify.living_room_shield_tv
         data:
           title: Washer Complete
           message: The washer has finished it's cycle.
@@ -94,12 +94,12 @@ automation:
 
   - id: e2f38056-ce90-46ca-8138-51a9637e3e50
     alias: Living Room Shield TV Notify Dryer
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.dryer_dry_completed
         to: 'on'
-    action:
-      - service: notify.living_room_shield_tv
+    actions:
+      - action: notify.living_room_shield_tv
         data:
           title: Dryer Complete
           message: The dryer has finished it's cycle.
@@ -110,12 +110,12 @@ automation:
 
   - id: c34228e0-c6c9-431f-ad73-cef94537ca2c
     alias: Living Room TV Notify Phone Call
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.line_103_status
         to: 'incoming'
-    action:
-      - service: notify.living_room_shield_tv
+    actions:
+      - action: notify.living_room_shield_tv
         data_template:
           title: Incoming Phone Call
           message: >
@@ -129,14 +129,14 @@ automation:
     alias: Control the Living Room TV Remote when Charging
     description: Turn off the motion detection and screen when the Living Room TV Remote is charging.
     mode: single
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.living_room_tv_remote_plugged_in
-    action:
+    actions:
       - choose:
           - alias: If the Living Room TV Remote is charging, turn off the motion detection and screen
             conditions:
@@ -144,14 +144,14 @@ automation:
                 entity_id: binary_sensor.living_room_tv_remote_plugged_in
                 state: 'on'
             sequence:
-              - service: switch.turn_off
+              - action: switch.turn_off
                 entity_id: switch.living_room_tv_remote_motion_detection
-              - service: switch.turn_off
+              - action: switch.turn_off
                 entity_id: switch.living_room_tv_remote_screen
         default:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.living_room_tv_remote_motion_detection
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.living_room_tv_remote_screen
 
 ################################################
@@ -161,22 +161,22 @@ script:
   turn_on_watch_living_room_tv:
     alias: Turn on the Living Room Shield TV
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
             - media_player.shield
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?MSQUICK1
-      - service: androidtv.adb_command
+      - action: androidtv.adb_command
         data:
           entity_id: media_player.living_room_shield_tv
           command: HOME
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
     mode: single
@@ -185,13 +185,13 @@ script:
   turn_off_the_living_room_tv:
     alias: Turn off the Living Room Shield TV
     sequence:
-      - service: media_player.turn_off
+      - action: media_player.turn_off
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
             - media_player.shield
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
     mode: single
@@ -200,18 +200,18 @@ script:
   turn_on_watch_living_room_apple_tv:
     alias: Turn on the Living Room Apple TV
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
             - media_player.living_room_apple_tv
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?MSQUICK3
-      - service: remote.send_command
+      - action: remote.send_command
         target:
           entity_id: remote.living_room_apple_tv
         data:
@@ -219,7 +219,7 @@ script:
           command:
             - wakeup
             - home
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
     mode: single
@@ -228,16 +228,16 @@ script:
   turn_on_the_living_room_speakers:
     alias: Turn on the Living Room Speakers
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.denon_avr_x4300h
-      - service: media_player.turn_off
+      - action: media_player.turn_off
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.shield
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
@@ -248,18 +248,18 @@ script:
   turn_on_the_nintendo_switch:
     alias: Turn on the Nintendo Switch
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
             - media_player.shield
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?MSQUICK2
-      - service: switch.turn_off
+      - action: switch.turn_off
         target:
           entity_id: switch.living_room_conference_camera
     mode: single
@@ -268,25 +268,25 @@ script:
   turn_on_the_living_room_video_conferencing_system:
     alias: Turn on the Living Room Video Conferencing System
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.living_room_tv
             - media_player.denon_avr_x4300h
-      - service: switch.turn_on
+      - action: switch.turn_on
         target:
           entity_id: switch.living_room_conference_camera
-      - service: media_player.select_source
+      - action: media_player.select_source
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           source: PC
-      - service: media_player.select_sound_mode
+      - action: media_player.select_sound_mode
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           sound_mode: STEREO
-      - service: media_player.volume_set
+      - action: media_player.volume_set
         data:
           volume_level: 0.3
         target:
@@ -305,16 +305,16 @@ script:
                 entity_id: switch.living_room_sync_box_light_sync
                 state: 'on'
             sequence:
-              - service: switch.turn_off
+              - action: switch.turn_off
                 target:
                   entity_id: switch.living_room_sync_box_light_sync
         default:
-          - service: rest_command.set_philips_hue_syncbox_input_living_room
-          - service: select.select_option
+          - action: rest_command.set_philips_hue_syncbox_input_living_room
+          - action: select.select_option
             data:
               option: Living Room
             target:
               entity_id: select.living_room_sync_box_entertainment_area
-          - service: switch.turn_on
+          - action: switch.turn_on
             target:
               entity_id: switch.living_room_sync_box_light_sync

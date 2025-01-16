@@ -47,16 +47,16 @@ mode: single
 max_exceeded: silent
 variables:
   zwave_device: !input zwave_device
-trigger:
-  - platform: homeassistant
+triggers:
+  - trigger: homeassistant
     event: start
-  - platform: event
+  - trigger: event
     event_type: automation_reloaded
-  - platform: time
+  - trigger: time
     at: !input bedtime
-  - platform: time
+  - trigger: time
     at: !input wakeup_time
-action:
+actions:
   - choose:
       - alias: If it's bedtime, set the lights to dim.
         conditions:
@@ -64,7 +64,7 @@ action:
             after: !input bedtime
             before: !input wakeup_time
         sequence:
-          - service: zwave_js.set_config_parameter
+          - action: zwave_js.set_config_parameter
             target:
               device_id: !input zwave_device
             data:
@@ -75,7 +75,7 @@ action:
                   Default Level
                 {% endif %}
               value: !input bedtime_brightness
-          - service: zwave_js.set_config_parameter
+          - action: zwave_js.set_config_parameter
             target:
               device_id: !input zwave_device
             data:
@@ -87,7 +87,7 @@ action:
                 {% endif %}
               value: !input bedtime_brightness
     default:
-      - service: zwave_js.set_config_parameter
+      - action: zwave_js.set_config_parameter
         target:
           device_id: !input zwave_device
         data:
@@ -98,7 +98,7 @@ action:
               Default Level
             {% endif %}
           value: !input wakeup_time_brightness
-      - service: zwave_js.set_config_parameter
+      - action: zwave_js.set_config_parameter
         target:
           device_id: !input zwave_device
         data:

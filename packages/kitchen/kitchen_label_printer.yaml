@@ -22,11 +22,11 @@ shell_command:
 automation:
   - id: c4fdcb6b-1b34-4445-950e-122605812a25
     alias: Print Main Label
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_button.print_main_label
-    action:
-      - service: shell_command.print_label
+    actions:
+      - action: shell_command.print_label
         data:
           content: >
             {{ states('input_text.label_text') }}
@@ -37,11 +37,11 @@ automation:
 
   - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
     alias: Print Tape Label
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_button.print_tape_label
-    action:
-      - service: shell_command.print_tape_label
+    actions:
+      - action: shell_command.print_tape_label
         data:
           content: >
             {{ states('input_text.label_text') }}
@@ -52,15 +52,15 @@ automation:
 
   - id: 828c11ac-62c2-49da-891c-7d6b99cd88c4
     alias: Set Label Date to Today at Midnight
-    trigger:
-      - platform: time
+    triggers:
+      - trigger: time
         at: "00:00:00"
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    action:
-      - service: input_datetime.set_datetime
+    actions:
+      - action: input_datetime.set_datetime
         target:
           entity_id: input_datetime.label_date
         data:

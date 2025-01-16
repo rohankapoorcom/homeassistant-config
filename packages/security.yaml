@@ -106,7 +106,7 @@ automation:
   - id: '1652658055419'
     alias: Smoke & CO Alarm Notifications
     description: 'Notify when Smoke or Carbon Monoxide is Detected'
-    trigger:
+    triggers:
       - id: smoke_detected
         platform: state
         entity_id: binary_sensor.fire_alarm
@@ -117,16 +117,16 @@ automation:
         entity_id: binary_sensor.co_alarm
         to: 'on'
 
-    action:
-      - service: noonlight.create_alarm
+    actions:
+      - action: noonlight.create_alarm
         data:
-          service: fire
+          action: fire
       - choose:
           - conditions:
               - condition: trigger
                 id: smoke_detected
             sequence:
-              - service: notify.rohan_kapoor
+              - action: notify.rohan_kapoor
                 data:
                   title: Smoke Alarm Triggered
                   data:
@@ -138,7 +138,7 @@ automation:
               - condition: trigger
                 id: co_detected
             sequence:
-              - service: notify.rohan_kapoor
+              - action: notify.rohan_kapoor
                 data:
                   title: Carbon Monoxide Alarm Triggered
                   data:

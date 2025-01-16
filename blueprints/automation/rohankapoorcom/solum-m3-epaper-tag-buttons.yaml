@@ -29,11 +29,11 @@ mode: single
 max_exceeded: silent
 variables:
   epaper_tag: !input 'epaper_tag'
-trigger:
-  - platform: event
+triggers:
+  - trigger: event
     event_type: open_epaper_link_event
 condition: "{{ trigger.event.data.device_id == state_attr(epaper_tag, 'unique_id') }}"
-action:
+actions:
   - variables:
       button_id: '{{ trigger.event.data.type }}'
   - choose:

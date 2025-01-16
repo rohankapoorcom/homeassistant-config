@@ -27,10 +27,10 @@ automation:
       input:
         zwave_device: 4ef91ee5285ec4ad43cb3dbf25b3faf7
         config_button:
-          - service: cover.toggle
+          - action: cover.toggle
             target:
               entity_id: cover.gym_shades
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id: 4ef91ee5285ec4ad43cb3dbf25b3faf7
             data:
@@ -41,18 +41,18 @@ automation:
                 All LED Strip Effect - Duration: 20
                 All LED Strip Effect - Effect: Open/close
         config_button2:
-          - service: button.press
+          - action: button.press
             data: {}
             target:
               entity_id:
                 - button.gym_tablet_restart_browser
         button_a2:
-          - service: fan.turn_on
+          - action: fan.turn_on
             data: {}
             target:
               entity_id: fan.gym_fan
         button_b2:
-          - service: fan.turn_off
+          - action: fan.turn_off
             data: {}
             target:
               entity_id: fan.gym_fan
@@ -60,17 +60,17 @@ automation:
   - id: 067c456d-a3fa-4ee2-9969-b2a48445e369
     alias: Manage the Gym Shades
     description: Automatically open/close the Gym Shades based on the Sun Position
-    trigger:
-      - platform: sun
+    triggers:
+      - trigger: sun
         event: sunset
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    action:
+    actions:
       - choose:
           - alias: If it's after sunset or before sunrise, then close the shade.
             conditions:
@@ -82,7 +82,7 @@ automation:
                     before: sunrise
                     before_offset: '+1:30:00'
             sequence:
-              - service: cover.close_cover
+              - action: cover.close_cover
                 target:
                   entity_id: cover.gym_shades
           - alias: If it's 90 minutes after sunrise, then open the shade.
@@ -91,10 +91,10 @@ automation:
                 after: sunrise
                 after_offset: '+1:30:00'
             sequence:
-              - service: cover.open_cover
+              - action: cover.open_cover
                 target:
                   entity_id: cover.gym_shades
-      - service: zwave_js.bulk_set_partial_config_parameters
+      - action: zwave_js.bulk_set_partial_config_parameters
         target:
           device_id: 4ef91ee5285ec4ad43cb3dbf25b3faf7
         data:

@@ -153,10 +153,10 @@ variables:
   device_id: !input 'inovelli_switch'
 trigger_variables:
   command_path_base: !input 'command_path_base'
-trigger:
-  - platform: mqtt
+triggers:
+  - trigger: mqtt
     topic: "{{command_path_base}}/+"
-condition:
+conditions:
   - condition: template
     value_template: >
       {% set ns = namespace(topics=[]) %}
@@ -166,7 +166,7 @@ condition:
       {{ trigger.topic in ns.topics }}
   - condition: template
     value_template: '{{ trigger.payload_json.action is defined }}'
-action:
+actions:
   - variables:
       button_id: '{{ trigger.payload_json.action }}'
   - choose:

@@ -31,11 +31,11 @@ notify:
   - platform: group
     name: Rohan Kapoor
     services:
-      - service: rohan_email
-      - service: mobile_app_rohan_s_oneplus_8_pro
-      - service: mobile_app_rohans_ipad_pro_5th_generation
-      - service: mobile_app_rohans_ipad_pro_6th_gen
-      - service: mobile_app_rohan_s_samsung_z_fold_4
+      - action: rohan_email
+      - action: mobile_app_rohan_s_oneplus_8_pro
+      - action: mobile_app_rohans_ipad_pro_5th_generation
+      - action: mobile_app_rohans_ipad_pro_6th_gen
+      - action: mobile_app_rohan_s_samsung_z_fold_4
 
 automation:
   - id: '1665347764581'
@@ -49,7 +49,7 @@ automation:
               - condition: template
                 value_template: '{{ sensors | length > 0 }}'
             then:
-              - service: notify.rohan_kapoor
+              - action: notify.rohan_kapoor
                 data_template:
                   title: "Low Battery Notification"
                   message: |
@@ -69,7 +69,7 @@ automation:
       path: TurtleFX/leak-detector-notifier.yaml
       input:
         actions:
-          - service: notify.rohan_kapoor
+          - action: notify.rohan_kapoor
             data:
               title: Water Leak Detected
               message: "{{trigger.event.data.new_state.attributes.friendly_name}} has detected a leak."

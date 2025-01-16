@@ -31,17 +31,17 @@ fan:
         percentage_template: >
           {{ (state_attr('light.master_bedroom_fan', 'brightness') | float(0) * 0.392)  | round(0)}}
         turn_on:
-          service: light.turn_on
+          action: light.turn_on
           target:
             entity_id:
               - light.master_bedroom_fan
         turn_off:
-          service: light.turn_off
+          action: light.turn_off
           target:
             entity_id:
               - light.master_bedroom_fan
         set_percentage:
-          service: light.turn_on
+          action: light.turn_on
           data:
             brightness_pct: "{{ percentage }}"
           target:
@@ -56,23 +56,23 @@ script:
   turn_on_watch_master_bedroom_tv:
     alias: Turn on the Master Bedroom TV
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.master_bedroom_tv
             - media_player.denon_avr_x4300h_zone_2
             - media_player.shield
-      - service: media_player.select_source
+      - action: media_player.select_source
         target:
           device_id: ab65d3019b2049668b610bf0c5bc58c2
         data:
           source: HDMI-1
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?Z2QUICK1
-      - service: androidtv.adb_command
+      - action: androidtv.adb_command
         data:
           entity_id: media_player.living_room_shield_tv
           command: HOME
@@ -82,23 +82,23 @@ script:
   turn_on_watch_master_bedroom_apple_tv:
     alias: Turn on the Master Bedroom TV
     sequence:
-      - service: media_player.turn_on
+      - action: media_player.turn_on
         target:
           entity_id:
             - media_player.master_bedroom_tv
             - media_player.denon_avr_x4300h_zone_2
             - media_player.living_room_apple_tv
-      - service: media_player.select_source
+      - action: media_player.select_source
         target:
           device_id: ab65d3019b2049668b610bf0c5bc58c2
         data:
           source: HDMI-1
-      - service: denonavr.get_command
+      - action: denonavr.get_command
         target:
           device_id: 404bd26637ee4f98939fc2fc8552398f
         data:
           command: /goform/formiPhoneAppDirect.xml?Z2QUICK2
-      - service: remote.send_command
+      - action: remote.send_command
         target:
           entity_id: remote.living_room_apple_tv
         data:
@@ -112,7 +112,7 @@ script:
   turn_off_the_master_bedroom_tv:
     alias: Turn off the Master Bedroom TV
     sequence:
-      - service: media_player.turn_off
+      - action: media_player.turn_off
         target:
           entity_id:
             - media_player.master_bedroom_tv
@@ -131,17 +131,17 @@ script:
                 entity_id: switch.living_room_sync_box_light_sync
                 state: 'on'
             sequence:
-              - service: switch.turn_off
+              - action: switch.turn_off
                 target:
                   entity_id: switch.living_room_sync_box_light_sync
         default:
-          - service: rest_command.set_philips_hue_syncbox_input_master_bedroom
-          - service: select.select_option
+          - action: rest_command.set_philips_hue_syncbox_input_master_bedroom
+          - action: select.select_option
             data:
               option: Master Bedroom
             target:
               entity_id: select.living_room_sync_box_entertainment_area
-          - service: switch.turn_on
+          - action: switch.turn_on
             target:
               entity_id: switch.living_room_sync_box_light_sync
 
@@ -158,11 +158,11 @@ automation:
         zwave_device:
           *master_bedroom_light_switch_device_id
         config_button:
-          - service: cover.toggle
+          - action: cover.toggle
             data: {}
             target:
               entity_id: cover.master_bedroom_curtains
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *master_bedroom_light_switch_device_id
@@ -174,11 +174,11 @@ automation:
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
         button_a2:
-          - service: cover.open_cover
+          - action: cover.open_cover
             data: {}
             target:
               entity_id: cover.master_bedroom_sheers
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *master_bedroom_light_switch_device_id
@@ -190,11 +190,11 @@ automation:
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
         button_b2:
-          - service: cover.close_cover
+          - action: cover.close_cover
             data: {}
             target:
               entity_id: cover.master_bedroom_sheers
-          - service: zwave_js.bulk_set_partial_config_parameters
+          - action: zwave_js.bulk_set_partial_config_parameters
             target:
               device_id:
                 *master_bedroom_light_switch_device_id
@@ -209,17 +209,17 @@ automation:
   - id: b605d39d-f08d-4631-be1a-bef89a4f560f
     alias: Manage the Master Bedroom Curtains
     description: Automatically open/close the Master Bedroom Curtains based on the Sun Position
-    trigger:
-      - platform: sun
+    triggers:
+      - trigger: sun
         event: sunset
-      - platform: sun
+      - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - platform: homeassistant
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-    action:
+    actions:
       - choose:
           - alias: If it's after sunset or before sunrise, then close the shade.
             conditions:
@@ -231,7 +231,7 @@ automation:
                     before: sunrise
                     before_offset: '+1:30:00'
             sequence:
-              - service: cover.close_cover
+              - action: cover.close_cover
                 target:
                   entity_id: cover.master_bedroom_curtains
           - alias: If it's 90 minutes after sunrise, then open the shade.
@@ -240,10 +240,10 @@ automation:
                 after: sunrise
                 after_offset: '+1:30:00'
             sequence:
-              - service: cover.open_cover
+              - action: cover.open_cover
                 target:
                   entity_id: cover.master_bedroom_curtains
-      - service: zwave_js.bulk_set_partial_config_parameters
+      - action: zwave_js.bulk_set_partial_config_parameters
         target:
           device_id:
             *master_bedroom_light_switch_device_id
@@ -260,14 +260,14 @@ automation:
     alias: Control the Master Bedroom TV Remote when Charging
     description: Turn off the motion detection and screen when the Master Bedroom TV Remote is charging.
     mode: single
-    trigger:
-      - platform: homeassistant
+    triggers:
+      - trigger: homeassistant
         event: start
-      - platform: event
+      - trigger: event
         event_type: automation_reloaded
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
-    action:
+    actions:
       - choose:
           - alias: If the Master Bedroom TV Remote is charging, turn off the motion detection and screen
             conditions:
@@ -275,12 +275,12 @@ automation:
                 entity_id: binary_sensor.master_bedroom_tv_remote_plugged_in
                 state: 'on'
             sequence:
-              - service: switch.turn_off
+              - action: switch.turn_off
                 entity_id: switch.master_bedroom_tv_remote_motion_detection
-              - service: switch.turn_off
+              - action: switch.turn_off
                 entity_id: switch.master_bedroom_tv_remote_screen
         default:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.master_bedroom_tv_remote_motion_detection
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.master_bedroom_tv_remote_screen

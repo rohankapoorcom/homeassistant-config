@@ -35,15 +35,15 @@ automation:
       input:
         zooz_switch: 4418d1607160e581af11597ef65ef295
         scene_1:
-          - service: light.toggle
+          - action: light.toggle
             target:
               entity_id: light.dining_room_lights
         scene_2:
-          - service: light.toggle
+          - action: light.toggle
             target:
               entity_id: light.dining_room_accent_lights
         scene_3:
-          - service: light.toggle
+          - action: light.toggle
             target:
               entity_id: light.kitchen_lights
         scene_4:
@@ -53,13 +53,13 @@ automation:
                     entity_id: light.kitchen_cabinet_lights
                     state: 'on'
                 sequence:
-                  - service: light.turn_off
+                  - action: light.turn_off
                     target:
                       entity_id: light.kitchen_cabinet_lights
                     data:
                       transition: 2
             default:
-              - service: light.turn_on
+              - action: light.turn_on
                 target:
                   entity_id: light.kitchen_cabinet_lights
                 data:
@@ -67,7 +67,7 @@ automation:
                   kelvin: 3000
                   transition: 2
         scene_5:
-          - service: light.toggle
+          - action: light.toggle
             target:
               entity_id: light.hallway_lights
 
