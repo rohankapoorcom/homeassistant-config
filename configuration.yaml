@@ -1,17 +1,12 @@
 ---
 homeassistant:
-  # Name of the location where Home Assistant is running
   name: Home
-  # Location required to calculate the time the sun rises and sets
   latitude: !secret homeassistant.latitude
   longitude: !secret homeassistant.longitude
   country: US
   currency: USD
-  # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 349
-  # metric for Metric, imperial for Imperial
   unit_system: us_customary
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/Los_Angeles
   customize: !include customize.yaml
   packages: !include_dir_named packages
@@ -26,7 +21,6 @@ homeassistant:
       trusted_networks: !secret homeassistant.auth_providers.trusted_networks
       trusted_users: !secret homeassistant.auth_providers.trusted_users
 
-# Enables the frontend
 frontend:
   themes: !include_dir_merge_named themes
   extra_module_url:
@@ -45,7 +39,6 @@ lovelace:
 lovelace_gen:
 
 http:
-  # Uncomment this if you are using SSL or running in Docker etc
   ip_ban_enabled: false
   use_x_forwarded_for: true
   trusted_proxies: !secret http.trusted_proxies
@@ -114,51 +107,6 @@ ingress:
     title: Music Assistant
     icon: mdi:music
     #    parent: hidden
-
-mqtt_discoverystream:
-  base_topic: homeassistant-bitfocus-companion
-  publish_attributes: true
-  publish_timestamps: false
-  publish_discovery: true
-  include:
-    entities:
-      - sensor.office_temperature
-      - sensor.office_humidity
-      - sensor.office_illuminance
-      - sensor.living_room_air_quality_score
-      - binary_sensor.office_fan_high
-      - binary_sensor.office_fan_medium
-      - binary_sensor.office_fan_slow
-      - binary_sensor.office_fan_is_off
-      - script.set_office_fan_high
-      - script.set_office_fan_medium
-      - script.set_office_fan_slow
-      - script.set_office_fan_off
-      - button.standing_desk_preset_1
-      - button.standing_desk_preset_2
-      - button.standing_desk_preset_3
-      - button.standing_desk_preset_4
-      - sensor.standing_desk_desk_height
-      - script.set_office_lights_25_percent
-      - script.set_office_lights_50_percent
-      - script.set_office_lights_75_percent
-      - script.set_office_lights_100_percent
-      - binary_sensor.office_lights_100_percent
-      - binary_sensor.office_lights_75_percent
-      - binary_sensor.office_lights_50_percent
-      - binary_sensor.office_lights_25_percent
-      - light.office_play_gradient_tube
-      - light.office_shelf_lightstrip
-      - light.office_desk_lower_lights
-      - switch.unused_plug
-      - light.left_key_light
-      - light.center_key_light
-      - light.office_backlighting
-      - light.office_video_lights
-      - switch.office_webcam_monitor
-      - switch.office_ceiling_mics
-      - switch.office_speakers
-      - input_boolean.sentinal_headset_enabled
 
 battery_notes:
   hide_battery: true
