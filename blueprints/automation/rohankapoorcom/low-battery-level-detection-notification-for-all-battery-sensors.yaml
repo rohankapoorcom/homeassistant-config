@@ -1,3 +1,7 @@
+# Based off of Sbyx's blueprint and modified for my purposes
+# yamllint disable-line rule:line-length
+# Original source: https://community.home-assistant.io/t/low-battery-level-detection-notification-for-all-battery-sensors/258664
+---
 blueprint:
   name: Low battery level detection & notification for all battery sensors
   description: Regularly test all sensors with 'battery' device-class for crossing
@@ -42,8 +46,7 @@ blueprint:
       selector:
         target:
           entity:
-          - device_class:
-            - battery
+            device_class: battery
     actions:
       name: Actions
       description: Notifications or similar to be run. {{sensors}} is replaced with
@@ -52,22 +55,27 @@ blueprint:
         action: {}
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/low-battery-level-detection-notification-for-all-battery-sensors.yaml
 variables:
-  day: !input day
-  threshold: !input threshold
-  exclude: !input exclude
-  sensors: "{% set result = namespace(sensors=[]) %} {% for state in states.sensor\n
-    \ | selectattr('attributes.device_class', '==', 'battery')\n  | rejectattr('entity_id',
-    'is_hidden_entity')\n%}\n  {% if 0 <= state.state | int(-1) < threshold | int
-    and not state.entity_id in exclude.entity_id %}\n    {% set result.sensors = result.sensors
-    + [state.name ~ ' (' ~ state.state ~ ' %)'] %}\n  {% endif %}\n{% endfor %} {{result.sensors}}"
+  day: !input 'day'
+  threshold: !input 'threshold'
+  exclude: !input 'exclude'
+  sensors: >-
+    {% set result = namespace(sensors=[]) %}
+    {% for state in states.sensor
+      | selectattr('attributes.device_class', '==', 'battery')
+      | rejectattr('entity_id', 'is_hidden_entity')
+    %}
+      {% if 0 <= state.state | int(-1) < threshold | int and not state.entity_id in exclude.entity_id %}
+        {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
+      {% endif %}
+    {% endfor %}
+    {{result.sensors}}
 trigger:
-- platform: time
-  at: !input time
+  - platform: time
+    at: !input 'time'
 condition:
-- condition: template
-  value_template: '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday())
-    }}'
+  - condition: template
+    value_template: '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday()) }}'
 action:
-- choose: []
-  default: !input actions
+  - choose: []
+    default: !input 'actions'
 mode: single
