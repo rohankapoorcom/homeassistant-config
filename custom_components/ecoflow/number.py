@@ -2,7 +2,7 @@ from typing import Any
 
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ELECTRIC_CURRENT_AMPERE, PERCENTAGE, POWER_WATT
+from homeassistant.const import UnitOfElectricCurrent, PERCENTAGE, UnitOfPower
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -56,7 +56,7 @@ class ChargeWattsEntity(BaseEntity):
     _attr_native_max_value = 1500
     _attr_native_min_value = 200
     _attr_native_step = 100
-    _attr_native_unit_of_measurement = POWER_WATT
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
 
     async def async_set_native_value(self, value: float):
         self._client.tcp.write(send.set_ac_in_limit(int(value)))
@@ -99,7 +99,7 @@ class DcInCurrentEntity(NumberEntity, EcoFlowConfigEntity):
     _attr_native_max_value = 8
     _attr_native_min_value = 4
     _attr_native_step = 2
-    _attr_native_unit_of_measurement = ELECTRIC_CURRENT_AMPERE
+    _attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
 
     async def async_set_native_value(self, value: float):
         self._client.tcp.write(send.set_dc_in_current(

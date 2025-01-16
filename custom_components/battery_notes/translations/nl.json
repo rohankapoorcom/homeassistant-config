@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Als u hulp nodig heeft bij de configuratie kunt u hier een kijkje nemen: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Associatietype"
+                },
+                "menu_options": {
+                    "device": "Apparaat (aanbevolen)",
+                    "entity": "Entiteit"
+                },
+                "title": "Kies uw associatietype"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Apparaat",
+                    "name": "Naam"
+                },
+                "data_description": {
+                    "name": "Indien dit leeg gelaten wordt dan wordt de naam van het bronapparaat overgenomen"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entiteit",
+                    "name": "Naam"
+                },
+                "data_description": {
+                    "name": "Indien dit leeg gelaten wordt dan wordt de naam van de bron entiteit overgenomen"
+                }
+            },
+            "battery": {
+                "description": "Fabrikant: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware versie: {hw_version}",
+                "data": {
+                    "battery_type": "Batterij type",
+                    "battery_quantity": "Aantal batterijen",
+                    "battery_low_threshold": "Drempelwaarde batterij bijna leeg",
+                    "battery_low_template": "Sjabloon batterij bijna leeg"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 zal de globale standaard drempelwaarde gebruiken",
+                    "battery_low_template": "Sjabloon om te bepalen dat een batterij bijna leeg is, zal 'waar' teruggeven als bijna leeg\nAlleen nodig voor niet-standaard batterijniveaus"
+                }
+            },
+            "manual": {
+                "description": "Dit apparaat is in de bibliotheek gemarkeerd als handmatig, varianten gebruiken verschillende batterijtypen zodat het niet kan worden ingesteld in de bibliotheek.\nDe volgende stap staat je toe om je batterijtype in te stellen, maar gelieve geen apparaat verzoek in te dienen.",
+                "title": "Handmatige configuratie van het toestel"
+            }
+        },
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "unknown": "Onbekende fout opgetreden.",
+            "unconfigurable_entity": "Het is niet mogelijk om deze entiteit toe te voegen aan Battery Notes"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Fabrikant: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware versie: {hw_version}",
+                "data": {
+                    "name": "Naam",
+                    "battery_type": "Batterij type",
+                    "battery_quantity": "Aantal batterijen",
+                    "battery_low_threshold": "Drempelwaarde batterij bijna leeg",
+                    "battery_low_template": "Sjabloon batterij bijna leeg"
+                },
+                "data_description": {
+                    "name": "Indien dit leeg gelaten wordt dan wordt de naam van het bronapparaat overgenomen",
+                    "battery_low_threshold": "0 zal de globale standaard drempelwaarde gebruiken",
+                    "battery_low_template": "Sjabloon om te bepalen dat een batterij bijna leeg is, zal 'waar' teruggeven als bijna leeg\nAlleen nodig voor niet-standaard batterijniveaus"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Het gekoppelde apparaat of entiteit bestaat niet meer voor deze Battery Note.",
+            "unknown": "Onbekende fout opgetreden."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Lage batterij",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Drempelwaarde batterij bijna leeg"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Batterij vervangen"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Batterij+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterij type"
+                    },
+                    "battery_quantity": {
+                        "name": "Aantal batterijen"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Batterij type en aantal"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Batterij laatst vervangen"
+                    },
+                    "battery_low": {
+                        "name": "Batterij bijna leeg"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Drempelwaarde batterij bijna leeg"
+                    },
+                    "battery_last_reported": {
+                        "name": "Batterij laatst gerapporteerd"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Laatst gerapporteerde batterijniveau"
+                    },
+                    "source_entity_id": {
+                        "name": "Bron entiteit Id"
+                    },
+                    "device_id": {
+                        "name": "Apparaat ID"
+                    },
+                    "device_name": {
+                        "name": "Apparaatnaam"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Batterij type",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterij type"
+                    },
+                    "battery_quantity": {
+                        "name": "Aantal batterijen"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Batterij laatst vervangen"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Stel de batterij in als laatst vervangen.",
+            "fields": {
+                "device_id": {
+                    "description": "Apparaat waarvan de batterij is vervangen.",
+                    "name": "Apparaat"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Entiteit"
+                },
+                "datetime_replaced": {
+                    "description": "Datum vervangen.",
+                    "name": "Datum"
+                }
+            },
+            "name": "Stel in batterij vervangen"
+        },
+        "check_battery_last_reported": {
+            "description": "Voegt nieuwe gebeurtenis toe voor apparaten die hun batterijniveau niet hebben gerapporteerd.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Aantal dagen sinds een apparaat voor het laatst het batterijniveau heeft gerapporteerd.",
+                    "name": "Dagen"
+                }
+            },
+            "name": "Controleer batterij laatst gerapporteerd"
+        },
+        "check_battery_low": {
+            "description": "Voegt nieuwe gebeurtenis toe voor apparaten met een lage batterij.",
+            "name": "Controleer batterij bijna leeg"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Orphaned Battery Note",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Orphaned Battery Note",
+                        "description": "The associated device or entity no longer exists for the Battery Note entry {name}, the Battery Note should be deleted.\nSelect **Submit** to delete this Battery Note."
+                    }
+                }
+            }
+        }
+    }
+}

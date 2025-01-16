@@ -1,24 +1,35 @@
 {
 	"config": {
-		"title": "Vaddio Conferenceshot",
-		"step": {
-			"user": {
-				"title": "Connect to the device",
-				"data": {
-					"host": "IP/Host",
-					"username": "Admin Username",
-					"password": "Password"
-				}
-			}
-		},
-		"error": {
-			"cannot_connect": "Failed to connect, please try again",
-			"invalid_auth": "Invalid authentication",
-			"reboot_camera": "Please restart the camera and try again",
-			"unknown": "Unexpected error"
-		},
-		"abort": {
-			"already_configured": "Device is already configured"
+	  "step": {
+		"user": {
+		  "title": "Connect to the device",
+		  "data": {
+			"host": "IP/Host",
+			"username": "Admin Username",
+			"password": "Password"
+		  }
 		}
+	  },
+	  "error": {
+		"cannot_connect": "Failed to connect, please try again",
+		"invalid_auth": "Invalid authentication",
+		"reboot_camera": "Please restart the camera and try again",
+		"unknown": "Unexpected error"
+	  },
+	  "abort": {
+		"already_configured": "Device is already configured"
+	  }
+	},
+	"services": {
+	  "move_to_preset": {
+		"name": "Move to preset",
+		"description": "Moves the camera to the specified preset.",
+		"fields": {
+		  "preset": {
+			"name": "Preset",
+			"description": "The preset to move to."
+		  }
+		}
+	  }
 	}
-}
+  }

@@ -12,10 +12,10 @@ from homeassistant.util import dt as dt_util
 from homeassistant.components.image import ImageEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME, CONF_VALUE_TEMPLATE
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, callback, Event, EventStateChangedData
 from homeassistant.helpers import template
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import (
     _LOGGER,
@@ -94,8 +94,11 @@ class QRImage(ImageEntity):
         await self._refresh()
 
         @callback
-        async def _update(entity: Any, old_state: Any, new_state: Any) -> None:
+        async def _update(event: Event[EventStateChangedData]) -> None:
             """Handle state changes."""
+            old_state = event.data["old_state"]
+            new_state = event.data["new_state"]
+
             if old_state is None or new_state is None:
                 return
 
@@ -105,7 +108,7 @@ class QRImage(ImageEntity):
             self._render()
             await self._refresh()
 
-        async_track_state_change(
+        async_track_state_change_event(
             self.hass, list(self.rendered_template.entities), _update
         )
 

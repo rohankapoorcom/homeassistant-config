@@ -20,6 +20,7 @@ from homeassistant.const import (
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     PERCENTAGE,
     STATE_UNAVAILABLE,
+    EntityCategory,
     UnitOfPower,
     UnitOfTime,
 )
@@ -62,6 +63,7 @@ from .wideq import (
     DeviceType,
     MicroWaveFeatures,
     RangeFeatures,
+    RefrigeratorFeatures,
     WashDeviceFeatures,
     WaterHeaterFeatures,
 )
@@ -72,9 +74,10 @@ SERVICE_WAKE_UP = "wake_up"
 SERVICE_SET_TIME = "set_time"
 
 # supported features
-SUPPORT_REMOTE_START = 1
-SUPPORT_WAKE_UP = 2
-SUPPORT_SET_TIME = 4
+# this is used to limit the device's entities
+# used to call the specific service
+SUPPORT_WM_SERVICES = 1
+SUPPORT_SET_TIME = 2
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -201,6 +204,20 @@ REFRIGERATOR_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         unit_fn=lambda x: x.temp_unit,
         value_fn=lambda x: x.temp_freezer,
+    ),
+    ThinQSensorEntityDescription(
+        key=RefrigeratorFeatures.FRESHAIRFILTER_REMAIN_PERC,
+        name="Fresh air filter remaining",
+        icon="mdi:air-filter",
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=PERCENTAGE,
+    ),
+    ThinQSensorEntityDescription(
+        key=RefrigeratorFeatures.WATERFILTER_REMAIN_PERC,
+        name="Water filter remaining",
+        icon="mdi:waves",
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=PERCENTAGE,
     ),
 )
 AC_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
@@ -532,6 +549,16 @@ SENSOR_ENTITIES = {
     **{dev_type: WASH_DEV_SENSORS for dev_type in WASH_DEVICE_TYPES},
 }
 
+COMMON_SENSORS: tuple[ThinQSensorEntityDescription, ...] = (
+    ThinQSensorEntityDescription(
+        key="ssid",
+        name="SSID",
+        icon="mdi:access-point-network",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda x: x.ssid,
+    ),
+)
+
 
 def _sensor_exist(
     lge_device: LGEDevice, sensor_desc: ThinQSensorEntityDescription
@@ -571,7 +598,14 @@ async def async_setup_entry(
             if _sensor_exist(lge_device, sensor_desc)
         ]
 
-        async_add_entities(lge_sensors)
+        lge_common_sensors = [
+            LGESensor(lge_device, sensor_desc, get_wrapper_device(lge_device, dev_type))
+            for sensor_desc in COMMON_SENSORS
+            for dev_type in lge_devices.keys()
+            for lge_device in lge_devices.get(dev_type, [])
+        ]
+
+        async_add_entities(lge_sensors + lge_common_sensors)
 
     _async_discover_device(lge_cfg_devices)
 
@@ -583,15 +617,15 @@ async def async_setup_entry(
     platform = current_platform.get()
     platform.async_register_entity_service(
         SERVICE_REMOTE_START,
-        {},
+        {vol.Optional("course"): str},
         "async_remote_start",
-        [SUPPORT_REMOTE_START],
+        [SUPPORT_WM_SERVICES],
     )
     platform.async_register_entity_service(
         SERVICE_WAKE_UP,
         {},
         "async_wake_up",
-        [SUPPORT_WAKE_UP],
+        [SUPPORT_WM_SERVICES],
     )
     platform.async_register_entity_service(
         SERVICE_SET_TIME,
@@ -632,7 +666,7 @@ class LGESensor(CoordinatorEntity, SensorEntity):
         features = 0
         if self._is_default:
             if self._api.type in WM_DEVICE_TYPES:
-                features |= SUPPORT_REMOTE_START | SUPPORT_WAKE_UP
+                features |= SUPPORT_WM_SERVICES
             if self._api.type in SET_TIME_DEVICE_TYPES:
                 features |= SUPPORT_SET_TIME
         return features
@@ -695,11 +729,11 @@ class LGESensor(CoordinatorEntity, SensorEntity):
 
         return None
 
-    async def async_remote_start(self):
+    async def async_remote_start(self, course: str | None = None):
         """Call the remote start command for WM devices."""
         if self._api.type not in WM_DEVICE_TYPES:
             raise NotImplementedError()
-        await self._api.device.remote_start()
+        await self._api.device.remote_start(course)
 
     async def async_wake_up(self):
         """Call the wakeup command for WM devices."""

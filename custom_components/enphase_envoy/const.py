@@ -40,6 +40,7 @@ SENSORS = (
         name="Current Power Production",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_production",
@@ -66,7 +67,7 @@ SENSORS = (
         key="lifetime_net_production",
         name="Lifetime Net Energy Production",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        state_class=SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=SensorDeviceClass.ENERGY,
     ),
     SensorEntityDescription(
@@ -74,12 +75,14 @@ SENSORS = (
         name="Current Power Consumption",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="net_consumption",
         name="Current Net Power Consumption",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_consumption",
@@ -114,6 +117,7 @@ SENSORS = (
         name="Inverter",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="batteries",
@@ -169,6 +173,13 @@ SENSORS = (
         device_class=SensorDeviceClass.CURRENT,
         entity_registry_enabled_default=False,
     ),
+    SensorEntityDescription(
+        key="active_inverter_count",
+        name="Active Inverter Count",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+
 )
 
 BINARY_SENSORS = (
@@ -185,6 +196,7 @@ PHASE_SENSORS = (
         name="Current Power Production L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_production_l1",
@@ -204,7 +216,7 @@ PHASE_SENSORS = (
         key="lifetime_net_production_l1",
         name="Lifetime Net Energy Production L1",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        state_class=SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=SensorDeviceClass.ENERGY,
     ),
     SensorEntityDescription(
@@ -212,6 +224,7 @@ PHASE_SENSORS = (
         name="Current Power Production L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_production_l2",
@@ -231,7 +244,7 @@ PHASE_SENSORS = (
         key="lifetime_net_production_l2",
         name="Lifetime Net Energy Production L2",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        state_class=SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=SensorDeviceClass.ENERGY,
     ),
     SensorEntityDescription(
@@ -239,6 +252,7 @@ PHASE_SENSORS = (
         name="Current Power Production L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_production_l3",
@@ -258,7 +272,7 @@ PHASE_SENSORS = (
         key="lifetime_net_production_l3",
         name="Lifetime Net Energy Production L3",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        state_class=SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=SensorDeviceClass.ENERGY,
     ),
     SensorEntityDescription(
@@ -266,12 +280,14 @@ PHASE_SENSORS = (
         name="Current Power Consumption L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="net_consumption_l1",
         name="Current Net Power Consumption L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_consumption_l1",
@@ -299,12 +315,14 @@ PHASE_SENSORS = (
         name="Current Power Consumption L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="net_consumption_l2",
         name="Current Net Power Consumption L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_consumption_l2",
@@ -332,12 +350,14 @@ PHASE_SENSORS = (
         name="Current Power Consumption L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="net_consumption_l3",
         name="Current Net Power Consumption L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
     ),
     SensorEntityDescription(
         key="daily_consumption_l3",

@@ -15,32 +15,39 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import device_registry as dr
+
+from .button import ClearPendingTagButton
 from .const import DOMAIN
+from .hw_map import is_in_hw_map, get_hw_string, get_hw_dimensions
 
 _LOGGER: Final = logging.getLogger(__name__)
 
 # Time to wait before trying to reconnect on disconnections.
 _RECONNECT_SECONDS : int = 30
 
-#Hub class for handeling communication
+#Hub class for handling communication
 class Hub:
     #the init function starts the thread for all other communication
-    def __init__(self, hass: HomeAssistant, host: str,cfgenty: str) -> None:
+    def __init__(self, hass: HomeAssistant, host: str, cfgentry: str) -> None:
         self._host = host
-        self._cfgenty = cfgenty
+        self._cfgenty = cfgentry
         self._hass = hass
         self._name = host
         self._id = host.lower()
         self.esls = []
         self.data = dict()
         self.data["ap"] = dict()
-        self.data["ap"]["ip"] =  self._host;
-        self.data["ap"]["systime"] = None;
-        self.data["ap"]["heap"] = None;
-        self.data["ap"]["recordcount"] = None;
-        self.data["ap"]["dbsize"] = None;
-        self.data["ap"]["littlefsfree"] = None;
+        self.data["ap"]["ip"] =  self._host
+        self.data["ap"]["systime"] = None
+        self.data["ap"]["heap"] = None
+        self.data["ap"]["recordcount"] = None
+        self.data["ap"]["dbsize"] = None
+        self.data["ap"]["littlefsfree"] = None
+        self.ap_config = {}
+        self.ap_config_loaded = asyncio.Event()
         self.eventloop = asyncio.get_event_loop()
+        self._is_fetching_config = False
+        self.eventloop.create_task(self.fetch_ap_config())
         thread = Thread(target=self.connection_thread)
         thread.start()
         self.online = True
@@ -62,18 +69,18 @@ class Hub:
             wifissid = sys.get('wifissid')
             self._hass.states.set(DOMAIN + ".ip", self._host,{"icon": "mdi:ip","friendly_name": "AP IP","should_poll": False})
             self.data["ap"] = dict()
-            self.data["ap"]["ip"] =  self._host;
-            self.data["ap"]["systime"] = systime;
-            self.data["ap"]["heap"] = heap;
-            self.data["ap"]["recordcount"] = recordcount;
-            self.data["ap"]["dbsize"] = dbsize;
-            self.data["ap"]["littlefsfree"] = littlefsfree;
-            self.data["ap"]["rssi"] = rssi;
-            self.data["ap"]["apstate"] = apstate;
-            self.data["ap"]["runstate"] = runstate;
-            self.data["ap"]["temp"] = temp;
-            self.data["ap"]["wifistatus"] = wifistatus;
-            self.data["ap"]["wifissid"] = wifissid;
+            self.data["ap"]["ip"] =  self._host
+            self.data["ap"]["systime"] = systime
+            self.data["ap"]["heap"] = heap
+            self.data["ap"]["recordcount"] = recordcount
+            self.data["ap"]["dbsize"] = dbsize
+            self.data["ap"]["littlefsfree"] = littlefsfree
+            self.data["ap"]["rssi"] = rssi
+            self.data["ap"]["apstate"] = apstate
+            self.data["ap"]["runstate"] = runstate
+            self.data["ap"]["temp"] = temp
+            self.data["ap"]["wifistatus"] = wifistatus
+            self.data["ap"]["wifissid"] = wifissid
         elif 'tags' in data:
             tag = data.get('tags')[0]
             tagmac = tag.get('mac')
@@ -103,43 +110,8 @@ class Hub:
             else:
                 tagname = tagmac
             #required for automations
-            hwmap = {
-                0: ["M2 1.54\"", 152, 152],
-                1: ["M2 2.9\"",  296, 128],
-                2: ["M2 4.2\"",  400, 300],
-                5: ["M2 7.4\"",  640, 384],
-                17: ["M2 2.9\" (NFC)", 296, 128],
-                26: ["M2 7.4\" (outdated)",  640, 384],
-                33: ["M2 2.9\"", 296, 128],
-                38: ["M2 7.4 BW\"",  640, 384],
-                46: ["M3 9.7\"",  960, 672],
-                47: ["M3 4.3\"",  522, 152],
-                48: ["M3 1.6\"",  200, 200],
-                49: ["M3 2.2\"",  296, 160],
-                50: ["M3 2.6\"",  360, 184],
-                51: ["M3 2.9\"",  384, 168],
-                52: ["M3 4.2\"",  400, 300],
-                53: ["M3 6.0\"",  600, 448],
-                54: ["M3 7.5\"",  800, 480],
-                67: ["M3 1.3\" Peghook",  144, 200],
-                85: ["HS BWR 2.13\"",  256, 128],
-                86: ["HS BWR 2.66\"",  296, 152],
-                96: ["HS BWY 3.5\"",  384, 184],
-                97: ["HS BWR 3.5\"",  384, 184],
-                98: ["HS BW 3.5\"",  384, 184],
-                176: ["Gicisky BLE EPD BW 2.1\"",  212, 104],
-                177: ["Gicisky BLE EPD BWR 2.13\"",  250, 128],
-                178: ["Gicisky BLE EPD BW 2.9\"",  296, 128],
-                179: ["Gicisky BLE EPD BWR 2.9\"",  296, 128],
-                181: ["Gicisky BLE EPD BWR 4.2\"",  400, 300],
-                186: ["Gicisky BLE TFT 2.13\"",  250, 132],
-                191: ["Gicisky BLE Unknown",  0, 0],
-                190: ["ATC MiThermometer BLE",  6, 8],
-                224: ["AP display",  320, 170],
-                225: ["AP display",  160, 80],
-                240: ["Segmented",  0, 0]
-            }
-            if hwType in hwmap:
+            if is_in_hw_map(hwType):
+                width, height = get_hw_dimensions(hwType)
                 self._hass.states.set(DOMAIN + "." + tagmac, hwType,{
                     "icon": "mdi:fullscreen",
                     "friendly_name": tagname,
@@ -147,24 +119,24 @@ class Hub:
                     "unique_id": tagmac,
                     "device_class": "sensor",
                     "device_info": {
-                    "identifiers": {(DOMAIN, tagmac)}
+                        "identifiers": {(DOMAIN, tagmac)}
                     },
                     "should_poll": False,
                     "hwtype": hwType,
-                    "hwstring": hwmap[hwType][0],
-                    "width": hwmap[hwType][1],
-                    "height": hwmap[hwType][2],
+                    "hwstring": get_hw_string(hwType),
+                    "width": width,
+                    "height": height,
                 })
             else:
-                _LOGGER.warning("Id not in hwmap, please open an issue on github about this." +str(hwType))
-                
+                _LOGGER.warning(f"ID {hwType} not in hwmap, please open an issue on github about this.")
+
             self.data[tagmac] = dict()
             self.data[tagmac]["temperature"] = temperature
             self.data[tagmac]["rssi"] = RSSI
             self.data[tagmac]["battery"] = batteryMv
             self.data[tagmac]["lqi"] = LQI
             self.data[tagmac]["hwtype"] = hwType
-            self.data[tagmac]["hwstring"] = hwmap[hwType][0]
+            self.data[tagmac]["hwstring"] = get_hw_string(hwType)
             self.data[tagmac]["contentmode"] = contentMode
             self.data[tagmac]["lastseen"] = lastseen
             self.data[tagmac]["nextupdate"] = nextupdate
@@ -185,8 +157,8 @@ class Hub:
             if tagmac not in self.esls:
                 self.esls.append(tagmac)
                 loop = self.eventloop
-                asyncio.run_coroutine_threadsafe(self.reloadcfgett(),loop)            
-            #fire event with the wakeup reason
+                asyncio.run_coroutine_threadsafe(self.reloadcfgett(),loop)
+                #fire event with the wakeup reason
             lut = {0: "TIMED",1: "BOOT",2: "GPIO",3: "NFC",4: "BUTTON1",5: "BUTTON2",252: "FIRSTBOOT",253: "NETWORK_SCAN",254: "WDT_RESET"}
             event_data = {
                 "device_id": tagmac,
@@ -194,11 +166,16 @@ class Hub:
             }
             self._hass.bus.fire(DOMAIN + "_event", event_data)
         elif 'errMsg' in data:
-            ermsg = data.get('errMsg');
+            errmsg = data.get('errMsg')
         elif 'logMsg' in data:
-            logmsg = data.get('logMsg');
+            logmsg = data.get('logMsg')
         elif 'apitem' in data:
-            logmsg = data.get('apitem');
+            _LOGGER.debug(f"AP item: {data.get('apitem')}")
+            if not self._is_fetching_config:
+                self.eventloop.call_soon_threadsafe(
+                    lambda: self.eventloop.create_task(self.fetch_ap_config())
+                )
+            logmsg = data.get('apitem')
         else:
             _LOGGER.debug("Unknown msg")
             _LOGGER.debug(data)
@@ -235,6 +212,30 @@ class Hub:
         return True
     #reload is reqired to add new entities
     async def reloadcfgett(self) -> bool:
-        await self._hass.config_entries.async_unload_platforms(self._cfgenty, ["sensor","camera"])
-        await self._hass.config_entries.async_forward_entry_setups(self._cfgenty, ["sensor","camera"])
+        await self._hass.config_entries.async_unload_platforms(self._cfgenty, ["sensor","camera","button"])
+        await self._hass.config_entries.async_forward_entry_setups(self._cfgenty, ["sensor","camera","button"])
         return True
+
+    async def fetch_ap_config(self):
+        if self._is_fetching_config:
+            return
+
+        try:
+            self._is_fetching_config = True
+            async with aiohttp.ClientSession() as session:
+                async with async_timeout.timeout(10):
+                    response = await session.get(f"http://{self._host}/get_ap_config")
+                    if response.status == 200:
+                        data = await response.json()
+                        if self.ap_config != data:
+                            _LOGGER.debug(f"AP config updated: {data}")
+                            self.ap_config = data
+                            self.ap_config_loaded.set()
+                    else:
+                        _LOGGER.warning(f"Failed to fetch AP config: {response.status}")
+        except asyncio.TimeoutError:
+            _LOGGER.warning("Timeout while fetching AP config")
+        except Exception as e:
+            _LOGGER.error(f"Error fetching AP config: {e}")
+        finally:
+            self._is_fetching_config = False

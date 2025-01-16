@@ -1,8 +1,9 @@
 """Constants for keymaster."""
-from homeassistant.const import STATE_LOCKED, STATE_UNLOCKED
+
+from homeassistant.components.lock.const import LockState
 
 DOMAIN = "keymaster"
-VERSION = "v0.0.85"
+VERSION = "v0.0.99"
 ISSUE_URL = "https://github.com/FutureTense/keymaster"
 PLATFORMS = ["binary_sensor", "sensor"]
 INTEGRATION = "zwave_integration"
@@ -68,7 +69,6 @@ ACTION_MAP = {
         999: "Kwikset",
         0: "No Status Reported",
         9: "Lock Jammed",
-        16: "User Access", # FE599 code
         17: "Keypad Lock Jammed",
         21: "Manual Lock",
         22: "Manual Unlock",
@@ -115,11 +115,11 @@ ACTION_MAP = {
 
 LOCK_STATE_MAP = {
     ALARM_TYPE: {
-        STATE_LOCKED: 24,
-        STATE_UNLOCKED: 25,
+        LockState.LOCKED: 24,
+        LockState.UNLOCKED: 25,
     },
     ACCESS_CONTROL: {
-        STATE_LOCKED: 3,
-        STATE_UNLOCKED: 4,
+        LockState.LOCKED: 3,
+        LockState.UNLOCKED: 4,
     },
 }

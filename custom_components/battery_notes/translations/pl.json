@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Jeśli potrzebujesz pomocy w konfiguracji, zajrzyj tutaj: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Rodzaj powiązania"
+                },
+                "menu_options": {
+                    "device": "Urządzenie (zalecane)",
+                    "entity": "Encja"
+                },
+                "title": "Wybierz rodzaj powiązania"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Urządzenie",
+                    "name": "Nazwa"
+                },
+                "data_description": {
+                    "name": "Pozostawienie pustego pola spowoduje pobranie nazwy z urządzenia źródłowego"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Encja",
+                    "name": "Nazwa"
+                },
+                "data_description": {
+                    "name": "Pozostawienie pustego pola spowoduje pobranie nazwy z encji źródłowej"
+                }
+            },
+            "battery": {
+                "description": "Producent: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nWersja sprzętowa: {hw_version}",
+                "data": {
+                    "battery_type": "Typ baterii",
+                    "battery_quantity": "Liczba baterii",
+                    "battery_low_threshold": "Próg niskiego poziomu baterii",
+                    "battery_low_template": "Szablon niskiego poziomu baterii"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 użyje globalnego progu domyślnego",
+                    "battery_low_template": "Szablon do określenia czy poziom naładowania baterii jest niski, powinien zwrócić wartość true, jeśli poziom jest niski.\nJest wymagany tylko dla niestandardowych raportów poziomu baterii"
+                }
+            },
+            "manual": {
+                "description": "To urządzenie jest oznaczone w bibliotece jako manualne, różne warianty używają różnych typów baterii, więc nie mogą być ustawione z biblioteki.\nNastępny krok pozwoli Ci ustawić typ baterii, ale nie wysyłaj żądania dodania urządzenia do biblioteki.",
+                "title": "Ręczna konfiguracja urządzenia"
+            }
+        },
+        "abort": {
+            "already_configured": "Urządzenie jest już skonfigurowane"
+        },
+        "error": {
+            "unknown": "Wystąpił nieznany błąd.",
+            "unconfigurable_entity": "Nie można dodać tej encji do Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Producent: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nWersja sprzętowa: {hw_version}",
+                "data": {
+                    "name": "Nazwa",
+                    "battery_type": "Typ baterii",
+                    "battery_quantity": "Liczba baterii",
+                    "battery_low_threshold": "Próg niskiego poziomu baterii",
+                    "battery_low_template": "Szablon niskiego poziomu baterii"
+                },
+                "data_description": {
+                    "name": "Pozostawienie pustego pola spowoduje pobranie nazwy z urządzenia źródłowego",
+                    "battery_low_threshold": "0 użyje globalnego progu domyślnego",
+                    "battery_low_template": "Szablon do określenia czy poziom naładowania baterii jest niski, powinien zwrócić wartość true, jeśli poziom jest niski.\nJest wymagany tylko dla niestandardowych raportów poziomu baterii"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Powiązane urządzenie lub encja już nie istnieje dla tej Notatki Baterii.",
+            "unknown": "Wystąpił nieznany błąd."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Niski poziom baterii",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Próg niskiego poziomu baterii"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Wymiana baterii"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Bateria+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Typ baterii"
+                    },
+                    "battery_quantity": {
+                        "name": "Liczba baterii"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Typ i ilość baterii"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Ostatnia wymiana baterii"
+                    },
+                    "battery_low": {
+                        "name": "Niski poziom baterii"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Próg niskiego poziomu baterii"
+                    },
+                    "battery_last_reported": {
+                        "name": "Ostatni raport dotyczący baterii"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Ostatni zgłoszony poziom baterii"
+                    },
+                    "source_entity_id": {
+                        "name": "Identyfikator encji źródłowej"
+                    },
+                    "device_id": {
+                        "name": "ID Urządzenia"
+                    },
+                    "device_name": {
+                        "name": "Nazwa urządzenia"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Typ baterii",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Typ baterii"
+                    },
+                    "battery_quantity": {
+                        "name": "Liczba baterii"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Ostatnia wymiana baterii"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Ustawia ostatnią wymianę baterii.",
+            "fields": {
+                "device_id": {
+                    "description": "Urządzenie w którym wymieniono baterię/baterie.",
+                    "name": "Urządzenie"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Encja"
+                },
+                "datetime_replaced": {
+                    "description": "Data wymiany.",
+                    "name": "Data"
+                }
+            },
+            "name": "Ustaw wymianę baterii"
+        },
+        "check_battery_last_reported": {
+            "description": "Zgłaszaj zdarzenia dla urządzeń, które nie zgłosiły poziomu naładowania baterii.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Liczba dni od ostatniego zgłoszenia poziomu baterii przez urządzenie.",
+                    "name": "Dni"
+                }
+            },
+            "name": "Ostatni raport dotyczący sprawdzenia baterii"
+        },
+        "check_battery_low": {
+            "description": "Zwiększ liczbę zdarzeń dla urządzeń, które mają niski poziom baterii.",
+            "name": "Sprawdzaj niski poziom baterii"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Osierocona Notatka Baterii",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Osierocona Notatka Baterii",
+                        "description": "Powiązane urządzenie lub encja już nie istnieje dla wpisu Notatki Baterii {name}, Notatka Baterii powinna zostać usunięta.\nWybierz **Zatwierdź** aby usunąć tę notatkę o baterii"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Om du behöver hjälp med konfigurationen? Ta en titt här: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Associationstyp"
+                },
+                "menu_options": {
+                    "device": "Enhet (rekommenderas)",
+                    "entity": "Entitet"
+                },
+                "title": "Välj din associationstyp"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Enhet",
+                    "name": "Namn"
+                },
+                "data_description": {
+                    "name": "Genom att lämna blankt tas namnet från källenheten. "
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entitet",
+                    "name": "Namn"
+                },
+                "data_description": {
+                    "name": "Lämnas tom kommer namn tas från källentiteten"
+                }
+            },
+            "battery": {
+                "description": "Tillverkare: {manufacturer}\nModell: {model}\nModell ID: {model_id}\nHårdvaruversion: {hw_version}",
+                "data": {
+                    "battery_type": "Batterityp",
+                    "battery_quantity": "Antal batterier",
+                    "battery_low_threshold": "Tröskelvärde lågt batteri",
+                    "battery_low_template": "Batteri lågt template"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 kommer att använda det globala standardtröskelvärdet",
+                    "battery_low_template": "Template för att bestämma om batteriet är lågt, borde returnera true om lågt.\nEndast nödvändigt för icke-standard batterinivåer. "
+                }
+            },
+            "manual": {
+                "description": "Enheten är markerad som manuell i registret, varianter använder olika batterityper så den kan därför inte ställas in i registret.\nNästa steg gör att du kan ställa in din batterityp, men skicka inte in någon begäran om tillägg av denna batterienhet till utvecklarna.",
+                "title": "Manuell konfiguration av enhet"
+            }
+        },
+        "abort": {
+            "already_configured": "Enheten är redan konfigurerad. "
+        },
+        "error": {
+            "unknown": "Okänt fel inträffade. ",
+            "unconfigurable_entity": "Det är inte möjligt att lägga till denna enhet till Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Tillverkare: {manufacturer}\nModell: {model}\nModell ID: {model_id}\nHårdvaruversion: {hw_version}",
+                "data": {
+                    "name": "Namn",
+                    "battery_type": "Batterityp",
+                    "battery_quantity": "Antal batterier",
+                    "battery_low_threshold": "Batteri lågt tröskelvärde",
+                    "battery_low_template": "Batteri lågt template"
+                },
+                "data_description": {
+                    "name": "Genom att lämna blankt tas namnet från källenheten. ",
+                    "battery_low_threshold": "0 kommer att använda den globala standardtröskelvärdet. ",
+                    "battery_low_template": "Template för att bestämma om batteriet är lågt. Ska returnera true om lågt. Behövs endast för icke-standard batterinivåer. "
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Den associerade enheten eller entiteten finns inte längre för denna Batteri \nNotering .",
+            "unknown": "Okänt fel inträffade. "
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Lågt batteri. ",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Tröskelvärde lågt batteri"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Bytt batteri"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Batteri+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterityp"
+                    },
+                    "battery_quantity": {
+                        "name": "Antal batterier"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Batterityp och antal"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Senast bytt batteri"
+                    },
+                    "battery_low": {
+                        "name": "Batteriet lågt"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Batteri lågt tröskelvärde"
+                    },
+                    "battery_last_reported": {
+                        "name": "Senast rapporterade batteri"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Senast rapporterade batterinivå"
+                    },
+                    "source_entity_id": {
+                        "name": "Source Entity Id"
+                    },
+                    "device_id": {
+                        "name": "Enhets ID"
+                    },
+                    "device_name": {
+                        "name": "Enhetsnamn"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Batterityp",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterityp"
+                    },
+                    "battery_quantity": {
+                        "name": "Antal batterier"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Senast rapporterade batteri"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Ange senast bytt batteri",
+            "fields": {
+                "device_id": {
+                    "description": "Enhet som haft sitt batteri bytt. ",
+                    "name": "Enhet"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Entitet"
+                },
+                "datetime_replaced": {
+                    "description": "Datum för bytt batteri",
+                    "name": "Datum"
+                }
+            },
+            "name": "Ange bytt batteri"
+        },
+        "check_battery_last_reported": {
+            "description": "Skapa händelser för enheter som inte har rapporterat sin batterinivå. ",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Antal dagar sedan en enhet senast rapporterade batterinivån. ",
+                    "name": "Dagar"
+                }
+            },
+            "name": "Kontrollera senast bytt batteri"
+        },
+        "check_battery_low": {
+            "description": "Skapa händelser för enheter som har låg batterinivå.",
+            "name": "Kontrollera lågt batteri"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Övergiven Batteri Notering",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Övergiven Batteri Notering",
+                        "description": "Den associerade enheten eller enheten finns inte längre för BatteriNoteringen {name}, BatteriNoteringen bör tas bort.\nVälj **Skicka** för att ta bort BatteriNoteringen."
+                    }
+                }
+            }
+        }
+    }
+}

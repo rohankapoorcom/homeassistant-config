@@ -5,7 +5,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN, DATA_SCHEMA
 from .device import VaddioDevice
@@ -17,28 +17,24 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 PLATFORMS = ["switch", "camera"]
 
 
-async def async_setup(hass: HomeAssistantType, config: dict):
+async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Vaddio Conferenceshot Component."""
     hass.data.setdefault(DOMAIN, {})
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up an instance of a Vaddio Conferenceshot Camera from a config entry."""
     vaddio_device = VaddioDevice(hass, **entry.data)
     await vaddio_device.async_retrieve_info()
 
     hass.data[DOMAIN][entry.entry_id] = vaddio_device
 
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
-
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     unload_ok = all(
         await asyncio.gather(

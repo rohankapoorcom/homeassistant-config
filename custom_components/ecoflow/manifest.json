@@ -1,15 +1,15 @@
 {
   "domain": "ecoflow",
   "name": "Ecoflow",
-  "version": "2.1",
-  "documentation": "https://github.com/vwt12eh8/hassio-ecoflow",
-  "issue_tracker": "https://github.com/vwt12eh8/hassio-ecoflow/issues",
+  "version": "2.2.4",
+  "documentation": "https://github.com/lwsrbrts/hassio-ecoflow",
+  "issue_tracker": "https://github.com/lwsrbrts/hassio-ecoflow/issues",
   "requirements": [
     "reactivex"
   ],
   "config_flow": true,
   "codeowners": [
-    "@vwt12eh8"
+    "@lwsrbrts", "@vwt12eh8"
   ],
   "dhcp": [
     {

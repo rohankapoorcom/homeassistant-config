@@ -1,4 +1,5 @@
 """Platform for LGE climate integration."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,6 +13,11 @@ from homeassistant.components.climate.const import (
     ATTR_HVAC_MODE,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
+    FAN_AUTO,
+    FAN_DIFFUSE,
+    FAN_HIGH,
+    FAN_LOW,
+    FAN_MEDIUM,
     PRESET_ECO,
     PRESET_NONE,
     ClimateEntityFeature,
@@ -28,11 +34,18 @@ from . import LGEDevice
 from .const import DOMAIN, LGE_DEVICES, LGE_DISCOVERY_NEW
 from .device_helpers import TEMP_UNIT_LOOKUP, LGERefrigeratorDevice
 from .wideq import AirConditionerFeatures, DeviceType, TemperatureUnit
-from .wideq.devices.ac import AWHP_MAX_TEMP, AWHP_MIN_TEMP, ACMode, AirConditionerDevice
+from .wideq.devices.ac import (
+    AWHP_MAX_TEMP,
+    AWHP_MIN_TEMP,
+    ACFanSpeed,
+    ACMode,
+    AirConditionerDevice,
+)
 
 # general ac attributes
 ATTR_FRIDGE = "fridge"
 ATTR_FREEZER = "freezer"
+HVAC_MODE_NONE = "--"
 
 # service definitions
 SERVICE_SET_SLEEP_TIME = "set_sleep_time"
@@ -46,15 +59,25 @@ HVAC_MODE_LOOKUP: dict[str, HVACMode] = {
     ACMode.ACO.name: HVACMode.HEAT_COOL,
 }
 
+FAN_MODE_LOOKUP: dict[str, str] = {
+    ACFanSpeed.AUTO.name: FAN_AUTO,
+    ACFanSpeed.HIGH.name: FAN_HIGH,
+    ACFanSpeed.LOW.name: FAN_LOW,
+    ACFanSpeed.MID.name: FAN_MEDIUM,
+    ACFanSpeed.NATURE.name: FAN_DIFFUSE,
+}
+FAN_MODE_REVERSE_LOOKUP = {v: k for k, v in FAN_MODE_LOOKUP.items()}
+
 PRESET_MODE_LOOKUP: dict[str, dict[str, HVACMode]] = {
     ACMode.ENERGY_SAVING.name: {"preset": PRESET_ECO, "hvac": HVACMode.COOL},
     ACMode.ENERGY_SAVER.name: {"preset": PRESET_ECO, "hvac": HVACMode.COOL},
 }
 
-HVAC_MODE_NONE = "--"
-ATTR_SWING_HORIZONTAL = "swing_mode_horizontal"
-ATTR_SWING_VERTICAL = "swing_mode_vertical"
-SWING_PREFIX = ["Vertical", "Horizontal"]
+DEFAULT_AC_FEATURES = (
+    ClimateEntityFeature.TARGET_TEMPERATURE
+    | ClimateEntityFeature.TURN_OFF
+    | ClimateEntityFeature.TURN_ON
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -153,6 +176,8 @@ async def async_setup_entry(
 class LGEClimate(CoordinatorEntity, ClimateEntity):
     """Base climate device."""
 
+    _enable_turn_on_off_backwards_compatibility = False
+
     def __init__(self, api: LGEDevice):
         """Initialize the climate."""
         super().__init__(api.coordinator)
@@ -180,17 +205,22 @@ class LGEACClimate(LGEClimate):
         super().__init__(api)
         self._device: AirConditionerDevice = api.device
         self._attr_unique_id = f"{api.unique_id}-AC"
-        self._attr_fan_modes = self._device.fan_speeds
-        self._attr_swing_modes = [
-            f"{SWING_PREFIX[0]}{mode}" for mode in self._device.vertical_step_modes
-        ] + [f"{SWING_PREFIX[1]}{mode}" for mode in self._device.horizontal_step_modes]
+        self._attr_fan_modes = [
+            FAN_MODE_LOOKUP.get(s, s) for s in self._device.fan_speeds
+        ]
+
+        self._use_h_mode = False
+        self._attr_swing_modes = self._device.vertical_step_modes or None
+        self._attr_swing_horizontal_modes = self._device.horizontal_step_modes or None
+        if not self._attr_swing_modes and self._attr_swing_horizontal_modes:
+            self._attr_swing_modes = self._attr_swing_horizontal_modes
+            self._attr_swing_horizontal_modes = None
+            self._use_h_mode = True
+
         self._attr_preset_mode = None
 
         self._hvac_mode_lookup: dict[str, HVACMode] | None = None
         self._preset_mode_lookup: dict[str, str] | None = None
-        self._support_ver_swing = len(self._device.vertical_step_modes) > 0
-        self._support_hor_swing = len(self._device.horizontal_step_modes) > 0
-        self._set_hor_swing = self._support_hor_swing and not self._support_ver_swing
 
     def _available_hvac_modes(self) -> dict[str, HVACMode]:
         """Return available hvac modes from lookup dict."""
@@ -223,38 +253,19 @@ class LGEACClimate(LGEClimate):
             self._preset_mode_lookup = {v: k for k, v in modes.items()}
         return self._preset_mode_lookup
 
-    def _get_swing_mode(self, hor_mode=False) -> str | None:
-        """Return the current swing mode for vert of hor mode."""
-        if hor_mode:
-            mode = self._api.state.horizontal_step_mode
-        else:
-            mode = self._api.state.vertical_step_mode
-        if mode:
-            return f"{SWING_PREFIX[1 if hor_mode else 0]}{mode}"
-        return None
-
     @property
-    def supported_features(self) -> int:
+    def supported_features(self) -> ClimateEntityFeature:
         """Return the list of supported features."""
-        features = ClimateEntityFeature.TARGET_TEMPERATURE
+        features = DEFAULT_AC_FEATURES
         if len(self.fan_modes) > 0:
             features |= ClimateEntityFeature.FAN_MODE
         if self.preset_modes:
             features |= ClimateEntityFeature.PRESET_MODE
-        if self._support_ver_swing or self._support_hor_swing:
+        if self.swing_modes:
             features |= ClimateEntityFeature.SWING_MODE
+        if self.swing_horizontal_modes:
+            features |= ClimateEntityFeature.SWING_HORIZONTAL_MODE
         return features
-
-    @property
-    def extra_state_attributes(self):
-        """Return the optional state attributes with device specific additions."""
-        attr = {}
-        if self._support_hor_swing:
-            attr[ATTR_SWING_HORIZONTAL] = self._get_swing_mode(True)
-        if self._support_ver_swing:
-            attr[ATTR_SWING_VERTICAL] = self._get_swing_mode(False)
-
-        return attr
 
     @property
     def target_temperature_step(self) -> float:
@@ -354,57 +365,63 @@ class LGEACClimate(LGEClimate):
 
     async def async_set_temperature(self, **kwargs) -> None:
         """Set new target temperature."""
-        if (new_temp := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self._device.set_target_temp(new_temp)
         if hvac_mode := kwargs.get(ATTR_HVAC_MODE):
             await self.async_set_hvac_mode(HVACMode(hvac_mode))
-        else:
+            if hvac_mode == HVACMode.OFF:
+                return
+
+        if (new_temp := kwargs.get(ATTR_TEMPERATURE)) is not None:
+            await self._device.set_target_temp(new_temp)
             self._api.async_set_updated()
 
     @property
     def fan_mode(self) -> str | None:
         """Return the fan setting."""
-        return self._api.state.fan_speed
+        speed = self._api.state.fan_speed
+        return FAN_MODE_LOOKUP.get(speed, speed)
 
     async def async_set_fan_mode(self, fan_mode: str) -> None:
         """Set new target fan mode."""
-        if fan_mode not in self.fan_modes:
+        lg_fan_mode = FAN_MODE_REVERSE_LOOKUP.get(fan_mode, fan_mode)
+        if lg_fan_mode not in self._device.fan_speeds:
             raise ValueError(f"Invalid fan mode [{fan_mode}]")
-        await self._device.set_fan_speed(fan_mode)
+        await self._device.set_fan_speed(lg_fan_mode)
         self._api.async_set_updated()
 
     @property
     def swing_mode(self) -> str | None:
         """Return the swing mode setting."""
-        if self._set_hor_swing and self._support_hor_swing:
-            return self._get_swing_mode(True)
-        return self._get_swing_mode(False)
+        if self._use_h_mode:
+            return self._api.state.horizontal_step_mode
+        return self._api.state.vertical_step_mode
 
     async def async_set_swing_mode(self, swing_mode: str) -> None:
-        """Set new target swing mode."""
-        avl_mode = False
-        curr_mode = None
-        set_hor_swing = swing_mode.startswith(SWING_PREFIX[1])
-        dev_mode = remove_prefix(swing_mode, SWING_PREFIX[1 if set_hor_swing else 0])
-        if set_hor_swing:
-            if dev_mode in self._device.horizontal_step_modes:
-                avl_mode = True
-                curr_mode = self._api.state.horizontal_step_mode
-        elif swing_mode.startswith(SWING_PREFIX[0]):
-            if dev_mode in self._device.vertical_step_modes:
-                avl_mode = True
-                curr_mode = self._api.state.vertical_step_mode
-
-        if not avl_mode:
+        """Set new target swing operation."""
+        if swing_mode not in (self.swing_modes or []):
             raise ValueError(f"Invalid swing_mode [{swing_mode}].")
 
-        if curr_mode != dev_mode:
-            if set_hor_swing:
-                await self._device.set_horizontal_step_mode(dev_mode)
+        if swing_mode != self.swing_mode:
+            if self._use_h_mode:
+                await self._device.set_horizontal_step_mode(swing_mode)
             else:
-                await self._device.set_vertical_step_mode(dev_mode)
+                await self._device.set_vertical_step_mode(swing_mode)
             self._api.async_set_updated()
-        self._set_hor_swing = set_hor_swing
+
+    @property
+    def swing_horizontal_mode(self) -> str | None:
+        """Return the horizontal swing mode setting."""
+        return self._api.state.horizontal_step_mode
+
+    async def async_set_swing_horizontal_mode(self, swing_horizontal_mode: str) -> None:
+        """Set new target horizontal swing operation."""
+        if swing_horizontal_mode not in (self.swing_horizontal_modes or []):
+            raise ValueError(
+                f"Invalid horizontal swing_mode [{swing_horizontal_mode}]."
+            )
+
+        if swing_horizontal_mode != self.swing_horizontal_mode:
+            await self._device.set_horizontal_step_mode(swing_horizontal_mode)
+            self._api.async_set_updated()
 
     async def async_turn_on(self) -> None:
         """Turn the entity on."""
@@ -459,10 +476,10 @@ class LGERefrigeratorClimate(LGEClimate):
         self._attr_hvac_mode = HVACMode.AUTO
 
     @property
-    def supported_features(self) -> int:
+    def supported_features(self) -> ClimateEntityFeature:
         """Return the list of supported features."""
         if not self._wrap_device.device.set_values_allowed:
-            return 0
+            return ClimateEntityFeature(0)
         return ClimateEntityFeature.TARGET_TEMPERATURE
 
     @property
@@ -479,20 +496,15 @@ class LGERefrigeratorClimate(LGEClimate):
         return UnitOfTemperature.CELSIUS
 
     @property
-    def current_temperature(self) -> float | None:
-        """Return the current temperature."""
-        curr_temp = self.entity_description.temp_fn(self._wrap_device)
-        if curr_temp is None:
-            return None
-        try:
-            return int(curr_temp)
-        except ValueError:
-            return None
-
-    @property
     def target_temperature(self) -> float | None:
         """Return the temperature we try to reach."""
-        return self.current_temperature
+        target_temp = self.entity_description.temp_fn(self._wrap_device)
+        if target_temp is None:
+            return None
+        try:
+            return int(target_temp)
+        except ValueError:
+            return None
 
     async def async_set_temperature(self, **kwargs) -> None:
         """Set new target temperature."""

@@ -1,4 +1,5 @@
 """Services for keymaster."""
+
 import logging
 import os
 from typing import Any, Dict, Mapping
@@ -77,7 +78,7 @@ async def call_service(
         raise err
 
 
-async def refresh_codes(
+async def refresh_codes(  # pylint: disable-next=unused-argument
     hass: HomeAssistant, entity_id: str, instance_id: int = 1
 ) -> None:
     """Refresh lock codes."""
@@ -250,9 +251,9 @@ def generate_package_files(hass: HomeAssistant, name: str) -> None:
         "SENSORALARMTYPE": sensoralarmtype,
         "SENSORALARMLEVEL": sensoralarmlevel,
         "HIDE_PINS": hide_pins,
-        "PARENTLOCK": ""
-        if primary_lock.parent is None
-        else slugify(primary_lock.parent),
+        "PARENTLOCK": (
+            "" if primary_lock.parent is None else slugify(primary_lock.parent)
+        ),
     }
 
     # Replace variables in common file

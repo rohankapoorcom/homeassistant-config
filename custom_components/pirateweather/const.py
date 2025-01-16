@@ -18,13 +18,13 @@ from homeassistant.components.weather import (
 )
 from homeassistant.const import (
     DEGREE,
-    UnitOfLength,
     PERCENTAGE,
+    UV_INDEX,
+    Platform,
+    UnitOfLength,
     UnitOfPressure,
     UnitOfSpeed,
     UnitOfTemperature,
-    UV_INDEX,
-    Platform,
 )
 
 DOMAIN = "pirateweather"
@@ -118,6 +118,7 @@ ALL_CONDITIONS = {
     "time": "Time",
     "fire_index": "Fire Index",
     "fire_index_max": "Fire Index Max",
+    "fire_risk_level": "Fire Risk Level",
     "smoke": "Smoke",
     "smoke_max": "Smoke Max",
     "liquid_accumulation": "Liquid Accumulation",
@@ -126,7 +127,17 @@ ALL_CONDITIONS = {
     "apparent_temperature_high_time": "Daytime High Apparent Temperature Time",
     "apparent_temperature_low_time": "Overnight Low Apparent Temperature Time",
     "temperature_high_time": "Daytime High Temperature Time",
-    "temperature_min_time": "Daily Low Temperature Time",
+    "temperature_min_time": "Low Temperature Time",
+    "hrrr_subh_update_time": "HRRR SubH Update Time",
+    "hrrr_0_18_update_time": "HRRR 0-18 Update Time",
+    "nbm_update_time": "NBM Update Time",
+    "nbm_fire_update_time": "NBM Fire Update Time",
+    "hrrr_18_48_update_time": "HRRR 18-48 Update Time",
+    "gfs_update_time": "GFS Update Time",
+    "gefs_update_time": "GEFS Update Time",
+    "current_day_liquid": "Current Day Liquid Accumulation",
+    "current_day_snow": "Current Day Snow Accumulation",
+    "current_day_ice": "Current Day Ice Accumulation",
 }
 
 LANGUAGES = [

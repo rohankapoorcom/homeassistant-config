@@ -1,6 +1,8 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 import voluptuous as vol
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
     from homeassistant.core import ServiceCall
 
 
-class SpookService(AbstractSpookEntityComponentService):
+class SpookService(AbstractSpookEntityComponentService[NumberEntity]):
     """Number entity service, increase value by a single step."""
 
     domain = DOMAIN
@@ -26,7 +28,8 @@ class SpookService(AbstractSpookEntityComponentService):
         call: ServiceCall,
     ) -> None:
         """Handle the service call."""
-        if (amount := call.data.get("amount", entity.step or 1)) % entity.step != 0:
+        amount = call.data.get("amount", entity.step or 1)
+        if not math.isclose(amount % entity.step, 0, abs_tol=1e-9):
             msg = (
                 f"Amount {amount} not valid for {entity.entity_id}, "
                 f"it needs to be a multiple of {entity.step}",

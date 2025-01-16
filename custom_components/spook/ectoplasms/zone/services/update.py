@@ -1,4 +1,5 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -32,9 +33,7 @@ class SpookService(AbstractSpookAdminService):
 
     async def async_handle_service(self, call: ServiceCall) -> None:
         """Handle the service call."""
-        entity_component: [EntityComponent[Zone]] = self.hass.data[DATA_INSTANCES][
-            DOMAIN
-        ]
+        entity_component: EntityComponent[Zone] = self.hass.data[DATA_INSTANCES][DOMAIN]
 
         collection: ZoneStorageCollection
         if DOMAIN in self.hass.data:

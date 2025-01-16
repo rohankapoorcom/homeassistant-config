@@ -1,4 +1,5 @@
 """Config flow for LG SmartThinQ."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -9,9 +10,16 @@ from typing import Any
 from pycountry import countries as py_countries, languages as py_languages
 import voluptuous as vol
 
-from homeassistant import config_entries
+from homeassistant.config_entries import (
+    CONN_CLASS_CLOUD_POLL,
+    SOURCE_REAUTH,
+    ConfigEntryState,
+    ConfigFlow,
+    ConfigFlowResult,
+)
 from homeassistant.const import (
     CONF_BASE,
+    CONF_CLIENT_ID,
     CONF_PASSWORD,
     CONF_REGION,
     CONF_TOKEN,
@@ -19,7 +27,6 @@ from homeassistant.const import (
     __version__,
 )
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
     SelectOptionDict,
     SelectSelector,
@@ -43,6 +50,7 @@ from .const import (
 from .wideq.core_exceptions import AuthenticationError, InvalidCredentialError
 
 CONF_LOGIN = "login_url"
+CONF_REAUTH_CRED = "reauth_cred"
 CONF_URL = "callback_url"
 
 RESULT_SUCCESS = 0
@@ -64,17 +72,18 @@ LANGUAGES = {
 }
 
 
-class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class SmartThinQFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle SmartThinQ config flow."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
+    CONNECTION_CLASS = CONN_CLASS_CLOUD_POLL
 
     def __init__(self) -> None:
         """Initialize flow."""
         self._region: str | None = None
         self._language: str | None = None
         self._token: str | None = None
+        self._client_id: str | None = None
         self._oauth2_url: str | None = None
         self._use_ha_session = False
 
@@ -99,7 +108,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         return None
 
-    def _get_hass_region_lang(self):
+    def _get_hass_region_lang(self) -> None:
         """Get the hass configured region and language."""
         if self._region and self._user_lang:
             return
@@ -116,7 +125,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_import(
         self, import_config: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Import a config entry."""
         self._is_import = True
         self._region = import_config.get(CONF_REGION)
@@ -126,7 +135,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle a flow initialized by the user interface"""
 
         if not is_valid_ha_version():
@@ -142,7 +151,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             self._error = "invalid_config"
         elif entries := self._async_current_entries():
             entry = entries[0]
-            if entry.state == config_entries.ConfigEntryState.LOADED:
+            if entry.state == ConfigEntryState.LOADED:
                 return self.async_abort(reason="single_instance_allowed")
             if not self._region:
                 self._region = entry.data.get(CONF_REGION)
@@ -170,6 +179,8 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             self._language += f"-{region}"
 
         if not use_redirect and not (username and password):
+            if self.source == SOURCE_REAUTH and not (username or password):
+                return await self.async_step_reauth_confirm()
             return self._show_form(errors="no_user_info")
 
         lge_auth = LGEAuthentication(
@@ -195,7 +206,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_url(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Parse the response url for oauth data and submit for save."""
         if not user_input:
             return self._show_form(step_id="url")
@@ -242,9 +253,12 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if not client.has_devices:
             return RESULT_NO_DEV
 
+        self._client_id = client.client_id
         return RESULT_SUCCESS
 
-    async def _manage_error(self, error_code: int, is_user_step=False) -> FlowResult:
+    async def _manage_error(
+        self, error_code: int, is_user_step=False
+    ) -> ConfigFlowResult:
         """Manage the error result."""
         if error_code == RESULT_NO_DEV:
             return self.async_abort(reason="no_smartthinq_devices")
@@ -260,7 +274,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return await self.async_step_user()
 
     @callback
-    def _save_config_entry(self) -> FlowResult:
+    def _save_config_entry(self) -> ConfigFlowResult:
         """Save the entry."""
 
         data = {
@@ -269,6 +283,8 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             CONF_TOKEN: self._token,
             CONF_USE_API_V2: True,
         }
+        if self._client_id:
+            data[CONF_CLIENT_ID] = self._client_id
         if self._oauth2_url:
             data[CONF_OAUTH2_URL] = self._oauth2_url
         if self._use_ha_session:
@@ -277,14 +293,10 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # if an entry exists, we are reconfiguring
         if entries := self._async_current_entries():
             entry = entries[0]
-            self.hass.config_entries.async_update_entry(
+            return self.async_update_reload_and_abort(
                 entry=entry,
                 data=data,
             )
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(entry.entry_id)
-            )
-            return self.async_abort(reason="reconfigured")
 
         return self.async_create_entry(title="LGE Devices", data=data)
 
@@ -324,7 +336,7 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return schema
 
     @callback
-    def _show_form(self, errors: str | None = None, step_id="user") -> FlowResult:
+    def _show_form(self, errors: str | None = None, step_id="user") -> ConfigFlowResult:
         """Show the form to the user."""
         base_err = errors or self._error
         self._error = None
@@ -336,9 +348,27 @@ class SmartThinQFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors={CONF_BASE: base_err} if base_err else None,
         )
 
-    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> FlowResult:
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error."""
-        return await self.async_step_user()
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Dialog that informs the user that reauth is required."""
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reauth_confirm",
+                data_schema=vol.Schema(
+                    {vol.Required(CONF_REAUTH_CRED, default=False): bool}
+                ),
+            )
+
+        if user_input[CONF_REAUTH_CRED] is True:
+            return await self.async_step_user()
+        return self.async_update_reload_and_abort(self._get_reauth_entry())
 
 
 def _dict_to_select(opt_dict: dict) -> SelectSelectorConfig:

@@ -1,4 +1,5 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,7 +7,7 @@ from dataclasses import dataclass
 from homeassistant.helpers.entity import Entity, EntityDescription
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class SpookEntityDescription(EntityDescription):
     """Defines an base Spook entity description."""
 

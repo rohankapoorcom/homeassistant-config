@@ -1,0 +1,72 @@
+blueprint:
+  name: Ring Keypad v2 Sounds, ZwaveJS
+  description: "# Ring Keypad v2 Sounds\nTrigger built-in sounds for the Ring Keypad
+    v2 using ZwaveJS.\n## \U0001F4D1 Changelog\n* **2024-3-24**: \U0001F522 Allow
+    multiple keypads in the same blueprint. * **2024-1-27**: \U0001F389 First Version\n\n\nRequired
+    = *\n\n\n**If you like this blueprint or have suggestions comment back on the
+    original post.** [Click Here]()\n"
+  domain: script
+  input:
+    keypad:
+      name: Ring Keypad Device *
+      description: The device entry for the Ring keypad
+      selector:
+        device:
+          manufacturer: Ring
+          integration: zwave_js
+          multiple: true
+    sound_selection:
+      name: Keypad Sound *
+      description: "Choose the sound to play. \n\n\nWARNING: The **Alarm** options
+        will not stop until the keypad mode is changed.\n"
+      default: '96'
+      selector:
+        select:
+          mode: list
+          options:
+          - label: "\U0001F6A8 *Alarm* CO2 (Inludes flashing lights)"
+            value: '15'
+          - label: "\U0001F6A8 *Alarm* Fire (Inludes flashing lights)"
+            value: '14'
+          - label: "\U0001F6A8 *Alarm* Medical (Silent, flashing lights only)"
+            value: '19'
+          - label: "\U0001F6A8 *Alarm* Police (Inludes flashing lights)"
+            value: '13'
+          - label: "\U0001F514 Ding Ding"
+            value: '96'
+          - label: "\U0001F50A Echoing Bing Bong"
+            value: '99'
+          - label: "\U0001F4A2 Error Soft Dual Tone"
+            value: '9'
+          - label: "\U0001F3B8 Guitar Riff"
+            value: '97'
+          - label: "\U0001F6AA Ring Doorbell Chime"
+            value: '100'
+          - label: "\U0001F4A8 Wind Chimes"
+            value: '98'
+          multiple: false
+          custom_value: false
+          sort: false
+    sound_volume:
+      name: Keypad Volume *
+      description: Choose the volume to play the sound.
+      default: 50
+      selector:
+        number:
+          min: 10.0
+          max: 100.0
+          step: 10.0
+          unit_of_measurement: '%'
+          mode: slider
+  source_url: https://community.home-assistant.io/t/ring-keypad-v2-sounds-script-zwavejs/680399
+mode: single
+sequence:
+- service: zwave_js.set_value
+  target:
+    device_id: !input keypad
+  data:
+    command_class: 135
+    endpoint: 0
+    property: !input sound_selection
+    property_key: 9
+    value: !input sound_volume

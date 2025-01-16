@@ -73,7 +73,7 @@ def get_entity_name(device: LGEDevice, ent_key: str) -> str | None:
 class LGEBaseDevice:
     """A wrapper to monitor LGE devices"""
 
-    def __init__(self, api_device):
+    def __init__(self, api_device: LGEDevice):
         """Initialize the device."""
         self._api = api_device
 
@@ -117,6 +117,11 @@ class LGEBaseDevice:
             return STATE_ON
         return STATE_OFF
 
+    @property
+    def ssid(self):
+        """The device network SSID."""
+        return self._api.device.device_info.ssid
+
     def get_features_attributes(self):
         """Return a dict with device features and name."""
         ret_val = {}
@@ -138,17 +143,16 @@ class LGEBaseDevice:
 class LGEWashDevice(LGEBaseDevice):
     """A wrapper to monitor LGE Wash devices"""
 
-    def __init__(self, api_device):
+    def __init__(self, api_device: LGEDevice):
         """Initialize the device."""
         super().__init__(api_device)
         self._start_time: datetime | None = None
 
     @property
     def run_completed(self):
-        """Return the state on/off for run completed."""
-        if self._api.state:
-            if self._api.state.is_run_completed:
-                return STATE_ON
+        """Return the state on/off for device run completed."""
+        if self._api.device.is_run_completed:
+            return STATE_ON
         return STATE_OFF
 
     @property

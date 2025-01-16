@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Si vous avez besoin d'aide pour la configuration, regardez ici : https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Type d'association:"
+                },
+                "menu_options": {
+                    "device": "Appareil (recommandé)",
+                    "entity": "Entité"
+                },
+                "title": "Choisissez votre type d'association"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Appareil",
+                    "name": "Nom"
+                },
+                "data_description": {
+                    "name": "Le nom par défaut sera utilisé si laissé vide"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entité",
+                    "name": "Nom"
+                },
+                "data_description": {
+                    "name": "Le nom de l'entité sera utilisé si laissé vide"
+                }
+            },
+            "battery": {
+                "description": "Fabricant : {manufacturer}\nModèle : {model}\nID modèle : {model_id}\nVersion du matériel : {hw_version}",
+                "data": {
+                    "battery_type": "Type de batterie",
+                    "battery_quantity": "Nombre de batteries",
+                    "battery_low_threshold": "Seuil de batterie faible",
+                    "battery_low_template": "Modèle de batterie faible"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 gardera le seuil par defaut",
+                    "battery_low_template": "Modèle pour déterminer si une batterie est faible, devrait retourner vrai si faible\nNécessaire uniquement pour les niveaux de batterie non standard"
+                }
+            },
+            "manual": {
+                "description": "Cet appareil est marqué dans la bibliothèque comme manuel, les variantes utilisent des types de batterie différents, il ne peut donc pas être défini dans la bibliothèque.\nL'étape suivante vous permettra de définir votre type de batterie, mais veuillez ne pas soumettre de demande d'appareil.",
+                "title": "Configuration manuelle de l'appareil"
+            }
+        },
+        "abort": {
+            "already_configured": "L'entité est deja configurée"
+        },
+        "error": {
+            "unknown": "Erreur inconnue.",
+            "unconfigurable_entity": "Il n'est pas possible d'ajouter cette entité à Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Fabricant : {manufacturer}\nModèle : {model}\nID modèle : {model_id}\nVersion du matériel : {hw_version}",
+                "data": {
+                    "name": "Nom",
+                    "battery_type": "Type de batterie",
+                    "battery_quantity": "Nombre de batteries",
+                    "battery_low_threshold": "Seuil de batterie faible",
+                    "battery_low_template": "Modèle de batterie faible"
+                },
+                "data_description": {
+                    "name": "Laisser vide gardera le seuil par defaut",
+                    "battery_low_threshold": "0 gardera le seuil par defaut",
+                    "battery_low_template": "Modèle pour déterminer si une batterie est faible, devrait retourner vrai si faible\nNécessaire uniquement pour les niveaux de batterie non standard"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "The associated device or entity no longer exists for this Battery Note.",
+            "unknown": "Erreur inconnue."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Batterie faible",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Seuil de batterie faible"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Batterie remplacée"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Batterie+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Type de batterie"
+                    },
+                    "battery_quantity": {
+                        "name": "Nombre de batteries"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Type de batterie et quantité"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Dernier remplacement de la batterie"
+                    },
+                    "battery_low": {
+                        "name": "Batterie faible"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Seuil de batterie faible"
+                    },
+                    "battery_last_reported": {
+                        "name": "Batterie signalée pour la dernière fois"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Dernier niveau de batterie signalé"
+                    },
+                    "source_entity_id": {
+                        "name": "ID de l'entité source"
+                    },
+                    "device_id": {
+                        "name": "ID de l’appareil"
+                    },
+                    "device_name": {
+                        "name": "Nom de l'appareil"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Type de batterie",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Type de batterie"
+                    },
+                    "battery_quantity": {
+                        "name": "Nombre de batteries"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Dernier remplacement de la batterie"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Forcer le remplacement de la batterie.",
+            "fields": {
+                "device_id": {
+                    "description": "Entitée non remplacée.",
+                    "name": "Appareil"
+                },
+                "entity_id": {
+                    "description": "Entité dont la batterie a été remplacée.",
+                    "name": "Entité"
+                },
+                "datetime_replaced": {
+                    "description": "Date de remplacement.",
+                    "name": "Date"
+                }
+            },
+            "name": "Mise à jour remplacement de la batterie"
+        },
+        "check_battery_last_reported": {
+            "description": "Remontée des appareils qui n'ont pas signalé leur niveau de batterie.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Nombre de jours écoulés depuis la dernière fois qu'un appareil a signalé son niveau de batterie.",
+                    "name": "Jours"
+                }
+            },
+            "name": "Batterie signalée pour la dernière fois"
+        },
+        "check_battery_low": {
+            "description": "Déclenche des événements pour les appareils qui ont une batterie faible.",
+            "name": "Vérifier si batterie faible"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Orphaned Battery Note",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Orphaned Battery Note",
+                        "description": "The associated device or entity no longer exists for the Battery Note entry {name}, the Battery Note should be deleted.\nSelect **Submit** to delete this Battery Note."
+                    }
+                }
+            }
+        }
+    }
+}

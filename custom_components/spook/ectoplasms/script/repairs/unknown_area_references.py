@@ -1,4 +1,5 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from homeassistant.components import script
@@ -7,6 +8,7 @@ from homeassistant.helpers.entity_component import DATA_INSTANCES, EntityCompone
 
 from ....const import LOGGER
 from ....repairs import AbstractSpookRepair
+from ....util import async_filter_known_area_ids, async_get_all_area_ids
 
 
 class SpookRepair(AbstractSpookRepair):
@@ -15,8 +17,9 @@ class SpookRepair(AbstractSpookRepair):
     domain = script.DOMAIN
     repair = "script_unknown_area_references"
     inspect_events = {ar.EVENT_AREA_REGISTRY_UPDATED}
+    inspect_on_reload = True
 
-    _issues: set[str] = set()
+    automatically_clean_up_issues = True
 
     async def async_inspect(self) -> None:
         """Trigger a inspection."""
@@ -28,16 +31,17 @@ class SpookRepair(AbstractSpookRepair):
         ][self.domain]
 
         LOGGER.debug("Spook is inspecting: %s", self.repair)
-        areas = set(self.area_registry.areas)
-        possible_issue_ids: set[str] = set()
+
+        known_area_ids = async_get_all_area_ids(self.hass)
+
         for entity in entity_component.entities:
-            possible_issue_ids.add(entity.entity_id)
+            self.possible_issue_ids.add(entity.entity_id)
             if not isinstance(entity, script.UnavailableScriptEntity) and (
-                unknown_areas := {
-                    area
-                    for area in entity.script.referenced_areas - areas
-                    if isinstance(area, str)
-                }
+                unknown_areas := async_filter_known_area_ids(
+                    self.hass,
+                    area_ids=entity.script.referenced_areas,
+                    known_area_ids=known_area_ids,
+                )
             ):
                 self.async_create_issue(
                     issue_id=entity.entity_id,
@@ -48,7 +52,6 @@ class SpookRepair(AbstractSpookRepair):
                         "entity_id": entity.entity_id,
                     },
                 )
-                self._issues.add(entity.entity_id)
                 LOGGER.debug(
                     (
                         "Spook found unknown areas in %s "
@@ -57,11 +60,3 @@ class SpookRepair(AbstractSpookRepair):
                     entity.entity_id,
                     ", ".join(unknown_areas),
                 )
-            else:
-                self.async_delete_issue(entity.entity_id)
-                self._issues.discard(entity.entity_id)
-
-        # Remove issues for entities that no longer exist
-        for issue_id in self._issues - possible_issue_ids:
-            self.async_delete_issue(issue_id)
-            self._issues.discard(issue_id)

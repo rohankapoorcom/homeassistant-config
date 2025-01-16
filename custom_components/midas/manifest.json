@@ -1,0 +1,15 @@
+{
+  "domain": "midas",
+  "name": "MIDAS (California Energy Prices)",
+  "codeowners": [
+    "@mattdahepic"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/MattDahEpic/ha-midas",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/MattDahEpic/ha-midas/issues",
+  "requirements": [
+    "california-midasapi>=0.1.0"
+  ],
+  "version": "0.2.1"
+}

@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Pokud potřebujete pomoc s konfigurací, podívejte se zde: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Typ přidružení"
+                },
+                "menu_options": {
+                    "device": "Zařízení (doporučeno)",
+                    "entity": "Entita"
+                },
+                "title": "Vyberte typ přidružení"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Zařízení",
+                    "name": "Název"
+                },
+                "data_description": {
+                    "name": "Ponecháte-li prázdné, převezme název ze zdrojového zařízení"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entita",
+                    "name": "Název"
+                },
+                "data_description": {
+                    "name": "Ponecháte-li prázdné, převezme název ze zdrojové entity"
+                }
+            },
+            "battery": {
+                "description": "Výrobce: {manufacturer}\nModel: {model}\nID modelu: {model_id}\nHardware verze: {hw_version}",
+                "data": {
+                    "battery_type": "Typ baterie",
+                    "battery_quantity": "Množství baterií",
+                    "battery_low_threshold": "Práh nízkého stavu baterie",
+                    "battery_low_template": "Šablona nízkého stavu baterie"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 se použije jako globální výchozí práh",
+                    "battery_low_template": "Šablona pro zjištění, zda je baterie vybitá, měla by vracet hodnotu PRAVDA (true), pokud je vybitá.\nPotřebné pouze pro nestandardní úrovně nabití baterie"
+                }
+            },
+            "manual": {
+                "description": "Toto zařízení je v knihovně označeno jako manuální, varianty používají různé typy baterie, takže nemůže být nastaveno v knihovně.\nDalší krok vám umožní nastavit typ baterie, ale prosím nepotvrzujte žádost zařízení.",
+                "title": "Ruční nastavení zařízení"
+            }
+        },
+        "abort": {
+            "already_configured": "Zařízení je již nastaveno"
+        },
+        "error": {
+            "unknown": "Vyskytla se neznámá chyba.",
+            "unconfigurable_entity": "Tuto entitu nelze přidat do Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Výrobce: {manufacturer}\nModel: {model}\nID modelu: {model_id}\nHardware verze: {hw_version}",
+                "data": {
+                    "name": "Název",
+                    "battery_type": "Typ baterie",
+                    "battery_quantity": "Množství baterií",
+                    "battery_low_threshold": "Práh nízkého stavu baterie",
+                    "battery_low_template": "Šablona nízkého stavu baterie"
+                },
+                "data_description": {
+                    "name": "Ponecháte-li prázdné, převezme název ze zdrojového zařízení",
+                    "battery_low_threshold": "0 se použije jako globální výchozí práh",
+                    "battery_low_template": "Šablona k určení zda je stav baterie nízký, měla by vrátit hodnotu pravda, pokud je nízký\nJe potřeba pouze pro nestandardní úroveně baterie"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Přidružené zařízení nebo entita pro tuto poznámku k baterii již neexistuje.",
+            "unknown": "Vyskytla se neznámá chyba."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Nízký stav baterie",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Práh nízkého stavu baterie"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Baterie vyměněna"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Battery+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Typ baterie"
+                    },
+                    "battery_quantity": {
+                        "name": "Množství baterií"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Typ a množství baterie"
+                    },
+                    "battery_last_replaced": {
+                        "name": " Baterie naposledy vyměněna"
+                    },
+                    "battery_low": {
+                        "name": "Nízký stav baterie"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Práh nízkého stavu baterie"
+                    },
+                    "battery_last_reported": {
+                        "name": " Baterie se naposledy nahlásila"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Poslední zaznamenaný stav  baterie"
+                    },
+                    "source_entity_id": {
+                        "name": "ID zdrojové entity"
+                    },
+                    "device_id": {
+                        "name": "ID zařízení"
+                    },
+                    "device_name": {
+                        "name": "Název zařízení"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Typ baterie",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Typ baterie"
+                    },
+                    "battery_quantity": {
+                        "name": "Množství baterií"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Baterie naposledy vyměněna"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Nastavit poslení výměnu baterie.",
+            "fields": {
+                "device_id": {
+                    "description": "Zařízení, jehož baterie byla vyměněna.",
+                    "name": "Zařízení"
+                },
+                "entity_id": {
+                    "description": "Entia, která má vyměněnou baterii (pouze pro entity přidružené k Battery Notes).",
+                    "name": "Entita"
+                },
+                "datetime_replaced": {
+                    "description": "Datum výměny.",
+                    "name": "Datum"
+                }
+            },
+            "name": "Nastavit výměnu baterie"
+        },
+        "check_battery_last_reported": {
+            "description": "Vytváří události pro zařízení, která neohlásila stav jejich baterie.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Počet dní od posledního oznámení stavu baterie.",
+                    "name": "Dny"
+                }
+            },
+            "name": "Poslední nahlášená kontrola baterií"
+        },
+        "check_battery_low": {
+            "description": "Vytváří události pro zařízení, která mají nízkou baterii.",
+            "name": "Zkontrolovat baterii - nízký stav"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Poznámka k osiřelé baterii",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Poznámka k osiřelé baterii",
+                        "description": "Přidružené zařízení nebo entita již neexistuje. Poznámka k baterii pro {name} by měla být odstraněna.\nVýběrem možnosti **Odeslat** tuto poznámku o baterii odstraníte."
+                    }
+                }
+            }
+        }
+    }
+}

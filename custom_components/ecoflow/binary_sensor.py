@@ -91,7 +91,7 @@ class ChargingEntity(BinarySensorEntity, EcoFlowBaseEntity):
 
 
 class CustomChargeEntity(BaseEntity):
-    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def _on_updated(self, data: dict[str, Any]):
         self._attr_is_on = data[self._key] == 2

@@ -2,7 +2,7 @@ from typing import Any
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import FREQUENCY_HERTZ
+from homeassistant.const import UnitOfFrequency
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -21,8 +21,8 @@ _AC_OPTIONS = {
 }
 
 _FREQS = {
-    "50Hz": 1,
-    "60Hz": 2,
+    "50": 1,
+    "60": 2,
 }
 
 _DC_IMPUTS = {
@@ -130,7 +130,7 @@ class FreqEntity(SelectEntity, EcoFlowEntity):
     _attr_entity_category = EntityCategory.CONFIG
     _attr_icon = "mdi:sine-wave"
     _attr_options = list(_FREQS.keys())
-    _attr_unit_of_measurement = FREQUENCY_HERTZ
+    _attr_unit_of_measurement = UnitOfFrequency.HERTZ
 
     async def async_select_option(self, option: str):
         self._client.tcp.write(send.set_ac_out(

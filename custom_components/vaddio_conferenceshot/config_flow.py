@@ -1,8 +1,8 @@
 import logging
 
 from homeassistant import config_entries
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import format_mac
-from homeassistant.helpers.typing import HomeAssistantType
 
 from .const import DATA_SCHEMA, DOMAIN
 from .device import CannotConnect, FIFOError, InvalidAuth, VaddioDevice
@@ -10,7 +10,7 @@ from .device import CannotConnect, FIFOError, InvalidAuth, VaddioDevice
 _LOGGER = logging.getLogger(__name__)
 
 
-async def validate_input(hass: HomeAssistantType, data: dict) -> VaddioDevice:
+async def validate_input(hass: HomeAssistant, data: dict) -> VaddioDevice:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with the values provided by the user.
     """

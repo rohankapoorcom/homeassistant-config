@@ -1,4 +1,5 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from homeassistant.core import ServiceCall
 
 
-class SpookService(AbstractSpookEntityService):
+class SpookService(AbstractSpookEntityService[Timer]):
     """Home Assistant service to set duration for a timer."""
 
     domain = DOMAIN
@@ -53,12 +54,13 @@ class SpookService(AbstractSpookEntityService):
             }
         )
 
+        collection: TimerStorageCollection
         if DOMAIN in entity.hass.data:
-            collection: TimerStorageCollection = entity.hass.data[DOMAIN]
+            collection = entity.hass.data[DOMAIN]
         else:
             # Major hack borrowed from ../../zone/services/create.py:27  👻
-            collection: TimerStorageCollection = entity.hass.data["websocket_api"][
-                "timer/list"
-            ][0].__self__.storage_collection
+            collection = entity.hass.data["websocket_api"]["timer/list"][
+                0
+            ].__self__.storage_collection
 
         await collection.async_update_item(item_id, updates)

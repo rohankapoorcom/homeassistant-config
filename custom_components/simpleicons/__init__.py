@@ -1,10 +1,9 @@
-import homeassistant.components.frontend
-from homeassistant.components.frontend import _frontend_root
 from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.components.http.view import HomeAssistantView
+from homeassistant.components.http import StaticPathConfig
+from xml.dom.minidom import Document, parseString
 
-from simpleicons.all import icons
-import json
+from simplepycons import all_icons
 
 DOMAIN = "simpleicons"
 
@@ -13,22 +12,22 @@ ICONS_URL = "/" + DOMAIN + "/"
 ICON_URL = f"/{DOMAIN}/icons"
 ICON_FILES = {"simpleicons": "si.js"}
 
-
 class IconView(HomeAssistantView):
-
     requires_auth = False
 
     def __init__(self, slug):
         self.url = ICON_URL + "/" + slug
-        self.icon = icons.get(slug)
+        icon = all_icons[slug]
+        dom = parseString(icon.raw_svg)
+        self.path = dom.getElementsByTagName("path")[0].getAttribute("d")
+
         self.name = "Icon View"
 
     async def get(self, request):
-        return self.json({"path": self.icon.path})
+        return self.json({"path": self.path })
 
 
 class ListView(HomeAssistantView):
-
     requires_auth = False
 
     def __init__(self):
@@ -36,20 +35,24 @@ class ListView(HomeAssistantView):
         self.name = "Icons View"
 
     async def get(self, request):
-        return self.json([{"name": icon} for icon in icons])
+        return self.json([{"name": icon.prototype.name} for icon in all_icons.__dict__.values()])
 
 
 async def async_setup(hass, config):
-    hass.http.register_static_path(
-        f"/{DOMAIN}/si.js",
-        hass.config.path(f"custom_components/{DOMAIN}/data/si.js"),
-        True,
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                f"/{DOMAIN}/si.js",
+                hass.config.path(f"custom_components/{DOMAIN}/data/si.js"),
+                True,
+            )
+        ]
     )
 
     hass.http.register_view(ListView())
 
-    for icon in icons:
-        hass.http.register_view(IconView(icon))
+    for icon in all_icons.__dict__.values():
+        hass.http.register_view(IconView(icon.prototype.name))
 
     if DOMAIN not in config:
         return True

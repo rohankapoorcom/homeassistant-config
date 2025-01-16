@@ -5,7 +5,7 @@ import telnetlib
 from typing import List
 
 from homeassistant import exceptions
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.core import HomeAssistant
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -15,9 +15,7 @@ class VaddioDevice:
 
     manufacturer = "Vaddio, LLC"
 
-    def __init__(
-        self, hass: HomeAssistantType, host: str, username: str, password: str
-    ):
+    def __init__(self, hass: HomeAssistant, host: str, username: str, password: str):
         """Initiate a Vaddio Conferenceshot Device."""
         self._hass = hass
         self._hostname = host

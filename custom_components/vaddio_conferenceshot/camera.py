@@ -2,7 +2,7 @@ import logging
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.camera import Camera, SUPPORT_STREAM
+from homeassistant.components.camera import Camera, CameraEntityFeature
 from homeassistant.helpers.device_registry import format_mac
 from homeassistant.helpers import entity_platform
 
@@ -48,7 +48,7 @@ class VaddioCamera(Camera):
     @property
     def supported_features(self):
         """Return supported features for this camera."""
-        return SUPPORT_STREAM
+        return CameraEntityFeature.STREAM
 
     @property
     def name(self):

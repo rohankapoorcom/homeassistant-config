@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Jos tarvitset apua asetuksissa, katso täältä: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Association type"
+                },
+                "menu_options": {
+                    "device": "Laite (suositeltu)",
+                    "entity": "Entiteetti"
+                },
+                "title": "Choose your association type"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Laite",
+                    "name": "Nimi"
+                },
+                "data_description": {
+                    "name": "Tyhjäksi jättäminen ottaa nimen lähdelaitteesta"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entiteetti",
+                    "name": "Nimi"
+                },
+                "data_description": {
+                    "name": "Tyhjäksi jättäminen ottaa nimen lähde entiteetistä"
+                }
+            },
+            "battery": {
+                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "data": {
+                    "battery_type": "Akun tyyppi",
+                    "battery_quantity": "Akkujen määrä",
+                    "battery_low_threshold": "Akun alhainen raja",
+                    "battery_low_template": "Battery low template"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 käyttää yleistä oletusarvoa",
+                    "battery_low_template": "Template to determine a battery is low, should return true if low\nOnly needed for non-standard battery levels"
+                }
+            },
+            "manual": {
+                "description": "This device is marked in the library as manual, variants use different battery types so it cannot be set in the library.\nThe next step will allow you to set your battery type but please do not submit a device request.",
+                "title": "Device manual configuration"
+            }
+        },
+        "abort": {
+            "already_configured": "Laite on jo määritelty"
+        },
+        "error": {
+            "unknown": "Tuntematon virhe.",
+            "unconfigurable_entity": "It is not possible to add this entity to Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "data": {
+                    "name": "Nimi",
+                    "battery_type": "Akun tyyppi",
+                    "battery_quantity": "Akkujen määrä",
+                    "battery_low_threshold": "Akun alhainen raja",
+                    "battery_low_template": "Battery low template"
+                },
+                "data_description": {
+                    "name": "Tyhjäksi jättäminen ottaa nimen lähdelaitteesta",
+                    "battery_low_threshold": "0 käyttää yleistä oletusarvoa",
+                    "battery_low_template": "Template to determine a battery is low, should return true if low\nOnly needed for non-standard battery levels"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "The associated device or entity no longer exists for this Battery Note.",
+            "unknown": "Tuntematon virhe."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Akku vähissä",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Akun alhainen raja"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Akku vaihdettu"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Akku+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Akun tyyppi"
+                    },
+                    "battery_quantity": {
+                        "name": "Akkujen määrä"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Akun tyyppi ja määrä"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Akku viimeksi vaihdettu"
+                    },
+                    "battery_low": {
+                        "name": "Akku vähissä"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Akun alhainen raja"
+                    },
+                    "battery_last_reported": {
+                        "name": "Akku viimeksi raportoitu"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Akku viimeksi raportoitu taso"
+                    },
+                    "source_entity_id": {
+                        "name": "Source Entity Id"
+                    },
+                    "device_id": {
+                        "name": "Device Id"
+                    },
+                    "device_name": {
+                        "name": "Laitteen nimi"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Akun tyyppi",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Akun tyyppi"
+                    },
+                    "battery_quantity": {
+                        "name": "Akkujen määrä"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Akku viimeksi vaihdettu"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Aseta akku viimeksi vaihdetuksi.",
+            "fields": {
+                "device_id": {
+                    "description": "Laite, jonka akku on vaihdettu.",
+                    "name": "Laite"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Entiteetti"
+                },
+                "datetime_replaced": {
+                    "description": "Päivä, jolloin vaihdettu.",
+                    "name": "Päivä"
+                }
+            },
+            "name": "Aseta akku vaihdetuksi"
+        },
+        "check_battery_last_reported": {
+            "description": "Raise events for devices that haven't reported their battery level.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Number of days since a device last reported its battery level.",
+                    "name": "Päivät"
+                }
+            },
+            "name": "Check battery last reported"
+        },
+        "check_battery_low": {
+            "description": "Raise events for devices that have a low battery.",
+            "name": "Check battery low"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Orphaned Battery Note",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Orphaned Battery Note",
+                        "description": "The associated device or entity no longer exists for the Battery Note entry {name}, the Battery Note should be deleted.\nSelect **Submit** to delete this Battery Note."
+                    }
+                }
+            }
+        }
+    }
+}

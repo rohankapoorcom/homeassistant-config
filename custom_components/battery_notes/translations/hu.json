@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Segítség a konfigurációhoz: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Társítás típusa"
+                },
+                "menu_options": {
+                    "device": "Eszköz (javasolt)",
+                    "entity": "Entitás"
+                },
+                "title": "Válaszd ki a társítás típusát"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Eszköz",
+                    "name": "Név"
+                },
+                "data_description": {
+                    "name": "Üresen hagyva a forráseszköz nevét kapja"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entitás",
+                    "name": "Név"
+                },
+                "data_description": {
+                    "name": "Üresen hagyva a forrás entitás nevét kapja"
+                }
+            },
+            "battery": {
+                "description": "Gyártó: {manufacturer}\nModell: {model}\nModell azonosító: {model_id}\nHardver verzió: {hw_version}",
+                "data": {
+                    "battery_type": "Elemtípus",
+                    "battery_quantity": "Elem darabszám",
+                    "battery_low_threshold": "Alacsony elemszint küszöbérték",
+                    "battery_low_template": "Alacsony elemszint sablon"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 érték esetén a központi beállítást fogja használni",
+                    "battery_low_template": "A sablon igaz értéket kell adjon, ha az elem nemsokára lemerül\nCsak nem szokványos töltöttségi szint esetén kell megadni"
+                }
+            },
+            "manual": {
+                "description": "Az eszköz különböző típusú elemekkel is használható, így manuálisan kell beállítani az elem típusát.\nA következő lépésben elvégezhető a beállítás, de kérlek, ne küldd be ezt az eszközt nekünk!",
+                "title": "Eszköz manuális beállítása"
+            }
+        },
+        "abort": {
+            "already_configured": "Az eszköz már konfigurálva van"
+        },
+        "error": {
+            "unknown": "Ismeretlen hiba lépett fel.",
+            "unconfigurable_entity": "Ez az entitás nem adható a Battery Noteshoz."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Gyártó: {manufacturer}\nModell: {model}\nModell azonosító: {model_id}\nHardver verzió: {hw_version}",
+                "data": {
+                    "name": "Név",
+                    "battery_type": "Elemtípus",
+                    "battery_quantity": "Elem darabszám",
+                    "battery_low_threshold": "Alacsony elemszint küszöbérték",
+                    "battery_low_template": "Alacsony elemszint sablon"
+                },
+                "data_description": {
+                    "name": "Üresen hagyva a forráseszköz nevét kapja",
+                    "battery_low_threshold": "0 érték esetén a központi beállítást fogja használni",
+                    "battery_low_template": "A sablon igaz értéket kell adjon, ha az elem nemsokára lemerül\nCsak nem szokványos töltöttségi szint esetén kell megadni"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Az ehhez a Battery Note-hoz társított eszköz vagy entitás már nem létezik.",
+            "unknown": "Ismeretlen hiba lépett fel."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Alacsony elemszint",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Alacsony elemszint küszöbérték"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Elemcsere"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Elem+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Elemtípus"
+                    },
+                    "battery_quantity": {
+                        "name": "Elem darabszám"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Elemtípus és darabszám"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Elemcsere"
+                    },
+                    "battery_low": {
+                        "name": "Elem lemerül"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Alacsony elemszint küszöbérték"
+                    },
+                    "battery_last_reported": {
+                        "name": "Utolsó elemszint jelentés"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Utolsó elemszint"
+                    },
+                    "source_entity_id": {
+                        "name": "Forrás entitás azonosító"
+                    },
+                    "device_id": {
+                        "name": "Eszköz azonosító"
+                    },
+                    "device_name": {
+                        "name": "Eszköznév"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Elemtípus",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Elemtípus"
+                    },
+                    "battery_quantity": {
+                        "name": "Elem darabszám"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Elemcsere"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Beállítja az elemcsere időpontját.",
+            "fields": {
+                "device_id": {
+                    "description": "Eszköz, melynek eleme cserélve lett.",
+                    "name": "Eszköz"
+                },
+                "entity_id": {
+                    "description": "Entitás, melynek eleme cserélve lett (csak entitáshoz társított elem esetén).",
+                    "name": "Entitás"
+                },
+                "datetime_replaced": {
+                    "description": "Csere időpontja.",
+                    "name": "Időpont"
+                }
+            },
+            "name": "Elemcsere időpontjának beállítása"
+        },
+        "check_battery_last_reported": {
+            "description": "Eseményt generál azon eszközökről, melyek nem jelentették az elemszintjüket.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Eltelt napok száma mióta az eszköz nem jelentette az elemszintjét.",
+                    "name": "Napok száma"
+                }
+            },
+            "name": "Elemszint jelentések ellenőrzése"
+        },
+        "check_battery_low": {
+            "description": "Eseményt generál azon eszközökről, melyek elemszintje alacsony.",
+            "name": "Alacsony elemszintek ellenőrzése"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Árva Battery Note",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Árva Battery Note",
+                        "description": "A(z) {name} Battery Note-hoz társított eszköz vagy entitás már nem létezik, ezért a Battery Note törölhető.\nVálaszd a **Mehet**-et, hogy töröld ezt a Battery Note-ot."
+                    }
+                }
+            }
+        }
+    }
+}

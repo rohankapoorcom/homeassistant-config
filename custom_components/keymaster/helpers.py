@@ -1,4 +1,5 @@
 """Helpers for keymaster."""
+
 import asyncio
 from datetime import timedelta
 import logging
@@ -22,7 +23,7 @@ from homeassistant.const import (
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
 )
-from homeassistant.core import Event, HomeAssistant, State, callback
+from homeassistant.core import Event, EventStateChangedData, HomeAssistant, callback
 from homeassistant.exceptions import ServiceNotFound
 from homeassistant.helpers.device_registry import async_get as async_get_device_registry
 from homeassistant.helpers.entity_registry import (
@@ -146,7 +147,12 @@ async def async_update_zwave_js_nodes_and_devices(
     child_locks: List[KeymasterLock],
 ) -> None:
     """Update Z-Wave JS nodes and devices."""
-    client = hass.data[ZWAVE_JS_DOMAIN][entry_id][ZWAVE_JS_DATA_CLIENT]
+    try:
+        zwave_entry = hass.config_entries.async_get_entry(entry_id)
+        client = zwave_entry.runtime_data[ZWAVE_JS_DATA_CLIENT]
+    except:
+        _LOGGER.exception("Can't access Z-Wave JS client.")
+        return
     ent_reg = async_get_entity_registry(hass)
     dev_reg = async_get_device_registry(hass)
     for lock in [primary_lock, *child_locks]:
@@ -246,26 +252,32 @@ def handle_zwave_js_event(hass: HomeAssistant, config_entry: ConfigEntry, evt: E
                 ATTR_STATE: lock_state.state if lock_state else "",
                 ATTR_ACTION_TEXT: evt.data.get(ATTR_EVENT_LABEL),
                 ATTR_CODE_SLOT: code_slot or 0,
-                ATTR_CODE_SLOT_NAME: code_slot_name_state.state
-                if code_slot_name_state is not None
-                else "",
+                ATTR_CODE_SLOT_NAME: (
+                    code_slot_name_state.state
+                    if code_slot_name_state is not None
+                    else ""
+                ),
             },
         )
         return
 
 
+@callback
 def handle_state_change(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     changed_entity: str,
-    old_state: State,
-    new_state: State,
+    event: Event[EventStateChangedData] | None = None,
 ) -> None:
     """Listener to track state changes to lock entities."""
+    if not event:
+        return
+
     primary_lock: KeymasterLock = hass.data[DOMAIN][config_entry.entry_id][PRIMARY_LOCK]
     child_locks: List[KeymasterLock] = hass.data[DOMAIN][config_entry.entry_id][
         CHILD_LOCKS
     ]
+    new_state = event.data["new_state"]
 
     for lock in [primary_lock, *child_locks]:
         # Don't do anything if the changed entity is not this lock
@@ -343,9 +355,11 @@ def handle_state_change(
                 ATTR_ACTION_CODE: alarm_type_value,
                 ATTR_ACTION_TEXT: action_text,
                 ATTR_CODE_SLOT: alarm_level_value or 0,
-                ATTR_CODE_SLOT_NAME: code_slot_name_state.state
-                if code_slot_name_state is not None
-                else "",
+                ATTR_CODE_SLOT_NAME: (
+                    code_slot_name_state.state
+                    if code_slot_name_state is not None
+                    else ""
+                ),
             },
         )
         return

@@ -1,4 +1,5 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,6 +23,7 @@ class SpookService(AbstractSpookAdminService):
     schema = {
         vol.Required("name"): cv.string,
         vol.Optional("aliases"): [cv.string],
+        vol.Optional("icon"): cv.icon,
     }
 
     async def async_handle_service(self, call: ServiceCall) -> None:
@@ -30,4 +32,5 @@ class SpookService(AbstractSpookAdminService):
         area_registry.async_create(
             name=call.data["name"],
             aliases=call.data.get("aliases"),
+            icon=call.data.get("icon"),
         )

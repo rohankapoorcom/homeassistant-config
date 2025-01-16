@@ -1,9 +1,10 @@
 """Sensor for keymaster."""
+
 import logging
 from typing import List
 
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_CONNECTIVITY,
+    BinarySensorDeviceClass,
     BinarySensorEntity,
 )
 from homeassistant.core import callback
@@ -11,15 +12,8 @@ from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 from homeassistant.util import slugify
 
-from .const import (
-    CHILD_LOCKS,
-    DOMAIN,
-    PRIMARY_LOCK,
-)
-from .helpers import (
-    async_update_zwave_js_nodes_and_devices,
-    async_using_zwave_js,
-)
+from .const import CHILD_LOCKS, DOMAIN, PRIMARY_LOCK
+from .helpers import async_update_zwave_js_nodes_and_devices, async_using_zwave_js
 from .lock import KeymasterLock
 
 try:
@@ -70,7 +64,7 @@ class BaseNetworkReadySensor(BinarySensorEntity):
         self._attr_is_on = False
         self._attr_name = generate_binary_sensor_name(self.primary_lock.lock_name)
         self._attr_unique_id = slugify(self._attr_name)
-        self._attr_device_class = DEVICE_CLASS_CONNECTIVITY
+        self._attr_device_class = BinarySensorDeviceClass.CONNECTIVITY
         self._attr_should_poll = False
 
     @callback
@@ -130,11 +124,12 @@ class ZwaveJSNetworkReadySensor(BaseNetworkReadySensor):
                 self._lock_found = True
 
         try:
-            client = self.hass.data[ZWAVE_JS_DOMAIN][self.lock_config_entry_id][
-                ZWAVE_JS_DATA_CLIENT
-            ]
-        except KeyError:
-            _LOGGER.debug("Can't access Z-Wave JS data client.")
+            zwave_entry = self.hass.config_entries.async_get_entry(
+                self.lock_config_entry_id
+            )
+            client = zwave_entry.runtime_data[ZWAVE_JS_DATA_CLIENT]
+        except:
+            _LOGGER.exception("Can't access Z-Wave JS client.")
             self._attr_is_on = False
             return
 

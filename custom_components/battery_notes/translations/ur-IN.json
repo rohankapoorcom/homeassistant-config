@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "اگر آپ کو ترتیب میں مدد کی ضرورت ہو تو یہاں ایک نظر ڈالیں: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Association type"
+                },
+                "menu_options": {
+                    "device": "Device (recommended)",
+                    "entity": "Entity"
+                },
+                "title": "Choose your association type"
+            },
+            "device": {
+                "data": {
+                    "device_id": "آلہ",
+                    "name": "نام"
+                },
+                "data_description": {
+                    "name": "خالی چھوڑنے سے نام ماخذ آلہ سے لیا جائے گا۔"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entity",
+                    "name": "نام"
+                },
+                "data_description": {
+                    "name": "Leaving blank will take the name from the source entity"
+                }
+            },
+            "battery": {
+                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "data": {
+                    "battery_type": "بیٹری کی قسم",
+                    "battery_quantity": "بیٹری کی مقدار",
+                    "battery_low_threshold": "بیٹری کی کم حد",
+                    "battery_low_template": "کم بیٹری ٹیمپلیٹ"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 عالمی ڈیفالٹ حد استعمال کرے گا۔",
+                    "battery_low_template": "بیٹری کم ہونے کا تعین کرنے کے لیے ٹیمپلیٹ، کم ہونے کی صورت میں درست ہونا چاہیے\nصرف غیر معیاری بیٹری کی سطح کے لیے ضروری ہے"
+                }
+            },
+            "manual": {
+                "description": "This device is marked in the library as manual, variants use different battery types so it cannot be set in the library.\nThe next step will allow you to set your battery type but please do not submit a device request.",
+                "title": "Device manual configuration"
+            }
+        },
+        "abort": {
+            "already_configured": "ڈیوائس پہلے سے ہی ترتیب شدہ ہے۔"
+        },
+        "error": {
+            "unknown": "نامعلوم خرابی پیش آگئی.",
+            "unconfigurable_entity": "It is not possible to add this entity to Battery Notes."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "data": {
+                    "name": "نام",
+                    "battery_type": "بیٹری کی قسم",
+                    "battery_quantity": "بیٹری کی مقدار",
+                    "battery_low_threshold": "بیٹری کی کم حد",
+                    "battery_low_template": " کم بیٹری ٹیمپلیٹ "
+                },
+                "data_description": {
+                    "name": "خالی چھوڑنے سے نام ماخذ آلہ سے لیا جائے گا۔",
+                    "battery_low_threshold": "0 عالمی ڈیفالٹ حد استعمال کرے گا۔",
+                    "battery_low_template": "بیٹری کم ہونے کا تعین کرنے کے لیے ٹیمپلیٹ، کم ہونے کی صورت میں درست ہونا چاہیے\nصرف غیر معیاری بیٹری کی سطح کے لیے ضروری ہے"
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "The associated device or entity no longer exists for this Battery Note.",
+            "unknown": "نامعلوم خرابی پیش آگئی."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}بیٹری کم",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "بیٹری کی کم حد"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}بیٹری تبدیل کر دی گئی۔"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}بیٹری+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "بیٹری کی قسم"
+                    },
+                    "battery_quantity": {
+                        "name": "بیٹری کی مقدار"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "بیٹری کی قسم اور مقدار"
+                    },
+                    "battery_last_replaced": {
+                        "name": "بیٹری کو آخری بار تبدیل کیا گیا۔"
+                    },
+                    "battery_low": {
+                        "name": "بیٹری کم ہے۔"
+                    },
+                    "battery_low_threshold": {
+                        "name": "بیٹری کی کم حد"
+                    },
+                    "battery_last_reported": {
+                        "name": "بیٹری کی آخری اطلاع دی گئی۔"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "بیٹری کی آخری اطلاع دی گئی سطح"
+                    },
+                    "source_entity_id": {
+                        "name": "Source Entity Id"
+                    },
+                    "device_id": {
+                        "name": "Device Id"
+                    },
+                    "device_name": {
+                        "name": "Device name"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}بیٹری کی قسم",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "بیٹری کی قسم"
+                    },
+                    "battery_quantity": {
+                        "name": "بیٹری کی مقدار"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}بیٹری آخری بار تبدیل کی گئی۔"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "آخری بار تبدیل کی گئی بیٹری سیٹ کریں۔.",
+            "fields": {
+                "device_id": {
+                    "description": "وہ آلہ جس کی بیٹری تبدیل کر دی گئی ہو۔.",
+                    "name": "آلہ"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Entity"
+                },
+                "datetime_replaced": {
+                    "description": "تاریخ تبدیل کر دی گئی۔.",
+                    "name": "تاریخ"
+                }
+            },
+            "name": "سیٹ کی بیٹری کو تبدیل کر دیا گیا۔"
+        },
+        "check_battery_last_reported": {
+            "description": "ان آلات کے لئے واقعات کو بڑھائیں جنہوں نے اپنی بیٹری کی سطح کی اطلاع نہیں دی ہے۔",
+            "fields": {
+                "days_last_reported": {
+                    "description": "دنوں کی تعداد جب سے کسی آلے نے آخری بار اس کی بیٹری کی سطح کی اطلاع دی۔",
+                    "name": "دن"
+                }
+            },
+            "name": "بیٹری کی آخری اطلاع چیک کریں"
+        },
+        "check_battery_low": {
+            "description": "کم بیٹری والے آلات کے لئے واقعات کو بڑھائیں.",
+            "name": "کم بیٹری چیک کریں۔"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Orphaned Battery Note",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Orphaned Battery Note",
+                        "description": "The associated device or entity no longer exists for the Battery Note entry {name}, the Battery Note should be deleted.\nSelect **Submit** to delete this Battery Note."
+                    }
+                }
+            }
+        }
+    }
+}

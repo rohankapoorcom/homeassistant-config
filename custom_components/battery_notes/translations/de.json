@@ -1,0 +1,200 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Hilfe zur Konfiguration findest du unter: https://andrew-codechimp.github.io/HA-Battery-Notes/",
+                "data": {
+                    "association_type": "Verbindungstyp"
+                },
+                "menu_options": {
+                    "device": "Gerät (empfohlen)",
+                    "entity": "Entität"
+                },
+                "title": "Wählen Sie den Verbindungstyp"
+            },
+            "device": {
+                "data": {
+                    "device_id": "Gerät",
+                    "name": "Name"
+                },
+                "data_description": {
+                    "name": "Wenn du nichts eingibst, wird der Name vom Quellgerät übernommen"
+                }
+            },
+            "entity": {
+                "data": {
+                    "source_entity_id": "Entität",
+                    "name": "Name"
+                },
+                "data_description": {
+                    "name": "Leer lassen wird den Namen von der Quell-Entität übernehmen"
+                }
+            },
+            "battery": {
+                "description": "Hersteller: {manufacturer}\nModell: {model}\nModell ID: {model_id}\nHardware Version: {hw_version}",
+                "data": {
+                    "battery_type": "Batterieart",
+                    "battery_quantity": "Batteriemenge",
+                    "battery_low_threshold": "Schwelle für niedrigen Batteriestand",
+                    "battery_low_template": "Vorlage für niedrigen Batteriestand"
+                },
+                "data_description": {
+                    "battery_low_threshold": "0 verwendet den globalen Standardschwellenwert",
+                    "battery_low_template": "Vorlage um zu bestimmen, ob eine Batterie schwach ist; sollte \"wahr\" (true) rückmelden, wenn schwach.\nNur für nicht-Standard Batteriewerte benötigt."
+                }
+            },
+            "manual": {
+                "description": "Dieses Gerät ist in der Bibliothek als \"manuell einzurichten\" gekennzeichnet, verschiedene Varianten verwenden unterschiedliche Batterietypen, so dass es in der Bibliothek nicht eingestellt werden kann.\nIm nächsten Schritt können Sie Ihren Batterietyp einstellen, aber bitte keine Geräteanforderung einreichen.",
+                "title": "Gerät manuell konfigurieren"
+            }
+        },
+        "abort": {
+            "already_configured": "Das Gerät ist bereits konfiguriert."
+        },
+        "error": {
+            "unknown": "Ein unbekannter Fehler ist aufgetreten.",
+            "unconfigurable_entity": "Es ist nicht möglich, diese Entität zu einem Batteriestatus hinzuzufügen."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Hersteller: {manufacturer}\nModell: {model}\nModell ID: {model_id}\nHardware Version: {hw_version}",
+                "data": {
+                    "name": "Name",
+                    "battery_type": "Batterieart",
+                    "battery_quantity": "Batteriemenge",
+                    "battery_low_threshold": "Schwelle für niedrigen Batteriestand",
+                    "battery_low_template": "Vorlage für niedrigen Batteriestand"
+                },
+                "data_description": {
+                    "name": "Wenn du nichts eingibst, wird der Name vom Quellgerät übernommen",
+                    "battery_low_threshold": "0 verwendet den globalen Standardschwellenwert",
+                    "battery_low_template": "Vorlage um zu bestimmen, ob eine Batterie schwach ist; sollte \"wahr\" (true) rückmelden, wenn schwach.\nNur für nicht-Standard Batteriewerte benötigt."
+                }
+            }
+        },
+        "error": {
+            "orphaned_battery_note": "Das zugeordnete Gerät für diesen Eintrag in \"Battery Notes\" ist nicht mehr verfügbar",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_low": {
+                "name": "{device_name}Akku fast leer",
+                "state_attributes": {
+                    "battery_low_threshold": {
+                        "name": "Schwelle für niedrigen Batteriestand"
+                    }
+                }
+            }
+        },
+        "button": {
+            "battery_replaced": {
+                "name": "{device_name}Batterie ersetzt"
+            }
+        },
+        "sensor": {
+            "battery_plus": {
+                "name": "{device_name}Batterie+",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterieart"
+                    },
+                    "battery_quantity": {
+                        "name": "Batteriemenge"
+                    },
+                    "battery_type_and_quantity": {
+                        "name": "Batterietyp und -menge"
+                    },
+                    "battery_last_replaced": {
+                        "name": "Batterie zuletzt ersetzt"
+                    },
+                    "battery_low": {
+                        "name": "Akku fast leer"
+                    },
+                    "battery_low_threshold": {
+                        "name": "Schwelle für niedrigen Batteriestand"
+                    },
+                    "battery_last_reported": {
+                        "name": "Letzte gemeldete Batterie"
+                    },
+                    "battery_last_reported_level": {
+                        "name": "Letzter gemeldeter Batteriestand"
+                    },
+                    "source_entity_id": {
+                        "name": "Quellentitäts-ID"
+                    },
+                    "device_id": {
+                        "name": "Geräte-ID"
+                    },
+                    "device_name": {
+                        "name": "Gerätename"
+                    }
+                }
+            },
+            "battery_type": {
+                "name": "{device_name}Batterieart",
+                "state_attributes": {
+                    "battery_type": {
+                        "name": "Batterieart"
+                    },
+                    "battery_quantity": {
+                        "name": "Batteriemenge"
+                    }
+                }
+            },
+            "battery_last_replaced": {
+                "name": "{device_name}Batterie zuletzt ersetzt"
+            }
+        }
+    },
+    "services": {
+        "set_battery_replaced": {
+            "description": "Stellen Sie die zuletzt ausgetauschte Batterie ein.",
+            "fields": {
+                "device_id": {
+                    "description": "Gerät, bei dem die Batterie ersetzt wurde.",
+                    "name": "Gerät"
+                },
+                "entity_id": {
+                    "description": "Entity that has had its battery replaced.",
+                    "name": "Entität"
+                },
+                "datetime_replaced": {
+                    "description": "Datum ersetzt.",
+                    "name": "Datum"
+                }
+            },
+            "name": "Stelle Batteriewechsel ein"
+        },
+        "check_battery_last_reported": {
+            "description": "Erzeuge Ereignis für Geräte, die keinen Batteriestand gemeldet haben.",
+            "fields": {
+                "days_last_reported": {
+                    "description": "Anzahl der Tage seit der letzten Batteriestands-Meldung.",
+                    "name": "Tage"
+                }
+            },
+            "name": "Prüfe auf letzte Batteriestands-Meldungen"
+        },
+        "check_battery_low": {
+            "description": "Erzeuge Ereignis für Geräte, die einen niedrigen Batteriestand haben.",
+            "name": "Prüfe auf schwache Batterien"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Fehlerhafter Eintrag in \"Battery Notes\"",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Fehlerhafter Eintrag in \"Battery Notes\"",
+                        "description": "Das zugehörige Gerät oder die Entität des Eintrags {name} in \"Battery Notes\" ist nicht mehr vorhanden, der Eintrag sollte gelöscht werden.\nWählen Sie **Absenden** um diesen Eintrag zu löschen."
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,15 +1,21 @@
-"""Spook - Not your homie."""
+"""Spook - Your homie."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+import asyncio
 from dataclasses import dataclass, field
 import importlib
 from pathlib import Path
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING, Any, final
 
 from homeassistant.components.homeassistant import SERVICE_HOMEASSISTANT_RESTART
 from homeassistant.components.repairs import ConfirmRepairFlow, RepairsFlow
-from homeassistant.config_entries import SIGNAL_CONFIG_ENTRY_CHANGED, ConfigEntry
+from homeassistant.config_entries import (
+    SIGNAL_CONFIG_ENTRY_CHANGED,
+    ConfigEntry,
+    ConfigEntryChange,
+)
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers import (
     area_registry as ar,
@@ -19,13 +25,16 @@ from homeassistant.helpers import (
 )
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.util.async_ import create_eager_task
 
 from .const import DOMAIN, LOGGER
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Coroutine, Mapping
+    from types import ModuleType
 
     from homeassistant.data_entry_flow import FlowResult
+    from homeassistant.util.event_type import EventType
 
 
 class AbstractSpookRepairBase(ABC):
@@ -40,6 +49,8 @@ class AbstractSpookRepairBase(ABC):
     device_registry: dr.DeviceRegistry
     entity_registry: er.EntityRegistry
 
+    issue_ids: set[str]
+
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the service."""
         self.hass = hass
@@ -47,6 +58,7 @@ class AbstractSpookRepairBase(ABC):
         self.area_registry = ar.async_get(hass)
         self.device_registry = dr.async_get(hass)
         self.entity_registry = er.async_get(hass)
+        self.issue_ids = set()
 
     @final
     @callback
@@ -65,6 +77,7 @@ class AbstractSpookRepairBase(ABC):
         translation_placeholders: dict[str, str] | None = None,
     ) -> None:
         """Create an issue."""
+        self.issue_ids.add(issue_id)
         ir.async_create_issue(
             self.hass,
             breaks_in_ha_version=breaks_in_ha_version,
@@ -87,6 +100,7 @@ class AbstractSpookRepairBase(ABC):
         issue_id: str,
     ) -> None:
         """Remove an issue."""
+        self.issue_ids.discard(issue_id)
         ir.async_delete_issue(
             self.hass,
             domain=DOMAIN,
@@ -103,25 +117,30 @@ class AbstractSpookRepairBase(ABC):
         """Trigger a repair check."""
         raise NotImplementedError
 
-    @abstractmethod
     async def async_deactivate(self) -> None:
         """Unregister the repair."""
-        raise NotImplementedError
+        for issue_id in self.issue_ids:
+            self.async_delete_issue(issue_id)
 
 
 class AbstractSpookRepair(AbstractSpookRepairBase):
     """Abstract base class to hold a Spook repairs."""
 
-    inspect_events: set[str] | None = None
-    inspect_debouncer: Debouncer
+    inspect_events: set[EventType[Any] | str] | None = None
+    inspect_debouncer: Debouncer[Coroutine[Any, Any, None]]
     inspect_config_entry_changed: bool | str = False
     inspect_on_reload: bool | str = False
+
+    automatically_clean_up_issues: bool = False
+    possible_issue_ids: set[str]
+
     _event_subs: set[Callable[[], None]]
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the repair."""
         super().__init__(hass)
         self._event_subs = set()
+        self.possible_issue_ids = set()
 
     async def async_activate(self) -> None:  # noqa: C901
         """Handle the activating a repair."""
@@ -131,7 +150,20 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
             if self.hass.is_stopping:
                 return
 
+            if self.automatically_clean_up_issues:
+                # Reset registered issues. If they are still valid, they will be
+                # re-registered during the inspection.
+                self.issue_ids.clear()
+
             await self.async_inspect()
+
+            if self.automatically_clean_up_issues:
+                # Remove issues that are not longer created after inspection.
+                for issue_id in self.possible_issue_ids - self.issue_ids:
+                    self.async_delete_issue(issue_id)
+                # Remove issues that are no longer valid.
+                for issue_id in self.issue_ids - self.possible_issue_ids:
+                    self.async_delete_issue(issue_id)
 
         # Debouncer to prevent multiple inspections / inspections fired quickly
         # after each other.
@@ -161,9 +193,10 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
         if self.inspect_on_reload:
 
             @callback
-            def _filter_event(event: Event) -> bool:
+            def _filter_event(data: Mapping[str, Any] | Event) -> bool:
                 """Filter for reload events."""
-                service = event.data.get("service")
+                event_data = data.data if isinstance(data, Event) else data
+                service = event_data.get("service")
                 if service is None:
                     return False
                 if service == "reload_all":
@@ -172,7 +205,7 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
                     return False
                 if self.inspect_on_reload is True:
                     return True
-                if self.inspect_on_reload == event.data.get("domain"):
+                if self.inspect_on_reload == event_data.get("domain"):
                     return True
                 return False
 
@@ -184,8 +217,8 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
 
         if self.inspect_config_entry_changed:
 
-            async def _async_config_entry_changed(
-                _hass: HomeAssistant,
+            async def _async_config_entry_changed(  # pylint: disable=unused-argument
+                change: ConfigEntryChange,  # noqa: ARG001
                 entry: ConfigEntry,
             ) -> None:
                 """Handle options update."""
@@ -206,6 +239,7 @@ class AbstractSpookRepair(AbstractSpookRepairBase):
         """Unregister the repair."""
         for sub in self._event_subs:
             sub()
+        await super().async_deactivate()
 
 
 class AbstractSpookSingleShotRepairs(AbstractSpookRepairBase, ABC):
@@ -219,6 +253,7 @@ class AbstractSpookSingleShotRepairs(AbstractSpookRepairBase, ABC):
     @final
     async def async_deactivate(self) -> None:
         """Unregister the repair."""
+        await super().async_deactivate()
 
 
 @dataclass
@@ -238,15 +273,25 @@ class SpookRepairManager:
         """Set up the Spook repairs."""
         LOGGER.debug("Setting up Spook repairs")
 
-        # Load all services
-        for module_file in Path(__file__).parent.rglob("ectoplasms/*/repairs/*.py"):
-            if module_file.name == "__init__.py":
-                continue
-            module_path = str(module_file.relative_to(Path(__file__).parent))[
-                :-3
-            ].replace("/", ".")
-            module = importlib.import_module(f".{module_path}", __package__)
-            await self.async_activate(module.SpookRepair(self.hass))
+        modules: list[ModuleType] = []
+
+        def _load_all_repair_modules() -> None:
+            """Load all repair modules."""
+            for module_file in Path(__file__).parent.rglob("ectoplasms/*/repairs/*.py"):
+                if module_file.name == "__init__.py":
+                    continue
+                module_path = str(module_file.relative_to(Path(__file__).parent))[
+                    :-3
+                ].replace("/", ".")
+                modules.append(importlib.import_module(f".{module_path}", __package__))
+
+        await self.hass.async_add_import_executor_job(_load_all_repair_modules)
+        await asyncio.gather(
+            *(
+                create_eager_task(self.async_activate(module.SpookRepair(self.hass)))
+                for module in modules
+            )
+        )
 
     async def async_activate(self, repair: AbstractSpookRepair) -> None:
         """Register a Spook repair."""
