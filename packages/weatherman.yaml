@@ -14,7 +14,7 @@ template:
         event: start
       - trigger: event
         event_type: event_template_reloaded
-    actions:
+    action:
       - action: weather.get_forecasts
         data:
           type: hourly
