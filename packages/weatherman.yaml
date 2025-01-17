@@ -7,7 +7,7 @@
 ###############################################################################
 ---
 template:
-  - triggers:
+  - trigger:
       - trigger: time_pattern
         minutes: "/1"
       - trigger: homeassistant
