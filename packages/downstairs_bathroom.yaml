@@ -18,7 +18,7 @@ homeassistant:
 ## Sensor
 ################################################
 sensor:
-  - trigger: template
+  - platform: template
     sensors:
       downstairs_bathroom_relative_humidity:
         friendly_name: 'Relative Humidity'
