@@ -371,7 +371,7 @@ automation:
     alias: Office Lights Scene Controls
     description: Utilizes a blueprint to map track lighting states on the Scene Controller in the Office.
     use_blueprint:
-      path: rohankapoorcom/inovelli-vzw31-red-series-switch.yaml
+      path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
       input:
         zwave_device: bec9907b514903d09df1ba766052f542
         button_b2:
