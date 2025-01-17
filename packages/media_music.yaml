@@ -142,7 +142,7 @@ emulated_roku:
 ## Media Player
 ################################################
 media_player:
-  - trigger: universal
+  - platform: universal
     name: All Speakers
     children:
       - media_player.whole_house
