@@ -39,3 +39,65 @@ sensor:
         value_template: "{{state_attr('weather.pirateweather', 'humidity') | round(1, default=0)}}"
         device_class: humidity
         unit_of_measurement: "%"
+
+automation:
+  - id: '1702712886222'
+    alias: Update ePaper Weather Displays
+    description: Display external weather on the epaper displays by the exterior doors
+    triggers:
+      - minutes: /15
+        trigger: time_pattern
+    conditions:
+      - condition: time
+        after: "07:00:00"
+        before: "02:00:00"
+    actions:
+      - data:
+          background: white
+          rotate: 0
+          ttl: 300
+          dither: false
+          payload:
+            - type: icon
+              value: >
+                weather- {%- set condition = states('weather.pirateweather') -%} {%-
+                if condition == 'partlycloudy' -%}
+                  {%- set condition = 'partly-cloudy' -%}
+                {%- endif -%} {%- if condition == 'clear-night' -%}
+                  {%- set condition = 'night' -%}
+                {%- endif -%} {%- if states('sun.sun') == 'below_horizon' -%}
+                  {%- if condition == 'sunny' -%}
+                    night
+                  {%- elif condition == 'partly-cloudy' -%}
+                    night-partly-cloudy
+                  {%- else -%}
+                    {{ condition }}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ condition }}
+                {%- endif -%}
+              x: 42
+              y: 5
+              size: 75
+              color: black
+            - type: text
+              value: "{{ states('sensor.weather_station_outdoor_temperature') | round }}°F"
+              font: ppb.ttf
+              x: 76
+              y: 105
+              size: 60
+              color: red
+              anchor: mm
+            - type: text
+              value: "Updated: {{ now().strftime('%I:%M %p') }}"
+              font: ppb.ttf
+              x: 76
+              y: 135
+              size: 15
+              color: black
+              anchor: mt
+        target:
+          device_id:
+            - 93185d71c897d23075b33b802ad98658
+        action: open_epaper_link.drawcustom
+    mode: restart
