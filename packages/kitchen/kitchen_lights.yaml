@@ -15,9 +15,9 @@ homeassistant:
       customize: &customize
         package: 'kitchen_lights'
 
-    kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
-      - 5580d638554510eabf0b5d3dbabe1263
-      - 1ba8afa3f33d85ff33d77a5a13dfd364
+      kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
+        - 5580d638554510eabf0b5d3dbabe1263
+        - 1ba8afa3f33d85ff33d77a5a13dfd364
 
 ################################################
 ## Light

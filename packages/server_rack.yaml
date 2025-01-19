@@ -209,7 +209,7 @@ template:
 automation:
   - id: '1701157132714'
     alias: Update Server Rack Status Display
-    description: 'Display server rack climate controls status on the epaper displays'
+    description: Display server rack climate controls status on the epaper displays
     triggers:
       - trigger: time_pattern
         minutes: /10
