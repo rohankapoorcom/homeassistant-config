@@ -205,3 +205,135 @@ template:
             Battery
           {%- endif -%}
         unique_id: 9cf68e6d-e36e-47cf-a216-99fd474a6e99
+
+automation:
+  - id: '1701157132714'
+    alias: Update Server Rack Status Display
+    description: 'Display server rack climate controls status on the epaper displays'
+    triggers:
+      - trigger: time_pattern
+        minutes: /10
+    actions:
+      - action: open_epaper_link.drawcustom
+        data:
+          background: white
+          rotate: 0
+          ttl: 300
+          dither: false
+          payload:
+            - type: line
+              fill: red
+              width: 5
+              x_start: 0
+              y_start: 40
+              x_end: 400
+              y_end: 40
+            - type: line
+              fill: red
+              width: 10
+              x_start: 200
+              y_start: 40
+              x_end: 200
+              y_end: 270
+            - type: line
+              fill: red
+              width: 5
+              x_start: 0
+              y_start: 270
+              x_end: 400
+              y_end: 270
+            - type: text
+              value: Server Rack
+              font: ppb.ttf
+              x: 200
+              y: 5
+              size: 40
+              color: red
+              anchor: mt
+            - type: text
+              value: Current
+              font: ppb.ttf
+              x: 100
+              y: 170
+              size: 40
+              color: red
+              anchor: mm
+            - type: icon
+              value: thermometer
+              x: 45
+              y: 85
+              size: 40
+              color: black
+            - type: text
+              value: '{{ states(''sensor.server_rack_exhaust_fan_temperature_1'') | round
+                }}°F'
+              font: ppb.ttf
+              x: 125
+              y: 105
+              size: 40
+              color: black
+              anchor: mm
+            - type: icon
+              value: water-percent
+              x: 50
+              y: 215
+              size: 40
+              color: black
+            - type: text
+              value: '{{ states(''sensor.server_rack_exhaust_fan_humidity_1'') | round }}%'
+              font: ppb.ttf
+              x: 125
+              y: 235
+              size: 40
+              color: black
+              anchor: mm
+            - type: text
+              value: Target
+              font: ppb.ttf
+              x: 300
+              y: 170
+              size: 40
+              color: red
+              anchor: mm
+            - type: icon
+              value: thermometer
+              x: 245
+              y: 85
+              size: 40
+              color: black
+            - type: text
+              value: '{{ state_attr(''climate.server_rack_exhaust_fan_fan_1_thermostat'',
+                ''temperature'') | round }}°F'
+              font: ppb.ttf
+              x: 325
+              y: 105
+              size: 40
+              color: black
+              anchor: mm
+            - type: icon
+              value: fan
+              x: 240
+              y: 215
+              size: 40
+              color: black
+            - type: text
+              value: '{{ states(''sensor.server_rack_exhaust_fan_fan_1_speed'') | round
+                }}%'
+              font: ppb.ttf
+              x: 325
+              y: 235
+              size: 40
+              color: black
+              anchor: mm
+            - type: text
+              value: As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}
+              font: ppb.ttf
+              x: 200
+              y: 290
+              size: 15
+              color: black
+              anchor: mm
+        target:
+          device_id:
+            - a07813b027de345048bdf12eaf51eb10
+    mode: restart

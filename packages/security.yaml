@@ -121,12 +121,12 @@ automation:
     description: 'Notify when Smoke or Carbon Monoxide is Detected'
     triggers:
       - id: smoke_detected
-        platform: state
+        trigger: state
         entity_id: binary_sensor.fire_alarm
         to: 'on'
 
       - id: co_detected
-        platform: state
+        trigger: state
         entity_id: binary_sensor.co_alarm
         to: 'on'
 
@@ -160,3 +160,41 @@ automation:
                     visibility: public
                   message: Carbon monoxide has been detected at Home
     mode: single
+
+  - id: '1737078956167'
+    alias: Downstairs Ring Keypad Automations
+    description: 'Synchronize the downstairs ring keypad with alarmo.'
+    use_blueprint:
+      path: ImSorryButWho/synchronize-ring-alarm-keypad-v2-with-alarmo.yaml
+      input:
+        keypad: f6f70b9f94a10a9d13e034c9a38d033e
+        alarm: alarm_control_panel.alarmo
+
+  - id: '1737111319493'
+    alias: Control Glass Break Sensors
+    description: 'To save battery power, enable glass break sensors only when armed'
+    triggers:
+      - trigger: state
+        entity_id:
+          - alarm_control_panel.alarmo
+    actions:
+      - wait_template: >
+          {{ is_state_attr('automation.downstairs_ring_keypad_automations', 'current', 0) }}
+        timeout: 5
+        continue_on_timeout: true
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state:
+                  - armed_home
+                  - armed_away
+            sequence:
+              - action: script.enable_glass_break_sensors
+          - conditions:
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state: disarmed
+            sequence:
+              - action: script.disable_glass_break_sensors
+    mode: restart
