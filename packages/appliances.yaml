@@ -24,19 +24,11 @@ automation:
     alias: Turn on the Hot Water Pump when there is motion in any of the bathrooms
     triggers:
       - trigger: state
-        entity_id: binary_sensor.master_bathroom_motion
-        from: 'off'
-        to: 'on'
-      - trigger: state
-        entity_id: binary_sensor.hallway_bathroom_motion
-        from: 'off'
-        to: 'on'
-      - trigger: state
-        entity_id: binary_sensor.downstairs_bathroom_motion
-        from: 'off'
-        to: 'on'
-      - trigger: state
-        entity_id: binary_sensor.kitchen_motion
+        entity_id:
+          - binary_sensor.master_bathroom_motion
+          - binary_sensor.hallway_bathroom_motion
+          - binary_sensor.downstairs_bathroom_motion
+          - binary_sensor.kitchen_motion
         from: 'off'
         to: 'on'
     actions:

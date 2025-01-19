@@ -103,8 +103,8 @@ script:
               color: red
               anchor: ms
         target:
-          entity_id:
-            - open_epaper_link.00007E1F8BCCB294
+          device_id:
+            - a3f2009d29c8d2526fb0ad4c94097c63
 
 ################################################
 ## Automation
@@ -137,7 +137,8 @@ automation:
     use_blueprint:
       path: rohankapoorcom/solum-m3-epaper-tag-buttons.yaml
       input:
-        epaper_tag: open_epaper_link.00007E1F8BCCB294
+        epaper_tag:
+          - a3f2009d29c8d2526fb0ad4c94097c63
         button_1:
           - action: script.update_dishwasher_display
             data:

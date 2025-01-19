@@ -118,8 +118,8 @@ automation:
               width: 5
               fill: black
         target:
-          entity_id:
-            - open_epaper_link.0000021f85043b1c
+          device_id:
+            - 92fdfab08e59b30ec43c0b56f90207e0
 
   - id: 8c282f4e-961c-47d1-9684-cbdef479d216
     alias: Control the Under Stairs Closet Lights

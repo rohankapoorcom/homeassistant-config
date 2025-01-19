@@ -8,10 +8,10 @@ blueprint:
       name: EPaper Tag
       description: The EPaper Tag to trigger from.
       selector:
-        entity:
+        device:
           filter:
-            domain: open_epaper_link
-          multiple: false
+            integration: open_epaper_link
+          multiple: true
     button_1:
       name: Button 1 - Right Button
       description: Action to run, when the right button is pressed.
@@ -32,7 +32,7 @@ variables:
 triggers:
   - trigger: event
     event_type: open_epaper_link_event
-condition: "{{ trigger.event.data.device_id == state_attr(epaper_tag, 'unique_id') }}"
+condition: "{{ trigger.event.data.device_id in epaper_tag }}"
 actions:
   - variables:
       button_id: '{{ trigger.event.data.type }}'
