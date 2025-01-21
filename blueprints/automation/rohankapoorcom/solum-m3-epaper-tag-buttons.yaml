@@ -20,7 +20,7 @@ blueprint:
         action: {}
     button_2:
       name: Button 2 - Left Button
-      description: Action to run, when the right button is pressed.
+      description: Action to run, when the left button is pressed.
       default: []
       selector:
         action: {}
