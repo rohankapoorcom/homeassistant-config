@@ -375,11 +375,39 @@ automation:
     alias: Office Lights Scene Controls
     description: Utilizes a blueprint to map track lighting states on the Scene Controller in the Office.
     use_blueprint:
-      path: rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
+      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
-        zwave_device: bec9907b514903d09df1ba766052f542
+        inovelli_switch: 391bbdf1c04fbdef1ba596217111f64d
         button_b2:
           - action: light.turn_off
             target:
               area_id:
                 - office
+
+  - id: 1050b406-8102-486e-89b7-30f29fb39f35
+    alias: Control Office Lights by Occupancy Sensor
+    description: >
+      When the Office is Occupied, turn on the backlighting.
+      When the Office is Unoccopied, turn all lights off.
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.office_lights_occupancy
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.office_lights_occupancy
+                state: 'off'
+            sequence:
+              - delay:
+                  seconds: 30
+              - action: light.turn_off
+                target:
+                  area_id:
+                    - office
+        default:
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id: light.office_backlighting
+    mode: restart
