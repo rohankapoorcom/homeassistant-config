@@ -238,6 +238,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 25
+              transition: 2
 
   set_office_lights_50_percent:
     sequence:
@@ -254,6 +255,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 50
+              transition: 2
 
   set_office_lights_75_percent:
     sequence:
@@ -270,6 +272,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 75
+              transition: 2
 
   set_office_lights_100_percent:
     sequence:
@@ -286,6 +289,7 @@ script:
             entity_id: light.office_lights
             data:
               brightness_pct: 100
+              transition: 2
 
   set_office_fan_off:
     sequence:
