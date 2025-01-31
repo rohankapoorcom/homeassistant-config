@@ -419,7 +419,7 @@ automation:
                   below: 10
                 - condition: state
                   entity_id: light.office_video_lights
-                  state: off
+                  state: 'off'
               then:
                 - action: light.turn_on
                   target:
