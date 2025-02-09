@@ -5,16 +5,6 @@
 #  @description  :  Manages lighting in the Stairway
 ###############################################################################
 ---
-################################################
-## Light
-################################################
-light:
-  - platform: group
-    name: Stairway Lights
-    unique_id: 25bb040a-ae44-412d-9f6e-4ecbd1cc7816
-    entities:
-      - light.stairway_lights_switch
-      - light.stairway_lights_aux_switch
 
 ################################################
 ## Binary Sensor
