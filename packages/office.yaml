@@ -57,7 +57,7 @@ mqtt_discoverystream:
       - light.office_video_lights
       - switch.office_webcam_monitor
       - switch.office_ceiling_mics_mute
-      - switch.switch.office_speakers_pc_mute
+      - switch.office_speakers_pc_mute
       - input_boolean.sentinal_headset_enabled
 
 ################################################
