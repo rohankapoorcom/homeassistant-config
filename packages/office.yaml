@@ -56,8 +56,8 @@ mqtt_discoverystream:
       - light.office_backlighting
       - light.office_video_lights
       - switch.office_webcam_monitor
-      - switch.office_ceiling_mics
-      - switch.office_speakers
+      - switch.office_ceiling_mics_mute
+      - switch.switch.office_speakers_pc_mute
       - input_boolean.sentinal_headset_enabled
 
 ################################################
@@ -161,63 +161,6 @@ light:
             entity_id: light.left_key_light
           - action: light.turn_off
             entity_id: light.office_backlighting
-
-mqtt:
-  switch:
-    - command_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input L/setMute"
-      name: Office Ceiling Mic Left
-      icon: mdi:microphone
-      payload_off: "[1]"
-      payload_on: "[0]"
-      state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input L/MUTE"
-      state_off: "1"
-      state_on: "0"
-      unique_id: bbd9f1db-3cd8-460e-9b6b-b86591aff118
-
-    - command_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/setMute"
-      name: Office Ceiling Mic Right
-      icon: mdi:microphone
-      payload_off: "[1]"
-      payload_on: "[0]"
-      state_topic: "Home/Audio/Office Mixer/Outputs/Office PC Input R/MUTE"
-      state_off: "1"
-      state_on: "0"
-      unique_id: 2c2afa34-a4c5-45e4-b4cf-518b022191f5
-
-    - command_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers L/setMute"
-      name: Office Speakers Left
-      icon: mdi:microphone
-      payload_off: "[1]"
-      payload_on: "[0]"
-      state_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers L/MUTE"
-      state_off: "1"
-      state_on: "0"
-      unique_id: 16ad2569-6239-41ae-bc8b-c107d38c0610
-
-    - command_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers R/setMute"
-      name: Office Speakers Right
-      icon: mdi:microphone
-      payload_off: "[1]"
-      payload_on: "[0]"
-      state_topic: "Home/Audio/Office Mixer/Outputs/Office Speakers R/MUTE"
-      state_off: "1"
-      state_on: "0"
-      unique_id: 89441b74-3c43-4369-b41c-40769dd0cc7e
-
-switch:
-  - platform: group
-    name: Office Ceiling Mics
-    unique_id: 183f2a1a-bd93-4a81-bacf-b1be9a78a9f0
-    entities:
-      - switch.office_ceiling_mic_left
-      - switch.office_ceiling_mic_right
-
-  - platform: group
-    name: Office Speakers
-    unique_id: 883923a8-a574-4957-906b-ceeb2c987151
-    entities:
-      - switch.office_speakers_left
-      - switch.office_speakers_right
 
 ################################################
 ## Script
