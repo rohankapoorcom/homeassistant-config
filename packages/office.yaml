@@ -353,6 +353,9 @@ automation:
                 target:
                   area_id:
                     - office
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.office_streamdecks
         default:
           sequence:
             - if:
@@ -370,4 +373,7 @@ automation:
             - action: light.turn_on
               target:
                 entity_id: light.office_backlighting
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.office_streamdecks
     mode: restart
