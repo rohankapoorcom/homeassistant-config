@@ -356,6 +356,9 @@ automation:
               - action: input_boolean.turn_off
                 target:
                   entity_id: input_boolean.office_streamdecks
+              - action: switch.turn_off
+                target:
+                  entity_id: switch.office_thinksmart_display_screen
         default:
           sequence:
             - if:
@@ -376,4 +379,7 @@ automation:
             - action: input_boolean.turn_on
               target:
                 entity_id: input_boolean.office_streamdecks
+            - action: switch.turn_on
+              target:
+                entity_id: switch.office_thinksmart_display_screen
     mode: restart
