@@ -1,0 +1,32 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  05/05/2025
+#  @package      :  Guest Room
+#  @description  :  Manages automations in the Guest Room.
+###############################################################################
+---
+
+################################################
+## Automations
+################################################
+automation:
+  - id: 9131cc74-27b4-4794-98fb-700530d11ce2
+    alias: Guest Room Desk Remote Scene Controls
+    description: Utilizes a blueprint to handle Scene Controls in the Guest Room.
+    use_blueprint:
+      path: rohankapoorcom/tuya-ts0044-4-button-remote.yaml
+      input:
+        tuya_switch:
+          - 2283e3981bf8a11408a1f1c1cc2ec21e
+        button_1:
+          - action: light.toggle
+            target:
+              entity_id: light.guest_room_lights
+        button_2:
+          - action: light.toggle
+            target:
+              entity_id: light.guest_room_key_light
+        button_3:
+          - action: light.toggle
+            target:
+              entity_id: light.guest_room_desk_lower_lights
