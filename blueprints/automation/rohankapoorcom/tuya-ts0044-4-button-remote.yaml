@@ -1,0 +1,142 @@
+# yamllint disable-line rule:line-length
+---
+blueprint:
+  name: Tuya TS0044 4 Button Wireless Remote (Zigbee2MQTT)
+  description: Create automations for the Tuya TS0044 4 Button Wireless Remote.
+  domain: automation
+  input:
+    tuya_switch:
+      name: Tuya Switch
+      description: List of available Tuya TS0044 4 Button Wireless Remotes switch.
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Tuya
+          multiple: true
+    command_path_base:
+      name: Default Command Path Base
+      description: Set the base path for the MQTT command path. This is `zigbee2mqtt` by default.
+      default: zigbee2mqtt
+      selector:
+        text:
+    button_1:
+      name: Button 1 Press 1x
+      description: Action to run, when Button 1 is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_2:
+      name: Button 2 Press 1x
+      description: Action to run, when Button 2 is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_3:
+      name: Button 3 Press 1x
+      description: Action to run, when Button 3 is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_4:
+      name: Button 4 Press 1x
+      description: Action to run, when Button 4 is pressed one time.
+      default: []
+      selector:
+        action: {}
+    button_1_double:
+      name: Button 1 Press 2x
+      description: Action to run, when Button 1 is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_2_double:
+      name: Button 2 Press 2x
+      description: Action to run, when Button 2 is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_3_double:
+      name: Button 3 Press 2x
+      description: Action to run, when Button 3 is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_4_double:
+      name: Button 4 Press 2x
+      description: Action to run, when Button 4 is pressed two times.
+      default: []
+      selector:
+        action: {}
+    button_1_held:
+      name: Button 1 Held
+      description: Action to run, when Button 1 is pressed and held.
+      default: []
+      selector:
+        action: {}
+    button_2_held:
+      name: Button 2 Held
+      description: Action to run, when Button 2 is pressed and held.
+      default: []
+      selector:
+        action: {}
+    button_3_held:
+      name: Button 3 Held
+      description: Action to run, when Button 3 is pressed and held.
+      default: []
+      selector:
+        action: {}
+    button_4_held:
+      name: Button 4 Held
+      description: Action to run, when Button 4 is pressed and held.
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/tuya-ts0044-4-button-remote.yaml
+mode: single
+max_exceeded: silent
+variables:
+  command_path_base: !input 'command_path_base'
+  device_id: !input 'tuya_switch'
+trigger_variables:
+  command_path_base: !input 'command_path_base'
+triggers:
+  - trigger: mqtt
+    topic: "{{command_path_base}}/+"
+conditions:
+  - condition: template
+    value_template: >
+      {% set ns = namespace(topics=[]) %}
+      {% for id in device_id %}
+        {% set ns.topics = ns.topics + [ command_path_base + "/" + device_attr(id, 'name') ] %}
+      {% endfor %}
+      {{ trigger.topic in ns.topics }}
+  - condition: template
+    value_template: '{{ trigger.payload_json.action is defined }}'
+actions:
+  - variables:
+      button_id: '{{ trigger.payload_json.action }}'
+  - choose:
+      - conditions: '{{ button_id == "1_single" }}'
+        sequence: !input 'button_1'
+      - conditions: '{{ button_id == "2_single" }}'
+        sequence: !input 'button_2'
+      - conditions: '{{ button_id == "3_single" }}'
+        sequence: !input 'button_3'
+      - conditions: '{{ button_id == "4_single" }}'
+        sequence: !input 'button_4'
+      - conditions: '{{ button_id == "1_double" }}'
+        sequence: !input 'button_1_double'
+      - conditions: '{{ button_id == "2_double" }}'
+        sequence: !input 'button_2_double'
+      - conditions: '{{ button_id == "3_double" }}'
+        sequence: !input 'button_3_double'
+      - conditions: '{{ button_id == "4_double" }}'
+        sequence: !input 'button_4_double'
+      - conditions: '{{ button_id == "1_hold" }}'
+        sequence: !input 'button_1_held'
+      - conditions: '{{ button_id == "2_hold" }}'
+        sequence: !input 'button_2_held'
+      - conditions: '{{ button_id == "3_hold" }}'
+        sequence: !input 'button_3_held'
+      - conditions: '{{ button_id == "4_hold" }}'
+        sequence: !input 'button_4_held'
