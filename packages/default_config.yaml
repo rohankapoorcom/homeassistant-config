@@ -12,7 +12,7 @@ assist_pipeline:
 backup:
 config:
 conversation:
-cloud: # Needed for SmartThings
+cloud:  # Needed for SmartThings
 energy:
 history:
 homeassistant_alerts:

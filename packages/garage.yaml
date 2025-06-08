@@ -101,7 +101,7 @@ automation:
               entity_id:
                 - light.garage_lights
                 - light.garage_door_light
-          - action: switch.turn_on
+          - action: switch.turn_off
             target:
               entity_id:
                 - switch.garage_tablet_screen
