@@ -21,7 +21,7 @@ cards:
             default: default
             states:
               "Wall Kiosk":
-                type: custom:frigate-card
+                type: custom:advanced-camera-card
                 cameras:
                   - camera_entity: {{ camera.entity_id }}
                     live_provider: go2rtc
@@ -33,10 +33,10 @@ cards:
                       - condition: fullscreen
                         fullscreen: true
                     actions:
-                      - action: custom:frigate-card-action
+                      - action: custom:advanced-camera-card-action
                         frigate_card_action: live_substream_on
                     actions_not:
-                      - action: custom:frigate-card-action
+                      - action: custom:advanced-camera-card-action
                         frigate_card_action: live_substream_off
                 live:
                   show_image_during_load: true
@@ -47,7 +47,7 @@ cards:
                 profiles:
                   - low-performance
               default:
-                type: custom:frigate-card
+                type: custom:advanced-camera-card
                 cameras:
                   - camera_entity: {{ camera.entity_id }}
                     live_provider: go2rtc
@@ -60,10 +60,10 @@ cards:
                       - condition: fullscreen
                         fullscreen: true
                     actions:
-                      - action: custom:frigate-card-action
+                      - action: custom:advanced-camera-card-action
                         frigate_card_action: live_substream_on
                     actions_not:
-                      - action: custom:frigate-card-action
+                      - action: custom:advanced-camera-card-action
                         frigate_card_action: live_substream_off
                 live:
                   show_image_during_load: true
