@@ -34,16 +34,14 @@ cards:
                         fullscreen: true
                     actions:
                       - action: custom:advanced-camera-card-action
-                        frigate_card_action: live_substream_on
+                        advanced_camera_card_action: live_substream_on
                     actions_not:
                       - action: custom:advanced-camera-card-action
-                        frigate_card_action: live_substream_off
+                        advanced_camera_card_action: live_substream_off
                 live:
                   show_image_during_load: true
                 image:
                   mode: camera
-                  layout:
-                    fit: cover
                 profiles:
                   - low-performance
               default:
@@ -61,16 +59,14 @@ cards:
                         fullscreen: true
                     actions:
                       - action: custom:advanced-camera-card-action
-                        frigate_card_action: live_substream_on
+                        advanced_camera_card_action: live_substream_on
                     actions_not:
                       - action: custom:advanced-camera-card-action
-                        frigate_card_action: live_substream_off
+                        advanced_camera_card_action: live_substream_off
                 live:
                   show_image_during_load: true
                 image:
                   mode: camera
-                  layout:
-                    fit: cover
   {% endfor %}
 layout_type: custom:grid-layout
 layout:
