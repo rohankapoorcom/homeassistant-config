@@ -86,7 +86,7 @@ cards:
         card_mod:
           style: |
             .temp {
-              margin-top: -20px;
+              margin-top: -25px;
             }
 
       - type: custom:apexcharts-card
