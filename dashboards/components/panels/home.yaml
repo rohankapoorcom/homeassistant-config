@@ -83,6 +83,12 @@ cards:
         forecast: true
         icons: /hacsfiles/weather-card/icons/
         number_of_forecasts: '5'
+        card_mod:
+          style: |
+            .temp {
+              margin-top: -20px;
+            }
+
       - type: custom:apexcharts-card
         header:
           show: true
