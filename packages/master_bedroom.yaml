@@ -215,10 +215,9 @@ automation:
       - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - trigger:
-          - platform: state
-            entity_id: binary_sensor.master_bedroom_sliding_door_window_door_is_open
-            to: 'off'
+      - trigger: state
+        entity_id: binary_sensor.master_bedroom_sliding_door_window_door_is_open
+        to: 'off'
       - trigger: homeassistant
         event: start
       - trigger: event

@@ -188,10 +188,9 @@ automation:
       - trigger: sun
         event: sunrise
         offset: '+1:30:00'
-      - trigger:
-          - platform: state
-            entity_id: binary_sensor.living_room_windows
-            to: 'off'
+      - trigger: state
+        entity_id: binary_sensor.living_room_windows
+        to: 'off'
       - trigger: homeassistant
         event: start
       - trigger: event
