@@ -75,7 +75,7 @@ cards:
               name: Switch
               media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_nintendo_switch
-            icon: si:nintendoswitch
+            icon: phu:nintendo-switch-logo
           - type: custom:button-card
             template: remote
             entity: media_player.denon_avr_x4300h
