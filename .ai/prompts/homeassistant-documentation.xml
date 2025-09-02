@@ -61,15 +61,19 @@
        - Include testing and validation steps
     
     6. **Documentation Preferences**:
-       - Do NOT include installation and setup instructions unless specifically requested
        - Always preserve and include dashboard screenshots when present
-       - Focus on documenting what the system does rather than how to replicate it
+       - Do NOT include installation and setup instructions unless specifically requested
        - Emphasize the showcase/portfolio nature of the configuration
+       - Focus on documenting what the system does rather than how to replicate it
+       - Include blueprint source URLs and GitHub links when available
+       - Maintain alphabetical ordering in all lists
+       - Only document blueprints created by the repository owner (username should match)
     
     6. **Project Overview**:
        - Document the overall architecture and structure
        - List and categorize all custom integrations
        - List and categorize all custom Lovelace cards
+       - List and categorize all custom blueprints (only those created by the repository owner)
        - Explain the package organization system
        - Document the dashboard structure and layout
   </instructions>
@@ -122,6 +126,49 @@
     Additional information, tips, or important considerations.
   </template>
   
+  <blueprint_template>
+    # {Blueprint Name} Blueprint Documentation
+    
+    ## Overview
+    Brief description of what this blueprint does and its purpose in the home automation system.
+    
+    ## Blueprint Information
+    - **Name**: {Blueprint Name}
+    - **Domain**: automation/script/template
+    - **Source URL**: GitHub link to the blueprint file
+    - **Author**: Repository owner username
+    
+    ## Input Parameters
+    List and describe the input parameters required by this blueprint:
+    - `parameter_name`: Description and expected values
+    - `parameter_name`: Description and expected values
+    
+    ## Functionality
+    Detailed explanation of how the blueprint works, including:
+    - Triggers and conditions
+    - Actions and responses
+    - Integration with other components
+    - User interactions
+    
+    ## Usage Examples
+    Provide practical examples of how to use this blueprint:
+    ```yaml
+    # Example configuration
+    ```
+    
+    ## Dependencies
+    List any integrations, custom components, or external services required:
+    - Integration name: Purpose and configuration
+    - Custom component: Functionality and setup
+    
+    ## Related Files
+    - `path/to/file.yaml`: Purpose and relationship
+    - `path/to/file.yaml`: Purpose and relationship
+    
+    ## Notes
+    Additional information, tips, or important considerations.
+  </blueprint_template>
+  
   <readme_template>
     # Home Assistant Configuration
     
@@ -138,21 +185,21 @@
     ## Custom Integrations
     Comprehensive list of all custom integrations used in this setup:
     
-    ### Security & Monitoring
-    - **alarmo**: Advanced alarm system integration
-    - **frigate**: AI-powered video surveillance
-    
     ### Climate & Environment
     - **adaptive_lighting**: Automatic lighting adjustments
     - **battery_notes**: Battery level tracking and notifications
     
     ### Media & Entertainment
-    - **spotcast**: Spotify casting integration
     - **huesyncbox**: Philips Hue Sync Box control
+    - **spotcast**: Spotify casting integration
+    
+    ### Security & Monitoring
+    - **alarmo**: Advanced alarm system integration
+    - **frigate**: AI-powered video surveillance
     
     ### Smart Home Control
-    - **smartir**: Infrared remote control
     - **keymaster**: Advanced lock management
+    - **smartir**: Infrared remote control
     
     ### Utilities & Tools
     - **browser_mod**: Browser-based automations
@@ -161,36 +208,66 @@
     ## Custom Lovelace Cards
     Comprehensive list of all custom Lovelace cards used:
     
-    ### Layout & Navigation
-    - **lovelace-layout-card**: Advanced layout management
-    - **hass-swipe-navigation**: Swipe-based navigation
-    - **kiosk-mode**: Kiosk interface mode
-    
     ### Data Visualization
     - **apexcharts-card**: Advanced charting and graphs
-    - **mini-graph-card**: Compact data graphs
     - **bar-card**: Bar chart visualizations
-    
-    ### Media & Entertainment
-    - **mini-media-player**: Compact media controls
-    - **spotify-card**: Spotify integration
-    - **roku-card**: Roku device control
+    - **mini-graph-card**: Compact data graphs
     
     ### Home Automation
     - **button-card**: Customizable button interface
     - **light-entity-card**: Specialized lighting controls
     - **simple-thermostat**: Thermostat interface
     
+    ### Layout & Navigation
+    - **hass-swipe-navigation**: Swipe-based navigation
+    - **kiosk-mode**: Kiosk interface mode
+    - **lovelace-layout-card**: Advanced layout management
+    
+    ### Media & Entertainment
+    - **mini-media-player**: Compact media controls
+    - **roku-card**: Roku device control
+    - **spotify-card**: Spotify integration
+    
     ### Utilities
-    - **lovelace-card-mod**: CSS styling and modifications
-    - **lovelace-auto-entities**: Dynamic entity lists
     - **decluttering-card**: UI simplification
+    - **lovelace-auto-entities**: Dynamic entity lists
+    - **lovelace-card-mod**: CSS styling and modifications
+    
+    ## Custom Blueprints
+    Comprehensive list of all custom blueprints created by the repository owner:
+    
+    ### Device-Specific Automations
+    - **emulated-roku**: Emulated Roku device automation
+    - **solum-m3-epaper-tag-buttons**: Solum M3 e-paper tag button controls
+    - **tuya-ts0044-4-button-remote**: Tuya 4-button remote control automation
+
+    #### Inovelli Device Automations
+    - **inovelli-lzw30-black-series-lock-notifications**: Lock notification automation
+    - **inovelli-lzw30-red-series-switch**: Red series switch automation
+    - **inovelli-lzw31-red-series-switch**: LZW31 red series switch automation
+    - **inovelli-lzw31-sn-red-series-lock-notifications**: Lock notifications for LZW31
+    - **inovelli-red-series-night-mode**: Night mode automation for red series devices
+    - **inovelli-vzm31-sn-blue-series-lock-notifications**: Blue series lock notifications
+    - **inovelli-vzm31-sn-blue-series-switch**: Blue series switch automation
+    - **inovelli-vzw31-sn-red-series-lock-notifications**: VZW31 lock notifications
+    - **inovelli-vzw31-sn-red-series-switch**: VZW31 red series switch automation
+    
+    #### Zooz Device Automations
+    - **zooz-zen32-scene-controller-status-lights**: Scene controller status light automation
+    - **zooz-zen32-scene-controls**: Scene controller automation
+    
+    ### General Automation
+    - **adaptive-lighting-sleep-mode**: Adaptive lighting sleep mode automation
+    - **lock-light-controls**: Lock and light control automation
+    - **low-battery-level-detection-notification**: Battery level monitoring and notifications
+    - **motion_light**: Motion-activated lighting automation
+    - **tablet-battery-charging**: Tablet battery charging automation
     
     ## Package Organization
     Description of how packages are organized:
-    - **Room-based packages**: Individual room configurations
     - **Feature-based packages**: Cross-room functionality
     - **Integration packages**: Third-party service configurations
+    - **Room-based packages**: Individual room configurations
     
     ## Dashboard Structure
     Overview of the dashboard layout and organization:
@@ -302,6 +379,60 @@
     </example>
     
     <example>
+      <title>Blueprint Documentation</title>
+      <content>
+        # Motion Light Blueprint Documentation
+        
+        ## Overview
+        A customizable blueprint for creating motion-activated lighting automations. This blueprint turns on lights when motion is detected and automatically turns them off after a specified delay when no motion is detected.
+        
+        ## Blueprint Information
+        - **Name**: Motion-activated Light
+        - **Domain**: automation
+        - **Source URL**: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml
+        - **Author**: rohankapoorcom
+        
+        ## Input Parameters
+        - `motion_entity`: Motion sensor entity (binary_sensor with device_class: motion)
+        - `light_target`: Light entity to control
+        - `no_motion_wait`: Time to wait after last motion before turning off light (default: 120 seconds)
+        
+        ## Functionality
+        This blueprint creates an automation that:
+        - Monitors a motion sensor for state changes
+        - Turns on the specified light when motion is detected
+        - Waits for motion to stop, then delays for the specified time
+        - Automatically turns off the light after the delay period
+        - Handles multiple motion events during the delay period
+        
+        ## Usage Examples
+        ```yaml
+        # Example: Hallway motion light
+        - use_blueprint:
+            source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml
+            input:
+              motion_entity: binary_sensor.hallway_motion
+              light_target: light.hallway_lights
+              no_motion_wait: 180
+        ```
+        
+        ## Dependencies
+        - Binary sensor with device_class: motion
+        - Light entity for control
+        - No additional integrations required
+        
+        ## Related Files
+        - `automations.yaml`: Where the blueprint is used
+        - `packages/hallway.yaml`: Hallway-specific automation configurations
+        
+        ## Notes
+        - Based on the Home Assistant default motion-light blueprint
+        - Supports restart mode for reliable operation
+        - Silent error handling for maximum exceeded scenarios
+      </content>
+    </example>
+    
+    <example>
       <title>README.md Documentation</title>
       <content>
         # Home Assistant Configuration
@@ -381,25 +512,55 @@
         - **decluttering-card**: UI simplification and conditional displays
         - **config-template-card**: Template-based card configuration
         
+        ## Custom Blueprints
+        Comprehensive list of all custom blueprints created by the repository owner:
+        
+        ### Device-Specific Automations
+        - **tuya-ts0044-4-button-remote**: Tuya 4-button remote control automation
+        - **solum-m3-epaper-tag-buttons**: Solum M3 e-paper tag button controls
+        - **emulated-roku**: Emulated Roku device automation
+        
+        ### Inovelli Device Automations
+        - **inovelli-lzw30-black-series-lock-notifications**: Lock notification automation
+        - **inovelli-lzw30-red-series-switch**: Red series switch automation
+        - **inovelli-lzw31-red-series-switch**: LZW31 red series switch automation
+        - **inovelli-lzw31-sn-red-series-lock-notifications**: Lock notifications for LZW31
+        - **inovelli-red-series-night-mode**: Night mode automation for red series devices
+        - **inovelli-vzm31-sn-blue-series-lock-notifications**: Blue series lock notifications
+        - **inovelli-vzm31-sn-blue-series-switch**: Blue series switch automation
+        - **inovelli-vzw31-sn-red-series-lock-notifications**: VZW31 lock notifications
+        - **inovelli-vzw31-sn-red-series-switch**: VZW31 red series switch automation
+        
+        ### Zooz Device Automations
+        - **zooz-zen32-scene-controller-status-lights**: Scene controller status light automation
+        - **zooz-zen32-scene-controls**: Scene controller automation
+        
+        ### General Automation
+        - **adaptive-lighting-sleep-mode**: Adaptive lighting sleep mode automation
+        - **lock-light-controls**: Lock and light control automation
+        - **low-battery-level-detection-notification**: Battery level monitoring and notifications
+        - **motion_light**: Motion-activated lighting automation
+        - **tablet-battery-charging**: Tablet battery charging automation
+        
         ## Package Organization
         The configuration uses a package-based organization system:
         
-        **Room-based packages:**
-        - `office.yaml`: Office automation and productivity features
-        - `master_bedroom.yaml`: Master bedroom comfort and security
-        - `kitchen/`: Kitchen automation and appliance control
-        - `living_room/`: Entertainment and living space management
-        
         **Feature-based packages:**
-        - `security.yaml`: Cross-room security and monitoring
         - `media_music.yaml`: Whole-home audio and entertainment
-        - `weather.yaml`: Weather monitoring and alerts
         - `notifications.yaml`: Notification management
+        - `security.yaml`: Cross-room security and monitoring
+        - `weather.yaml`: Weather monitoring and alerts
         
         **Integration packages:**
         - `assistant.yaml`: Voice assistant integration
         - `presence.yaml`: Presence detection and automation
         - `tablets.yaml`: Tablet interface management
+        
+        **Room-based packages:**
+        - `kitchen/`: Kitchen automation and appliance control
+        - `living_room/`: Entertainment and living space management
+        - `master_bedroom.yaml`: Master bedroom comfort and security
+        - `office.yaml`: Office automation and productivity features
         
         ## Dashboard Structure
         Single responsive Lovelace dashboard (`dashboards/home.yaml`) that adapts to different screen sizes:
@@ -458,7 +619,7 @@
     - Provide context for why certain choices were made
     - Ensure custom integrations and cards are properly categorized and described
     - Keep README.md updated with current custom components and their purposes
-    - Maintain alphabetical sorting within categories for easy reference
+    - Maintain alphabetical sorting within all lists and categories for easy reference
     - Include version information and compatibility notes where applicable
   </quality_standards>
 </prompt>

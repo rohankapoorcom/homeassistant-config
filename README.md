@@ -32,116 +32,147 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 
 ## Custom Integrations
 
+### Climate & Environment
+- **adaptive_lighting**: Automatic lighting adjustments based on time and natural light
+- **air_quality**: Comprehensive air quality monitoring and alerts
+- **battery_notes**: Battery level tracking with smart notifications
+- **enphase_envoy**: Solar panel monitoring and energy production tracking
+
+### Media & Entertainment
+- **huesyncbox**: Philips Hue Sync Box control for TV lighting synchronization
+- **spotcast**: Spotify casting integration for whole-home audio
+- **vaddio_conferenceshot**: Professional video conferencing camera control
+- **webrtc**: WebRTC camera integration for real-time video streaming
+
 ### Security & Monitoring
 - **alarmo**: Advanced alarm system with multiple zones and automation triggers
 - **frigate**: AI-powered video surveillance with object detection
 - **noonlight**: Emergency response integration for enhanced security
 
-### Climate & Environment
-- **adaptive_lighting**: Automatic lighting adjustments based on time and natural light
-- **battery_notes**: Battery level tracking with smart notifications
-- **enphase_envoy**: Solar panel monitoring and energy production tracking
-- **air_quality**: Comprehensive air quality monitoring and alerts
-
-### Media & Entertainment
-- **spotcast**: Spotify casting integration for whole-home audio
-- **huesyncbox**: Philips Hue Sync Box control for TV lighting synchronization
-- **vaddio_conferenceshot**: Professional video conferencing camera control
-- **webrtc**: WebRTC camera integration for real-time video streaming
-
 ### Smart Home Control
-- **smartir**: Infrared remote control for legacy devices
-- **keymaster**: Advanced lock management with access codes and scheduling
 - **ecoflow**: Portable power station monitoring and control
 - **ecoflow_cloud**: Cloud-based EcoFlow device management
+- **keymaster**: Advanced lock management with access codes and scheduling
+- **smartir**: Infrared remote control for legacy devices
 
 ### Utilities & Tools
 - **browser_mod**: Browser-based automations and popups
 - **lovelace_gen**: Dynamic Lovelace dashboard generation
 - **mqtt_discoverystream**: MQTT device discovery and management
+- **mqtt_vacuum_camera**: Robot vacuum camera integration
+- **open_epaper_link**: E-paper display integration
+- **pirateweather**: Alternative weather data provider
 - **qr_generator**: QR code generation for device setup
 - **simpleicons**: Custom icon integration for enhanced UI
 - **smartthinq_sensors**: LG ThinQ sensor integration
-- **open_epaper_link**: E-paper display integration
-- **pirateweather**: Alternative weather data provider
 - **spook**: Enhanced entity management and automation
-- **mqtt_vacuum_camera**: Robot vacuum camera integration
 
 ## Custom Lovelace Cards
 
-### Layout & Navigation
-- **lovelace-layout-card**: Advanced layout management with conditional displays
-- **hass-swipe-navigation**: Swipe-based navigation for mobile interfaces
-- **kiosk-mode**: Kiosk interface mode for wall-mounted tablets
-- **stack-in-card**: Nested card layouts for complex interfaces
-- **vertical-stack-in-card**: Vertical stacking for organized layouts
-
 ### Data Visualization
 - **apexcharts-card**: Advanced charting and graphs for sensor data
-- **mini-graph-card**: Compact data graphs for quick monitoring
 - **bar-card**: Bar chart visualizations for comparative data
+- **mini-graph-card**: Compact data graphs for quick monitoring
 - **power-flow-card**: Energy flow visualization for solar systems
 - **weather-card**: Comprehensive weather display and forecasting
-
-### Media & Entertainment
-- **mini-media-player**: Compact media controls for audio/video
-- **spotify-card**: Spotify integration with playlist controls
-- **roku-card**: Roku device control and status
-- **lovelace-xiaomi-vacuum-map-card**: Robot vacuum mapping interface
-- **lovelace-valetudo-map-card**: Valetudo robot vacuum mapping
 
 ### Home Automation
 - **button-card**: Customizable button interface for device control
 - **light-entity-card**: Specialized lighting controls with color picker
+- **numberbox-card**: Numeric input controls for devices
 - **simple-thermostat**: Thermostat interface with scheduling
 - **slider-button-card**: Slider controls with button actions
-- **numberbox-card**: Numeric input controls for devices
+
+### Layout & Navigation
+- **hass-swipe-navigation**: Swipe-based navigation for mobile interfaces
+- **kiosk-mode**: Kiosk interface mode for wall-mounted tablets
+- **lovelace-layout-card**: Advanced layout management with conditional displays
+- **stack-in-card**: Nested card layouts for complex interfaces
+- **vertical-stack-in-card**: Vertical stacking for organized layouts
+
+### Media & Entertainment
+- **lovelace-valetudo-map-card**: Valetudo robot vacuum mapping
+- **lovelace-xiaomi-vacuum-map-card**: Robot vacuum mapping interface
+- **mini-media-player**: Compact media controls for audio/video
+- **roku-card**: Roku device control and status
+- **spotify-card**: Spotify integration with playlist controls
 
 ### Utilities
-- **lovelace-card-mod**: CSS styling and modifications for custom appearance
-- **lovelace-auto-entities**: Dynamic entity lists based on device states
-- **decluttering-card**: UI simplification and conditional displays
 - **config-template-card**: Template-based card configuration
+- **decluttering-card**: UI simplification and conditional displays
+- **lovelace-auto-entities**: Dynamic entity lists based on device states
+- **lovelace-card-mod**: CSS styling and modifications for custom appearance
+- **lovelace-digital-clock**: Digital clock display
+- **lovelace-fold-entity-row**: Collapsible entity rows
 - **lovelace-multiple-entity-row**: Multiple entities in single row
 - **lovelace-slider-entity-row**: Slider controls in entity rows
-- **lovelace-template-entity-row**: Template-based entity rows
-- **lovelace-fold-entity-row**: Collapsible entity rows
 - **lovelace-state-switch**: State-based card switching
-- **lovelace-digital-clock**: Digital clock display
+- **lovelace-template-entity-row**: Template-based entity rows
+
+## Custom Blueprints
+
+Comprehensive list of all custom blueprints created by the repository owner:
+
+### Device-Specific Automations
+- **emulated-roku**: Emulated Roku device automation
+- **solum-m3-epaper-tag-buttons**: Solum M3 e-paper tag button controls
+- **tuya-ts0044-4-button-remote**: Tuya 4-button remote control automation
+
+#### Inovelli Device Automations
+- **inovelli-lzw30-black-series-lock-notifications**: Lock notification automation
+- **inovelli-lzw30-red-series-switch**: Red series switch automation
+- **inovelli-lzw31-red-series-switch**: LZW31 red series switch automation
+- **inovelli-lzw31-sn-red-series-lock-notifications**: Lock notifications for LZW31
+- **inovelli-red-series-night-mode**: Night mode automation for red series devices
+- **inovelli-vzm31-sn-blue-series-lock-notifications**: Blue series lock notifications
+- **inovelli-vzm31-sn-blue-series-switch**: Blue series switch automation
+- **inovelli-vzw31-sn-red-series-lock-notifications**: VZW31 lock notifications
+- **inovelli-vzw31-sn-red-series-switch**: VZW31 red series switch automation
+
+#### Zooz Device Automations
+- **zooz-zen32-scene-controller-status-lights**: Scene controller status light automation
+- **zooz-zen32-scene-controls**: Scene controller automation
+
+### General Automation
+- **adaptive-lighting-sleep-mode**: Adaptive lighting sleep mode automation
+- **lock-light-controls**: Lock and light control automation
+- **low-battery-level-detection-notification**: Battery level monitoring and notifications
+- **motion_light**: Motion-activated lighting automation
+- **tablet-battery-charging**: Tablet battery charging automation
 
 ## Package Organization
 
 The configuration uses a package-based organization system for modular and maintainable code:
 
-### Room-based Packages
-- **office.yaml**: Office automation and productivity features
-- **master_bedroom.yaml**: Master bedroom comfort and security
-- **kitchen/**: Kitchen automation and appliance control
-- **living_room/**: Entertainment and living space management
-- **garage.yaml**: Garage door control and monitoring
-- **guest_room.yaml**: Guest room automation
-- **downstairs_hallway.yaml**: Hallway lighting and motion control
-- **stairway.yaml**: Stairway lighting and safety features
-- **server_rack.yaml**: Server infrastructure monitoring
-- **downstairs_bathroom.yaml**: Bathroom automation
-- **hallway.yaml**: Main hallway controls
-- **hallway_bathroom.yaml**: Bathroom-specific features
-- **master_bathroom.yaml**: Master bathroom automation
-- **front_door.yaml**: Entry door security and access control
-- **gym.yaml**: Home gym automation
-
 ### Feature-based Packages
-- **security.yaml**: Cross-room security and monitoring
-- **media_music.yaml**: Whole-home audio and entertainment
-- **weather.yaml**: Weather monitoring and alerts
-- **weatherman.yaml**: Advanced weather forecasting
-- **notifications.yaml**: Notification management
 - **air_quality.yaml**: Air quality monitoring and alerts
 - **appliances.yaml**: Appliance control and monitoring
 - **assistant.yaml**: Voice assistant integration
-- **presence.yaml**: Presence detection and automation
-- **tablets.yaml**: Tablet interface management
 - **default_config.yaml**: Default configuration settings
+- **media_music.yaml**: Whole-home audio and entertainment
+- **notifications.yaml**: Notification management
+- **presence.yaml**: Presence detection and automation
+- **security.yaml**: Cross-room security and monitoring
+- **tablets.yaml**: Tablet interface management
+- **weather.yaml**: Weather monitoring and alerts
+- **weatherman.yaml**: Advanced weather forecasting
+
+### Room-based Packages
+- **downstairs_bathroom.yaml**: Bathroom automation
+- **downstairs_hallway.yaml**: Hallway lighting and motion control
+- **front_door.yaml**: Entry door security and access control
+- **garage.yaml**: Garage door control and monitoring
+- **guest_room.yaml**: Guest room automation
+- **gym.yaml**: Home gym automation
+- **hallway.yaml**: Main hallway controls
+- **hallway_bathroom.yaml**: Bathroom-specific features
+- **kitchen/**: Kitchen automation and appliance control
+- **living_room/**: Entertainment and living space management
+- **master_bathroom.yaml**: Master bathroom automation
+- **master_bedroom.yaml**: Master bedroom comfort and security
+- **office.yaml**: Office automation and productivity features
+- **server_rack.yaml**: Server infrastructure monitoring
+- **stairway.yaml**: Stairway lighting and safety features
 
 ## Dashboard Structure
 
@@ -152,15 +183,15 @@ Single responsive Lovelace dashboard (`dashboards/home.yaml`) that adapts to dif
 - **Small screens (phones)**: Single-column layout with stacked cards
 
 Custom cards provide specialized interfaces for different device types and automation scenarios. The dashboard includes sections for:
+- Appliances and utilities
+- Climate and environment
 - Home overview and status
 - Lighting controls
-- Climate and environment
-- Security and monitoring
 - Media and entertainment
-- Appliances and utilities
 - Robot vacuums and cleaning
+- Security and monitoring
 
-## Screenshots
+### Screenshots
 
 <p align="center">
     <img alt="Home" src="./docs/img/1.png" width="200"/>
