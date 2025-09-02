@@ -75,8 +75,21 @@
        - Search HACS default integration list at https://raw.githubusercontent.com/hacs/default/refs/heads/master/integration for custom integration source repositories
        - Search HACS default plugin list at https://raw.githubusercontent.com/hacs/default/refs/heads/master/plugin for custom Lovelace card source repositories
        - For components not found in HACS default lists, link to the repository owner's custom_components or www/community directories
+       - Store each blueprint's documentation in a separate file for better organization and maintainability
+       - Use descriptive filenames for blueprint documentation files (e.g., "emulated-roku-blueprint.md", "inovelli-lzw30-red-series-switch-blueprint.md")
+       - Create an index file that links to all individual blueprint documentation files
+       - Organize blueprint documentation files in a logical directory structure (e.g., by device manufacturer or category)
     
-    6. **Project Overview**:
+    6. **Blueprint Documentation Organization**:
+       - Create individual documentation files for each blueprint
+       - Use consistent naming convention: `{blueprint-name}-blueprint.md`
+       - Organize files in subdirectories by category (e.g., `device-specific/`, `inovelli/`, `zooz/`, `general/`)
+       - Include a main index file (`README.md`) that provides navigation to all blueprint documentation
+       - Create category-specific index files for better organization
+       - Include cross-references between related blueprints
+       - Maintain a comprehensive summary table in the main index
+    
+    7. **Project Overview**:
        - Document the overall architecture and structure
        - List and categorize all custom integrations
        - List and categorize all custom Lovelace cards
@@ -175,7 +188,43 @@
     
     ## Notes
     Additional information, tips, or important considerations.
+    
+    ---
+    *This documentation is part of the [Blueprint Documentation Index](../README.md)*
   </blueprint_template>
+  
+  <blueprint_index_template>
+    # {Category Name} Blueprint Documentation
+    
+    This directory contains documentation for {category description} blueprints created by the repository owner.
+    
+    ## Blueprints in this Category
+    
+    ### {Blueprint Name}
+    - **File**: [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md)
+    - **Description**: Brief description of the blueprint
+    - **Key Features**: Main functionality highlights
+    
+    ### {Blueprint Name}
+    - **File**: [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md)
+    - **Description**: Brief description of the blueprint
+    - **Key Features**: Main functionality highlights
+    
+    ## Quick Reference
+    
+    | Blueprint | File | Domain | Key Features |
+    |-----------|------|--------|--------------|
+    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 |
+    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 |
+    
+    ## Related Documentation
+    
+    - [Main Blueprint Index](../README.md): Overview of all blueprint categories
+    - [Other Category](../other-category/README.md): Related blueprint categories
+    
+    ---
+    *This index is part of the [Blueprint Documentation Index](../README.md)*
+  </blueprint_index_template>
   
   <readme_template>
     # Home Assistant Configuration
