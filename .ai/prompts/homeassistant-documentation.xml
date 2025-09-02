@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prompt>
+  <name>Home Assistant Configuration Documentation</name>
+  <description>
+    A comprehensive prompt for documenting Home Assistant automations, configurations, and packages.
+    This prompt helps create detailed, structured documentation for Home Assistant setups.
+  </description>
+  
+  <context>
+    You are documenting a Home Assistant configuration repository. The repository contains:
+    - Main configuration files (configuration.yaml, automations.yaml, scripts.yaml)
+    - Package-based organization in the packages/ directory
+    - Custom components, blueprints, and themes
+    - Dashboard configurations and custom Lovelace cards
+    - Python scripts and shell commands
+    - Various integrations and automations
+    
+    The goal is to create clear, maintainable documentation that explains:
+    1. What each automation/configuration does
+    2. How different components interact
+    3. The purpose and functionality of each package
+    4. Integration details and dependencies
+    5. Custom components and their usage
+    6. Overall project structure and architecture
+  </context>
+  
+  <instructions>
+    When documenting Home Assistant configurations, follow these guidelines:
+    
+    1. **Structure and Organization**:
+       - Use clear headings and subheadings
+       - Group related functionality together
+       - Include file paths and references
+       - Maintain consistency in formatting
+    
+    2. **Content Requirements**:
+       - Explain the purpose and functionality of each component
+       - Document triggers, conditions, and actions for automations
+       - Describe integration configurations and their settings
+       - Include device information and capabilities
+       - Explain custom components and their usage
+       - Document dashboard layouts and custom cards
+    
+    3. **Technical Details**:
+       - Include YAML code blocks where relevant
+       - Reference entity IDs and their purposes
+       - Document template sensors and their logic
+       - Explain MQTT topics and payloads
+       - Include automation IDs and their functions
+    
+    4. **User Experience**:
+       - Write in clear, accessible language
+       - Include practical examples and use cases
+       - Document troubleshooting steps where applicable
+       - Explain the user interface and controls
+    
+    5. **Maintenance**:
+       - Include version information and dependencies
+       - Document configuration changes and migrations
+       - Provide backup and restore procedures
+       - Include testing and validation steps
+    
+    6. **Documentation Preferences**:
+       - Do NOT include installation and setup instructions unless specifically requested
+       - Always preserve and include dashboard screenshots when present
+       - Focus on documenting what the system does rather than how to replicate it
+       - Emphasize the showcase/portfolio nature of the configuration
+    
+    6. **Project Overview**:
+       - Document the overall architecture and structure
+       - List and categorize all custom integrations
+       - List and categorize all custom Lovelace cards
+       - Explain the package organization system
+       - Document the dashboard structure and layout
+  </instructions>
+  
+  <template>
+    # {Component Name} Documentation
+    
+    ## Overview
+    Brief description of what this component/automation/package does and its purpose in the home automation system.
+    
+    ## Configuration
+    ```yaml
+    # Include relevant YAML configuration
+    ```
+    
+    ## Functionality
+    Detailed explanation of how the component works, including:
+    - Triggers and conditions
+    - Actions and responses
+    - Integration with other components
+    - User interactions
+    
+    ## Entities
+    List and describe the entities created by this configuration:
+    - `entity_id`: Description of what this entity represents
+    - `entity_id`: Description of what this entity represents
+    
+    ## Dependencies
+    List any integrations, custom components, or external services required:
+    - Integration name: Purpose and configuration
+    - Custom component: Functionality and setup
+    
+    ## Usage
+    Explain how users interact with this component:
+    - Dashboard controls
+    - Voice commands
+    - Automation triggers
+    - Manual controls
+    
+    ## Troubleshooting
+    Common issues and their solutions:
+    - Problem: Description
+  - Solution: Steps to resolve
+    
+    ## Related Files
+    - `path/to/file.yaml`: Purpose and relationship
+    - `path/to/file.yaml`: Purpose and relationship
+    
+    ## Notes
+    Additional information, tips, or important considerations.
+  </template>
+  
+  <readme_template>
+    # Home Assistant Configuration
+    
+    ## About
+    Brief description of the home automation setup, goals, and philosophy.
+    
+    ## Architecture Overview
+    High-level description of the system architecture, including:
+    - Hardware setup and infrastructure
+    - Software components and integrations
+    - Network topology and communication protocols
+    - Package organization strategy
+    
+    ## Custom Integrations
+    Comprehensive list of all custom integrations used in this setup:
+    
+    ### Security & Monitoring
+    - **alarmo**: Advanced alarm system integration
+    - **frigate**: AI-powered video surveillance
+    
+    ### Climate & Environment
+    - **adaptive_lighting**: Automatic lighting adjustments
+    - **battery_notes**: Battery level tracking and notifications
+    
+    ### Media & Entertainment
+    - **spotcast**: Spotify casting integration
+    - **huesyncbox**: Philips Hue Sync Box control
+    
+    ### Smart Home Control
+    - **smartir**: Infrared remote control
+    - **keymaster**: Advanced lock management
+    
+    ### Utilities & Tools
+    - **browser_mod**: Browser-based automations
+    - **lovelace_gen**: Dynamic Lovelace generation
+    
+    ## Custom Lovelace Cards
+    Comprehensive list of all custom Lovelace cards used:
+    
+    ### Layout & Navigation
+    - **lovelace-layout-card**: Advanced layout management
+    - **hass-swipe-navigation**: Swipe-based navigation
+    - **kiosk-mode**: Kiosk interface mode
+    
+    ### Data Visualization
+    - **apexcharts-card**: Advanced charting and graphs
+    - **mini-graph-card**: Compact data graphs
+    - **bar-card**: Bar chart visualizations
+    
+    ### Media & Entertainment
+    - **mini-media-player**: Compact media controls
+    - **spotify-card**: Spotify integration
+    - **roku-card**: Roku device control
+    
+    ### Home Automation
+    - **button-card**: Customizable button interface
+    - **light-entity-card**: Specialized lighting controls
+    - **simple-thermostat**: Thermostat interface
+    
+    ### Utilities
+    - **lovelace-card-mod**: CSS styling and modifications
+    - **lovelace-auto-entities**: Dynamic entity lists
+    - **decluttering-card**: UI simplification
+    
+    ## Package Organization
+    Description of how packages are organized:
+    - **Room-based packages**: Individual room configurations
+    - **Feature-based packages**: Cross-room functionality
+    - **Integration packages**: Third-party service configurations
+    
+    ## Dashboard Structure
+    Overview of the dashboard layout and organization:
+    - Main dashboard configuration
+    - Responsive design considerations
+    - Custom card usage patterns
+    
+    ## Dashboards
+    Description of the dashboard setup with screenshots showing the interface on different devices. Include:
+    - Dashboard layout description
+    - Responsive design behavior
+    - Screenshots from different screen sizes
+    - Custom card usage explanation
+    
+    ## Contributing
+    Guidelines for contributing to the configuration
+    
+    ## License
+    License information
+  </readme_template>
+  
+  <examples>
+    <example>
+      <title>Automation Documentation</title>
+      <content>
+        # Morning Routine Automation
+        
+        ## Overview
+        Automates the morning routine by gradually turning on lights, adjusting temperature, and providing weather information.
+        
+        ## Configuration
+        ```yaml
+        - alias: "Morning Routine"
+          id: morning_routine_automation
+          trigger:
+            - platform: time
+              at: "07:00:00"
+          condition:
+            - condition: time
+              weekday:
+                - mon
+                - tue
+                - wed
+                - thu
+                - fri
+          action:
+            - service: light.turn_on
+              target:
+                entity_id: light.master_bedroom
+              data:
+                brightness: 64
+                transition: 30
+        ```
+        
+        ## Functionality
+        This automation triggers at 7:00 AM on weekdays and gradually increases lighting brightness to simulate natural sunrise. It also adjusts the thermostat and provides weather updates via TTS.
+        
+        ## Entities
+        - `light.master_bedroom`: Main bedroom lighting
+        - `climate.thermostat`: HVAC system control
+        - `sensor.weather_temperature`: Current weather conditions
+        
+        ## Dependencies
+        - Light integration: For lighting control
+        - Climate integration: For thermostat control
+        - Weather integration: For weather data
+        - TTS integration: For voice announcements
+      </content>
+    </example>
+    
+    <example>
+      <title>Package Documentation</title>
+      <content>
+        # Office Package
+        
+        ## Overview
+        Manages all automation and configuration for the office space, including lighting, climate control, desk controls, and productivity features.
+        
+        ## Configuration Files
+        - `packages/office.yaml`: Main office configuration
+        - `packages/office/lighting.yaml`: Lighting-specific automations
+        - `packages/office/climate.yaml`: Climate control settings
+        
+        ## Functionality
+        The office package provides:
+        - Automated lighting based on occupancy and time
+        - Standing desk height presets
+        - Fan speed control with percentage-based logic
+        - Video lighting for meetings
+        - Audio controls for speakers and microphones
+        
+        ## Key Components
+        - **Lighting System**: Multi-zone lighting with brightness presets
+        - **Climate Control**: Fan with multiple speed settings
+        - **Desk Control**: Standing desk with 4 preset positions
+        - **Audio/Video**: Meeting room controls and equipment management
+        
+        ## Entities
+        - `light.office_lights`: Main office lighting group
+        - `fan.office_fan`: Ceiling fan with percentage control
+        - `sensor.office_temperature`: Temperature monitoring
+        - `button.standing_desk_preset_*`: Desk height presets
+        
+        ## Dependencies
+        - MQTT integration: For device communication
+        - Template sensors: For complex state calculations
+        - Custom Lovelace cards: For specialized UI controls
+      </content>
+    </example>
+    
+    <example>
+      <title>README.md Documentation</title>
+      <content>
+        # Home Assistant Configuration
+        
+        ## About
+        My comprehensive Home Assistant configuration for a smart home with extensive automation, security monitoring, and entertainment systems. The setup focuses on reliability, user experience, and integration across multiple protocols (Z-Wave, Zigbee, WiFi, IR).
+        
+        ## Architecture Overview
+        **Hardware Infrastructure:**
+        - Dell R720 server running Home Assistant Core in a VM (2 CPU cores, 2GB RAM, 50GB disk)
+        - Raspberry Pi (original) with ser2net for Z-Wave/Zigbee radio connectivity
+        - HUSBZB-1 USB stick for Z-Wave and Zigbee control
+        - Multiple tablets and mobile devices for interface access
+        
+        **Software Stack:**
+        - Home Assistant Core with package-based configuration
+        - ZWaveJS2MQTT for Z-Wave device management
+        - MQTT broker for device communication
+        - Custom integrations for specialized functionality
+        
+        ## Custom Integrations
+        
+        ### Security & Monitoring
+        - **alarmo**: Advanced alarm system with multiple zones and automation triggers
+        - **frigate**: AI-powered video surveillance with object detection
+        - **noonlight**: Emergency response integration
+        
+        ### Climate & Environment
+        - **adaptive_lighting**: Automatic lighting adjustments based on time and natural light
+        - **battery_notes**: Battery level tracking with smart notifications
+        - **enphase_envoy**: Solar panel monitoring
+        
+        ### Media & Entertainment
+        - **spotcast**: Spotify casting integration for whole-home audio
+        - **huesyncbox**: Philips Hue Sync Box control for TV lighting
+        - **musicassistant**: Local music server integration
+        
+        ### Smart Home Control
+        - **smartir**: Infrared remote control for legacy devices
+        - **keymaster**: Advanced lock management with access codes
+        - **ecoflow**: Portable power station monitoring
+        
+        ### Utilities & Tools
+        - **browser_mod**: Browser-based automations and popups
+        - **lovelace_gen**: Dynamic Lovelace dashboard generation
+        - **mqtt_discoverystream**: MQTT device discovery and management
+        
+        ## Custom Lovelace Cards
+        
+        ### Layout & Navigation
+        - **lovelace-layout-card**: Advanced layout management with conditional displays
+        - **hass-swipe-navigation**: Swipe-based navigation for mobile interfaces
+        - **kiosk-mode**: Kiosk interface mode for wall-mounted tablets
+        - **stack-in-card**: Nested card layouts for complex interfaces
+        
+        ### Data Visualization
+        - **apexcharts-card**: Advanced charting and graphs for sensor data
+        - **mini-graph-card**: Compact data graphs for quick monitoring
+        - **bar-card**: Bar chart visualizations for comparative data
+        - **power-flow-card**: Energy flow visualization
+        
+        ### Media & Entertainment
+        - **mini-media-player**: Compact media controls for audio/video
+        - **spotify-card**: Spotify integration with playlist controls
+        - **roku-card**: Roku device control and status
+        - **lovelace-xiaomi-vacuum-map-card**: Robot vacuum mapping
+        
+        ### Home Automation
+        - **button-card**: Customizable button interface for device control
+        - **light-entity-card**: Specialized lighting controls with color picker
+        - **simple-thermostat**: Thermostat interface with scheduling
+        - **slider-button-card**: Slider controls with button actions
+        
+        ### Utilities
+        - **lovelace-card-mod**: CSS styling and modifications for custom appearance
+        - **lovelace-auto-entities**: Dynamic entity lists based on device states
+        - **decluttering-card**: UI simplification and conditional displays
+        - **config-template-card**: Template-based card configuration
+        
+        ## Package Organization
+        The configuration uses a package-based organization system:
+        
+        **Room-based packages:**
+        - `office.yaml`: Office automation and productivity features
+        - `master_bedroom.yaml`: Master bedroom comfort and security
+        - `kitchen/`: Kitchen automation and appliance control
+        - `living_room/`: Entertainment and living space management
+        
+        **Feature-based packages:**
+        - `security.yaml`: Cross-room security and monitoring
+        - `media_music.yaml`: Whole-home audio and entertainment
+        - `weather.yaml`: Weather monitoring and alerts
+        - `notifications.yaml`: Notification management
+        
+        **Integration packages:**
+        - `assistant.yaml`: Voice assistant integration
+        - `presence.yaml`: Presence detection and automation
+        - `tablets.yaml`: Tablet interface management
+        
+        ## Dashboard Structure
+        Single responsive Lovelace dashboard (`dashboards/home.yaml`) that adapts to different screen sizes:
+        - **Large screens (10"+ tablets)**: Two-column layout with left navigation
+        - **Medium screens**: Top navigation bar with responsive grid
+        - **Small screens (phones)**: Single-column layout with stacked cards
+        
+        Custom cards provide specialized interfaces for different device types and automation scenarios.
+        
+        ## Installation & Setup
+        1. **Prerequisites:**
+           - Home Assistant Core installation
+           - ZWaveJS2MQTT setup
+           - MQTT broker configuration
+           - HACS (Home Assistant Community Store) installation
+        
+        2. **Configuration:**
+           - Copy configuration files to Home Assistant config directory
+           - Install required custom integrations via HACS
+           - Configure secrets.yaml with API keys and credentials
+           - Set up MQTT topics and device discovery
+        
+        3. **Custom Components:**
+           - Install custom integrations from `custom_components/` directory
+           - Configure integration-specific settings in respective packages
+        
+        4. **Lovelace Cards:**
+           - Install custom cards via HACS or manual installation
+           - Configure card settings in dashboard YAML files
+        
+        ## Contributing
+        This configuration is maintained as an open-source project. Contributions are welcome through pull requests and issue reports.
+        
+        ## License
+        MIT License - see LICENSE file for details.
+      </content>
+    </example>
+  </examples>
+  
+  <output_format>
+    Use Markdown formatting with:
+    - Clear hierarchical headings (##, ###, ####)
+    - Code blocks for YAML configurations
+    - Bullet points for lists
+    - Bold text for emphasis
+    - Links to related files and documentation
+    - Tables for entity listings when appropriate
+  </output_format>
+  
+  <quality_standards>
+    - Documentation should be comprehensive but concise
+    - Include practical examples and use cases
+    - Maintain consistency across all documentation
+    - Update documentation when configurations change
+    - Include troubleshooting information
+    - Provide context for why certain choices were made
+    - Ensure custom integrations and cards are properly categorized and described
+    - Keep README.md updated with current custom components and their purposes
+    - Maintain alphabetical sorting within categories for easy reference
+    - Include version information and compatibility notes where applicable
+  </quality_standards>
+</prompt>
