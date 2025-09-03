@@ -1,7 +1,7 @@
 # Zooz ZEN32 Scene Controller Status Lights Blueprint Documentation
 
 ## Overview
-A blueprint for mapping lights on the Zooz ZEN32 Scene Controller buttons to Home Assistant lights. This blueprint synchronizes the status lights on the ZEN32 controller with the state of Home Assistant light entities.
+This blueprint synchronizes the status lights on Zooz ZEN32 Scene Controllers with Home Assistant light entities. It provides visual feedback on the physical controller by illuminating the appropriate button lights based on the state of connected lights.
 
 ## Import Blueprint
 
@@ -14,49 +14,65 @@ A blueprint for mapping lights on the Zooz ZEN32 Scene Controller buttons to Hom
 - **Author**: rohankapoorcom
 
 ## Input Parameters
-- `zooz_switch`: Zooz ZEN32 Scene Controller device
-- `large_button_light`: Light to track status on the large button
-- `small_1_button_light`: Light to track status on the upper left small button
-- `small_2_button_light`: Light to track status on the upper right small button
-- `small_3_button_light`: Light to track status on the lower left small button
-- `small_4_button_light`: Light to track status on the lower right small button
+- `zooz_switch`: Zooz ZEN32 Scene Controller device(s)
+- `large_button_light`: Light entity for the large button status
+- `small_1_button_light`: Light entity for upper left small button status
+- `small_2_button_light`: Light entity for upper right small button status
+- `small_3_button_light`: Light entity for lower left small button status
+- `small_4_button_light`: Light entity for lower right small button status
 
 ## Functionality
 This blueprint creates an automation that:
-- Monitors the state of specified Home Assistant light entities
-- Updates the corresponding status lights on the ZEN32 controller
-- Synchronizes the large button light with its assigned entity
-- Controls the four small button lights using Z-Wave JS commands
-- Uses single mode execution for reliable operation
+
+1. **Monitors light states**: Listens for state changes in all connected light entities
+2. **Synchronizes status lights**: Updates the physical controller's LED indicators
+3. **Handles system events**: Responds to Home Assistant startup and automation reloads
+4. **Supports multiple devices**: Can handle multiple Zooz ZEN32 controllers
+5. **Uses Z-Wave commands**: Directly controls the device's status lights via Z-Wave JS
 
 ## Usage Examples
 ```yaml
-# Example: ZEN32 status lights for living room
+# Example: Living room scene controller status lights
 - use_blueprint:
     source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
     input:
-      zooz_switch: "living_room_zen32"
+      zooz_switch: "Living Room Controller"
       large_button_light: light.living_room_main
-      small_1_button_light: light.living_room_lamp
-      small_2_button_light: light.living_room_ceiling
-      small_3_button_light: light.living_room_accent
-      small_4_button_light: light.living_room_floor
+      small_1_button_light: light.living_room_accent
+      small_2_button_light: light.living_room_lamp
+      small_3_button_light: light.living_room_ceiling
+      small_4_button_light: light.living_room_fan
+
+# Example: Kitchen scene controller with fewer lights
+- use_blueprint:
+    source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml
+    input:
+      zooz_switch: "Kitchen Controller"
+      large_button_light: light.kitchen_ceiling
+      small_1_button_light: light.kitchen_under_cabinet
+      small_2_button_light: light.kitchen_island
 ```
 
 ## Dependencies
-- Z-Wave JS integration
-- Zooz ZEN32 Scene Controller
-- Light entities to track
+- **Z-Wave JS integration**: Must be installed and configured
+- **Zooz ZEN32 Scene Controller**: Must be properly paired and configured
+- **Z-Wave network**: Must have a stable Z-Wave network connection
+- **Light entities**: Must have light entities to track
 
 ## Related Files
-- `automations.yaml`: Where the blueprint is used
-- `packages/`: Room-specific automation configurations
+- `packages/living_room/`: Living room automation configurations
+- `packages/kitchen/`: Kitchen automation configurations
+- `packages/office.yaml`: Office automation configurations
 
 ## Notes
-- Specifically designed for Zooz ZEN32 Scene Controller
-- Uses Z-Wave JS integration for device communication
+- Provides visual feedback on the physical controller for connected lights
+- Uses Z-Wave JS set_value commands for direct device control
+- Supports all 5 buttons on the Zooz ZEN32 (1 large + 4 small)
+- Automatically handles system restarts and automation reloads
 - Single mode execution ensures reliable operation
 - Silent error handling for maximum exceeded scenarios
+- Perfect for creating intuitive physical controls with status feedback
 
 ---
-*This documentation is part of the [Automation Blueprint Index](README.md)*
+
+*This documentation is part of the [Blueprint Documentation Index](../README.md)*

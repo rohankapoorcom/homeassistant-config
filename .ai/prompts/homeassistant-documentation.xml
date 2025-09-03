@@ -82,6 +82,10 @@
        - Use descriptive filenames for blueprint documentation files (e.g., "emulated-roku-blueprint.md", "inovelli-lzw30-red-series-switch-blueprint.md")
        - Create an index file that links to all individual blueprint documentation files
        - Organize blueprint documentation files by blueprint type (automation, script, template) rather than by device categories
+       - **CRITICAL**: Create comprehensive documentation for ALL packages in the packages/ directory
+       - **CRITICAL**: Create comprehensive documentation for ALL automations in automations.yaml and package files
+       - **CRITICAL**: Create package documentation files in docs/packages/ directory
+       - **CRITICAL**: Create automation documentation files in docs/automations/ directory
     
     6. **Blueprint Documentation Organization**:
        - Create individual documentation files for each blueprint
@@ -104,6 +108,17 @@
        - Explain the package organization system
        - Document the dashboard structure and layout
        - Verify source repositories by checking HACS default integration and plugin lists
+       - **CRITICAL**: Create comprehensive documentation for ALL packages and their functionality
+       - **CRITICAL**: Create comprehensive documentation for ALL automations and their purposes
+       - **CRITICAL**: Document the main configuration structure and organization
+       
+    8. **Documentation Structure Requirements**:
+       - **CRITICAL**: Create docs/packages/ directory with individual package documentation files
+       - **CRITICAL**: Create docs/automations/ directory with individual automation documentation files
+       - **CRITICAL**: Create main documentation index files for each directory
+       - **CRITICAL**: Ensure every package in packages/ directory has corresponding documentation
+       - **CRITICAL**: Ensure every automation in automations.yaml and package files has documentation
+       - **CRITICAL**: Create cross-references between related documentation files
   </instructions>
   
   <template>
@@ -238,6 +253,124 @@
     ---
     *This index is part of the [Blueprint Documentation Index](../README.md)*
   </blueprint_index_template>
+  
+  <package_template>
+    # {Package Name} Package Documentation
+    
+    ## Overview
+    Brief description of what this package does and its purpose in the home automation system.
+    
+    ## Configuration Files
+    - `packages/{package_name}.yaml`: Main package configuration
+    - `packages/{package_name}/`: Additional package files (if applicable)
+    
+    ## Functionality
+    The {package_name} package provides:
+    - Feature 1: Description
+    - Feature 2: Description
+    - Feature 3: Description
+    
+    ## Key Components
+    - **Component 1**: Description and purpose
+    - **Component 2**: Description and purpose
+    - **Component 3**: Description and purpose
+    
+    ## Entities
+    - `entity_id`: Description of what this entity represents
+    - `entity_id`: Description of what this entity represents
+    
+    ## Dependencies
+    - Integration name: Purpose and configuration
+    - Custom component: Functionality and setup
+    
+    ## Related Files
+    - `path/to/file.yaml`: Purpose and relationship
+    - `path/to/file.yaml`: Purpose and relationship
+    
+    ## Notes
+    Additional information, tips, or important considerations.
+  </package_template>
+  
+  <automation_template>
+    # {Automation Name} Automation Documentation
+    
+    ## Overview
+    Brief description of what this automation does and its purpose in the home automation system.
+    
+    ## Configuration
+    ```yaml
+    # Include relevant YAML configuration
+    ```
+    
+    ## Functionality
+    Detailed explanation of how the automation works, including:
+    - Triggers and conditions
+    - Actions and responses
+    - Integration with other components
+    - User interactions
+    
+    ## Entities
+    List and describe the entities used by this automation:
+    - `entity_id`: Description of what this entity represents
+    - `entity_id`: Description of what this entity represents
+    
+    ## Dependencies
+    List any integrations, custom components, or external services required:
+    - Integration name: Purpose and configuration
+    - Custom component: Functionality and setup
+    
+    ## Usage
+    Explain how users interact with this automation:
+    - Dashboard controls
+    - Voice commands
+    - Automation triggers
+    - Manual controls
+    
+    ## Related Files
+    - `path/to/file.yaml`: Purpose and relationship
+    - `path/to/file.yaml`: Purpose and relationship
+    
+    ## Notes
+    Additional information, tips, or important considerations.
+  </automation_template>
+  
+  <configuration_template>
+    # Configuration Documentation
+    
+    ## Overview
+    Brief description of the main configuration structure and organization.
+    
+    ## Configuration Files
+    - `configuration.yaml`: Main configuration file
+    - `automations.yaml`: Main automations file
+    - `scripts.yaml`: Scripts configuration
+    - `customize.yaml`: Entity customization
+    - `secrets.yaml`: Sensitive configuration (not tracked)
+    
+    ## Package Organization
+    Description of how packages are organized:
+    - **Feature-based packages**: Cross-room functionality
+    - **Integration packages**: Third-party service configurations
+    - **Room-based packages**: Individual room configurations
+    
+    ## Key Integrations
+    List and describe the main integrations used:
+    - Integration name: Purpose and configuration
+    - Integration name: Purpose and configuration
+    
+    ## Dependencies
+    List any external services or requirements:
+    - Service name: Purpose and configuration
+    - Service name: Purpose and configuration
+    
+    ## Related Files
+    - `packages/`: Package directory
+    - `custom_components/`: Custom integrations
+    - `blueprints/`: Blueprint templates
+    
+    ## Notes
+    Additional information, tips, or important considerations.
+  </configuration_template>
   
   <readme_template>
     # Home Assistant Configuration

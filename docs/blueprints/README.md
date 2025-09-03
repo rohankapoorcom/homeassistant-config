@@ -1,78 +1,70 @@
 # Blueprint Documentation
 
-This directory contains comprehensive documentation for all blueprints created by the repository owner (rohankapoorcom). These blueprints provide reusable automation templates for various Home Assistant scenarios.
-
-## Overview
-
-The blueprints in this repository are organized by blueprint type (Automation, Script, Template) based on their domain and functionality. Each blueprint includes detailed documentation with input parameters, usage examples, and dependencies.
+This directory contains documentation for custom blueprints created by the repository owner (rohankapoorcom) for various Home Assistant automation scenarios.
 
 ## Blueprint Types
 
 ### [Automation Blueprints](automation/README.md)
-Automation blueprints for creating Home Assistant automations:
-- **Adaptive Lighting Sleep Mode**: Time-based adaptive lighting control
-- **Emulated Roku**: Control automations via emulated Roku device keypresses
-- **Inovelli Device Automations**: Lock notifications, switch controls, night mode for Inovelli devices
-- **Motion Light**: Motion-activated lighting with automatic shutoff
-- **Solum M3 E-Paper Tag Buttons**: Automations triggered by e-paper tag button presses
-- **Tablet Battery Charging**: Intelligent battery management for tablets
-- **Tuya TS0044 4-Button Remote**: Control automations via Tuya remote buttons
-- **Zooz Device Automations**: Scene controller status lights and controls for Zooz devices
+Comprehensive collection of automation blueprints covering device-specific controls, lighting automation, battery management, and general home automation.
 
-### [Script Blueprints](script/README.md)
-Script blueprints for creating Home Assistant scripts:
-- *(None created by repository owner)*
+### Script Blueprints
+*(None created by repository owner)*
 
-### [Template Blueprints](template/README.md)
-Template blueprints for creating Home Assistant templates:
-- *(None created by repository owner)*
+### Template Blueprints
+*(None created by repository owner)*
 
-## Blueprint Statistics
+## Quick Reference
 
-- **Total Blueprints**: 11
-- **Automation Blueprints**: 11
-- **Script Blueprints**: 0 (none created by repository owner)
-- **Template Blueprints**: 0 (none created by repository owner)
+| Blueprint | Type | File | Key Features | Device Support |
+|-----------|------|------|--------------|----------------|
+| Adaptive Lighting Sleep Mode | automation | [adaptive-lighting-sleep-mode-blueprint.md](automation/adaptive-lighting-sleep-mode-blueprint.md) | Sleep mode automation | Adaptive Lighting integration |
+| Emulated Roku | automation | [emulated-roku-blueprint.md](automation/emulated-roku-blueprint.md) | Roku device emulation | Media devices |
+| Inovelli LZW30 Black Series Lock Notifications | automation | [inovelli-lzw30-black-series-lock-notifications-blueprint.md](automation/inovelli-lzw30-black-series-lock-notifications-blueprint.md) | Lock status notifications | Inovelli LZW30 locks |
+| Inovelli LZW30 Red Series Switch | automation | [inovelli-lzw30-red-series-switch-blueprint.md](automation/inovelli-lzw30-red-series-switch-blueprint.md) | Switch automation | Inovelli LZW30 switches |
+| Inovelli LZW31 Red Series Switch | automation | [inovelli-lzw31-red-series-switch-blueprint.md](automation/inovelli-lzw31-red-series-switch-blueprint.md) | Switch automation | Inovelli LZW31 switches |
+| Inovelli LZW31-SN Red Series Lock Notifications | automation | [inovelli-lzw31-sn-red-series-lock-notifications-blueprint.md](automation/inovelli-lzw31-sn-red-series-lock-notifications-blueprint.md) | Lock status notifications | Inovelli LZW31-SN locks |
+| Inovelli Red Series Night Mode | automation | [inovelli-red-series-night-mode-blueprint.md](automation/inovelli-red-series-night-mode-blueprint.md) | Night mode automation | Inovelli red series devices |
+| Inovelli VZM31-SN Blue Series Lock Notifications | automation | [inovelli-vzm31-sn-blue-series-lock-notifications-blueprint.md](automation/inovelli-vzm31-sn-blue-series-lock-notifications-blueprint.md) | Lock status notifications | Inovelli VZM31-SN locks |
+| Inovelli VZM31-SN Blue Series Switch | automation | [inovelli-vzm31-sn-blue-series-switch-blueprint.md](automation/inovelli-vzm31-sn-blue-series-switch-blueprint.md) | Switch automation | Inovelli VZM31-SN switches |
+| Inovelli VZW31-SN Red Series Lock Notifications | automation | [inovelli-vzw31-sn-red-series-lock-notifications-blueprint.md](automation/inovelli-vzw31-sn-red-series-lock-notifications-blueprint.md) | Lock status notifications | Inovelli VZW31-SN locks |
+| Inovelli VZW31-SN Red Series Switch | automation | [inovelli-vzw31-sn-red-series-switch-blueprint.md](automation/inovelli-vzw31-sn-red-series-switch-blueprint.md) | Switch automation | Inovelli VZW31-SN switches |
+| Lock Light Controls | automation | [lock-light-controls-blueprint.md](automation/lock-light-controls-blueprint.md) | Lock and light coordination | Locks and lights |
+| Low Battery Level Detection Notification | automation | [low-battery-level-detection-notification-blueprint.md](automation/low-battery-level-detection-notification-blueprint.md) | Battery monitoring | All battery sensors |
+| Motion Light | automation | [motion-light-blueprint.md](automation/motion-light-blueprint.md) | Motion-activated lighting | Motion sensors and lights |
+| Solum M3 E-Paper Tag Buttons | automation | [solum-m3-epaper-tag-buttons-blueprint.md](automation/solum-m3-epaper-tag-buttons-blueprint.md) | E-paper tag controls | Solum M3 tags |
+| Tablet Battery Charging | automation | [tablet-battery-charging-blueprint.md](automation/tablet-battery-charging-blueprint.md) | Tablet charging automation | Tablets |
+| Tuya TS0044 4-Button Remote | automation | [tuya-ts0044-4-button-remote-blueprint.md](automation/tuya-ts0044-4-button-remote-blueprint.md) | Remote control automation | Tuya TS0044 remotes |
+| Zooz ZEN32 Scene Controller Status Lights | automation | [zooz-zen32-scene-controller-status-lights-blueprint.md](automation/zooz-zen32-scene-controller-status-lights-blueprint.md) | Status light automation | Zooz ZEN32 controllers |
+| Zooz ZEN32 Scene Controls | automation | [zooz-zen32-scene-controls-blueprint.md](automation/zooz-zen32-scene-controls-blueprint.md) | Scene control automation | Zooz ZEN32 controllers |
 
-## Device Support
+## Blueprint Categories
 
-### Z-Wave Devices
-- **Inovelli**: LZW30, LZW31, VZM31, VZW31 series (Red and Blue)
-- **Zooz**: ZEN32 Scene Controller
+### Device-Specific Automations
+- **Emulated Roku**: Roku device emulation for media control
+- **Solum M3 E-Paper Tag Buttons**: E-paper display button controls
+- **Tuya TS0044 4-Button Remote**: Tuya remote control automation
 
-### Other Protocols
-- **Tuya**: TS0044 4-button remote
-- **Emulated Roku**: Software-based Roku device
-- **Open E-Paper Link**: Solum M3 e-paper tags
+### Z-Wave Device Automations
+- **Inovelli Devices**: Comprehensive automation for Inovelli switches, dimmers, and locks
+- **Zooz Devices**: Scene controller automation for Zooz ZEN32 devices
 
-### General Integrations
-- **Adaptive Lighting**: Sleep mode control
-- **Motion Sensors**: Binary sensors with motion device class
-- **Battery Sensors**: All sensors with battery device class
-- **Locks**: All lock entities
-- **Lights**: All light entities
-- **Switches**: Charger and control switches
+### General Automation
+- **Adaptive Lighting Sleep Mode**: Sleep mode integration with adaptive lighting
+- **Lock Light Controls**: Coordinated lock and lighting automation
+- **Low Battery Level Detection**: Battery monitoring and notifications
+- **Motion Light**: Motion-activated lighting automation
+- **Tablet Battery Charging**: Tablet charging management
 
-## Usage Guidelines
+## Importing Blueprints
 
-1. **Installation**: Copy the desired blueprint YAML file to your `blueprints/automation/` directory
-2. **Configuration**: Use the blueprint in your `automations.yaml` file with the `use_blueprint` directive
-3. **Customization**: Modify the input parameters to match your specific devices and requirements
-4. **Testing**: Test each automation thoroughly before deploying to production
-
-## Contributing
-
-These blueprints are maintained as part of the Home Assistant configuration repository. Contributions are welcome through pull requests and issue reports.
-
-## License
-
-All blueprints are provided under the MIT License as part of the main repository.
+Each blueprint documentation includes a one-click import button that will open your Home Assistant instance and pre-fill the blueprint import dialog. Simply click the "Import Blueprint" button in any blueprint's documentation to get started.
 
 ## Related Documentation
 
-- [Main README](../README.md): Overview of the entire Home Assistant configuration
-- [Package Documentation](../packages/): Documentation for package-based configurations
-- [Custom Components](../custom_components/): Documentation for custom integrations
+- [Main Configuration README](../README.md): Overview of the entire Home Assistant configuration
+- [Custom Integrations](../README.md#custom-integrations): List of custom integrations used
+- [Custom Lovelace Cards](../README.md#custom-lovelace-cards): List of custom UI components
 
 ---
-*This documentation follows the updated Home Assistant documentation prompt guidelines*
+
+*This documentation is part of the [Home Assistant Configuration](https://github.com/rohankapoorcom/homeassistant-config) project.*

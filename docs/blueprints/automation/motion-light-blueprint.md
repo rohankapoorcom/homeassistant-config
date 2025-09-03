@@ -1,7 +1,7 @@
 # Motion Light Blueprint Documentation
 
 ## Overview
-A customizable blueprint for creating motion-activated lighting automations. This blueprint turns on lights when motion is detected and automatically turns them off after a specified delay when no motion is detected.
+This blueprint creates motion-activated lighting automation that turns on lights when motion is detected and automatically turns them off after a specified delay when no motion is detected. Based on the Home Assistant default motion-light blueprint with enhanced functionality.
 
 ## Import Blueprint
 
@@ -20,11 +20,13 @@ A customizable blueprint for creating motion-activated lighting automations. Thi
 
 ## Functionality
 This blueprint creates an automation that:
-- Monitors a motion sensor for state changes
-- Turns on the specified light when motion is detected
-- Waits for motion to stop, then delays for the specified time
-- Automatically turns off the light after the delay period
-- Handles multiple motion events during the delay period
+
+1. **Monitors motion sensor**: Listens for state changes from 'off' to 'on'
+2. **Turns on light**: When motion is detected and light is off
+3. **Waits for motion to stop**: Monitors for motion sensor to return to 'off' state
+4. **Delays before turning off**: Waits for the specified time after motion stops
+5. **Turns off light**: Automatically turns off the light after the delay period
+6. **Handles multiple events**: Restart mode ensures proper handling of multiple motion events
 
 ## Usage Examples
 ```yaml
@@ -35,22 +37,33 @@ This blueprint creates an automation that:
       motion_entity: binary_sensor.hallway_motion
       light_target: light.hallway_lights
       no_motion_wait: 180
+
+# Example: Bathroom motion light with shorter delay
+- use_blueprint:
+    source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.bathroom_motion
+      light_target: light.bathroom_vanity
+      no_motion_wait: 60
 ```
 
 ## Dependencies
-- Binary sensor with device_class: motion
-- Light entity for control
-- No additional integrations required
+- **Binary sensor with device_class: motion**: Motion sensor must be properly configured
+- **Light entity**: Target light must be available and controllable
+- **No additional integrations required**
 
 ## Related Files
-- `automations.yaml`: Where the blueprint is used
-- `packages/`: Room-specific automation configurations
+- `packages/hallway.yaml`: Hallway automation configurations
+- `packages/downstairs_bathroom.yaml`: Bathroom automation configurations
+- `packages/master_bathroom.yaml`: Master bathroom automation configurations
 
 ## Notes
 - Based on the Home Assistant default motion-light blueprint
-- Supports restart mode for reliable operation
+- Uses restart mode for reliable operation with multiple motion events
 - Silent error handling for maximum exceeded scenarios
-- Configurable delay time for motion detection
+- Automatically handles system restarts and automation reloads
+- Configurable delay time allows for different use cases (hallways vs bathrooms)
 
 ---
-*This documentation is part of the [Automation Blueprint Index](README.md)*
+
+*This documentation is part of the [Blueprint Documentation Index](../README.md)*

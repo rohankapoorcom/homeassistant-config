@@ -1,7 +1,7 @@
 # Emulated Roku Blueprint Documentation
 
 ## Overview
-A customizable blueprint for creating automations triggered by emulated Roku device keypresses. This blueprint allows you to map Roku remote button presses to custom Home Assistant actions.
+This blueprint creates automations triggered by emulated Roku device keypresses. It allows you to map any of the 16 standard Roku remote buttons to custom Home Assistant actions, providing a flexible way to control your smart home through a familiar remote interface.
 
 ## Import Blueprint
 
@@ -14,69 +14,72 @@ A customizable blueprint for creating automations triggered by emulated Roku dev
 - **Author**: rohankapoorcom
 
 ## Input Parameters
-- `emulated_roku_name`: The name of the Emulated Roku device
-- `up_action`: Action to run when the "Up" button is pressed
-- `right_action`: Action to run when the "Right" button is pressed
-- `down_action`: Action to run when the "Down" button is pressed
-- `left_action`: Action to run when the "Left" button is pressed
-- `home_action`: Action to run when the "Home" button is pressed
-- `search_action`: Action to run when the "Search" button is pressed
-- `rewind_action`: Action to run when the "Rewind" button is pressed
-- `forward_action`: Action to run when the "Forward" button is pressed
-- `play_action`: Action to run when the "Play" button is pressed
-- `select_action`: Action to run when the "Select" button is pressed
-- `back_action`: Action to run when the "Back" button is pressed
-- `instant_replay_action`: Action to run when the "InstantReplay" button is pressed
-- `info_action`: Action to run when the "Info" button is pressed
-- `back_space_action`: Action to run when the "BackSpace" button is pressed
-- `enter_action`: Action to run when the "Enter" button is pressed
+- `emulated_roku_name`: Name of the emulated Roku device
+- `up_action`: Action to run when "Up" button is pressed
+- `right_action`: Action to run when "Right" button is pressed
+- `down_action`: Action to run when "Down" button is pressed
+- `left_action`: Action to run when "Left" button is pressed
+- `home_action`: Action to run when "Home" button is pressed
+- `search_action`: Action to run when "Search" button is pressed
+- `rewind_action`: Action to run when "Rewind" button is pressed
+- `forward_action`: Action to run when "Forward" button is pressed
+- `play_action`: Action to run when "Play" button is pressed
+- `select_action`: Action to run when "Select" button is pressed
+- `back_action`: Action to run when "Back" button is pressed
+- `instant_replay_action`: Action to run when "InstantReplay" button is pressed
+- `info_action`: Action to run when "Info" button is pressed
+- `back_space_action`: Action to run when "BackSpace" button is pressed
+- `enter_action`: Action to run when "Enter" button is pressed
 
 ## Functionality
 This blueprint creates an automation that:
-- Monitors emulated Roku devices for keypress events
-- Maps each button press to a customizable action
-- Supports all standard Roku remote buttons (16 total buttons)
-- Uses single mode execution for reliable operation
-- Handles Z-Wave JS value notifications for button events
+
+1. **Listens for Roku commands**: Monitors for `roku_command` events
+2. **Filters by device**: Only responds to commands from the specified emulated Roku device
+3. **Handles keypresses**: Processes only keypress events (not other command types)
+4. **Maps buttons to actions**: Executes the appropriate action based on which button was pressed
+5. **Supports 16 buttons**: All standard Roku remote buttons are supported
 
 ## Usage Examples
 ```yaml
-# Example: Roku remote controls living room lights
+# Example: Media control emulated Roku
 - use_blueprint:
     source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/emulated-roku.yaml
     input:
-      emulated_roku_name: "Living Room Roku"
+      emulated_roku_name: "Media Controller"
       up_action:
-        - service: light.turn_on
+        - service: media_player.volume_up
           target:
-            entity_id: light.living_room_ceiling
+            entity_id: media_player.living_room_tv
       down_action:
-        - service: light.turn_off
+        - service: media_player.volume_down
           target:
-            entity_id: light.living_room_ceiling
+            entity_id: media_player.living_room_tv
+      play_action:
+        - service: media_player.media_play_pause
+          target:
+            entity_id: media_player.living_room_tv
       home_action:
         - service: scene.turn_on
           target:
             entity_id: scene.living_room_normal
-      play_action:
-        - service: media_player.play
-          target:
-            entity_id: media_player.living_room_tv
 ```
 
 ## Dependencies
-- Emulated Roku integration
-- No additional integrations required
+- **Emulated Roku integration**: Must be installed and configured
+- **Emulated Roku device**: Must have an emulated Roku device set up
 
 ## Related Files
-- `automations.yaml`: Where the blueprint is used
-- `packages/`: Room-specific automation configurations
+- `packages/media_music.yaml`: Media and entertainment automation configurations
+- `dashboards/home.yaml`: Dashboard configuration with media controls
 
 ## Notes
-- Based on the Home Assistant default motion-light blueprint
-- Supports restart mode for reliable operation
+- This blueprint provides a flexible way to control Home Assistant through a familiar remote interface
+- Each button can trigger any Home Assistant action (service calls, scenes, scripts, etc.)
+- The emulated Roku device can be controlled via the Roku app or other Roku-compatible remotes
 - Silent error handling for maximum exceeded scenarios
-- All 16 standard Roku remote buttons are supported
+- Single mode execution ensures reliable operation
 
 ---
-*This documentation is part of the [Automation Blueprint Index](README.md)*
+
+*This documentation is part of the [Blueprint Documentation Index](../README.md)*

@@ -1,7 +1,7 @@
 # Inovelli Red Series Night Mode Blueprint Documentation
 
 ## Overview
-A blueprint for creating night mode automations for Inovelli Red Series switches. This blueprint enables automatic dimming and color temperature adjustments during night hours.
+This blueprint automatically adjusts the default brightness of Inovelli Red Series dimmers based on time of day. It sets lower brightness levels during bedtime hours and higher brightness during wake-up hours, perfect for motion-activated lights that need different illumination levels throughout the day.
 
 ## Import Blueprint
 
@@ -14,46 +14,63 @@ A blueprint for creating night mode automations for Inovelli Red Series switches
 - **Author**: rohankapoorcom
 
 ## Input Parameters
-- `light_entity`: The light entity to control
-- `night_start_time`: Time to start night mode
-- `night_end_time`: Time to end night mode
-- `night_brightness`: Brightness level during night mode (0-255)
-- `night_color_temp`: Color temperature during night mode (K)
+- `zwave_device`: Inovelli Red Series dimmer device
+- `bedtime`: Time to reduce default brightness
+- `bedtime_brightness`: Default brightness percentage at bedtime (0-99%)
+- `wakeup_time`: Time to increase default brightness
+- `wakeup_time_brightness`: Default brightness percentage at wake-up time (0-99%)
 
 ## Functionality
 This blueprint creates an automation that:
-- Automatically adjusts lighting based on time of day
-- Reduces brightness and changes color temperature at night
-- Restores normal lighting during day hours
-- Uses single mode execution for reliable operation
-- Handles time-based triggers
+
+1. **Monitors time changes**: Listens for bedtime and wake-up time triggers
+2. **Adjusts default levels**: Changes the dimmer's default brightness based on time
+3. **Handles different models**: Supports both LZW31-SN and VZW31-SN dimmer models
+4. **Sets both parameters**: Updates both local and remote/Z-Wave default levels
+5. **Responds to system events**: Handles Home Assistant startup and automation reloads
 
 ## Usage Examples
 ```yaml
-# Example: Bedroom night mode automation
+# Example: Hallway dimmer with night mode
 - use_blueprint:
     source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-red-series-night-mode.yaml
     input:
-      light_entity: light.bedroom
-      night_start_time: "22:00:00"
-      night_end_time: "07:00:00"
-      night_brightness: 64
-      night_color_temp: 2700
+      zwave_device: "Hallway Dimmer"
+      bedtime: "22:00:00"
+      bedtime_brightness: 15
+      wakeup_time: "07:00:00"
+      wakeup_time_brightness: 75
+
+# Example: Bathroom dimmer with conservative night mode
+- use_blueprint:
+    source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-red-series-night-mode.yaml
+    input:
+      zwave_device: "Bathroom Dimmer"
+      bedtime: "23:00:00"
+      bedtime_brightness: 10
+      wakeup_time: "06:00:00"
+      wakeup_time_brightness: 60
 ```
 
 ## Dependencies
-- Light integration
-- No additional integrations required
+- **Z-Wave JS integration**: Must be installed and configured
+- **Inovelli Red Series dimmer**: Must be properly paired and configured
+- **Z-Wave network**: Must have a stable Z-Wave network connection
 
 ## Related Files
-- `automations.yaml`: Where the blueprint is used
-- `packages/`: Room-specific automation configurations
+- `packages/hallway.yaml`: Hallway automation configurations
+- `packages/master_bedroom.yaml`: Master bedroom automation configurations
+- `packages/downstairs_bathroom.yaml`: Bathroom automation configurations
 
 ## Notes
-- Specifically designed for Inovelli Red Series switches
-- Uses time-based triggers for automatic operation
+- Designed specifically for Inovelli Red Series dimmers (LZW31-SN, VZW31-SN)
+- Automatically adjusts default brightness for motion-activated lights
+- Supports different brightness levels for bedtime and wake-up periods
+- Updates both local and remote/Z-Wave default level parameters
 - Single mode execution ensures reliable operation
 - Silent error handling for maximum exceeded scenarios
+- Perfect for creating comfortable lighting transitions throughout the day
 
 ---
-*This documentation is part of the [Automation Blueprint Index](README.md)*
+
+*This documentation is part of the [Blueprint Documentation Index](../README.md)*
