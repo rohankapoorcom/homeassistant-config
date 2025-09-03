@@ -8,21 +8,175 @@
 
 ## About
 
-My configuration files for [Home Assistant](https://home-assistant.io), which runs all of my home automations.
+My comprehensive Home Assistant configuration for a smart home with extensive automation, security monitoring, and entertainment systems. The setup focuses on reliability, user experience, and integration across multiple protocols (Z-Wave, Zigbee, IP, Bluetooth). This configuration serves as a showcase of advanced Home Assistant capabilities and custom automation solutions.
 
-I run Home Assistant (Core) as a virtual machine (VM) on my Dell R720 host machine. It's allocated 2 CPU cores and 2GB of RAM and 50GB of Disk. I also run [ZWavejs2Mqtt](https://zwave-js.github.io/zwavejs2mqtt/#/) on the same VM.
+## Architecture Overview
 
-Since Home Assistant is running as a VM in my server rack, I have a Raspberry Pi (original) running [ser2net](https://linux.die.net/man/8/ser2net#) located on top of my Kitchen cabinets to connect my Z-Wave and Zigbee radios.
+**Hardware Infrastructure:**
+- Lenovo Tiny P330 Cluster running Home Assistant (Container) in a VM (4 CPU cores, 4GB RAM, 50GB disk)
+- Multiple tablets and mobile devices for interface access
+- Distributed radio connectivity via IP network
 
-## Devices
-This section still needs to be written...
-<!-- * HUSBZB-1 for Z-Wave and Zigbee control
-*  -->
+**Software Stack:**
+- [Home Assistant](https://home-assistant.io) with package-based configuration
+- [ZWaveJS2MQTT](https://zwave-js.github.io/zwavejs2mqtt/) for Z-Wave device management
+- [Zigbee2MQTT](https://www.zigbee2mqtt.io/) for Zigbee device management
+- [Valetudo](https://valetudo.cloud/) for robot vacuums
+- [Mosquitto](https://mosquitto.org/) MQTT broker for device communication
+- Custom integrations for specialized functionality
 
-## Dashboards
-I have a single [Lovelace dashboard](dashboards/home.yaml) that I use for all different screen sizes. On large screens like 10" tablets (or larger), it's a two column layout with a navigation bar on the left side. On smaller tablets, the navigation bar switches to the top. On smaller screens (like phones), it becomes a single column layout. Some screenshots below show the view from my phone. For privacy reasons any screens showing camera views have been omitted.
+**Network Topology:**
+- Centralized server-based architecture
+- Distributed radio connectivity via IP network
+- Multi-protocol support (Z-Wave, Zigbee, IP, Bluetooth)
+- Centralized authentication with LDAP integration
 
-I use many [custom Lovelace cards](www/community) to build my dashboard.
+## Custom Integrations
+
+### Security & Monitoring
+- **[alarmo](https://github.com/nielsfaber/alarmo)**: Advanced alarm system with multiple zones and automation triggers
+- **[frigate](https://github.com/blakeblackshear/frigate)**: AI-powered video surveillance with object detection
+- **[noonlight](https://github.com/konnected-io/noonlight-hass)**: Emergency response integration for enhanced security
+
+### Climate & Environment
+- **[adaptive_lighting](https://github.com/basnijholt/adaptive-lighting)**: Automatic lighting adjustments based on time and natural light
+- **[air_quality](https://github.com/rohankapoorcom/homeassistant-config/tree/master/custom_components/air_quality)**: Comprehensive air quality monitoring and alerts
+- **[battery_notes](https://github.com/andrew-codechicken/battery-notes)**: Battery level tracking with smart notifications
+- **[enphase_envoy](https://github.com/briancmpbll/home_assistant_custom_envoy)**: Solar panel monitoring and energy production tracking
+
+### Media & Entertainment
+- **[huesyncbox](https://github.com/mvdwetering/huesyncbox)**: Philips Hue Sync Box control for TV lighting synchronization
+- **[spotcast](https://github.com/fondberg/spotcast)**: Spotify casting integration for whole-home audio
+- **[vaddio_conferenceshot](https://github.com/rohankapoorcom/vaddio_conferenceshot)**: Professional video conferencing camera control
+- **[webrtc](https://github.com/AlexxIT/WebRTC)**: WebRTC camera integration for real-time video streaming
+
+### Smart Home Control
+- **[ecoflow](https://github.com/lwsrbrts/hassio-ecoflow)**: Portable power station monitoring and control
+- **[ecoflow_cloud](https://github.com/tolwi/hassio-ecoflow-cloud)**: Cloud-based EcoFlow device management
+- **[keymaster](https://github.com/FutureTense/keymaster)**: Advanced lock management with access codes and scheduling
+- **[smartir](https://github.com/smartHomeHub/SmartIR)**: Infrared remote control for legacy devices
+
+### Utilities & Tools
+- **[browser_mod](https://github.com/thomasloven/hass-browser_mod)**: Browser-based automations and popups
+- **[lovelace_gen](https://github.com/thomasloven/hass-lovelace_gen)**: Dynamic Lovelace dashboard generation
+- **[mqtt_discoverystream](https://github.com/koying/mqtt_discoverystream_ha)**: MQTT device discovery and management
+- **[mqtt_vacuum_camera](https://github.com/sca075/mqtt_vacuum_camera)**: Robot vacuum camera integration
+- **[open_epaper_link](https://github.com/OpenEPaperLink/Home_Assistant_Integration)**: E-paper display integration
+- **[pirateweather](https://github.com/alexander0042/pirate-weather-hass)**: Alternative weather data provider
+- **[qr_generator](https://github.com/DeerMaximum/QR-Code-Generator)**: QR code generation for device setup
+- **[simpleicons](https://github.com/vigonotion/hass-simpleicons)**: Custom icon integration for enhanced UI
+- **[smartthinq_sensors](https://github.com/ollo69/ha-smartthinq-sensors)**: LG ThinQ sensor integration
+- **[spook](https://spook.boo/)**: Enhanced entity management and automation
+
+## Custom Lovelace Cards
+
+### Data Visualization
+- **[apexcharts-card](https://github.com/RomRider/apexcharts-card)**: Advanced charting and graphs for sensor data
+- **[bar-card](https://github.com/custom-cards/bar-card)**: Bar chart visualizations for comparative data
+- **[mini-graph-card](https://github.com/kalkih/mini-graph-card)**: Compact data graphs for quick monitoring
+- **[power-flow-card](https://github.com/ulic75/power-flow-card)**: Energy flow visualization for solar systems
+- **[weather-card](https://github.com/bramkragten/weather-card)**: Comprehensive weather display and forecasting
+
+### Home Automation
+- **[button-card](https://github.com/custom-cards/button-card)**: Customizable button interface for device control
+- **[light-entity-card](https://github.com/ljmerza/light-entity-card)**: Specialized lighting controls with color picker
+- **[numberbox-card](https://github.com/junkfix/numberbox-card)**: Numeric input controls for devices
+- **[simple-thermostat](https://github.com/nervetattoo/simple-thermostat)**: Thermostat interface with scheduling
+- **[slider-button-card](https://github.com/mattieha/slider-button-card)**: Slider controls with button actions
+
+### Layout & Navigation
+- **[hass-swipe-navigation](https://github.com/zanna-37/hass-swipe-navigation)**: Swipe-based navigation for mobile interfaces
+- **[kiosk-mode](https://github.com/NemesisRE/kiosk-mode)**: Kiosk interface mode for wall-mounted tablets
+- **[lovelace-layout-card](https://github.com/thomasloven/lovelace-layout-card)**: Advanced layout management with conditional displays
+- **[stack-in-card](https://github.com/custom-cards/stack-in-card)**: Nested card layouts for complex interfaces
+- **[vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)**: Vertical stacking for organized layouts
+
+### Media & Entertainment
+- **[lovelace-valetudo-map-card](https://github.com/Hypfer/lovelace-valetudo-map-card)**: Valetudo robot vacuum mapping
+- **[lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)**: Robot vacuum mapping interface
+- **[mini-media-player](https://github.com/kalkih/mini-media-player)**: Compact media controls for audio/video
+- **[roku-card](https://github.com/custom-cards/roku-card)**: Roku device control and status
+- **[spotify-card](https://github.com/custom-cards/spotify-card)**: Spotify integration with playlist controls
+
+### Utilities
+- **[config-template-card](https://github.com/iantrich/config-template-card)**: Template-based card configuration
+- **[decluttering-card](https://github.com/custom-cards/decluttering-card)**: UI simplification and conditional displays
+- **[lovelace-auto-entities](https://github.com/thomasloven/lovelace-auto-entities)**: Dynamic entity lists based on device states
+- **[lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod)**: CSS styling and modifications for custom appearance
+- **[lovelace-digital-clock](https://github.com/wassy92x/lovelace-digital-clock)**: Digital clock display
+- **[lovelace-fold-entity-row](https://github.com/thomasloven/lovelace-fold-entity-row)**: Collapsible entity rows
+- **[lovelace-multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row)**: Multiple entities in single row
+- **[lovelace-slider-entity-row](https://github.com/thomasloven/lovelace-slider-entity-row)**: Slider controls in entity rows
+- **[lovelace-state-switch](https://github.com/thomasloven/lovelace-state-switch)**: State-based card switching
+- **[lovelace-template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row)**: Template-based entity rows
+
+## Custom Blueprints
+This configuration includes a comprehensive collection of custom blueprints created by the repository owner for various automation scenarios.
+
+### Blueprint Types Available
+- **Automation Blueprints**: 11 blueprints covering device-specific automations, lighting controls, battery management, and more
+- **Script Blueprints**: *(None created by repository owner)*
+- **Template Blueprints**: *(None created by repository owner)*
+
+### Key Blueprint Categories
+- **Device-Specific**: Emulated Roku, E-Paper Tags, Tuya Remotes
+- **Z-Wave Devices**: Inovelli switches and dimmers, Zooz scene controllers
+- **General Automation**: Motion lights, adaptive lighting, battery management
+
+For detailed documentation, usage examples, and one-click import buttons, see the [Blueprint Documentation](docs/blueprints/README.md).
+
+## Package Organization
+
+The configuration uses a package-based organization system for modular and maintainable code:
+
+### Feature-based Packages
+- **air_quality.yaml**: Air quality monitoring and alerts
+- **appliances.yaml**: Appliance control and monitoring
+- **assistant.yaml**: Voice assistant integration
+- **default_config.yaml**: Default configuration settings
+- **media_music.yaml**: Whole-home audio and entertainment
+- **notifications.yaml**: Notification management
+- **presence.yaml**: Presence detection and automation
+- **security.yaml**: Cross-room security and monitoring
+- **tablets.yaml**: Tablet interface management
+- **weather.yaml**: Weather monitoring and alerts
+- **weatherman.yaml**: Advanced weather forecasting
+
+### Room-based Packages
+- **downstairs_bathroom.yaml**: Bathroom automation
+- **downstairs_hallway.yaml**: Hallway lighting and motion control
+- **front_door.yaml**: Entry door security and access control
+- **garage.yaml**: Garage door control and monitoring
+- **guest_room.yaml**: Guest room automation
+- **gym.yaml**: Home gym automation
+- **hallway.yaml**: Main hallway controls
+- **hallway_bathroom.yaml**: Bathroom-specific features
+- **kitchen/**: Kitchen automation and appliance control
+- **living_room/**: Entertainment and living space management
+- **master_bathroom.yaml**: Master bathroom automation
+- **master_bedroom.yaml**: Master bedroom comfort and security
+- **office.yaml**: Office automation and productivity features
+- **server_rack.yaml**: Server infrastructure monitoring
+- **stairway.yaml**: Stairway lighting and safety features
+
+## Dashboard Structure
+
+Single responsive Lovelace dashboard (`dashboards/home.yaml`) that adapts to different screen sizes:
+
+- **Large screens (10"+ tablets)**: Two-column layout with left navigation
+- **Medium screens**: Top navigation bar with responsive grid
+- **Small screens (phones)**: Single-column layout with stacked cards
+
+Custom cards provide specialized interfaces for different device types and automation scenarios. The dashboard includes sections for:
+- Appliances and utilities
+- Climate and environment
+- Home overview and status
+- Lighting controls
+- Media and entertainment
+- Robot vacuums and cleaning
+- Security and monitoring
+
+### Screenshots
 
 <p align="center">
     <img alt="Home" src="./docs/img/1.png" width="200"/>
