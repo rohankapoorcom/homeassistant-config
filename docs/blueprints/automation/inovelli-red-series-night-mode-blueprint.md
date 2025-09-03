@@ -3,6 +3,10 @@
 ## Overview
 A blueprint for creating night mode automations for Inovelli Red Series switches. This blueprint enables automatic dimming and color temperature adjustments during night hours.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-red-series-night-mode.yaml)
+
 ## Blueprint Information
 - **Name**: Inovelli Red Series Night Mode
 - **Domain**: automation
@@ -52,4 +56,4 @@ This blueprint creates an automation that:
 - Silent error handling for maximum exceeded scenarios
 
 ---
-*This documentation is part of the [Inovelli Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*

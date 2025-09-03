@@ -3,6 +3,10 @@
 ## Overview
 A comprehensive blueprint for creating automations for the Zooz ZEN32 Scene Controller. This blueprint supports all button press combinations and scene configurations.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controls.yaml)
+
 ## Blueprint Information
 - **Name**: Zooz ZEN32 Scene Controls
 - **Domain**: automation
@@ -99,4 +103,4 @@ This blueprint creates an automation that:
 - Silent error handling for maximum exceeded scenarios
 
 ---
-*This documentation is part of the [Zooz Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*

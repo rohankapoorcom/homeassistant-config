@@ -111,35 +111,19 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 - **[lovelace-template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row)**: Template-based entity rows
 
 ## Custom Blueprints
+This configuration includes a comprehensive collection of custom blueprints created by the repository owner for various automation scenarios.
 
-Comprehensive list of all custom blueprints created by the repository owner:
+### Blueprint Types Available
+- **Automation Blueprints**: 11 blueprints covering device-specific automations, lighting controls, battery management, and more
+- **Script Blueprints**: *(None created by repository owner)*
+- **Template Blueprints**: *(None created by repository owner)*
 
-### Device-Specific Automations
-- **[emulated-roku](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/emulated-roku.yaml)**: Emulated Roku device automation
-- **[solum-m3-epaper-tag-buttons](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/solum-m3-epaper-tag-buttons.yaml)**: Solum M3 e-paper tag button controls
-- **[tuya-ts0044-4-button-remote](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/tuya-ts0044-4-button-remote.yaml)**: Tuya 4-button remote control automation
+### Key Blueprint Categories
+- **Device-Specific**: Emulated Roku, E-Paper Tags, Tuya Remotes
+- **Z-Wave Devices**: Inovelli switches and dimmers, Zooz scene controllers
+- **General Automation**: Motion lights, adaptive lighting, battery management
 
-#### Inovelli Device Automations
-- **[inovelli-lzw30-black-series-lock-notifications](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-black-series-lock-notifications.yaml)**: Lock notification automation
-- **[inovelli-lzw30-red-series-switch](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw30-red-series-switch.yaml)**: Red series switch automation
-- **[inovelli-lzw31-red-series-switch](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw31-red-series-switch.yaml)**: LZW31 red series switch automation
-- **[inovelli-lzw31-sn-red-series-lock-notifications](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-lzw31-sn-red-series-lock-notifications.yaml)**: Lock notifications for LZW31
-- **[inovelli-red-series-night-mode](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-red-series-night-mode.yaml)**: Night mode automation for red series devices
-- **[inovelli-vzm31-sn-blue-series-lock-notifications](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzm31-sn-blue-series-lock-notifications.yaml)**: Blue series lock notifications
-- **[inovelli-vzm31-sn-blue-series-switch](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml)**: Blue series switch automation
-- **[inovelli-vzw31-sn-red-series-lock-notifications](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-lock-notifications.yaml)**: VZW31 lock notifications
-- **[inovelli-vzw31-sn-red-series-switch](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml)**: VZW31 red series switch automation
-
-#### Zooz Device Automations
-- **[zooz-zen32-scene-controller-status-lights](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml)**: Scene controller status light automation
-- **[zooz-zen32-scene-controls](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controls.yaml)**: Scene controller automation
-
-### General Automation
-- **[adaptive-lighting-sleep-mode](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/adaptive-lighting-sleep-mode.yaml)**: Adaptive lighting sleep mode automation
-- **[lock-light-controls](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/lock-light-controls.yaml)**: Lock and light control automation
-- **[low-battery-level-detection-notification](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/low-battery-level-detection-notification-for-all-battery-sensors.yaml)**: Battery level monitoring and notifications
-- **[motion_light](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml)**: Motion-activated lighting automation
-- **[tablet-battery-charging](https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/tablet-battery-charging.yaml)**: Tablet battery charging automation
+For detailed documentation, usage examples, and one-click import buttons, see the [Blueprint Documentation](docs/blueprints/README.md).
 
 ## Package Organization
 

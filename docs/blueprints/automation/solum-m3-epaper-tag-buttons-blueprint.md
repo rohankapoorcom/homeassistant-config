@@ -3,6 +3,10 @@
 ## Overview
 A blueprint for creating automations triggered by Solum M3 e-paper tag button presses. This blueprint enables custom actions when the physical buttons on e-paper tags are pressed.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/solum-m3-epaper-tag-buttons.yaml)
+
 ## Blueprint Information
 - **Name**: Solum M3 E-Paper Tag Buttons
 - **Domain**: automation
@@ -59,4 +63,4 @@ This blueprint creates an automation that:
 - Silent error handling for maximum exceeded scenarios
 
 ---
-*This documentation is part of the [Device-Specific Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*

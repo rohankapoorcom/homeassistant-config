@@ -3,6 +3,10 @@
 ## Overview
 A blueprint for mapping lights on the Zooz ZEN32 Scene Controller buttons to Home Assistant lights. This blueprint synchronizes the status lights on the ZEN32 controller with the state of Home Assistant light entities.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/zooz-zen32-scene-controller-status-lights.yaml)
+
 ## Blueprint Information
 - **Name**: Zooz ZEN32 Scene Controller Status Lights
 - **Domain**: automation
@@ -55,4 +59,4 @@ This blueprint creates an automation that:
 - Silent error handling for maximum exceeded scenarios
 
 ---
-*This documentation is part of the [Zooz Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*

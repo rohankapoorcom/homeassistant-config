@@ -72,22 +72,29 @@
        - Include links for all custom integrations to their homepages or GitHub repositories
        - Include links for all custom Lovelace cards to their homepages or GitHub repositories
        - Include direct links to custom blueprints within the repository
+       - Create "Import Blueprint" buttons using My Home Assistant link generator at https://my.home-assistant.io/create-link/?redirect=blueprint_import
+       - For each blueprint, generate an import link by providing the blueprint URL and copying the resulting markdown button
+       - Include the import button prominently in each blueprint's documentation
        - Search HACS default integration list at https://raw.githubusercontent.com/hacs/default/refs/heads/master/integration for custom integration source repositories
        - Search HACS default plugin list at https://raw.githubusercontent.com/hacs/default/refs/heads/master/plugin for custom Lovelace card source repositories
        - For components not found in HACS default lists, link to the repository owner's custom_components or www/community directories
        - Store each blueprint's documentation in a separate file for better organization and maintainability
        - Use descriptive filenames for blueprint documentation files (e.g., "emulated-roku-blueprint.md", "inovelli-lzw30-red-series-switch-blueprint.md")
        - Create an index file that links to all individual blueprint documentation files
-       - Organize blueprint documentation files in a logical directory structure (e.g., by device manufacturer or category)
+       - Organize blueprint documentation files by blueprint type (automation, script, template) rather than by device categories
     
     6. **Blueprint Documentation Organization**:
        - Create individual documentation files for each blueprint
        - Use consistent naming convention: `{blueprint-name}-blueprint.md`
-       - Organize files in subdirectories by category (e.g., `device-specific/`, `inovelli/`, `zooz/`, `general/`)
+       - Organize files in subdirectories by blueprint type (e.g., `automation/`, `script/`, `template/`)
        - Include a main index file (`README.md`) that provides navigation to all blueprint documentation
-       - Create category-specific index files for better organization
+       - Create type-specific index files for better organization
        - Include cross-references between related blueprints
        - Maintain a comprehensive summary table in the main index
+       - Within each type directory, organize blueprints alphabetically or by functionality
+       - Include device-specific information in the individual blueprint documentation rather than in directory structure
+       - Include "Import Blueprint" button prominently in each blueprint's documentation
+       - Generate import buttons using My Home Assistant link generator for easy blueprint installation
     
     7. **Project Overview**:
        - Document the overall architecture and structure
@@ -153,6 +160,10 @@
     ## Overview
     Brief description of what this blueprint does and its purpose in the home automation system.
     
+    ## Import Blueprint
+    
+    [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/{blueprint-name}.yaml)
+    
     ## Blueprint Information
     - **Name**: {Blueprint Name}
     - **Domain**: automation/script/template
@@ -194,33 +205,35 @@
   </blueprint_template>
   
   <blueprint_index_template>
-    # {Category Name} Blueprint Documentation
+    # {Blueprint Type} Blueprint Documentation
     
-    This directory contains documentation for {category description} blueprints created by the repository owner.
+    This directory contains documentation for {blueprint type} blueprints created by the repository owner.
     
-    ## Blueprints in this Category
-    
-    ### {Blueprint Name}
-    - **File**: [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md)
-    - **Description**: Brief description of the blueprint
-    - **Key Features**: Main functionality highlights
+    ## Blueprints in this Type
     
     ### {Blueprint Name}
     - **File**: [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md)
     - **Description**: Brief description of the blueprint
     - **Key Features**: Main functionality highlights
+    - **Device Support**: Supported devices or integrations
+    
+    ### {Blueprint Name}
+    - **File**: [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md)
+    - **Description**: Brief description of the blueprint
+    - **Key Features**: Main functionality highlights
+    - **Device Support**: Supported devices or integrations
     
     ## Quick Reference
     
-    | Blueprint | File | Domain | Key Features |
-    |-----------|------|--------|--------------|
-    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 |
-    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 |
+    | Blueprint | File | Domain | Key Features | Device Support |
+    |-----------|------|--------|--------------|----------------|
+    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 | Device 1, Device 2 |
+    | {Blueprint Name} | [{blueprint-name}-blueprint.md]({blueprint-name}-blueprint.md) | automation | Feature 1, Feature 2 | Device 1, Device 2 |
     
     ## Related Documentation
     
-    - [Main Blueprint Index](../README.md): Overview of all blueprint categories
-    - [Other Category](../other-category/README.md): Related blueprint categories
+    - [Main Blueprint Index](../README.md): Overview of all blueprint types
+    - [Other Type](../other-type/README.md): Related blueprint types
     
     ---
     *This index is part of the [Blueprint Documentation Index](../README.md)*
@@ -291,34 +304,19 @@
     - **lovelace-card-mod**: CSS styling and modifications
     
     ## Custom Blueprints
-    Comprehensive list of all custom blueprints created by the repository owner:
+    This configuration includes a comprehensive collection of custom blueprints created by the repository owner for various automation scenarios.
     
-    ### Device-Specific Automations
-    - **emulated-roku**: Emulated Roku device automation
-    - **solum-m3-epaper-tag-buttons**: Solum M3 e-paper tag button controls
-    - **tuya-ts0044-4-button-remote**: Tuya 4-button remote control automation
-
-    #### Inovelli Device Automations
-    - **inovelli-lzw30-black-series-lock-notifications**: Lock notification automation
-    - **inovelli-lzw30-red-series-switch**: Red series switch automation
-    - **inovelli-lzw31-red-series-switch**: LZW31 red series switch automation
-    - **inovelli-lzw31-sn-red-series-lock-notifications**: Lock notifications for LZW31
-    - **inovelli-red-series-night-mode**: Night mode automation for red series devices
-    - **inovelli-vzm31-sn-blue-series-lock-notifications**: Blue series lock notifications
-    - **inovelli-vzm31-sn-blue-series-switch**: Blue series switch automation
-    - **inovelli-vzw31-sn-red-series-lock-notifications**: VZW31 lock notifications
-    - **inovelli-vzw31-sn-red-series-switch**: VZW31 red series switch automation
+    ### Blueprint Types Available
+    - **Automation Blueprints**: 11 blueprints covering device-specific automations, lighting controls, battery management, and more
+    - **Script Blueprints**: *(None created by repository owner)*
+    - **Template Blueprints**: *(None created by repository owner)*
     
-    #### Zooz Device Automations
-    - **zooz-zen32-scene-controller-status-lights**: Scene controller status light automation
-    - **zooz-zen32-scene-controls**: Scene controller automation
+    ### Key Blueprint Categories
+    - **Device-Specific**: Emulated Roku, E-Paper Tags, Tuya Remotes
+    - **Z-Wave Devices**: Inovelli switches and dimmers, Zooz scene controllers
+    - **General Automation**: Motion lights, adaptive lighting, battery management
     
-    ### General Automation
-    - **adaptive-lighting-sleep-mode**: Adaptive lighting sleep mode automation
-    - **lock-light-controls**: Lock and light control automation
-    - **low-battery-level-detection-notification**: Battery level monitoring and notifications
-    - **motion_light**: Motion-activated lighting automation
-    - **tablet-battery-charging**: Tablet battery charging automation
+    For detailed documentation, usage examples, and one-click import buttons, see the [Blueprint Documentation](docs/blueprints/README.md).
     
     ## Package Organization
     Description of how packages are organized:

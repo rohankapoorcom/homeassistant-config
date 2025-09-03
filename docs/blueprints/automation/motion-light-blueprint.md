@@ -3,6 +3,10 @@
 ## Overview
 A customizable blueprint for creating motion-activated lighting automations. This blueprint turns on lights when motion is detected and automatically turns them off after a specified delay when no motion is detected.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/motion_light.yaml)
+
 ## Blueprint Information
 - **Name**: Motion-activated Light
 - **Domain**: automation
@@ -49,4 +53,4 @@ This blueprint creates an automation that:
 - Configurable delay time for motion detection
 
 ---
-*This documentation is part of the [General Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*

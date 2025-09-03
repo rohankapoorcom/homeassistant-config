@@ -4,37 +4,33 @@ This directory contains comprehensive documentation for all blueprints created b
 
 ## Overview
 
-The blueprints in this repository are organized into several categories based on their functionality and target devices. Each blueprint includes detailed documentation with input parameters, usage examples, and dependencies.
+The blueprints in this repository are organized by blueprint type (Automation, Script, Template) based on their domain and functionality. Each blueprint includes detailed documentation with input parameters, usage examples, and dependencies.
 
-## Blueprint Categories
+## Blueprint Types
 
-### [Device-Specific Automations](device-specific/README.md)
-Blueprints designed for specific device types and protocols:
-- **Emulated Roku**: Control automations via emulated Roku device keypresses
-- **Solum M3 E-Paper Tag Buttons**: Automations triggered by e-paper tag button presses
-- **Tuya TS0044 4-Button Remote**: Control automations via Tuya remote buttons
-
-### [Inovelli Device Automations](inovelli/README.md)
-Comprehensive blueprints for Inovelli Z-Wave switches and dimmers:
-- **Lock Notifications**: Various Inovelli lock notification blueprints
-- **Switch Controls**: Complete button mapping for all Inovelli switch models
-- **Night Mode**: Automatic lighting adjustments for Inovelli Red Series devices
-
-### [Zooz Device Automations](zooz/README.md)
-Blueprints for Zooz Z-Wave devices:
-- **ZEN32 Scene Controller Status Lights**: Synchronize status lights with Home Assistant entities
-- **ZEN32 Scene Controls**: Complete scene control mapping for the ZEN32 controller
-
-### [General Automations](general/README.md)
-General-purpose automation blueprints:
+### [Automation Blueprints](automation/README.md)
+Automation blueprints for creating Home Assistant automations:
 - **Adaptive Lighting Sleep Mode**: Time-based adaptive lighting control
+- **Emulated Roku**: Control automations via emulated Roku device keypresses
+- **Inovelli Device Automations**: Lock notifications, switch controls, night mode for Inovelli devices
 - **Motion Light**: Motion-activated lighting with automatic shutoff
+- **Solum M3 E-Paper Tag Buttons**: Automations triggered by e-paper tag button presses
 - **Tablet Battery Charging**: Intelligent battery management for tablets
+- **Tuya TS0044 4-Button Remote**: Control automations via Tuya remote buttons
+- **Zooz Device Automations**: Scene controller status lights and controls for Zooz devices
+
+### [Script Blueprints](script/README.md)
+Script blueprints for creating Home Assistant scripts:
+- *(None created by repository owner)*
+
+### [Template Blueprints](template/README.md)
+Template blueprints for creating Home Assistant templates:
+- *(None created by repository owner)*
 
 ## Blueprint Statistics
 
-- **Total Blueprints**: 19
-- **Automation Blueprints**: 19
+- **Total Blueprints**: 11
+- **Automation Blueprints**: 11
 - **Script Blueprints**: 0 (none created by repository owner)
 - **Template Blueprints**: 0 (none created by repository owner)
 

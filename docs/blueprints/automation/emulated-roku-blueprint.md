@@ -3,6 +3,10 @@
 ## Overview
 A customizable blueprint for creating automations triggered by emulated Roku device keypresses. This blueprint allows you to map Roku remote button presses to custom Home Assistant actions.
 
+## Import Blueprint
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/emulated-roku.yaml)
+
 ## Blueprint Information
 - **Name**: Emulated Roku
 - **Domain**: automation
@@ -75,4 +79,4 @@ This blueprint creates an automation that:
 - All 16 standard Roku remote buttons are supported
 
 ---
-*This documentation is part of the [Device-Specific Blueprint Index](README.md)*
+*This documentation is part of the [Automation Blueprint Index](README.md)*
