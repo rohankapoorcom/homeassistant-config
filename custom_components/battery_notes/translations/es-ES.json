@@ -36,11 +36,13 @@
                     "battery_type": "Tipo de batería",
                     "battery_quantity": "Cantidad de batería",
                     "battery_low_threshold": "Umbral bajo de batería",
-                    "battery_low_template": "Plantilla de batería baja"
+                    "battery_low_template": "Plantilla de batería baja",
+                    "filter_outliers": "Filtrar valores atípicos"
                 },
                 "data_description": {
                     "battery_low_threshold": "0 usará el umbral global por defecto",
-                    "battery_low_template": "Plantilla para determinar que una batería es baja, debe devolver verdadero si es baja\nSolo necesario para niveles de batería no estándar"
+                    "battery_low_template": "Plantilla para determinar que una batería es baja, debe devolver verdadero si es baja\nSolo necesario para niveles de batería no estándar",
+                    "filter_outliers": "Filtra las grandes caídas del nivel de batería, reduciendo los eventos que se disparan falsamente en los dispositivos que informan erróneamente de los niveles de forma ocasional."
                 }
             },
             "manual": {
@@ -65,17 +67,19 @@
                     "battery_type": "Tipo de batería",
                     "battery_quantity": "Cantidad de batería",
                     "battery_low_threshold": "Umbral bajo de batería",
-                    "battery_low_template": "Plantilla de batería baja"
+                    "battery_low_template": "Plantilla de batería baja",
+                    "filter_outliers": "Filtrar valores atípicos"
                 },
                 "data_description": {
                     "name": "Dejar en blanco utilizará el nombre del dispositivo de serie",
                     "battery_low_threshold": "0 usará el umbral global por defecto",
-                    "battery_low_template": "Plantilla para determinar que una batería es baja, debe devolver verdadero si es baja\nSolo necesario para niveles de batería no estándar"
+                    "battery_low_template": "Plantilla para determinar que una batería es baja, debe devolver verdadero si es baja\nSolo necesario para niveles de batería no estándar",
+                    "filter_outliers": "Filtra las grandes caídas del nivel de batería, reduciendo los eventos que se disparan falsamente en los dispositivos que informan erróneamente de los niveles de forma ocasional."
                 }
             }
         },
         "error": {
-            "orphaned_battery_note": "The associated device or entity no longer exists for this Battery Note.",
+            "orphaned_battery_note": "El dispositivo o entidad asociada ya no existe para esta Nota de batería",
             "unknown": "Se ha producido un error desconocido."
         }
     },
@@ -186,12 +190,12 @@
     },
     "issues": {
         "missing_device": {
-            "title": "Orphaned Battery Note",
+            "title": "Nota de batería huérfana",
             "fix_flow": {
                 "step": {
                     "confirm": {
-                        "title": "Orphaned Battery Note",
-                        "description": "The associated device or entity no longer exists for the Battery Note entry {name}, the Battery Note should be deleted.\nSelect **Submit** to delete this Battery Note."
+                        "title": "Nota de batería huérfana",
+                        "description": "El dispositivo o entidad asociada ya no existe para la Nota de batería {name}, la Nota de batería debería ser borrada. Selecciona **Enviar** para eliminar esta Nota de batería."
                     }
                 }
             }

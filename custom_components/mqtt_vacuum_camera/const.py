@@ -1,6 +1,7 @@
 """Constants for the mqtt_vacuum_camera integration.
-Version v2024.12.0"""
+Version 2025.2.2"""
 
+import logging
 from homeassistant.components.camera import DOMAIN as CAMERA_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.vacuum import DOMAIN as VACUUM_DOMAIN
@@ -39,6 +40,9 @@ CONF_ZOOM_LOCK_RATIO = "zoom_lock_ratio"
 CONF_TRIMS_SAVE = "save_trims"
 ICON = "mdi:camera"
 NAME = "MQTT Vacuum Camera"
+
+LOGGER = logging.getLogger(__package__)
+
 
 DEFAULT_IMAGE_SIZE = {
     "x": 5120,
@@ -96,6 +100,7 @@ DEFAULT_VALUES = {
     "vac_status_position": True,
     "get_svg_file": False,
     "save_trims": True,
+    "trims_data": {"trim_left": 0, "trim_up": 0, "trim_right": 0, "trim_down": 0},
     "enable_www_snapshots": False,
     "color_charger": [255, 128, 0],
     "color_move": [238, 247, 255],
@@ -157,6 +162,7 @@ KEYS_TO_UPDATE = [
     "offset_bottom",
     "offset_left",
     "offset_right",
+    "trims_data",
     "auto_zoom",
     "zoom_lock_ratio",
     "show_vac_status",
@@ -326,18 +332,6 @@ COLOR_BACKGROUND = "color_background"
 COLOR_ZONE_CLEAN = "color_zone_clean"
 COLOR_WALL = "color_wall"
 COLOR_TEXT = "color_text"
-
-"""Base Colours RGB array, not in use"""
-CONF_COLORS = [
-    COLOR_WALL,
-    COLOR_ZONE_CLEAN,
-    COLOR_ROBOT,
-    COLOR_BACKGROUND,
-    COLOR_MOVE,
-    COLOR_CHARGER,
-    COLOR_NO_GO,
-    COLOR_GO_TO,
-]
 
 "Rooms Colours RGB"
 COLOR_ROOM_0 = "color_room_0"

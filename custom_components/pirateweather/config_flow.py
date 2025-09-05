@@ -1,12 +1,19 @@
 """Config flow for Pirate Weather."""
 
+from __future__ import annotations
+
 import logging
 from datetime import timedelta
 
-import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant import config_entries
+from aiohttp import ClientError
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_LATITUDE,
@@ -17,13 +24,16 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
 )
 from homeassistant.core import callback
-from httpx import HTTPError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     ALL_CONDITIONS,
+    CONF_ENDPOINT,
     CONF_LANGUAGE,
+    CONF_MODELS,
     CONF_UNITS,
     CONFIG_FLOW_VERSION,
+    DEFAULT_ENDPOINT,
     DEFAULT_FORECAST_MODE,
     DEFAULT_LANGUAGE,
     DEFAULT_NAME,
@@ -44,18 +54,20 @@ CONF_FORECAST = "forecast"
 CONF_HOURLY_FORECAST = "hourly_forecast"
 
 
-class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class PirateWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for PirateWeather."""
 
     VERSION = CONFIG_FLOW_VERSION
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(
+        config_entry: ConfigEntry,
+    ) -> PirateWeatherOptionsFlow:
         """Get the options flow for this handler."""
-        return PirateWeatherOptionsFlow(config_entry)
+        return PirateWeatherOptionsFlow()
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input=None) -> ConfigFlowResult:
         """Handle a flow initialized by the user."""
         errors = {}
 
@@ -76,6 +88,7 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(
                     LANGUAGES
                 ),
+                vol.Optional(CONF_MODELS, default=""): str,
                 vol.Optional(CONF_FORECAST, default=""): str,
                 vol.Optional(CONF_HOURLY_FORECAST, default=""): str,
                 vol.Optional(CONF_MONITORED_CONDITIONS, default=[]): cv.multi_select(
@@ -85,6 +98,7 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_UNITS, default=DEFAULT_UNITS): vol.In(
                     ["si", "us", "ca", "uk"]
                 ),
+                vol.Optional(CONF_ENDPOINT, default=DEFAULT_ENDPOINT): str,
             }
         )
 
@@ -94,6 +108,7 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             forecastMode = "daily"
             forecastPlatform = user_input[PW_PLATFORM]
             entityNamee = user_input[CONF_NAME]
+            endpoint = user_input[CONF_ENDPOINT]
 
             # Convert scan interval to timedelta
             if isinstance(user_input[CONF_SCAN_INTERVAL], str):
@@ -117,7 +132,7 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 api_status = await _is_pw_api_online(
-                    self.hass, user_input[CONF_API_KEY], latitude, longitude
+                    self.hass, user_input[CONF_API_KEY], latitude, longitude, endpoint
                 )
 
                 if api_status == 403:
@@ -128,7 +143,7 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "Invalid API Key, Ensure that you've subscribed to API at https://pirate-weather.apiable.io/"
                     )
 
-            except HTTPError:
+            except ClientError:
                 _LOGGER.warning(
                     "Pirate Weather Setup Error: API HTTP Error: %s", api_status
                 )
@@ -175,17 +190,15 @@ class PirateWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             config[PW_ROUND] = "No"
         if CONF_SCAN_INTERVAL not in config:
             config[CONF_SCAN_INTERVAL] = DEFAULT_SCAN_INTERVAL
+        if CONF_ENDPOINT not in config:
+            config[CONF_ENDPOINT] = DEFAULT_ENDPOINT
         return await self.async_step_user(config)
 
 
-class PirateWeatherOptionsFlow(config_entries.OptionsFlow):
+class PirateWeatherOptionsFlow(OptionsFlow):
     """Handle options."""
 
-    def __init__(self, config_entry):
-        """Initialize options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(self, user_input: dict | None = None) -> ConfigFlowResult:
         """Manage the options."""
         if user_input is not None:
             # if self.config_entry.options:
@@ -199,112 +212,124 @@ class PirateWeatherOptionsFlow(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Optional(
+            data_schema=self._get_options_schema(),
+        )
+
+    def _get_options_schema(self):
+        return vol.Schema(
+            {
+                vol.Optional(
+                    CONF_NAME,
+                    default=self.config_entry.options.get(
                         CONF_NAME,
-                        default=self.config_entry.options.get(
-                            CONF_NAME,
-                            self.config_entry.data.get(CONF_NAME, DEFAULT_NAME),
-                        ),
-                    ): str,
-                    vol.Optional(
+                        self.config_entry.data.get(CONF_NAME, DEFAULT_NAME),
+                    ),
+                ): str,
+                vol.Optional(
+                    CONF_LATITUDE,
+                    default=self.config_entry.options.get(
                         CONF_LATITUDE,
-                        default=self.config_entry.options.get(
-                            CONF_LATITUDE,
-                            self.config_entry.data.get(
-                                CONF_LATITUDE, self.hass.config.latitude
-                            ),
+                        self.config_entry.data.get(
+                            CONF_LATITUDE, self.hass.config.latitude
                         ),
-                    ): cv.latitude,
-                    vol.Optional(
+                    ),
+                ): cv.latitude,
+                vol.Optional(
+                    CONF_LONGITUDE,
+                    default=self.config_entry.options.get(
                         CONF_LONGITUDE,
-                        default=self.config_entry.options.get(
-                            CONF_LONGITUDE,
-                            self.config_entry.data.get(
-                                CONF_LONGITUDE, self.hass.config.longitude
-                            ),
+                        self.config_entry.data.get(
+                            CONF_LONGITUDE, self.hass.config.longitude
                         ),
-                    ): cv.longitude,
-                    vol.Optional(
+                    ),
+                ): cv.longitude,
+                vol.Optional(
+                    CONF_SCAN_INTERVAL,
+                    default=self.config_entry.options.get(
                         CONF_SCAN_INTERVAL,
-                        default=self.config_entry.options.get(
-                            CONF_SCAN_INTERVAL,
-                            self.config_entry.data.get(
-                                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                            ),
+                        self.config_entry.data.get(
+                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                         ),
-                    ): int,
-                    vol.Required(
+                    ),
+                ): int,
+                vol.Required(
+                    PW_PLATFORM,
+                    default=self.config_entry.options.get(
                         PW_PLATFORM,
-                        default=self.config_entry.options.get(
-                            PW_PLATFORM,
-                            self.config_entry.data.get(PW_PLATFORM, []),
-                        ),
-                    ): cv.multi_select(PW_PLATFORMS),
-                    vol.Optional(
+                        self.config_entry.data.get(PW_PLATFORM, []),
+                    ),
+                ): cv.multi_select(PW_PLATFORMS),
+                vol.Optional(
+                    CONF_LANGUAGE,
+                    default=self.config_entry.options.get(
                         CONF_LANGUAGE,
-                        default=self.config_entry.options.get(
-                            CONF_LANGUAGE,
-                            self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE),
+                        self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE),
+                    ),
+                ): vol.In(LANGUAGES),
+                vol.Optional(
+                    CONF_MODELS,
+                    default=str(
+                        self.config_entry.options.get(
+                            CONF_MODELS,
+                            self.config_entry.data.get(CONF_MODELS, ""),
                         ),
-                    ): vol.In(LANGUAGES),
-                    vol.Optional(
-                        CONF_FORECAST,
-                        default=str(
-                            self.config_entry.options.get(
-                                CONF_FORECAST,
-                                self.config_entry.data.get(CONF_FORECAST, ""),
-                            ),
+                    ),
+                ): str,
+                vol.Optional(
+                    CONF_FORECAST,
+                    default=str(
+                        self.config_entry.options.get(
+                            CONF_FORECAST,
+                            self.config_entry.data.get(CONF_FORECAST, ""),
                         ),
-                    ): str,
-                    vol.Optional(
-                        CONF_HOURLY_FORECAST,
-                        default=str(
-                            self.config_entry.options.get(
-                                CONF_HOURLY_FORECAST,
-                                self.config_entry.data.get(CONF_HOURLY_FORECAST, ""),
-                            ),
+                    ),
+                ): str,
+                vol.Optional(
+                    CONF_HOURLY_FORECAST,
+                    default=str(
+                        self.config_entry.options.get(
+                            CONF_HOURLY_FORECAST,
+                            self.config_entry.data.get(CONF_HOURLY_FORECAST, ""),
                         ),
-                    ): str,
-                    vol.Optional(
+                    ),
+                ): str,
+                vol.Optional(
+                    CONF_MONITORED_CONDITIONS,
+                    default=self.config_entry.options.get(
                         CONF_MONITORED_CONDITIONS,
-                        default=self.config_entry.options.get(
-                            CONF_MONITORED_CONDITIONS,
-                            self.config_entry.data.get(CONF_MONITORED_CONDITIONS, []),
-                        ),
-                    ): cv.multi_select(ALL_CONDITIONS),
-                    vol.Optional(
+                        self.config_entry.data.get(CONF_MONITORED_CONDITIONS, []),
+                    ),
+                ): cv.multi_select(ALL_CONDITIONS),
+                vol.Optional(
+                    CONF_UNITS,
+                    default=self.config_entry.options.get(
                         CONF_UNITS,
-                        default=self.config_entry.options.get(
-                            CONF_UNITS,
-                            self.config_entry.data.get(CONF_UNITS, DEFAULT_UNITS),
-                        ),
-                    ): vol.In(["si", "us", "ca", "uk"]),
-                    vol.Optional(
+                        self.config_entry.data.get(CONF_UNITS, DEFAULT_UNITS),
+                    ),
+                ): vol.In(["si", "us", "ca", "uk"]),
+                vol.Optional(
+                    PW_ROUND,
+                    default=self.config_entry.options.get(
                         PW_ROUND,
-                        default=self.config_entry.options.get(
-                            PW_ROUND,
-                            self.config_entry.data.get(PW_ROUND, "No"),
+                        self.config_entry.options.get(PW_ROUND, "No"),
+                    ),
+                ): vol.In(["Yes", "No"]),
+                vol.Optional(
+                    CONF_ENDPOINT,
+                    default=str(
+                        self.config_entry.options.get(
+                            CONF_ENDPOINT,
+                            self.config_entry.data.get(CONF_ENDPOINT, DEFAULT_ENDPOINT),
                         ),
-                    ): vol.In(["Yes", "No"]),
-                }
-            ),
+                    ),
+                ): str,
+            }
         )
 
 
-async def _is_pw_api_online(hass, api_key, lat, lon):
-    forecastString = (
-        "https://api.pirateweather.net/forecast/"
-        + api_key
-        + "/"
-        + str(lat)
-        + ","
-        + str(lon)
-    )
+async def _is_pw_api_online(hass, api_key, lat, lon, endpoint):
+    forecastString = endpoint + "/forecast/" + api_key + "/" + str(lat) + "," + str(lon)
 
-    async with (
-        aiohttp.ClientSession(raise_for_status=False) as session,
-        session.get(forecastString) as resp,
-    ):
+    session = async_get_clientsession(hass)
+    async with session.get(forecastString) as resp:
         return resp.status

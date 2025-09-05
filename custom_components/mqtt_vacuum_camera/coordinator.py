@@ -1,6 +1,6 @@
 """
 MQTT Vacuum Camera Coordinator.
-Version: v2024.12.0
+Version: v2025.2.0
 """
 
 import asyncio
@@ -14,15 +14,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from custom_components.mqtt_vacuum_camera.utils.camera.camera_shared import (
-    CameraShared,
-    CameraSharedManager,
-)
+from valetudo_map_parser.config.shared import CameraShared, CameraSharedManager
 
 from .common import get_camera_device_info
 from .const import DEFAULT_NAME, SENSOR_NO_DATA
-from .valetudo.MQTT.connector import ValetudoConnector
+from .utils.MQTT.connector import ValetudoConnector
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -150,12 +146,14 @@ class MQTTVacuumCoordinator(DataUpdateCoordinator):
                 vacuum_state = await self.connector.get_vacuum_status()
                 vacuum_room = self.shared.current_room
                 last_run_stats = sensor_data.get("last_run_stats", {})
-                last_loaded_map = sensor_data.get("last_loaded_map", {})
+                last_loaded_map = sensor_data.get(
+                    "last_loaded_map", {"name": "Default"}
+                )
 
                 if not vacuum_room:
                     vacuum_room = {"in_room": "Unsupported"}
-                if last_loaded_map == {}:
-                    last_loaded_map = {"name", "Default"}
+                if not last_loaded_map:
+                    last_loaded_map = {"name": "Default"}
 
                 formatted_data = {
                     "mainBrush": sensor_data.get("mainBrush", 0),

@@ -1,6 +1,6 @@
 import reactivex.operators as ops
 import voluptuous as vol
-from homeassistant.components.dhcp import DhcpServiceInfo
+from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_HOST, CONF_MAC
 
@@ -47,7 +47,7 @@ class EcoflowConfigFlow(ConfigFlow, domain=DOMAIN):
             self.host = user_input.get(CONF_HOST)
 
         errors = {}
-        if self.host and user_input is not None:
+        if (self.host and user_input is not None):
             try:
                 info = await self._get_serial_main()
             except TimeoutError:

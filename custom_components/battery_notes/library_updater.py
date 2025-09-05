@@ -1,10 +1,11 @@
-"""Sample API Client."""
+"""Library updater."""
 
 from __future__ import annotations
 
 import json
 import logging
 import os
+import shutil
 import socket
 from datetime import datetime, timedelta
 from typing import Any
@@ -15,20 +16,12 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_utc_time_change
+from homeassistant.helpers.storage import STORAGE_DIR
 
-from .const import (
-    CONF_ENABLE_AUTODISCOVERY,
-    CONF_LIBRARY_URL,
-    DATA_LIBRARY_LAST_UPDATE,
-    DEFAULT_LIBRARY_URL,
-    DOMAIN,
-    DOMAIN_CONFIG,
-)
+from .coordinator import MY_KEY, BatteryNotesDomainConfig
 from .discovery import DiscoveryManager
 
 _LOGGER = logging.getLogger(__name__)
-
-BUILT_IN_DATA_DIRECTORY = os.path.join(os.path.dirname(__file__), "data")
 
 class LibraryUpdaterClientError(Exception):
     """Exception to indicate a general API error."""
@@ -45,13 +38,14 @@ class LibraryUpdater:
         """Initialize the library updater."""
         self.hass = hass
 
-        if DOMAIN_CONFIG in self.hass.data[DOMAIN]:
-            domain_config: dict = self.hass.data[DOMAIN][DOMAIN_CONFIG]
-            url = domain_config.get(CONF_LIBRARY_URL, DEFAULT_LIBRARY_URL)
-        else:
-            url = DEFAULT_LIBRARY_URL
+        domain_config = self.hass.data.get(MY_KEY)
+        if not domain_config:
+            domain_config = BatteryNotesDomainConfig()
 
-        self._client = LibraryUpdaterClient(library_url=url, session=async_get_clientsession(hass))
+        library_url = domain_config.library_url
+        schema_url = domain_config.schema_url
+
+        self._client = LibraryUpdaterClient(library_url=library_url, schema_url=schema_url, session=async_get_clientsession(hass))
 
         # Fire the library check every 24 hours from just before now
         refresh_time = datetime.now() - timedelta(hours=0, minutes=1)
@@ -62,28 +56,26 @@ class LibraryUpdater:
     @callback
     async def timer_update(self, now: datetime):
         """Need to update the library."""
-        if await self.time_to_update_library() is False:
+        if await self.time_to_update_library(23) is False:
             return
 
-        await self.get_library_updates(now)
+        await self.get_library_updates()
 
-        if DOMAIN_CONFIG not in self.hass.data[DOMAIN]:
-            return
+        domain_config = self.hass.data[MY_KEY]
 
-        domain_config: dict = self.hass.data[DOMAIN][DOMAIN_CONFIG]
-
-        if domain_config.get(CONF_ENABLE_AUTODISCOVERY):
+        if domain_config and domain_config.enable_autodiscovery:
             discovery_manager = DiscoveryManager(self.hass, domain_config)
             await discovery_manager.start_discovery()
         else:
             _LOGGER.debug("Auto discovery disabled")
 
     @callback
-    async def get_library_updates(self, now: datetime):
+    async def get_library_updates(self, startup: bool = False) -> None:
         # pylint: disable=unused-argument
-        """Make a call to GitHub to get the latest library.json."""
+        """Make a call to get the latest library.json."""
 
         def _update_library_json(library_file: str, content: str) -> None:
+            os.makedirs(os.path.dirname(library_file), exist_ok=True)
             with open(library_file, mode="w", encoding="utf-8") as file:
                 file.write(content)
                 file.close()
@@ -94,37 +86,53 @@ class LibraryUpdater:
             content = await self._client.async_get_data()
 
             if self.validate_json(content):
-                json_path = os.path.join(
-                    BUILT_IN_DATA_DIRECTORY,
-                    "library.json",
-                )
+                json_path = self.hass.config.path(STORAGE_DIR, "battery_notes", "library.json")
 
                 await self.hass.async_add_executor_job(
                     _update_library_json, json_path, content
                 )
 
-                self.hass.data[DOMAIN][DATA_LIBRARY_LAST_UPDATE] = datetime.now()
+                domain_config = self.hass.data.get(MY_KEY)
+                if domain_config:
+                    self.hass.data[MY_KEY].library_last_update = datetime.now()
 
                 _LOGGER.debug("Updated library")
             else:
                 _LOGGER.error("Library file is invalid, not updated")
 
         except LibraryUpdaterClientError:
-            _LOGGER.warning(
-                "Unable to update library, will retry later."
-            )
+            if not startup:
+                _LOGGER.warning(
+                    "Unable to update library, will retry later."
+                )
 
-    async def time_to_update_library(self) -> bool:
+    async def copy_schema(self):
+        """Copy schema file to storage to be relative to downloaded library."""
+
+        install_schema_path = os.path.join(os.path.dirname(__file__), "schema.json")
+        storage_schema_path = self.hass.config.path(STORAGE_DIR, "battery_notes", "schema.json")
+        os.makedirs(os.path.dirname(storage_schema_path), exist_ok=True)
+        await self.hass.async_add_executor_job(
+            shutil.copyfile,
+            install_schema_path,
+            storage_schema_path,
+        )
+
+    async def time_to_update_library(self, hours: int) -> bool:
         """Check when last updated and if OK to do a new library update."""
         try:
-            if DATA_LIBRARY_LAST_UPDATE in self.hass.data[DOMAIN]:
+            domain_config = self.hass.data.get(MY_KEY)
+            if not domain_config:
+                return True
+
+            if library_last_update := self.hass.data[MY_KEY].library_last_update:
                 time_since_last_update = (
-                    datetime.now() - self.hass.data[DOMAIN][DATA_LIBRARY_LAST_UPDATE]
+                    datetime.now() - library_last_update
                 )
 
                 time_difference_in_hours = time_since_last_update / timedelta(hours=1)
 
-                if time_difference_in_hours < 23:
+                if time_difference_in_hours < hours:
                     _LOGGER.debug("Skipping library update, too recent")
                     return False
 
@@ -154,10 +162,12 @@ class LibraryUpdaterClient:
     def __init__(
         self,
         library_url: str,
+        schema_url: str,
         session: aiohttp.ClientSession,
     ) -> None:
         """Client to get latest library file from GitHub."""
         self._library_url = library_url
+        self._schema_url = schema_url
         self._session = session
 
     async def async_get_data(self) -> Any:

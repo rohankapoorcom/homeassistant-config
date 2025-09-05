@@ -1,7 +1,14 @@
 """The Alarmo Integration."""
+
+# Max number of threads to start when checking user codes.
+MAX_WORKERS = 4
+# Number of rounds of hashing when computing user hashes.
+BCRYPT_NUM_ROUNDS = 10
+
 import logging
 import bcrypt
 import base64
+import concurrent.futures
 import re
 
 from homeassistant.core import (
@@ -116,6 +123,11 @@ async def async_remove_entry(hass, entry):
     del hass.data[const.DOMAIN]
 
 
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Handle migration of config entry."""
+    return True
+
+
 class AlarmoCoordinator(DataUpdateCoordinator):
     """Define an object to hold Alarmo device."""
 
@@ -134,7 +146,12 @@ class AlarmoCoordinator(DataUpdateCoordinator):
         )
         self.register_events()
 
-        super().__init__(hass, _LOGGER, name=const.DOMAIN)
+        super().__init__(
+            hass,
+            _LOGGER,
+            config_entry=entry,
+            name=const.DOMAIN
+        )
 
     @callback
     def setup_alarm_entities(self):
@@ -240,17 +257,48 @@ class AlarmoCoordinator(DataUpdateCoordinator):
 
         async_dispatcher_send(self.hass, "alarmo_sensors_updated")
 
-    def async_update_user_config(self, user_id: str = None, data: dict = {}):
+    def _validate_user_code(self, user_id: str, data: dict):
+        user_with_code = self.async_authenticate_user(data[ATTR_CODE])
+        if user_id:
+            if const.ATTR_OLD_CODE not in data:
+                _LOGGER.error("Not updating user: Code missing")
+                return False
+            if not self.async_authenticate_user(data[const.ATTR_OLD_CODE], user_id):
+                _LOGGER.error("Not updating user: Wrong code provided")
+                return False
+            if user_with_code and user_with_code[const.ATTR_USER_ID] != user_id:
+                _LOGGER.error("Not updating user: User with same code already exists")
+                return False
+        elif user_with_code:
+            _LOGGER.error("Not creating user: User with same code already exists")
+            return False
+        return True
 
+    def _validate_user_name(self, user_id: str, data: dict):
+        if not data[ATTR_NAME]:
+            _LOGGER.error("User name must not be empty")
+            return False
+        for user in self.store.async_get_users().values():
+            if data[ATTR_NAME] == user[ATTR_NAME] and user_id != user[const.ATTR_USER_ID]:
+                _LOGGER.error("User with same name already exists")
+                return False
+        return True
+
+    def async_update_user_config(self, user_id: str = None, data: dict = {}):
         if const.ATTR_REMOVE in data:
             self.store.async_delete_user(user_id)
-            return
+            return True
+
+        if not self._validate_user_name(user_id, data):
+            return False
+        if ATTR_CODE in data and not self._validate_user_code(user_id, data):
+            return False
 
         if ATTR_CODE in data and data[ATTR_CODE]:
             data[const.ATTR_CODE_FORMAT] = "number" if data[ATTR_CODE].isdigit() else "text"
             data[const.ATTR_CODE_LENGTH] = len(data[ATTR_CODE])
             hashed = bcrypt.hashpw(
-                data[ATTR_CODE].encode("utf-8"), bcrypt.gensalt(rounds=12)
+                data[ATTR_CODE].encode("utf-8"), bcrypt.gensalt(rounds=BCRYPT_NUM_ROUNDS)
             )
             hashed = base64.b64encode(hashed)
             data[ATTR_CODE] = hashed.decode()
@@ -259,27 +307,15 @@ class AlarmoCoordinator(DataUpdateCoordinator):
             self.store.async_create_user(data)
         else:
             if ATTR_CODE in data:
-                if const.ATTR_OLD_CODE not in data:
-                    return False
-                elif not self.async_authenticate_user(data[const.ATTR_OLD_CODE], user_id):
-                    return False
-                else:
-                    del data[const.ATTR_OLD_CODE]
-                    self.store.async_update_user(user_id, data)
-            else:
-                self.store.async_update_user(user_id, data)
+                del data[const.ATTR_OLD_CODE]
+            self.store.async_update_user(user_id, data)
 
     def async_authenticate_user(self, code: str, user_id: str = None):
-        if not user_id:
-            users = self.store.async_get_users()
-        else:
-            users = {
-                user_id: self.store.async_get_user(user_id)
-            }
 
-        for (user_id, user) in users.items():
+        def check_user_code(user, code):
+            """Returns the supplied user object if the code matches, None otherwise."""
             if not user[const.ATTR_ENABLED]:
-                continue
+                return
             elif not user[ATTR_CODE] and not code:
                 return user
             elif user[ATTR_CODE]:
@@ -287,7 +323,16 @@ class AlarmoCoordinator(DataUpdateCoordinator):
                 if bcrypt.checkpw(code.encode("utf-8"), hash):
                     return user
 
-        return
+        if user_id:
+            return check_user_code(self.store.async_get_user(user_id), code)
+
+        users = self.store.async_get_users()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            futures = [executor.submit(check_user_code, user, code) for user in users.values()]
+            for future in concurrent.futures.as_completed(futures):
+                if future.result():
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    return future.result()
 
     def async_update_automation_config(self, automation_id: str = None, data: dict = {}):
         if const.ATTR_REMOVE in data:
@@ -336,7 +381,10 @@ class AlarmoCoordinator(DataUpdateCoordinator):
                 _LOGGER.info("Received request for disarming")
                 alarm_entity.alarm_disarm(None, skip_code=True)
             else:
-                _LOGGER.info("Received request for arming with mode {}".format(arm_mode))
+                _LOGGER.info(
+                    "Received request for arming with mode %s", 
+                    arm_mode,
+                )
                 alarm_entity.async_handle_arm_request(arm_mode, skip_code=True)
 
         self._subscriptions.append(
@@ -381,7 +429,11 @@ class AlarmoCoordinator(DataUpdateCoordinator):
             # add sensor to group
             group = self.store.async_get_sensor_group(group_id)
             if not group:
-                _LOGGER.error("Failed to assign entity {} to group {}".format(entity_id, group_id))
+                _LOGGER.error(
+                    "Failed to assign entity %s to group %s",
+                    entity_id,
+                    group_id,
+                )
             elif entity_id not in group[ATTR_ENTITIES]:
                 self.store.async_update_sensor_group(group_id, {
                     ATTR_ENTITIES: group[ATTR_ENTITIES] + [entity_id]
@@ -437,11 +489,19 @@ def register_services(hass):
         users = coordinator.store.async_get_users()
         user = next((item for item in list(users.values()) if item[ATTR_NAME] == name), None)
         if user is None:
-            _LOGGER.warning("Failed to {} user, no match for name '{}'".format("enable" if enable else "disable", name))
+            _LOGGER.warning(
+                "Failed to %s user, no match for name '%s'",
+                "enable" if enable else "disable",
+                name,
+            )
             return
 
         coordinator.store.async_update_user(user[const.ATTR_USER_ID], {const.ATTR_ENABLED: enable})
-        _LOGGER.debug("User user '{}' was {}".format(name, "enabled" if enable else "disabled"))
+        _LOGGER.debug(
+            "User user '%s' was %s",
+            name,
+            "enabled" if enable else "disabled"
+        )
 
     async_register_admin_service(
         hass, const.DOMAIN, const.SERVICE_ENABLE_USER, async_srv_toggle_user, schema=const.SERVICE_TOGGLE_USER_SCHEMA

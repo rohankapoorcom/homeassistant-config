@@ -8,15 +8,9 @@ import os
 from typing import Any, Final, NamedTuple, cast
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.storage import STORAGE_DIR
 
-from .const import (
-    CONF_USER_LIBRARY,
-    DATA_LIBRARY,
-    DOMAIN,
-    DOMAIN_CONFIG,
-)
-
-BUILT_IN_DATA_DIRECTORY = os.path.join(os.path.dirname(__file__), "data")
+from .coordinator import MY_KEY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,30 +43,33 @@ class Library:  # pylint: disable=too-few-public-methods
                 return cast(dict[str, Any], json.load(file))
 
         # User Library
-        if (
-            DOMAIN_CONFIG in self.hass.data[DOMAIN]
-            and CONF_USER_LIBRARY in self.hass.data[DOMAIN][DOMAIN_CONFIG]
-        ):
-            user_library_filename = self.hass.data[DOMAIN][DOMAIN_CONFIG].get(
-                CONF_USER_LIBRARY
-            )
-            if user_library_filename != "":
-                json_user_path = os.path.join(
-                    BUILT_IN_DATA_DIRECTORY,
-                    user_library_filename,
+        domain_config = self.hass.data.get(MY_KEY)
+        if domain_config and domain_config.user_library != "":
+            json_user_path = self.hass.config.path(STORAGE_DIR, "battery_notes", domain_config.user_library)
+            _LOGGER.debug("Using user library file at %s", json_user_path)
+
+            try:
+                user_json_data = await self.hass.async_add_executor_job(
+                    _load_library_json, json_user_path
                 )
-                _LOGGER.debug("Using user library file at %s", json_user_path)
 
+                self._devices = user_json_data["devices"]
+                _LOGGER.debug(
+                    "Loaded %s user devices", len(user_json_data["devices"])
+                )
+
+            except FileNotFoundError:
+                # Try to move the user library to new location
                 try:
-                    user_json_data = await self.hass.async_add_executor_job(
-                        _load_library_json, json_user_path
-                    )
+                    legacy_data_directory = os.path.join(os.path.dirname(__file__), "data")
+                    legacy_json_user_path = os.path.join(legacy_data_directory, domain_config.user_library)
+                    os.makedirs(os.path.dirname(json_user_path), exist_ok=True)
+                    os.rename(legacy_json_user_path, json_user_path)
 
-                    self._devices = user_json_data["devices"]
                     _LOGGER.debug(
-                        "Loaded %s user devices", len(user_json_data["devices"])
+                        "User library moved to %s",
+                        json_user_path,
                     )
-
                 except FileNotFoundError:
                     _LOGGER.error(
                         "User library file not found at %s",
@@ -80,10 +77,7 @@ class Library:  # pylint: disable=too-few-public-methods
                     )
 
         # Default Library
-        json_default_path = os.path.join(
-            BUILT_IN_DATA_DIRECTORY,
-            "library.json",
-        )
+        json_default_path = self.hass.config.path(STORAGE_DIR, "battery_notes", "library.json")
 
         _LOGGER.debug("Using library file at %s", json_default_path)
 
@@ -98,24 +92,9 @@ class Library:  # pylint: disable=too-few-public-methods
 
         except FileNotFoundError:
             _LOGGER.error(
-                "library.json file not found in directory %s",
-                BUILT_IN_DATA_DIRECTORY,
+                "library.json file not found at %s",
+                json_default_path,
             )
-
-    @staticmethod
-    async def factory(hass: HomeAssistant) -> Library:
-        """Return the library or create."""
-
-        if DOMAIN not in hass.data:
-            hass.data[DOMAIN] = {}
-
-        if DATA_LIBRARY in hass.data[DOMAIN]:
-            return hass.data[DOMAIN][DATA_LIBRARY]  # type: ignore
-
-        library = Library(hass)
-        await library.load_libraries()
-        hass.data[DOMAIN][DATA_LIBRARY] = library
-        return library
 
     async def get_device_battery_details(
         self,

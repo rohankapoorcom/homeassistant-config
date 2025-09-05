@@ -822,7 +822,7 @@ LANGUAGE_CODES = [
     "zh-tw",
 ]
 
-ALLOWED_UNITS = ["auto", "si", "us", "ca", "uk", "uk2"]
+ALLOWED_UNITS = ["si", "us", "ca", "uk", "uk2"]
 
 ALERTS_ATTRS = ["time", "description", "expires", "severity", "uri", "regions", "title"]
 
@@ -1127,9 +1127,8 @@ class PirateWeatherSensor(SensorEntity):
             "gefs_update_time",
         ]:
             try:
-                model_time_string = self._weather_coordinator.data.json["flags"][
-                    "sourceTimes"
-                ][self.entity_description.key]
+                flags = self._weather_coordinator.data.flags()
+                model_time_string = flags.sourceTimes[self.entity_description.key]
                 native_val = datetime.datetime.strptime(
                     model_time_string[0:-1], "%Y-%m-%d %H"
                 ).replace(tzinfo=datetime.UTC)
@@ -1205,64 +1204,6 @@ class PirateWeatherSensor(SensorEntity):
         # percentages
         if self.type in ["precip_probability", "cloud_cover", "humidity"]:
             state = int(state * 100)
-
-        # Logic to convert from SI to requsested units for compatability
-        # Temps in F
-        if self.requestUnits in ["us"]:
-            if self.type in [
-                "dew_point",
-                "temperature",
-                "apparent_temperature",
-                "temperature_high",
-                "temperature_low",
-                "apparent_temperature_high",
-                "apparent_temperature_low",
-            ]:
-                state = round(state * 9 / 5) + 32
-
-        # Precipitation Accumulation (cm in SI) to inches
-        if self.requestUnits in ["us"]:
-            if self.type in [
-                "precip_accumulation",
-                "liquid_accumulation",
-                "snow_accumulation",
-                "ice_accumulation",
-                "current_day_liquid",
-                "current_day_snow",
-                "current_day_ice",
-            ]:
-                state = state * 0.3937008
-
-        # Precipitation Intensity (mm/h in SI) to inches
-        if self.requestUnits in ["us"]:
-            if self.type in [
-                "precip_intensity",
-            ]:
-                state = state * 0.0393701
-
-        # Km to Miles
-        if self.requestUnits in ["us", "uk", "uk2"]:
-            if self.type in [
-                "visibility",
-                "nearest_storm_distance",
-            ]:
-                state = state * 0.621371
-
-        # Meters/second to Miles/hour
-        if self.requestUnits in ["us", "uk", "uk2"]:
-            if self.type in [
-                "wind_speed",
-                "wind_gust",
-            ]:
-                state = state * 2.23694
-
-        # Meters/second to Km/ hour
-        if self.requestUnits in ["ca"]:
-            if self.type in [
-                "wind_speed",
-                "wind_gust",
-            ]:
-                state = state * 3.6
 
         # Convert unix times to datetimes times
         if self.type in [

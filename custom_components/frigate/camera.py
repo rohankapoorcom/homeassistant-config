@@ -21,7 +21,8 @@ from homeassistant.components.camera import (
 from homeassistant.components.mqtt import async_publish
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_URL
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, SupportsResponse, callback
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
@@ -37,23 +38,30 @@ from . import (
     get_friendly_name,
     get_frigate_device_identifier,
     get_frigate_entity_unique_id,
+    verify_frigate_version,
 )
 from .const import (
     ATTR_CLIENT,
     ATTR_CONFIG,
     ATTR_COORDINATOR,
+    ATTR_DURATION,
     ATTR_END_TIME,
     ATTR_EVENT_ID,
     ATTR_FAVORITE,
+    ATTR_INCLUDE_RECORDING,
+    ATTR_LABEL,
     ATTR_PLAYBACK_FACTOR,
     ATTR_PTZ_ACTION,
     ATTR_PTZ_ARGUMENT,
     ATTR_START_TIME,
+    ATTR_SUB_LABEL,
     CONF_ENABLE_WEBRTC,
     CONF_RTSP_URL_TEMPLATE,
     DEVICE_CLASS_CAMERA,
     DOMAIN,
     NAME,
+    SERVICE_CREATE_EVENT,
+    SERVICE_END_EVENT,
     SERVICE_EXPORT_RECORDING,
     SERVICE_FAVORITE_EVENT,
     SERVICE_PTZ,
@@ -124,6 +132,25 @@ async def async_setup_entry(
         },
         SERVICE_PTZ,
     )
+    platform.async_register_entity_service(
+        SERVICE_CREATE_EVENT,
+        {
+            vol.Required(ATTR_LABEL): str,
+            vol.Optional(ATTR_SUB_LABEL, default=""): str,
+            vol.Optional(ATTR_DURATION, default=30): int,
+            vol.Optional(ATTR_INCLUDE_RECORDING, default=True): bool,
+        },
+        SERVICE_CREATE_EVENT,
+        supports_response=SupportsResponse.OPTIONAL,
+    )
+    platform.async_register_entity_service(
+        SERVICE_END_EVENT,
+        {
+            vol.Required(ATTR_EVENT_ID): str,
+        },
+        SERVICE_END_EVENT,
+        supports_response=SupportsResponse.OPTIONAL,
+    )
 
 
 class FrigateCamera(
@@ -172,6 +199,15 @@ class FrigateCamera(
                     ),
                     "encoding": None,
                 },
+                "enabled_topic": {
+                    "msg_callback": self._enabled_message_received,
+                    "qos": 0,
+                    "topic": (
+                        f"{self._frigate_config['mqtt']['topic_prefix']}"
+                        f"/{self._cam_name}/enabled/state"
+                    ),
+                    "encoding": None,
+                },
             },
         )
         FrigateEntity.__init__(self, config_entry)
@@ -190,6 +226,9 @@ class FrigateCamera(
         self._attr_is_recording = self._camera_config.get("record", {}).get("enabled")
         self._attr_motion_detection_enabled = self._camera_config.get("motion", {}).get(
             "enabled"
+        )
+        self._turn_on_off_topic = (
+            f"{frigate_config['mqtt']['topic_prefix']}" f"/{self._cam_name}/enabled/set"
         )
         self._ptz_topic = (
             f"{frigate_config['mqtt']['topic_prefix']}" f"/{self._cam_name}/ptz"
@@ -228,9 +267,33 @@ class FrigateCamera(
         self._attr_motion_detection_enabled = decode_if_necessary(msg.payload) == "ON"
         self.async_write_ha_state()
 
+    @callback
+    def _enabled_message_received(self, msg: ReceiveMessage) -> None:
+        """Handle a new received MQTT extra message."""
+        self._attr_is_on = decode_if_necessary(msg.payload) == "ON"
+
+        if self._attr_is_on:
+            self._attr_is_streaming = (
+                self._cam_name
+                in self._frigate_config.get("go2rtc", {}).get("streams", {}).keys()
+            )
+            self._attr_is_recording = self._camera_config.get("record", {}).get(
+                "enabled"
+            )
+        else:
+            self._attr_is_streaming = False
+            self._attr_is_recording = False
+
+        self.async_write_ha_state()
+
     @property
     def available(self) -> bool:
         """Signal when frigate loses connection to camera."""
+        if not self._attr_is_on:
+            # if the camera is off it may appear unavailable
+            # but it should be available for service calls
+            return True
+
         if self.coordinator.data:
             if (
                 self.coordinator.data.get("cameras", {})
@@ -283,7 +346,9 @@ class FrigateCamera(
         self, width: int | None = None, height: int | None = None
     ) -> bytes | None:
         """Return bytes of camera image."""
-        websession = async_get_clientsession(self.hass)
+        websession = async_get_clientsession(
+            self.hass, verify_ssl=self._client.validate_ssl
+        )
 
         image_url = str(
             URL(self._url)
@@ -291,13 +356,36 @@ class FrigateCamera(
             % ({"h": height} if height is not None and height > 0 else {})
         )
 
+        headers = await self._client.get_auth_headers()
         async with async_timeout.timeout(10):
-            response = await websession.get(image_url)
+            response = await websession.get(image_url, headers=headers)
             return await response.read()
 
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
         return self._stream_source
+
+    async def async_turn_on(self) -> None:
+        """Turn on the camera."""
+        if verify_frigate_version(self._frigate_config, "0.16"):
+            await async_publish(
+                self.hass,
+                self._turn_on_off_topic,
+                "ON",
+                0,
+                False,
+            )
+
+    async def async_turn_off(self) -> None:
+        """Turn off the camera."""
+        if verify_frigate_version(self._frigate_config, "0.16"):
+            await async_publish(
+                self.hass,
+                self._turn_on_off_topic,
+                "OFF",
+                0,
+                False,
+            )
 
     async def async_enable_motion_detection(self) -> None:
         """Enable motion detection for this camera."""
@@ -343,6 +431,28 @@ class FrigateCamera(
             0,
             False,
         )
+
+    async def create_event(
+        self, label: str, sub_label: str, duration: int, include_recording: bool
+    ) -> dict[str, Any]:
+        """Create an event."""
+        if label == "":
+            raise ServiceValidationError("Label cannot be empty")
+
+        return await self._client.async_create_event(
+            self._cam_name,
+            label,
+            sub_label,
+            duration if duration > 0 else None,
+            include_recording,
+        )
+
+    async def end_event(self, event_id: str) -> dict[str, Any]:
+        """End an event."""
+        if event_id == "":
+            raise ServiceValidationError("Event ID cannot be empty")
+
+        return await self._client.async_end_event(event_id)
 
 
 class BirdseyeCamera(FrigateEntity, Camera):
@@ -416,7 +526,9 @@ class BirdseyeCamera(FrigateEntity, Camera):
         self, width: int | None = None, height: int | None = None
     ) -> bytes | None:
         """Return bytes of camera image."""
-        websession = async_get_clientsession(self.hass)
+        websession = async_get_clientsession(
+            self.hass, verify_ssl=self._client.validate_ssl
+        )
 
         image_url = str(
             URL(self._url)
@@ -424,8 +536,9 @@ class BirdseyeCamera(FrigateEntity, Camera):
             % ({"h": height} if height is not None and height > 0 else {})
         )
 
+        headers = await self._client.get_auth_headers()
         async with async_timeout.timeout(10):
-            response = await websession.get(image_url)
+            response = await websession.get(image_url, headers=headers)
             return await response.read()
 
     async def stream_source(self) -> str | None:
@@ -440,10 +553,13 @@ class FrigateCameraWebRTC(FrigateCamera):
         self, offer_sdp: str, session_id: str, send_message: WebRTCSendMessage
     ) -> None:
         """Handle the WebRTC offer and return an answer."""
-        websession = async_get_clientsession(self.hass)
+        websession = async_get_clientsession(
+            self.hass, verify_ssl=self._client.validate_ssl
+        )
         url = f"{self._url}/api/go2rtc/webrtc?src={self._cam_name}"
         payload = {"type": "offer", "sdp": offer_sdp}
-        async with websession.post(url, json=payload) as resp:
+        headers = await self._client.get_auth_headers()
+        async with websession.post(url, json=payload, headers=headers) as resp:
             answer = await resp.json()
             send_message(WebRTCAnswer(answer["sdp"]))
 
@@ -459,10 +575,13 @@ class BirdseyeCameraWebRTC(BirdseyeCamera):
         self, offer_sdp: str, session_id: str, send_message: WebRTCSendMessage
     ) -> None:
         """Handle the WebRTC offer and return an answer."""
-        websession = async_get_clientsession(self.hass)
+        websession = async_get_clientsession(
+            self.hass, verify_ssl=self._client.validate_ssl
+        )
         url = f"{self._url}/api/go2rtc/webrtc?src={self._cam_name}"
         payload = {"type": "offer", "sdp": offer_sdp}
-        async with websession.post(url, json=payload) as resp:
+        headers = await self._client.get_auth_headers()
+        async with websession.post(url, json=payload, headers=headers) as resp:
             answer = await resp.json()
             send_message(WebRTCAnswer(answer["sdp"]))
 

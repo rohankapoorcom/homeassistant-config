@@ -31,16 +31,18 @@
                 }
             },
             "battery": {
-                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "description": "Fabricante: {manufacturer}\nModelo: {model}\nID do Modelo: {model_id}\nVersão de Hardware: {hw_version}",
                 "data": {
                     "battery_type": "Tipo de bateria",
                     "battery_quantity": "Quantidade de baterias",
                     "battery_low_threshold": "Nivel de bateria baixa",
-                    "battery_low_template": "Template de bateria baixa"
+                    "battery_low_template": "Template de bateria baixa",
+                    "filter_outliers": "Filter outliers"
                 },
                 "data_description": {
                     "battery_low_threshold": "0 irá ser usado como valor por defeito para definir o descarregada",
-                    "battery_low_template": "Template para determinar que a bateria está baixa, deve devolver true se estiver baixa\nÉ somente necessário para níveis de bateria non-standard"
+                    "battery_low_template": "Template para determinar que a bateria está baixa, deve devolver true se estiver baixa\nÉ somente necessário para níveis de bateria non-standard",
+                    "filter_outliers": "Filter out large battery level drops, reducing falsely firing events on devices that erroneously report levels occasionally"
                 }
             },
             "manual": {
@@ -59,22 +61,25 @@
     "options": {
         "step": {
             "init": {
-                "description": "Manufacturer: {manufacturer}\nModel: {model}\nModel ID: {model_id}\nHardware version: {hw_version}",
+                "description": "Fabricante: {manufacturer}\nModelo: {model}\nID do Modelo: {model_id}\nVersão de Hardware: {hw_version}",
                 "data": {
                     "name": "Nome",
                     "battery_type": "Tipo de bateria",
                     "battery_quantity": "Quantidade de baterias",
                     "battery_low_threshold": "Nivel de bateria baixa",
-                    "battery_low_template": "Template de bateria baixa"
+                    "battery_low_template": "Template de bateria baixa",
+                    "filter_outliers": "Filter outliers"
                 },
                 "data_description": {
                     "name": "Deixar em branco fará com que tenha mesmo o nome que o dispositivo de origem",
                     "battery_low_threshold": "0 irá ser usado como valor por defeito para definir o descarregada",
-                    "battery_low_template": "Template para determinar que a bateria está baixa, deve devolver true se estiver baixa\nÉ somente necessário para níveis de bateria non-standard"
+                    "battery_low_template": "Template para determinar que a bateria está baixa, deve devolver true se estiver baixa\nÉ somente necessário para níveis de bateria non-standard",
+                    "filter_outliers": "Filter out large battery level drops, reducing falsely firing events on devices that erroneously report levels occasionally"
                 }
             }
         },
         "error": {
+            "orphaned_battery_note": "O dispositivo ou entidade associado não existe mais para esta Nota de Bateria.",
             "unknown": "Error desconhecido."
         }
     },
@@ -145,7 +150,7 @@
                 }
             },
             "battery_last_replaced": {
-                "name": "{device_name}Foi substituida a"
+                "name": "{device_name}Última susbstituição da Bateria"
             }
         }
     },
@@ -181,6 +186,19 @@
         "check_battery_low": {
             "description": "Gerar eventos para dispositivos que tenham a bateria baixa.",
             "name": "Verificar bateria com carga baixa"
+        }
+    },
+    "issues": {
+        "missing_device": {
+            "title": "Nota da Bateria Orfã",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Nota da Bateria Órfã",
+                        "description": "O dispositivo ou entidade associado não existe mais para a entrada {name} de bateria, a nota de bateria deve ser apagada.\nSelecione **Enviar** para apagar esta nota da bateria."
+                    }
+                }
+            }
         }
     }
 }
