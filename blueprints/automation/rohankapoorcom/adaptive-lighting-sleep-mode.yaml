@@ -11,9 +11,10 @@ blueprint:
       description: List of available Adaptive Lighting Switches
       selector:
         entity:
-          integration: adaptive_lighting
-          domain:
-            - switch
+          filter:
+            integration: adaptive_lighting
+            domain:
+              - switch
     bedtime:
       name: Bedtime
       description: The time to reduce the default brightness.

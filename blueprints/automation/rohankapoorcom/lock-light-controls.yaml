@@ -9,13 +9,15 @@ blueprint:
       description: List of available lock entities
       selector:
         entity:
-          domain: lock
+          filter:
+            domain: lock
     light_entity:
       name: Light Entity
       description: List of available lights to turn on
       selector:
         entity:
-          domain: light
+          filter:
+            domain: light
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/lock-light-controls.yaml
 mode: single
 max_exceeded: silent

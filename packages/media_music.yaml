@@ -322,7 +322,7 @@ automation:
     alias: Turn on Speakers if Chromecast Audio Playing
     triggers:
       - <<: *media_player_entity
-        platform: state
+        trigger: state
         to: 'playing'
       - trigger: state
         entity_id: input_select.last_presence_location
@@ -358,17 +358,17 @@ automation:
     alias: Turn off Speakers when Chromecast Audio Stops Playing
     triggers:
       - <<: *media_player_entity
-        platform: state
+        trigger: state
         to: 'off'
         for:
           minutes: 10
       - <<: *media_player_entity
-        platform: state
+        trigger: state
         to: 'paused'
         for:
           minutes: 10
       - <<: *media_player_entity
-        platform: state
+        trigger: state
         to: 'idle'
         for:
           minutes: 10
@@ -404,8 +404,8 @@ automation:
         minutes: '/5'
         seconds: 00
     actions:
-      action: python_script.media_music_turn_off_speakers
-      data_template:
+      - service: python_script.media_music_turn_off_speakers
+        data_template:
         entities: >
           {%- for sensor in states.sensor if (
             is_state_attr(sensor.entity_id, 'package', 'presence')

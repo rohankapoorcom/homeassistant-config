@@ -45,8 +45,8 @@ automation:
     alias: Update ePaper Weather Displays
     description: Display external weather on the epaper displays by the exterior doors
     triggers:
-      - minutes: /15
-        trigger: time_pattern
+      - trigger: time_pattern
+        minutes: /15
     conditions:
       - condition: time
         after: "07:00:00"
