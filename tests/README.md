@@ -13,6 +13,11 @@ This directory contains a script to run local testing of your Home Assistant con
 ./tests/test-config.sh
 ```
 
+**Run documentation link check only:**
+```bash
+./tests/check-docs-links.sh
+```
+
 ## Script Overview
 
 ### `test-config.sh`
@@ -20,8 +25,18 @@ Runs configuration checks using Docker containers:
 - ✅ yamllint validation (if installed locally)
 - ✅ Home Assistant configuration validation using Docker
 - ✅ Tests multiple versions (current, stable, beta, dev)
+- ✅ Documentation link validation
 - ✅ Isolated environment (no local dependencies)
 - ✅ Replicates GitHub Actions workflow exactly
+
+### `check-docs-links.sh`
+Validates internal documentation links:
+- ✅ Checks main README.md existence
+- ✅ Verifies package documentation links
+- ✅ Validates automation documentation links
+- ✅ Tests blueprint documentation links
+- ✅ Ensures proper relative path resolution
+- ✅ Can be run independently or as part of test suite
 
 ## What the Tests Check
 

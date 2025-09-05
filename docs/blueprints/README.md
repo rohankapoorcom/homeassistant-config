@@ -61,9 +61,9 @@ Each blueprint documentation includes a one-click import button that will open y
 
 ## Related Documentation
 
-- [Main Configuration README](../README.md): Overview of the entire Home Assistant configuration
-- [Custom Integrations](../README.md#custom-integrations): List of custom integrations used
-- [Custom Lovelace Cards](../README.md#custom-lovelace-cards): List of custom UI components
+- [Main Configuration README](../../README.md): Overview of the entire Home Assistant configuration
+- [Custom Integrations](../../README.md#custom-integrations): List of custom integrations used
+- [Custom Lovelace Cards](../../README.md#custom-lovelace-cards): List of custom UI components
 
 ---
 

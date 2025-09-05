@@ -86,6 +86,7 @@
        - **CRITICAL**: Create comprehensive documentation for ALL automations in automations.yaml and package files
        - **CRITICAL**: Create package documentation files in docs/packages/ directory
        - **CRITICAL**: Create automation documentation files in docs/automations/ directory
+       - **CRITICAL**: Use correct relative link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../../../README.md
     
     6. **Blueprint Documentation Organization**:
        - Create individual documentation files for each blueprint
@@ -111,6 +112,8 @@
        - **CRITICAL**: Create comprehensive documentation for ALL packages and their functionality
        - **CRITICAL**: Create comprehensive documentation for ALL automations and their purposes
        - **CRITICAL**: Document the main configuration structure and organization
+       - **CRITICAL**: Check www/community/ directory to ensure ALL custom Lovelace cards are documented
+       - **CRITICAL**: Verify custom Lovelace card GitHub links are correct and up-to-date
        
     8. **Documentation Structure Requirements**:
        - **CRITICAL**: Create docs/packages/ directory with individual package documentation files
@@ -119,6 +122,12 @@
        - **CRITICAL**: Ensure every package in packages/ directory has corresponding documentation
        - **CRITICAL**: Ensure every automation in automations.yaml and package files has documentation
        - **CRITICAL**: Create cross-references between related documentation files
+       - **CRITICAL**: Include links to individual package documentation files in the Package Organization section of README.md
+       - **CRITICAL**: Verify all custom Lovelace cards in www/community/ directory are documented in README.md
+       - **CRITICAL**: Ensure all custom Lovelace card GitHub links are correct and point to the actual repository
+       - **CRITICAL**: Verify all internal documentation links are correct and functional
+       - **CRITICAL**: Test all relative links from different directory levels to ensure proper path resolution
+       - **CRITICAL**: Follow correct link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../../../README.md
   </instructions>
   
   <template>
@@ -409,7 +418,7 @@
     - **lovelace_gen**: Dynamic Lovelace generation
     
     ## Custom Lovelace Cards
-    Comprehensive list of all custom Lovelace cards used:
+    Comprehensive list of all custom Lovelace cards used. **CRITICAL**: Verify this list against the contents of www/community/ directory to ensure no cards are missing:
     
     ### Data Visualization
     - **apexcharts-card**: Advanced charting and graphs
@@ -452,10 +461,11 @@
     For detailed documentation, usage examples, and one-click import buttons, see the [Blueprint Documentation](docs/blueprints/README.md).
     
     ## Package Organization
-    Description of how packages are organized:
-    - **Feature-based packages**: Cross-room functionality
-    - **Integration packages**: Third-party service configurations
-    - **Room-based packages**: Individual room configurations
+    Description of how packages are organized with links to individual package documentation:
+    - **Feature-based packages**: Cross-room functionality with links to package documentation files
+    - **Integration packages**: Third-party service configurations with links to package documentation files
+    - **Room-based packages**: Individual room configurations with links to package documentation files
+    - **Documentation Links**: Each package name should link to its corresponding documentation file in docs/packages/
     
     ## Dashboard Structure
     Overview of the dashboard layout and organization:
@@ -832,5 +842,16 @@
     - Include version information and compatibility notes where applicable
     - Verify all component links by checking HACS default repositories for accuracy
     - Provide proper attribution to original authors and source repositories
+    - **CRITICAL**: Cross-reference www/community/ directory contents with README.md custom Lovelace cards section
+    - **CRITICAL**: Verify all custom Lovelace card GitHub links are correct and functional
+    - **CRITICAL**: Ensure no custom Lovelace cards are missing from documentation
+    - **CRITICAL**: Test all internal documentation links for proper path resolution
+    - **CRITICAL**: Verify relative links work from all directory levels (../README.md vs ../../README.md)
+    - **CRITICAL**: Use link checking tools to validate all documentation links (see tests/check-docs-links.sh)
+    - **CRITICAL**: Follow correct relative link patterns based on directory structure:
+      - From docs/packages/ or docs/automations/ to main README: ../../README.md
+      - From docs/blueprints/ subdirectories (script/, template/, automation/) to blueprint index: ../README.md
+      - From individual blueprint files to main README: ../../../README.md
+      - From docs/blueprints/ to main README: ../../README.md
   </quality_standards>
 </prompt>

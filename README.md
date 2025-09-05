@@ -40,7 +40,6 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 
 ### Climate & Environment
 - **[adaptive_lighting](https://github.com/basnijholt/adaptive-lighting)**: Automatic lighting adjustments based on time and natural light
-- **[air_quality](https://github.com/rohankapoorcom/homeassistant-config/tree/master/custom_components/air_quality)**: Comprehensive air quality monitoring and alerts
 - **[battery_notes](https://github.com/andrew-codechicken/battery-notes)**: Battery level tracking with smart notifications
 - **[enphase_envoy](https://github.com/briancmpbll/home_assistant_custom_envoy)**: Solar panel monitoring and energy production tracking
 
@@ -92,14 +91,18 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 - **[vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)**: Vertical stacking for organized layouts
 
 ### Media & Entertainment
+- **[advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card)**: Comprehensive camera card with live viewing, clips browsing, and fullscreen mode
+- **[frigate-hass-card](https://github.com/dermotduffy/frigate-hass-card)**: Frigate NVR integration for video surveillance
 - **[lovelace-valetudo-map-card](https://github.com/Hypfer/lovelace-valetudo-map-card)**: Valetudo robot vacuum mapping
 - **[lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)**: Robot vacuum mapping interface
 - **[mini-media-player](https://github.com/kalkih/mini-media-player)**: Compact media controls for audio/video
+- **[mixer-card](https://github.com/wrodie/mixer-card)**: Audio mixer controls with faders and sliders for audio devices
 - **[roku-card](https://github.com/custom-cards/roku-card)**: Roku device control and status
 - **[spotify-card](https://github.com/custom-cards/spotify-card)**: Spotify integration with playlist controls
 
 ### Utilities
 - **[config-template-card](https://github.com/iantrich/config-template-card)**: Template-based card configuration
+- **[custom-brand-icons](https://github.com/elax46/custom-brand-icons)**: Custom brand icons for enhanced UI
 - **[decluttering-card](https://github.com/custom-cards/decluttering-card)**: UI simplification and conditional displays
 - **[lovelace-auto-entities](https://github.com/thomasloven/lovelace-auto-entities)**: Dynamic entity lists based on device states
 - **[lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod)**: CSS styling and modifications for custom appearance
@@ -130,34 +133,34 @@ For detailed documentation, usage examples, and one-click import buttons, see th
 The configuration uses a package-based organization system for modular and maintainable code:
 
 ### Feature-based Packages
-- **air_quality.yaml**: Air quality monitoring and alerts
-- **appliances.yaml**: Appliance control and monitoring
-- **assistant.yaml**: Voice assistant integration
-- **default_config.yaml**: Default configuration settings
-- **media_music.yaml**: Whole-home audio and entertainment
-- **notifications.yaml**: Notification management
-- **presence.yaml**: Presence detection and automation
-- **security.yaml**: Cross-room security and monitoring
-- **tablets.yaml**: Tablet interface management
-- **weather.yaml**: Weather monitoring and alerts
-- **weatherman.yaml**: Advanced weather forecasting
+- **[air_quality.yaml](docs/packages/air_quality.md)**: Air quality monitoring and alerts
+- **[appliances.yaml](docs/packages/appliances.md)**: Appliance control and monitoring
+- **[assistant.yaml](docs/packages/assistant.md)**: Voice assistant integration
+- **[default_config.yaml](docs/packages/default_config.md)**: Default configuration settings
+- **[media_music.yaml](docs/packages/media_music.md)**: Whole-home audio and entertainment
+- **[notifications.yaml](docs/packages/notifications.md)**: Notification management
+- **[presence.yaml](docs/packages/presence.md)**: Presence detection and automation
+- **[security.yaml](docs/packages/security.md)**: Cross-room security and monitoring
+- **[tablets.yaml](docs/packages/tablets.md)**: Tablet interface management
+- **[weather.yaml](docs/packages/weather.md)**: Weather monitoring and alerts
+- **[weatherman.yaml](docs/packages/weatherman.md)**: Advanced weather forecasting
 
 ### Room-based Packages
-- **downstairs_bathroom.yaml**: Bathroom automation
-- **downstairs_hallway.yaml**: Hallway lighting and motion control
-- **front_door.yaml**: Entry door security and access control
-- **garage.yaml**: Garage door control and monitoring
-- **guest_room.yaml**: Guest room automation
-- **gym.yaml**: Home gym automation
-- **hallway.yaml**: Main hallway controls
-- **hallway_bathroom.yaml**: Bathroom-specific features
-- **kitchen/**: Kitchen automation and appliance control
-- **living_room/**: Entertainment and living space management
-- **master_bathroom.yaml**: Master bathroom automation
-- **master_bedroom.yaml**: Master bedroom comfort and security
-- **office.yaml**: Office automation and productivity features
-- **server_rack.yaml**: Server infrastructure monitoring
-- **stairway.yaml**: Stairway lighting and safety features
+- **[downstairs_bathroom.yaml](docs/packages/downstairs_bathroom.md)**: Bathroom automation
+- **[downstairs_hallway.yaml](docs/packages/downstairs_hallway.md)**: Hallway lighting and motion control
+- **[front_door.yaml](docs/packages/front_door.md)**: Entry door security and access control
+- **[garage.yaml](docs/packages/garage.md)**: Garage door control and monitoring
+- **[guest_room.yaml](docs/packages/guest_room.md)**: Guest room automation
+- **[gym.yaml](docs/packages/gym.md)**: Home gym automation
+- **[hallway.yaml](docs/packages/hallway.md)**: Main hallway controls
+- **[hallway_bathroom.yaml](docs/packages/hallway_bathroom.md)**: Bathroom-specific features
+- **[kitchen/](docs/packages/kitchen.md)**: Kitchen automation and appliance control
+- **[living_room/](docs/packages/living_room.md)**: Entertainment and living space management
+- **[master_bathroom.yaml](docs/packages/master_bathroom.md)**: Master bathroom automation
+- **[master_bedroom.yaml](docs/packages/master_bedroom.md)**: Master bedroom comfort and security
+- **[office.yaml](docs/packages/office.md)**: Office automation and productivity features
+- **[server_rack.yaml](docs/packages/server_rack.md)**: Server infrastructure monitoring
+- **[stairway.yaml](docs/packages/stairway.md)**: Stairway lighting and safety features
 
 ## Dashboard Structure
 

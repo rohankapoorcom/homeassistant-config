@@ -125,6 +125,17 @@ main() {
     done
     
     echo ""
+    echo "------------------------------------------"
+    print_status "Testing documentation links..."
+    echo "------------------------------------------"
+    if [[ -f "tests/check-docs-links.sh" ]]; then
+        ./tests/check-docs-links.sh
+    else
+        print_error "Documentation link checker not found: tests/check-docs-links.sh"
+        exit 1
+    fi
+    
+    echo ""
     echo "=========================================="
     print_success "All tests completed successfully!"
     echo "=========================================="

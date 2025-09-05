@@ -206,7 +206,7 @@ Intelligent automation based on room occupancy:
 
 ## Related Documentation
 
-- [Main Configuration README](../README.md): Overview of the entire Home Assistant configuration
+- [Main Configuration README](../../README.md): Overview of the entire Home Assistant configuration
 - [Package Documentation](packages/README.md): Detailed package documentation
 - [Blueprint Documentation](../blueprints/README.md): Custom automation blueprints
 - [Custom Integrations](../README.md#custom-integrations): List of custom integrations used
