@@ -90,4 +90,4 @@ This blueprint creates an automation that:
 
 ---
 
-*This documentation is part of the [Blueprint Documentation Index](../../../README.md)*
+*This documentation is part of the [Blueprint Documentation Index](../README.md)*

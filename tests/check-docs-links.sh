@@ -65,8 +65,8 @@ for blueprint_file in docs/blueprints/automation/*.md; do
     if [[ -f "$blueprint_file" ]]; then
         filename=$(basename "$blueprint_file")
         echo "✅ $filename exists"
-        # Check if main README is accessible from automation directory
-        check_link "../../../README.md" "docs/blueprints/automation"
+        # Check if blueprint README is accessible from automation directory
+        check_link "../README.md" "docs/blueprints/automation"
     fi
 done
 
@@ -76,7 +76,7 @@ echo "💡 To prevent broken links in the future:"
 echo "   - Always test relative paths from the correct directory level"
 echo "   - Use ../../README.md from docs/subdir/ directories (packages, automations)"
 echo "   - Use ../README.md from docs/blueprints/ subdirectories (script, template, automation)"
-echo "   - Use ../../../README.md from docs/blueprints/automation/ individual blueprint files"
+echo "   - Use ../README.md from docs/blueprints/automation/ individual blueprint files (links to blueprint index)"
 echo "   - Use ../README.md from docs/ directory"
 echo "   - Run this test as part of the test suite: ./tests/check-docs-links.sh"
 echo "   - Include this test in CI/CD pipelines to catch broken links automatically"

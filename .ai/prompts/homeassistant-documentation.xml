@@ -86,7 +86,7 @@
        - **CRITICAL**: Create comprehensive documentation for ALL automations in automations.yaml and package files
        - **CRITICAL**: Create package documentation files in docs/packages/ directory
        - **CRITICAL**: Create automation documentation files in docs/automations/ directory
-       - **CRITICAL**: Use correct relative link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../../../README.md
+       - **CRITICAL**: Use correct relative link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../README.md (links to blueprint index)
     
     6. **Blueprint Documentation Organization**:
        - Create individual documentation files for each blueprint
@@ -127,7 +127,7 @@
        - **CRITICAL**: Ensure all custom Lovelace card GitHub links are correct and point to the actual repository
        - **CRITICAL**: Verify all internal documentation links are correct and functional
        - **CRITICAL**: Test all relative links from different directory levels to ensure proper path resolution
-       - **CRITICAL**: Follow correct link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../../../README.md
+       - **CRITICAL**: Follow correct link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../README.md (links to blueprint index)
   </instructions>
   
   <template>
@@ -851,7 +851,7 @@
     - **CRITICAL**: Follow correct relative link patterns based on directory structure:
       - From docs/packages/ or docs/automations/ to main README: ../../README.md
       - From docs/blueprints/ subdirectories (script/, template/, automation/) to blueprint index: ../README.md
-      - From individual blueprint files to main README: ../../../README.md
+      - From individual blueprint files to blueprint index: ../README.md
       - From docs/blueprints/ to main README: ../../README.md
   </quality_standards>
 </prompt>
