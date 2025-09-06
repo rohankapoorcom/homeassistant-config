@@ -42,55 +42,31 @@ cards:
                   icon: mdi:swap-vertical
         columns: 4
         square: false
-  - type: grid
-    columns: 2
-    square: false
+  - type: custom:layout-card
     cards:
-      - type: custom:layout-card
+      - type: heading
+        heading: Hallway
+        heading_style: title
+        icon: mdi:floor-plan
+        badges:
+          - type: entity
+            entity: sensor.upstairs_temperature
+          - type: entity
+            entity: sensor.upstairs_humidity
+      - type: grid
         cards:
-          - type: heading
-            heading: Hallway
-            heading_style: title
-            icon: mdi:floor-plan
-            badges:
-              - type: entity
-                entity: sensor.upstairs_temperature
-              - type: entity
-                entity: sensor.upstairs_humidity
-          - type: grid
-            cards:
-              - type: custom:decluttering-card
-                template: slider_button_card
-                variables:
-                  - entity: light.hallway_lights
-                  - name: Lights
-              - type: custom:decluttering-card
-                template: slider_button_card
-                variables:
-                  - entity: light.stairway_lights
-                  - name: Stairway
-            columns: 2
-            square: false
-      - type: custom:layout-card
-        cards:
-          - type: heading
-            heading: Dining Room
-            heading_style: title
-            icon: mdi:table-chair
-          - type: grid
-            cards:
-              - type: custom:decluttering-card
-                template: slider_button_card
-                variables:
-                  - entity: light.dining_room_lights
-                  - name: Ceiling
-              - type: custom:decluttering-card
-                template: slider_button_card
-                variables:
-                  - entity: light.dining_room_accent_lights
-                  - name: Skylight
-            columns: 2
-            square: false
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.hallway_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.stairway_lights
+              - name: Stairway
+        columns: 4
+        square: false
   - type: custom:layout-card
     cards:
       - type: heading
@@ -293,6 +269,26 @@ cards:
             variables:
               - entity: fan.hallway_bathroom_fan
               - name: Fan
+        columns: 4
+        square: false
+  - type: custom:layout-card
+    cards:
+      - type: heading
+        heading: Dining Room
+        heading_style: title
+        icon: mdi:table-chair
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.dining_room_lights
+              - name: Ceiling
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.dining_room_accent_lights
+              - name: Skylight
         columns: 4
         square: false
 layout_type: custom:grid-layout
