@@ -55,6 +55,8 @@ cards:
             entity: sensor.upstairs_temperature
           - type: entity
             entity: sensor.upstairs_humidity
+          - type: entity
+            entity: binary_sensor.front_door_window_door_is_open
       - type: grid
         cards:
           - type: custom:decluttering-card

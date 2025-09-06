@@ -1,82 +1,187 @@
 type: custom:layout-card
 cards:
   - type: grid
-    title: Downstairs
     cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.downstairs_hallway_lights
-          - name: Hallway
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.guest_room_lights
-          - name: Guest Bed
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.gym_lights
-          - name: Gym
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: fan.gym_fan
-          - name: Gym Fan
-    columns: 4
+      - type: heading
+        heading: Hallway
+        heading_style: title
+        icon: mdi:floor-plan
+        badges:
+          - type: entity
+            entity: sensor.downstairs_temperature
+          - type: entity
+            entity: sensor.downstairs_humidity
+          - type: entity
+            entity: sensor.downstairs_hallway_air_quality_score
+          - type: entity
+            entity: binary_sensor.downstairs_hallway_doors
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.downstairs_hallway_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.stairway_lights
+              - name: Stairway
+        columns: 4
+        square: false
+    columns: 1
     square: false
   - type: grid
-    title: Outside
     cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.garage_lights
-          - name: Garage
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.garage_entry_lights
-          - name: Car Entry
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.front_door_lights
-          - name: Front Door
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.backyard_lights
-          - name: Backyard
-    columns: 4
+      - type: heading
+        heading: Gym
+        heading_style: title
+        icon: mdi:bicycle
+        badges:
+          - type: entity
+            entity: sensor.gym_sensor_temperature
+          - type: entity
+            entity: sensor.gym_sensor_humidity
+          - type: entity
+            entity: binary_sensor.gym_sliding_door_window_door_is_open
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.gym_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: fan.gym_fan
+              - name: Fan
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: cover.gym_shades
+              - name: Shades
+              - direction: top-bottom
+              - action_button:
+                  mode: custom
+                  show: true
+                  tap_action:
+                    action: toggle
+                  icon: mdi:swap-vertical
+        columns: 4
+        square: false
+    columns: 1
     square: false
   - type: grid
-    title: Downstairs Bathroom
     cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.downstairs_bathroom_lights
-          - name: Lights
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: fan.downstairs_bathroom_fan
-          - name: Fan
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.downstairs_bathroom_temperature
-                name: temp
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.downstairs_bathroom_relative_humidity
-                name: Humidity
-                icon: mdi:water-percent
-    columns: 4
+      - type: heading
+        heading: Guest Room
+        heading_style: title
+        icon: mdi:bed-queen
+        badges:
+          - type: entity
+            entity: sensor.guest_room_temperature
+          - type: entity
+            entity: sensor.guest_room_humidity
+          - type: entity
+            entity: sensor.guest_room_air_quality_score
+          - type: entity
+            entity: binary_sensor.guest_room_sliding_door_window_door_is_open
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.guest_room_lights
+              - name: Ceiling
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.guest_room_key_light
+              - name: Key Light
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.guest_room_desk_lower_lights
+              - name: Desk Lights
+        columns: 4
+        square: false
+    columns: 1
+    square: false
+  - type: grid
+    cards:
+      - type: heading
+        heading: Bathroom
+        heading_style: title
+        icon: mdi:shower
+        badges:
+          - type: entity
+            entity: sensor.downstairs_bathroom_temperature
+          - type: entity
+            entity: sensor.downstairs_bathroom_humidity
+          - type: entity
+            entity: binary_sensor.downstairs_bathroom_motion
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.downstairs_bathroom_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: fan.downstairs_bathroom_fan
+              - name: Fan
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: switch.downstairs_bathroom_towel_warmer
+              - name: Warmer
+        columns: 4
+        square: false
+    columns: 1
+    square: false
+  - type: grid
+    cards:
+      - type: heading
+        heading: Garage
+        heading_style: title
+        icon: mdi:garage
+        badges:
+          - type: entity
+            entity: sensor.garage_temperature
+          - type: entity
+            entity: sensor.garage_humidity
+          - type: entity
+            entity: binary_sensor.garage_motion
+          - type: entity
+            entity: cover.garage_door
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.garage_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.garage_entry_lights
+              - name: Car Entry
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.front_door_lights
+              - name: Front Door
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.backyard_lights
+              - name: Backyard
+        columns: 4
+        square: false
+    columns: 1
     square: false
 layout_type: custom:grid-layout
 layout:
