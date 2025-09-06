@@ -1,6 +1,6 @@
 type: custom:layout-card
 cards:
-  - type: custom:layout-card
+  - type: grid
     cards:
       - type: heading
         heading: Kitchen
@@ -42,7 +42,9 @@ cards:
                   icon: mdi:swap-vertical
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Hallway
@@ -67,7 +69,9 @@ cards:
               - name: Stairway
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Living Room
@@ -120,7 +124,9 @@ cards:
                   icon: mdi:swap-horizontal
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Office
@@ -159,7 +165,9 @@ cards:
               - name: Camera
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Master Bedroom
@@ -212,7 +220,9 @@ cards:
                   icon: mdi:swap-horizontal
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Master Bathroom
@@ -244,7 +254,9 @@ cards:
               - name: Warmer
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Hallway Bathroom
@@ -271,7 +283,9 @@ cards:
               - name: Fan
         columns: 4
         square: false
-  - type: custom:layout-card
+    columns: 1
+    square: false
+  - type: grid
     cards:
       - type: heading
         heading: Dining Room
@@ -291,6 +305,8 @@ cards:
               - name: Skylight
         columns: 4
         square: false
+    columns: 1
+    square: false
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr
