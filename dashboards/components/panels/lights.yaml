@@ -12,7 +12,6 @@ cards:
           - type: entity
             entity: sensor.weather_station_indoor_humidity
       - type: grid
-        title: Kitchen
         cards:
           - type: custom:decluttering-card
             template: slider_button_card
@@ -47,36 +46,51 @@ cards:
     columns: 2
     square: false
     cards:
-      - type: grid
-        title: Hallway
+      - type: custom:layout-card
         cards:
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: light.hallway_lights
-              - name: Lights
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: light.stairway_lights
-              - name: Stairway
-        columns: 2
-        square: false
-      - type: grid
-        title: Dining Room
+          - type: heading
+            heading: Hallway
+            heading_style: title
+            icon: mdi:floor-plan
+            badges:
+              - type: entity
+                entity: sensor.upstairs_temperature
+              - type: entity
+                entity: sensor.upstairs_humidity
+          - type: grid
+            cards:
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: light.hallway_lights
+                  - name: Lights
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: light.stairway_lights
+                  - name: Stairway
+            columns: 2
+            square: false
+      - type: custom:layout-card
         cards:
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: light.dining_room_lights
-              - name: Ceiling
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: light.dining_room_accent_lights
-              - name: Skylight
-        columns: 2
-        square: false
+          - type: heading
+            heading: Dining Room
+            heading_style: title
+            icon: mdi:table-chair
+          - type: grid
+            cards:
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: light.dining_room_lights
+                  - name: Ceiling
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: light.dining_room_accent_lights
+                  - name: Skylight
+            columns: 2
+            square: false
   - type: custom:layout-card
     cards:
       - type: heading
@@ -143,6 +157,8 @@ cards:
             entity: sensor.office_humidity
           - type: entity
             entity: binary_sensor.office_lights_occupancy
+          - type: entity
+            entity: binary_sensor.office_sliding_door_window_door_is_open
       - type: grid
         cards:
           - type: custom:decluttering-card
