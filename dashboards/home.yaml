@@ -25,9 +25,9 @@ views:
                 - active: Home
               - !include components/panels/home.yaml
   - theme: Backend-selected
-    icon: mdi:lamp
-    path: lights
-    title: Lights
+    icon: mdi:home-floor-2
+    path: upstairs
+    title: Upstairs
     layout:
       max_width: 1500
     type: custom:masonry-layout
@@ -39,8 +39,25 @@ views:
           - cards:
             - !include
               - components/panels/sidebar.yaml
-              - active: Lights
-            - !include components/panels/lights.yaml
+              - active: Upstairs
+            - !include components/panels/upstairs.yaml
+  - theme: Backend-selected
+    icon: mdi:home-floor-1
+    path: downstairs
+    title: Downstairs
+    layout:
+      max_width: 1500
+    type: custom:masonry-layout
+    badges: []
+    cards:
+      - type: custom:decluttering-card
+        template: sidebar_layout_card
+        variables:
+          - cards:
+            - !include
+              - components/panels/sidebar.yaml
+              - active: Downstairs
+            - !include components/panels/downstairs.yaml
   - theme: Backend-selected
     icon: mdi:cctv
     path: cameras_1

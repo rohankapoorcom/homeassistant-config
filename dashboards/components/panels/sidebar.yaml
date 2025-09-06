@@ -3,7 +3,8 @@
 {% set buttons = [
   {'name': 'Clock'},
   {'name': 'Home', 'icon': 'mdi:home', 'path': 'home'},
-  {'name': 'Lights', 'icon': 'mdi:lamp', 'path': 'lights'},
+  {'name': 'Upstairs', 'icon': 'mdi:home-floor-2', 'path': 'upstairs'},
+  {'name': 'Downstairs', 'icon': 'mdi:home-floor-1', 'path': 'downstairs'},
   {'name': 'Frontyard', 'icon': 'mdi:cctv', 'path': 'cameras_1'},
   {'name': 'Backyard', 'icon': 'mdi:cctv', 'path': 'cameras_2'},
   {'name': 'Vacuums', 'icon': 'mdi:robot-vacuum', 'path': 'vacuums'},

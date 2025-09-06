@@ -268,112 +268,33 @@ cards:
               - name: Warmer
         columns: 4
         square: false
-  - type: grid
-    title: Downstairs
+  - type: custom:layout-card
     cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.downstairs_hallway_lights
-          - name: Hallway
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.guest_room_lights
-          - name: Guest Bed
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.gym_lights
-          - name: Gym
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: fan.gym_fan
-          - name: Gym Fan
-    columns: 4
-    square: false
-  - type: grid
-    title: Outside
-    cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.garage_lights
-          - name: Garage
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.garage_entry_lights
-          - name: Car Entry
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.front_door_lights
-          - name: Front Door
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.backyard_lights
-          - name: Backyard
-    columns: 4
-    square: false
-  - type: grid
-    title: Hallway Bathroom
-    cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.hallway_bathroom_lights
-          - name: Lights
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: fan.hallway_bathroom_fan
-          - name: Fan
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.hallway_bathroom_temperature
-                name: temp
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.hallway_bathroom_relative_humidity
-                name: Humidity
-                icon: mdi:water-percent
-    columns: 4
-    square: false
-  - type: grid
-    title: Downstairs Bathroom
-    cards:
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: light.downstairs_bathroom_lights
-          - name: Lights
-      - type: custom:decluttering-card
-        template: slider_button_card
-        variables:
-          - entity: fan.downstairs_bathroom_fan
-          - name: Fan
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.downstairs_bathroom_temperature
-                name: temp
-      - type: custom:decluttering-card
-        template: glance_button_card
-        variables:
-          - entities:
-              - entity: sensor.downstairs_bathroom_relative_humidity
-                name: Humidity
-                icon: mdi:water-percent
-    columns: 4
-    square: false
+      - type: heading
+        heading: Hallway Bathroom
+        heading_style: title
+        icon: mdi:toilet
+        badges:
+          - type: entity
+            entity: sensor.hallway_bathroom_temperature
+          - type: entity
+            entity: sensor.hallway_bathroom_humidity
+          - type: entity
+            entity: binary_sensor.hallway_bathroom_motion
+      - type: grid
+        cards:
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.hallway_bathroom_lights
+              - name: Lights
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: fan.hallway_bathroom_fan
+              - name: Fan
+        columns: 4
+        square: false
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr
