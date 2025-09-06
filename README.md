@@ -72,13 +72,11 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 ### Data Visualization
 - **[apexcharts-card](https://github.com/RomRider/apexcharts-card)**: Advanced charting and graphs for sensor data
 - **[bar-card](https://github.com/custom-cards/bar-card)**: Bar chart visualizations for comparative data
-- **[mini-graph-card](https://github.com/kalkih/mini-graph-card)**: Compact data graphs for quick monitoring
 - **[power-flow-card](https://github.com/ulic75/power-flow-card)**: Energy flow visualization for solar systems
 - **[weather-card](https://github.com/bramkragten/weather-card)**: Comprehensive weather display and forecasting
 
 ### Home Automation
 - **[button-card](https://github.com/custom-cards/button-card)**: Customizable button interface for device control
-- **[light-entity-card](https://github.com/ljmerza/light-entity-card)**: Specialized lighting controls with color picker
 - **[numberbox-card](https://github.com/junkfix/numberbox-card)**: Numeric input controls for devices
 - **[simple-thermostat](https://github.com/nervetattoo/simple-thermostat)**: Thermostat interface with scheduling
 - **[slider-button-card](https://github.com/mattieha/slider-button-card)**: Slider controls with button actions
@@ -92,8 +90,6 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 
 ### Media & Entertainment
 - **[advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card)**: Comprehensive camera card with live viewing, clips browsing, and fullscreen mode
-- **[frigate-hass-card](https://github.com/dermotduffy/frigate-hass-card)**: Frigate NVR integration for video surveillance
-- **[lovelace-valetudo-map-card](https://github.com/Hypfer/lovelace-valetudo-map-card)**: Valetudo robot vacuum mapping
 - **[lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)**: Robot vacuum mapping interface
 - **[mini-media-player](https://github.com/kalkih/mini-media-player)**: Compact media controls for audio/video
 - **[mixer-card](https://github.com/wrodie/mixer-card)**: Audio mixer controls with faders and sliders for audio devices
@@ -108,8 +104,6 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 - **[lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod)**: CSS styling and modifications for custom appearance
 - **[lovelace-digital-clock](https://github.com/wassy92x/lovelace-digital-clock)**: Digital clock display
 - **[lovelace-fold-entity-row](https://github.com/thomasloven/lovelace-fold-entity-row)**: Collapsible entity rows
-- **[lovelace-multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row)**: Multiple entities in single row
-- **[lovelace-slider-entity-row](https://github.com/thomasloven/lovelace-slider-entity-row)**: Slider controls in entity rows
 - **[lovelace-state-switch](https://github.com/thomasloven/lovelace-state-switch)**: State-based card switching
 - **[lovelace-template-entity-row](https://github.com/thomasloven/lovelace-template-entity-row)**: Template-based entity rows
 
