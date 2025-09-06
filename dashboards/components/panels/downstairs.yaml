@@ -27,6 +27,16 @@ cards:
             variables:
               - entity: light.stairway_lights
               - name: Stairway
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: switch.downstairs_hallway_tv
+              - name: TV
+          - type: custom:decluttering-card
+            template: slider_button_card
+            variables:
+              - entity: light.workbench_lights
+              - name: Workbench
         columns: 4
         square: false
     columns: 1
