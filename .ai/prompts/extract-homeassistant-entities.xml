@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prompt>
+  <name>Extract Home Assistant Entities from Dashboard Files</name>
+  <description>
+    Extract all unique entities referenced in Home Assistant dashboard YAML files and output them as a deduplicated, alphabetized YAML list.
+  </description>
+  
+  <instructions>
+You are tasked with extracting all Home Assistant entities referenced in dashboard YAML files and creating a comprehensive, deduplicated list.
+
+## Process Steps:
+
+1. **Identify Target Files**: Search for all YAML files in the specified directory (typically dashboards/components/panels or similar dashboard structure)
+
+2. **Extract Entity References**: Use grep to find all lines containing "entity:" pattern across all YAML files in the target directory
+
+3. **Parse Entity Names**: Extract the actual entity names from lines like:
+   - `entity: sensor.temperature`
+   - `entity: light.kitchen_lights`
+   - `entity: binary_sensor.motion_detector`
+
+4. **Filter Out Non-Entities**: Exclude special configuration values that are not actual Home Assistant entities:
+   - `entity: template` (used in custom:state-switch cards)
+   - `entity: user` (used in custom:state-switch cards)
+   - Any other non-entity configuration values
+
+5. **Deduplicate**: Remove any duplicate entity names from the list
+
+6. **Alphabetize**: Sort all entities alphabetically by their full entity name
+
+7. **Format Output**: Present the final list in YAML format as:
+   ```yaml
+   entities:
+     - binary_sensor.example_sensor
+     - light.example_light
+     - sensor.example_temperature
+   ```
+
+## Commands to Use:
+
+```bash
+# List directory contents to understand structure
+list_dir target_directory="/path/to/dashboards/components/panels"
+
+# Search for all entity references
+grep pattern="entity:" path="/path/to/dashboards/components/panels" output_mode="content"
+
+# If needed, search for specific non-entity patterns to exclude
+grep pattern="entity: template|entity: user" path="/path/to/dashboards/components/panels" output_mode="content" -C="3"
+```
+
+## Output Requirements:
+
+- Provide a complete, alphabetized list of all unique entities
+- Use proper YAML formatting with entities as a list under "entities:"
+- Include a count of total entities found
+- Ensure all entities follow Home Assistant naming conventions (domain.entity_name format)
+
+## Example Usage:
+
+When given a directory like `/home/user/homeassistant-config/dashboards/components/panels`, this prompt will:
+1. Scan all YAML files in that directory
+2. Extract every entity reference
+3. Filter out configuration-only values
+4. Return a clean, alphabetized list ready for use in Home Assistant configurations
+
+This is particularly useful for:
+- Creating entity lists for dashboard configurations
+- Auditing which entities are used across dashboards
+- Generating comprehensive entity inventories
+- Preparing entity lists for automation or script development
+  </instructions>
+  
+  <example>
+    <title>Entity Extraction Example</title>
+    <content>
+      **Input**: Directory containing Home Assistant dashboard YAML files
+      
+      **Output**: 
+      ```yaml
+      entities:
+        - binary_sensor.downstairs_motion
+        - light.kitchen_lights
+        - sensor.temperature
+        - switch.example_switch
+      ```
+      
+      **Total entities found**: 4
+    </content>
+  </example>
+</prompt>

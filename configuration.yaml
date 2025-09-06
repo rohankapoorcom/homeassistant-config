@@ -112,6 +112,9 @@ ingress:
 battery_notes:
   hide_battery: true
 
+remote_homeassistant:
+  instances:
+
 # smartir:
 #   check_updates: false
 
