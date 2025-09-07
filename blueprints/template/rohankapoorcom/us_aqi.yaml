@@ -21,7 +21,7 @@ sensor:
     {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
       {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
     {%- endmacro %}
-    {% set air_quality_pm_2_5 = (states("sensor.master_bedroom_air_quality_pm2_5",) | float) %}
+    {% set air_quality_pm_2_5 = (states(reference_entity) | float) %}
     {% if air_quality_pm_2_5 > 1000 %}
       invalid
     {% elif air_quality_pm_2_5 > 350.5 %}
