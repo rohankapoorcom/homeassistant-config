@@ -6,117 +6,31 @@
 #                   https://community.home-assistant.io/t/purpleair-air-quality-sensor/146588
 ###############################################################################
 ---
-sensor:
-  - platform: template
-    sensors:
-      master_bedroom_us_air_quality_index:
+template:
+  - use_blueprint:
+      path: rohankapoorcom/us_aqi.yaml
+      input:
+        reference_entity: sensor.master_bedroom_air_quality_pm2_5
+        name: master_bedroom_us_air_quality_index
         unique_id: e940b6f3-da35-4600-8fd6-8016debd5218
-        device_class: aqi
-        value_template: >
-          {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
-            {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
-          {%- endmacro %}
-          {% set air_quality_pm_2_5 = (states("sensor.master_bedroom_air_quality_pm2_5",) | float) %}
-          {% if air_quality_pm_2_5 > 1000 %}
-            invalid
-          {% elif air_quality_pm_2_5 > 350.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 500.0, 401.0, 500.0, 350.5) }}
-          {% elif air_quality_pm_2_5 > 250.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 400.0, 301.0, 350.4, 250.5) }}
-          {% elif air_quality_pm_2_5 > 150.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 300.0, 201.0, 250.4, 150.5) }}
-          {% elif air_quality_pm_2_5 > 55.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 200.0, 151.0, 150.4, 55.5) }}
-          {% elif air_quality_pm_2_5 > 35.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 150.0, 101.0, 55.4, 35.5) }}
-          {% elif air_quality_pm_2_5 > 12.1 %}
-            {{ calcAQI(air_quality_pm_2_5, 100.0, 51.0, 35.4, 12.1) }}
-          {% elif air_quality_pm_2_5 >= 0.0 %}
-            {{ calcAQI(air_quality_pm_2_5, 50.0, 0.0, 12.0, 0.0) }}
-          {% else %}
-            invalid
-          {% endif %}
 
-      living_room_us_air_quality_index:
+  - use_blueprint:
+      path: rohankapoorcom/us_aqi.yaml
+      input:
+        reference_entity: sensor.living_room_air_quality_pm2_5
+        name: living_room_us_air_quality_index
         unique_id: e232af2c-99c4-480d-a5cf-79ab5e4b8e1d
-        device_class: aqi
-        value_template: >
-          {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
-            {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
-          {%- endmacro %}
-          {% set air_quality_pm_2_5 = (states("sensor.living_room_air_quality_pm2_5",) | float) %}
-          {% if air_quality_pm_2_5 > 1000 %}
-            invalid
-          {% elif air_quality_pm_2_5 > 350.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 500.0, 401.0, 500.0, 350.5) }}
-          {% elif air_quality_pm_2_5 > 250.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 400.0, 301.0, 350.4, 250.5) }}
-          {% elif air_quality_pm_2_5 > 150.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 300.0, 201.0, 250.4, 150.5) }}
-          {% elif air_quality_pm_2_5 > 55.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 200.0, 151.0, 150.4, 55.5) }}
-          {% elif air_quality_pm_2_5 > 35.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 150.0, 101.0, 55.4, 35.5) }}
-          {% elif air_quality_pm_2_5 > 12.1 %}
-            {{ calcAQI(air_quality_pm_2_5, 100.0, 51.0, 35.4, 12.1) }}
-          {% elif air_quality_pm_2_5 >= 0.0 %}
-            {{ calcAQI(air_quality_pm_2_5, 50.0, 0.0, 12.0, 0.0) }}
-          {% else %}
-            invalid
-          {% endif %}
 
-      guest_room_us_air_quality_index:
+  - use_blueprint:
+      path: rohankapoorcom/us_aqi.yaml
+      input:
+        reference_entity: sensor.guest_room_air_quality_pm2_5
+        name: guest_room_us_air_quality_index
         unique_id: dcaca7bf-568b-42ba-b9c6-4edb3fdd8cdd
-        device_class: aqi
-        value_template: >
-          {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
-            {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
-          {%- endmacro %}
-          {% set air_quality_pm_2_5 = (states("sensor.guest_room_air_quality_pm2_5",) | float) %}
-          {% if air_quality_pm_2_5 > 1000 %}
-            invalid
-          {% elif air_quality_pm_2_5 > 350.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 500.0, 401.0, 500.0, 350.5) }}
-          {% elif air_quality_pm_2_5 > 250.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 400.0, 301.0, 350.4, 250.5) }}
-          {% elif air_quality_pm_2_5 > 150.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 300.0, 201.0, 250.4, 150.5) }}
-          {% elif air_quality_pm_2_5 > 55.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 200.0, 151.0, 150.4, 55.5) }}
-          {% elif air_quality_pm_2_5 > 35.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 150.0, 101.0, 55.4, 35.5) }}
-          {% elif air_quality_pm_2_5 > 12.1 %}
-            {{ calcAQI(air_quality_pm_2_5, 100.0, 51.0, 35.4, 12.1) }}
-          {% elif air_quality_pm_2_5 >= 0.0 %}
-            {{ calcAQI(air_quality_pm_2_5, 50.0, 0.0, 12.0, 0.0) }}
-          {% else %}
-            invalid
-          {% endif %}
 
-      downstairs_hallway_us_air_quality_index:
+  - use_blueprint:
+      path: rohankapoorcom/us_aqi.yaml
+      input:
+        reference_entity: sensor.downstairs_hallway_air_quality_pm2_5
+        name: downstairs_hallway_us_air_quality_index
         unique_id: f9695676-bdbf-48e7-ba93-feadf9ec54eb
-        device_class: aqi
-        value_template: >
-          {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
-            {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
-          {%- endmacro %}
-          {% set air_quality_pm_2_5 = (states("sensor.downstairs_hallway_air_quality_pm2_5",) | float) %}
-          {% if air_quality_pm_2_5 > 1000 %}
-            invalid
-          {% elif air_quality_pm_2_5 > 350.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 500.0, 401.0, 500.0, 350.5) }}
-          {% elif air_quality_pm_2_5 > 250.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 400.0, 301.0, 350.4, 250.5) }}
-          {% elif air_quality_pm_2_5 > 150.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 300.0, 201.0, 250.4, 150.5) }}
-          {% elif air_quality_pm_2_5 > 55.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 200.0, 151.0, 150.4, 55.5) }}
-          {% elif air_quality_pm_2_5 > 35.5 %}
-            {{ calcAQI(air_quality_pm_2_5, 150.0, 101.0, 55.4, 35.5) }}
-          {% elif air_quality_pm_2_5 > 12.1 %}
-            {{ calcAQI(air_quality_pm_2_5, 100.0, 51.0, 35.4, 12.1) }}
-          {% elif air_quality_pm_2_5 >= 0.0 %}
-            {{ calcAQI(air_quality_pm_2_5, 50.0, 0.0, 12.0, 0.0) }}
-          {% else %}
-            invalid
-          {% endif %}

@@ -1,0 +1,47 @@
+---
+blueprint:
+  name: Calculate US AQI
+  description: >
+    Creates a sensor which computers the U.S. AQI value from a reference sensor's PM2.5 value.
+    Follows the U.S. EPA AQI calculation algorithm.
+    Reference: https://community.home-assistant.io/t/purpleair-air-quality-sensor/146588
+  domain: template
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/template/rohankapoorcom/us_aqi.yaml
+  input:
+    reference_entity:
+      name: PM2.5 sensor to be used to compute the US AQI
+      description: The PM2.5 sensor which is used to compute the US AQI
+      selector:
+        entity:
+          domain: sensor
+variables:
+  reference_entity: !input reference_entity
+sensor:
+  state: >
+    {% macro calcAQI(Cp, Ih, Il, BPh, BPl) -%}
+      {{ (((Ih - Il)/(BPh - BPl)) * (Cp - BPl) + Il) | round }}
+    {%- endmacro %}
+    {% set air_quality_pm_2_5 = (states("sensor.master_bedroom_air_quality_pm2_5",) | float) %}
+    {% if air_quality_pm_2_5 > 1000 %}
+      invalid
+    {% elif air_quality_pm_2_5 > 350.5 %}
+      {{ calcAQI(air_quality_pm_2_5, 500.0, 401.0, 500.0, 350.5) }}
+    {% elif air_quality_pm_2_5 > 250.5 %}
+      {{ calcAQI(air_quality_pm_2_5, 400.0, 301.0, 350.4, 250.5) }}
+    {% elif air_quality_pm_2_5 > 150.5 %}
+      {{ calcAQI(air_quality_pm_2_5, 300.0, 201.0, 250.4, 150.5) }}
+    {% elif air_quality_pm_2_5 > 55.5 %}
+      {{ calcAQI(air_quality_pm_2_5, 200.0, 151.0, 150.4, 55.5) }}
+    {% elif air_quality_pm_2_5 > 35.5 %}
+      {{ calcAQI(air_quality_pm_2_5, 150.0, 101.0, 55.4, 35.5) }}
+    {% elif air_quality_pm_2_5 > 12.1 %}
+      {{ calcAQI(air_quality_pm_2_5, 100.0, 51.0, 35.4, 12.1) }}
+    {% elif air_quality_pm_2_5 >= 0.0 %}
+      {{ calcAQI(air_quality_pm_2_5, 50.0, 0.0, 12.0, 0.0) }}
+    {% else %}
+      invalid
+    {% endif %}
+  device_class: aqi
+  icon: mdi:blur
+  state_class: measurement
+  availability: "{{ states(reference_entity) not in ('unknown', 'unavailable') }}"
