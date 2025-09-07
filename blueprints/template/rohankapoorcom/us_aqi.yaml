@@ -42,6 +42,5 @@ sensor:
       invalid
     {% endif %}
   device_class: aqi
-  icon: mdi:blur
   state_class: measurement
   availability: "{{ states(reference_entity) not in ('unknown', 'unavailable') }}"
