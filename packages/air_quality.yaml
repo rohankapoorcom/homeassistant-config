@@ -11,26 +11,26 @@ template:
       path: rohankapoorcom/us_aqi.yaml
       input:
         reference_entity: sensor.master_bedroom_air_quality_pm2_5
-        name: master_bedroom_us_air_quality_index
-        unique_id: e940b6f3-da35-4600-8fd6-8016debd5218
+    name: master_bedroom_us_air_quality_index
+    unique_id: e940b6f3-da35-4600-8fd6-8016debd5218
 
   - use_blueprint:
       path: rohankapoorcom/us_aqi.yaml
       input:
         reference_entity: sensor.living_room_air_quality_pm2_5
-        name: living_room_us_air_quality_index
-        unique_id: e232af2c-99c4-480d-a5cf-79ab5e4b8e1d
+    name: living_room_us_air_quality_index
+    unique_id: e232af2c-99c4-480d-a5cf-79ab5e4b8e1d
 
   - use_blueprint:
       path: rohankapoorcom/us_aqi.yaml
       input:
         reference_entity: sensor.guest_room_air_quality_pm2_5
-        name: guest_room_us_air_quality_index
-        unique_id: dcaca7bf-568b-42ba-b9c6-4edb3fdd8cdd
+    name: guest_room_us_air_quality_index
+    unique_id: dcaca7bf-568b-42ba-b9c6-4edb3fdd8cdd
 
   - use_blueprint:
       path: rohankapoorcom/us_aqi.yaml
       input:
         reference_entity: sensor.downstairs_hallway_air_quality_pm2_5
-        name: downstairs_hallway_us_air_quality_index
-        unique_id: f9695676-bdbf-48e7-ba93-feadf9ec54eb
+    name: downstairs_hallway_us_air_quality_index
+    unique_id: f9695676-bdbf-48e7-ba93-feadf9ec54eb
