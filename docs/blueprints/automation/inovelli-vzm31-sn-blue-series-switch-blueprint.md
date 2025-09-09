@@ -38,6 +38,12 @@ This blueprint provides comprehensive automation for Inovelli VZM31-SN Blue Seri
 - `button_a5`: Action for Up/On button quintuple press
 - `button_b5`: Action for Down/Off button quintuple press
 
+## Variables
+- `switch_name`: Name of the switch that triggered the automation
+- `switch_device_id`: Device ID of the switch that triggered the automation
+- `switch_entities`: All entities associated with the switch that triggered the automation
+- `switch_light_entity_id`: Entity ID of the switch light that triggered the automation
+
 ## Functionality
 This blueprint creates an automation that:
 
@@ -46,6 +52,7 @@ This blueprint creates an automation that:
 3. **Handles button actions**: Processes single, double, triple, quadruple, quintuple, hold, and release events
 4. **Maps to actions**: Executes the appropriate action based on button and press type
 5. **Supports multiple devices**: Can handle multiple Inovelli VZM31-SN switches simultaneously
+6. **Adds variables for triggering device**: Instead of creating multiple automations per device, pass `switch_device_id` and/or `switch_light_entity_id` to your automation
 
 ## Usage Examples
 ```yaml
@@ -73,13 +80,13 @@ This blueprint creates an automation that:
       button_a_held:
         - service: light.turn_on
           target:
-            entity_id: light.living_room_ceiling
+            entity_id: "{{ switch_light_entity_id }}"
           data:
             brightness_pct: 100
       config_button:
-        - service: scene.turn_on
+        - action: light.toggle
           target:
-            entity_id: scene.living_room_normal
+            device_id: "{{ switch_device_id }}" 
 ```
 
 ## Dependencies
