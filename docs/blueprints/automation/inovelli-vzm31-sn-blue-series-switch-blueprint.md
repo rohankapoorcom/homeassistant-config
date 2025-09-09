@@ -41,7 +41,7 @@ This blueprint provides comprehensive automation for Inovelli VZM31-SN Blue Seri
 ## Variables
 - `switch_name`: Name of the switch that triggered the automation
 - `switch_device_id`: Device ID of the switch that triggered the automation
-- `switch_entities`: All entities associated with the swich that triggered the automation
+- `switch_entities`: All entities associated with the switch that triggered the automation
 - `switch_light_entity_id`: Entity ID of the switch light that triggered the automation
 
 ## Functionality
