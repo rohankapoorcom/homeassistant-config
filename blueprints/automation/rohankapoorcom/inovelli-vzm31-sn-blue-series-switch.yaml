@@ -170,7 +170,7 @@ actions:
   - variables:
       button_id: '{{ trigger.payload_json.action }}'
       switch_name: "{{ trigger.topic.split('/')[1] }}"
-      switch_id: >-
+      switch_device_id: >-
         {% set ns = namespace(found='') %}
         {% for id in device_id %}
           {% if device_attr(id, 'name') == switch_name %}
@@ -178,6 +178,8 @@ actions:
           {% endif %}
         {% endfor %}
         {{ ns.found }}
+      switch_entities: "{{ device_entities(switch_device_id) }}"
+      switch_light_entity_id: "{{ device_entities(switch_device_id) | select('match','^light\\.') | list | first }}"
   - choose:
       - conditions: '{{ button_id == "config_single" }}'
         sequence: !input 'config_button'
