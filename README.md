@@ -111,14 +111,15 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 This configuration includes a comprehensive collection of custom blueprints created by the repository owner for various automation scenarios.
 
 ### Blueprint Types Available
-- **Automation Blueprints**: 11 blueprints covering device-specific automations, lighting controls, battery management, and more
+- **Automation Blueprints**: 19 blueprints covering device-specific automations, lighting controls, battery management, and more
 - **Script Blueprints**: *(None created by repository owner)*
-- **Template Blueprints**: *(None created by repository owner)*
+- **Template Blueprints**: 1 blueprint for air quality calculations
 
 ### Key Blueprint Categories
 - **Device-Specific**: Emulated Roku, E-Paper Tags, Tuya Remotes
 - **Z-Wave Devices**: Inovelli switches and dimmers, Zooz scene controllers
 - **General Automation**: Motion lights, adaptive lighting, battery management
+- **Template Sensors**: Air quality calculations and environmental monitoring
 
 For detailed documentation, usage examples, and one-click import buttons, see the [Blueprint Documentation](docs/blueprints/README.md).
 

@@ -10,8 +10,8 @@ Comprehensive collection of automation blueprints covering device-specific contr
 ### Script Blueprints
 *(None created by repository owner)*
 
-### Template Blueprints
-*(None created by repository owner)*
+### [Template Blueprints](template/README.md)
+Template blueprints for creating custom sensors and calculations.
 
 ## Quick Reference
 
@@ -36,6 +36,7 @@ Comprehensive collection of automation blueprints covering device-specific contr
 | Tuya TS0044 4-Button Remote | automation | [tuya-ts0044-4-button-remote-blueprint.md](automation/tuya-ts0044-4-button-remote-blueprint.md) | Remote control automation | Tuya TS0044 remotes |
 | Zooz ZEN32 Scene Controller Status Lights | automation | [zooz-zen32-scene-controller-status-lights-blueprint.md](automation/zooz-zen32-scene-controller-status-lights-blueprint.md) | Status light automation | Zooz ZEN32 controllers |
 | Zooz ZEN32 Scene Controls | automation | [zooz-zen32-scene-controls-blueprint.md](automation/zooz-zen32-scene-controls-blueprint.md) | Scene control automation | Zooz ZEN32 controllers |
+| US AQI | template | [us-aqi-blueprint.md](template/us-aqi-blueprint.md) | EPA-compliant AQI calculation | Any PM2.5 sensor |
 
 ## Blueprint Categories
 
@@ -54,6 +55,9 @@ Comprehensive collection of automation blueprints covering device-specific contr
 - **Low Battery Level Detection**: Battery monitoring and notifications
 - **Motion Light**: Motion-activated lighting automation
 - **Tablet Battery Charging**: Tablet charging management
+
+### Template Sensors
+- **US AQI**: EPA-compliant air quality index calculation from PM2.5 sensors
 
 ## Importing Blueprints
 

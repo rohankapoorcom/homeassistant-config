@@ -4,13 +4,17 @@ This directory contains documentation for template blueprints created by the rep
 
 ## Blueprints in this Type
 
-*(None created by repository owner)*
+### US AQI
+- **File**: [us-aqi-blueprint.md](us-aqi-blueprint.md)
+- **Description**: Calculates U.S. Air Quality Index from PM2.5 sensor data
+- **Key Features**: EPA-compliant AQI calculation, invalid reading handling
+- **Device Support**: Any PM2.5 sensor
 
 ## Quick Reference
 
 | Blueprint | File | Domain | Key Features | Device Support |
 |-----------|------|--------|--------------|----------------|
-| *(No template blueprints created by repository owner)* | | | | |
+| US AQI | [us-aqi-blueprint.md](us-aqi-blueprint.md) | template | EPA-compliant AQI calculation, invalid reading handling | Any PM2.5 sensor |
 
 ## Related Documentation
 
