@@ -31,16 +31,6 @@ template:
           hourly_forecast: "{{ hourly_weather['weather.pirateweather'].forecast }}"
           daily_forecast: "{{ daily_weather['weather.pirateweather'].forecast }}"
 
-    # This is used to copy the weather information over with remote_homeassistant to the other Home Assistant instance which is responsible for dashboards
-    sensor:
-      - name: Local Weather Forecast
-        state: "{{ states('weather.pirateweather') }}"
-        attributes:
-          daily: "{{daily_forecast}}"
-          hourly: "{{hourly_forecast}}"
-          temperature: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
-          humidity: "{{states('sensor.weather_station_humidity') | float}}"
-
     weather:
       - name: Local Weather
         unique_id: 33b0c094-0824-4cb6-9104-4d7cacfb7d78
@@ -65,6 +55,16 @@ template:
         precipitation_unit: "in"
 
     sensor:
+      # This is used to copy the weather information over with remote_homeassistant to the other Home Assistant instance which is responsible for dashboards
+      - name: Local Weather Forecast
+        unique_id: 38d8558c-3552-4b2b-9ede-1a65c1c4923c
+        state: "{{ states('weather.pirateweather') }}"
+        attributes:
+          daily: "{{daily_forecast}}"
+          hourly: "{{hourly_forecast}}"
+          temperature: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
+          humidity: "{{states('sensor.weather_station_humidity') | float}}"
+
       - name: Weatherman Data
         unique_id: d52ad688-880d-47d2-a30e-5dae145ac073
         state: "OK"
