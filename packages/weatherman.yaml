@@ -34,25 +34,25 @@ template:
     weather:
       - name: Local Weather
         unique_id: 33b0c094-0824-4cb6-9104-4d7cacfb7d78
-        temperature_template: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
         apparent_temperature_template: "{{states('sensor.weather_station_feels_like_temperature') | float}}"
-        dew_point_template: "{{states('sensor.weather_station_dewpoint') | float}}"
-        temperature_unit: "°F"
-        humidity_template: "{{states('sensor.weather_station_humidity') | float}}"
-        condition_template: "{{states('weather.pirateweather')}}"
-        forecast_hourly_template: "{{hourly_forecast}}"
-        forecast_daily_template: "{{daily_forecast}}"
-        ozone_template: "{{state_attr('weather.pirateweather', 'ozone')}}"
         cloud_coverage_template: "{{state_attr('weather.pirateweather', 'cloud_coverage')}}"
+        condition_template: "{{states('weather.pirateweather')}}"
+        dew_point_template: "{{states('sensor.weather_station_dewpoint') | float}}"
+        forecast_daily_template: "{{daily_forecast}}"
+        forecast_hourly_template: "{{hourly_forecast}}"
+        humidity_template: "{{states('sensor.weather_station_humidity') | float}}"
+        ozone_template: "{{state_attr('weather.pirateweather', 'ozone')}}"
+        precipitation_unit: "in"
         pressure_template: "{{states('sensor.weather_station_absolute_pressure') | float}}"
         pressure_unit: "inHg"
+        temperature_template: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
+        temperature_unit: "°F"
+        visibility_template: "{{state_attr('weather.pirateweather', 'visibility')}}"
+        visibility_unit: "mi"
         wind_bearing_template: "{{state_attr('weather.pirateweather', 'wind_bearing')}}"
         wind_gust_speed_template: "{{state_attr('weather.pirateweather', 'wind_gust_speed')}}"
         wind_speed_template: "{{state_attr('weather.pirateweather', 'wind_speed')}}"
         wind_speed_unit: "mph"
-        visibility_template: "{{state_attr('weather.pirateweather', 'visibility')}}"
-        visibility_unit: "mi"
-        precipitation_unit: "in"
 
     sensor:
       # This is used to copy the weather information over with remote_homeassistant to the other Home Assistant instance which is responsible for dashboards
@@ -60,10 +60,20 @@ template:
         unique_id: 38d8558c-3552-4b2b-9ede-1a65c1c4923c
         state: "{{ states('weather.pirateweather') }}"
         attributes:
+          apparent_temperature: "{{states('sensor.weather_station_feels_like_temperature') | float}}"
+          cloud_coverage: "{{state_attr('weather.pirateweather', 'cloud_coverage')}}"
+          condition: "{{states('weather.pirateweather')}}"
           daily: "{{daily_forecast}}"
+          dew_point: "{{states('sensor.weather_station_dewpoint') | float}}"
           hourly: "{{hourly_forecast}}"
-          temperature: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
           humidity: "{{states('sensor.weather_station_humidity') | float}}"
+          ozone: "{{state_attr('weather.pirateweather', 'ozone')}}"
+          pressure: "{{states('sensor.weather_station_absolute_pressure') | float}}"
+          temperature: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
+          visibility: "{{state_attr('weather.pirateweather', 'visibility')}}"
+          wind_bearing: "{{state_attr('weather.pirateweather', 'wind_bearing')}}"
+          wind_gust_speed: "{{state_attr('weather.pirateweather', 'wind_gust_speed')}}"
+          wind_speed: "{{state_attr('weather.pirateweather', 'wind_speed')}}"
 
       - name: Weatherman Data
         unique_id: d52ad688-880d-47d2-a30e-5dae145ac073
