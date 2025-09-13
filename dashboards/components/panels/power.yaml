@@ -46,7 +46,19 @@ cards:
               - {}
           - entity: sensor.ups_battery_capacity
             direction: right
-            name: TrippLite UPS
+            name: Server Rack Main UPS
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
+          - entity: sensor.server_room_aux_ups_battery_level
+            direction: right
+            name: Server Rack Aux UPS
             icon: mdi:battery
             color: green
             positions:
@@ -59,6 +71,30 @@ cards:
           - entity: sensor.river_2_max_main_battery_level
             direction: right
             name: River 2 Max
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
+          - entity: sensor.master_bedroom_ups_battery_level
+            direction: right
+            name: Master Bedroom UPS
+            icon: mdi:battery
+            color: green
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              name: inside
+              value: inside
+            severity:
+              - {}
+          - entity: sensor.office_ups_battery_level
+            direction: right
+            name: Office UPS
             icon: mdi:battery
             color: green
             positions:
