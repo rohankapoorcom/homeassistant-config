@@ -25,7 +25,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.2.1.1.8.1
     unit_of_measurement: "°F"
+    state_class: measurement
+    device_class: temperature
     name: "UPS Battery Temperature"
+    unique_id: e87c88df-051f-4e3d-8356-2ee4329ddd44
     value_template: "{{ value | float(0) / 10.0 }}"
 
   - platform: snmp
@@ -34,7 +37,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.3.3.1.1.2.2
     unit_of_measurement: "°F"
+    state_class: measurement
+    device_class: temperature
     name: "UPS EnviroSense Temperature"
+    unique_id: a4492886-ba49-4c7d-b459-14cf652e162c
     value_template: "{{ value | float(0) / 10.0 }}"
 
   - platform: snmp
@@ -43,7 +49,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.3.3.2.1.1.2
     unit_of_measurement: "%"
+    state_class: measurement
+    device_class: humidity
     name: "UPS EnviroSense Humidity"
+    unique_id: 61b212ee-2c0d-499c-a5c2-de0628ab18a4
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -51,7 +60,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.2.5.0
     unit_of_measurement: "V"
+    state_class: measurement
+    device_class: voltage
     name: "UPS Battery Voltage"
+    unique_id: fe9cdcea-009e-442b-b5f5-86e3700dd69e
     value_template: "{{ value | float(0) / 10.0 }}"
 
   - platform: snmp
@@ -60,7 +72,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.2.4.0
     unit_of_measurement: "%"
+    state_class: measurement
+    device_class: battery
     name: "UPS Battery Capacity"
+    unique_id: 588231eb-5e47-42ef-aa10-b21f641bac9d
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -68,7 +83,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.2.3.0
     unit_of_measurement: "minutes"
+    state_class: measurement
+    device_class: duration
     name: "UPS Runtime Remaining"
+    unique_id: f4e076cb-9827-4c93-8c26-d97fe9aaf857
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -76,7 +94,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.3.3.1.3.1
     unit_of_measurement: "V"
+    state_class: measurement
+    device_class: voltage
     name: "UPS AC Input Voltage"
+    unique_id: 7799c1a0-eb2a-422f-b83f-f66e65c8949b
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -84,7 +105,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.4.4.1.2.1
     unit_of_measurement: "V"
+    state_class: measurement
+    device_class: voltage
     name: "UPS Output Voltage"
+    unique_id: c9c6acdb-c653-4f84-a7cd-7bb48018d70e
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -93,6 +117,7 @@ sensor:
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.2.1.5.1.1
     unit_of_measurement: "%"
     name: "UPS Load"
+    unique_id: b659a5db-480d-4a32-88d0-8e6223f73c57
 
   - platform: snmp
     host: !secret snmp.ups.host
@@ -100,7 +125,10 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.2.1.3.1.1
     unit_of_measurement: "A"
+    state_class: measurement
+    device_class: current
     name: "UPS Output Current"
+    unique_id: c56e6f4f-ab46-4f17-a54e-71160d7f129c
     value_template: "{{ value | float(0) / 100.0 }}"
 
   - platform: snmp
@@ -109,6 +137,7 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.1.1.1.1.1
     name: "UPS Battery Status"
+    unique_id: f3380d1f-2126-408e-a24d-5209b4141e32
     value_template: >
           {% if value | int == 1 %}
             Unknown
@@ -128,6 +157,7 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.1.2.1.4.1
     name: "UPS Battery Charge Details"
+    unique_id: 84e2bcae-5185-43e3-ab75-73c10b118976
     value_template: >
           {% if value | int == 0 %}
             Float
@@ -151,6 +181,7 @@ sensor:
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.4.1.850.1.1.3.1.3.3.1.1.1.1
     name: "UPS Source"
+    unique_id: 5d7f500d-cb6f-4eb6-bb58-aa69e40779a4
     value_template: >
           {% if value | int == 0 %}
             Unknown
