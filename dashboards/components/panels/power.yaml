@@ -85,6 +85,7 @@ cards:
             name: Master Bedroom UPS
             icon: mdi:battery
             color: green
+            decimal: 0
             positions:
               icon: 'off'
               indicator: 'off'
@@ -97,6 +98,7 @@ cards:
             name: Office UPS
             icon: mdi:battery
             color: green
+            decimal: 0
             positions:
               icon: 'off'
               indicator: 'off'
