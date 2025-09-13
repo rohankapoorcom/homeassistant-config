@@ -27,6 +27,15 @@
   <instructions>
     When documenting Home Assistant configurations, follow these guidelines:
     
+    0. **CRITICAL - Documentation Preservation**:
+       - **ALWAYS preserve existing documentation structure, format, and style when updating**
+       - **ONLY update documentation where actual changes have occurred in the codebase**
+       - **DO NOT overwrite existing documentation with new templates unless explicitly requested**
+       - **Maintain the original documentation's tone, formatting, and organizational structure**
+       - **When updating existing files, make minimal changes and preserve the original content style**
+       - **Before making any documentation changes, analyze existing documentation to understand current state**
+       - **Use git history to understand original documentation style if needed**
+    
     1. **Structure and Organization**:
        - Use clear headings and subheadings
        - Group related functionality together
@@ -61,6 +70,11 @@
        - Include testing and validation steps
     
     6. **Documentation Preferences**:
+       - **CRITICAL**: Always preserve existing documentation structure, format, and style when updating
+       - **CRITICAL**: Only update documentation where actual changes have occurred in the codebase
+       - **CRITICAL**: Do NOT overwrite existing documentation with new templates unless explicitly requested
+       - **CRITICAL**: Maintain the original documentation's tone, formatting, and organizational structure
+       - **CRITICAL**: When updating existing files, make minimal changes and preserve the original content style
        - Always preserve and include dashboard screenshots when present
        - Do NOT include installation and setup instructions unless specifically requested
        - Emphasize the showcase/portfolio nature of the configuration
@@ -830,6 +844,13 @@
   </output_format>
   
   <quality_standards>
+    - **CRITICAL**: Always preserve existing documentation structure, format, and style when updating
+    - **CRITICAL**: Only update documentation where actual changes have occurred in the codebase
+    - **CRITICAL**: Do NOT overwrite existing documentation with new templates unless explicitly requested
+    - **CRITICAL**: Maintain the original documentation's tone, formatting, and organizational structure
+    - **CRITICAL**: When updating existing files, make minimal changes and preserve the original content style
+    - **CRITICAL**: Before making any documentation changes, analyze existing documentation to understand current state
+    - **CRITICAL**: Use git history to understand original documentation style if needed
     - Documentation should be comprehensive but concise
     - Include practical examples and use cases
     - Maintain consistency across all documentation

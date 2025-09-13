@@ -52,6 +52,14 @@ The weatherman package provides:
   - **Ozone**: Ozone level data
   - **Cloud Coverage**: Cloud coverage percentage
 
+### Remote Weather Forecast Sensor
+- `sensor.local_weather_forecast`: Aggregated weather data for remote Home Assistant instances
+  - **State**: Current weather condition from PirateWeather
+  - **Daily Forecast**: Daily forecast data from PirateWeather
+  - **Hourly Forecast**: Hourly forecast data from PirateWeather
+  - **Temperature**: Local weather station outdoor temperature
+  - **Humidity**: Local weather station humidity
+
 ### Weather Data Sensor
 - `sensor.weatherman_data`: Weatherman data aggregation sensor
   - **Unique ID**: `d52ad688-880d-47d2-a30e-5dae145ac073`

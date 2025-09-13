@@ -38,6 +38,8 @@ template:
         attributes:
           daily: "{{daily_forecast}}"
           hourly: "{{hourly_forecast}}"
+          temperature: "{{states('sensor.weather_station_outdoor_temperature') | float}}"
+          humidity: "{{states('sensor.weather_station_humidity') | float}}"
 
     weather:
       - name: Local Weather
