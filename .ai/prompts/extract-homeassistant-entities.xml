@@ -17,27 +17,34 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
    - **CRITICAL**: If truncation occurs, search each file individually
    - **CRITICAL**: Use files_with_matches output mode to get complete file list first
 
-3. **Extract Alternative Entity References**: Search for entities referenced with non-standard patterns:
+3. **Extract Script Entity References**: Use grep to find all lines containing "script:" pattern across all YAML files
+   - Look for both `script: script_name` and `script: script.script_name` patterns
+   - Convert script names to proper entity format (add `script.` prefix if missing)
+   - **CRITICAL**: Use high head_limit to avoid truncation
+
+4. **Extract Alternative Entity References**: Search for entities referenced with non-standard patterns:
    - Look for `grid:`, `solar:`, `battery:`, `power:`, `voltage:`, `current:`, `load:`, `status:`, `source:`, `temperature:`, `capacity:`, `runtime:`, `charge:`, `level:`, `mode:`, `water:` patterns
    - These may reference entities without using the `entity:` prefix
 
-4. **Extract Templated Entity References**: Search for dynamic entity references in template systems:
+5. **Extract Templated Entity References**: Search for dynamic entity references in template systems:
    - Look for `entity_id:` patterns (used in lovelace_gen templates)
    - Search for `{{ entity_id }}` or similar template variables
    - Check for entity references in template variable definitions
 
-5. **Extract Entity References from Template Variables**: Search for entity definitions passed to templates:
+6. **Extract Entity References from Template Variables**: Search for entity definitions passed to templates:
    - Look for `entity_id: entity_name` patterns in template variable contexts
    - Check for entity lists passed to lovelace_gen templates
    - Search for entity references in `!include` statements with variables
 
-6. **Parse Entity Names**: Extract the actual entity names from lines like:
+7. **Parse Entity Names**: Extract the actual entity names from lines like:
    - `entity: sensor.temperature`
    - `entity: light.kitchen_lights`
    - `entity_id: camera.front_door`
    - `entity_id: {{ camera.entity_id }}` (template variable)
+   - `script: script_name` → `script.script_name`
+   - `script: script.script_name` → `script.script_name`
 
-7. **Filter Out Non-Entities**: Exclude special configuration values that are not actual Home Assistant entities:
+8. **Filter Out Non-Entities**: Exclude special configuration values that are not actual Home Assistant entities:
    - `entity: template` (used in custom:state-switch cards)
    - `entity: user` (used in custom:state-switch cards)
    - Template variables like `{{ camera.entity_id }}` (extract actual values instead)
@@ -45,11 +52,11 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
    - **Weather entity replacement**: Replace `weather.local_weather` with `sensor.local_weather_forecast` for remote_homeassistant compatibility (weather entities require service response data which cannot be proxied)
    - Any other non-entity configuration values
 
-8. **Deduplicate**: Remove any duplicate entity names from the list
+9. **Deduplicate**: Remove any duplicate entity names from the list
 
-9. **Alphabetize**: Sort all entities alphabetically by their full entity name
+10. **Alphabetize**: Sort all entities alphabetically by their full entity name
 
-10. **Format Output**: Present the final list in YAML format as:
+11. **Format Output**: Present the final list in YAML format as:
    ```yaml
    entities:
      - binary_sensor.example_sensor
@@ -58,7 +65,7 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
      - sensor.example_temperature
    ```
 
-11. **Verification**: Double-check that all files were searched and no entities were missed due to truncation
+12. **Verification**: Double-check that all files were searched and no entities were missed due to truncation
 
 ## Commands to Use:
 
@@ -69,9 +76,13 @@ list_dir target_directory="/path/to/dashboards/components/panels"
 # Search for direct entity references (use high head_limit to avoid truncation)
 grep pattern="entity:" path="/path/to/dashboards/components/panels" output_mode="content" head_limit="1000"
 
+# Search for script entity references (use high head_limit to avoid truncation)
+grep pattern="script:" path="/path/to/dashboards/components/panels" output_mode="content" head_limit="1000"
+
 # Search each file individually to ensure no truncation
 # For each YAML file found in the directory:
 grep pattern="entity:" path="/path/to/dashboards/components/panels/filename.yaml" output_mode="content"
+grep pattern="script:" path="/path/to/dashboards/components/panels/filename.yaml" output_mode="content"
 
 # Search for templated entity references (entity_id patterns)
 grep pattern="entity_id:" path="/path/to/dashboards/components/panels" output_mode="content"
@@ -144,9 +155,10 @@ This is particularly useful for:
       
       **Process**: 
       1. Extract direct entities: `entity: sensor.temperature`
-      2. Extract templated entities: `entity_id: camera.front_door`
-      3. Resolve template variables: `{{ camera.entity_id }}` → `camera.front_door`
-      4. Search parent directories for template variable definitions
+      2. Extract script entities: `script: turn_on_lights` → `script.turn_on_lights`
+      3. Extract templated entities: `entity_id: camera.front_door`
+      4. Resolve template variables: `{{ camera.entity_id }}` → `camera.front_door`
+      5. Search parent directories for template variable definitions
       
       **Output**: 
       ```yaml
@@ -155,10 +167,11 @@ This is particularly useful for:
         - light.kitchen_lights
         - sensor.local_weather_forecast
         - sensor.temperature
+        - script.turn_on_lights
         - switch.example_switch
       ```
       
-      **Total entities found**: 5 (including templated entities)
+      **Total entities found**: 6 (including script and templated entities)
     </content>
   </example>
 </prompt>
