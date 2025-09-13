@@ -31,6 +31,14 @@ template:
           hourly_forecast: "{{ hourly_weather['weather.pirateweather'].forecast }}"
           daily_forecast: "{{ daily_weather['weather.pirateweather'].forecast }}"
 
+    # This is used to copy the weather information over with remote_homeassistant to the other Home Assistant instance which is responsible for dashboards
+    sensor:
+      - name: Local Weather Forecast
+        state: "{{ states('weather.pirateweather') }}"
+        attributes:
+          daily: "{{daily_forecast}}"
+          hourly: "{{hourly_forecast}}"
+
     weather:
       - name: Local Weather
         unique_id: 33b0c094-0824-4cb6-9104-4d7cacfb7d78

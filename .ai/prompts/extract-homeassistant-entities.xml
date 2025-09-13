@@ -42,6 +42,7 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
    - `entity: user` (used in custom:state-switch cards)
    - Template variables like `{{ camera.entity_id }}` (extract actual values instead)
    - **Camera entities**: Exclude all `camera.*` entities as they cannot be proxied through remote_homeassistant integration
+   - **Weather entity replacement**: Replace `weather.local_weather` with `sensor.local_weather_forecast` for remote_homeassistant compatibility (weather entities require service response data which cannot be proxied)
    - Any other non-entity configuration values
 
 8. **Deduplicate**: Remove any duplicate entity names from the list
@@ -133,7 +134,7 @@ This is particularly useful for:
 - Preparing entity lists for automation or script development
 - Understanding dynamic dashboard systems that use templating
 - **Avoiding missing entities**: Handles large files and directories without truncation
-- **Remote Home Assistant compatibility**: Excludes camera entities that cannot be proxied
+- **Remote Home Assistant compatibility**: Excludes camera entities that cannot be proxied and replaces weather entities with sensor equivalents
   </instructions>
   
   <example>
@@ -151,8 +152,8 @@ This is particularly useful for:
       ```yaml
       entities:
         - binary_sensor.downstairs_motion
-        - camera.front_door
         - light.kitchen_lights
+        - sensor.local_weather_forecast
         - sensor.temperature
         - switch.example_switch
       ```
