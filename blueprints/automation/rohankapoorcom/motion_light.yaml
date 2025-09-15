@@ -14,7 +14,6 @@ blueprint:
         entity:
           filter:
             domain: binary_sensor
-            device_class: motion
     light_target:
       name: Light
       selector:
