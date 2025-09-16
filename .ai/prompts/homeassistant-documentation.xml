@@ -101,6 +101,33 @@
        - **CRITICAL**: Create package documentation files in docs/packages/ directory
        - **CRITICAL**: Create automation documentation files in docs/automations/ directory
        - **CRITICAL**: Use correct relative link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../README.md (links to blueprint index)
+       
+    6a. **Link Validation and Directory Structure**:
+       - **CRITICAL**: Before creating or updating any documentation links, verify the target files exist in the correct directory structure
+       - **CRITICAL**: Always check directory structure before creating relative links to prevent broken links
+       - **CRITICAL**: Use the following directory structure validation process:
+         1. List directory contents to verify file locations
+         2. Check relative path calculations from source to target directories
+         3. Verify all referenced files exist before creating links
+         4. Test link paths using proper relative navigation patterns
+       - **CRITICAL**: Follow this directory structure and link pattern guide:
+         - Main repository root: Contains README.md, packages/, docs/, blueprints/, etc.
+         - docs/packages/: Contains individual package documentation files (e.g., security.md, office.md)
+         - docs/automations/: Contains automation documentation files and README.md index
+         - docs/blueprints/: Contains blueprint documentation organized by type
+         - From docs/packages/ to main README: ../../README.md
+         - From docs/automations/ to main README: ../../README.md
+         - From docs/packages/ to docs/automations/: ../automations/README.md
+         - From docs/automations/ to docs/packages/: ../packages/[filename].md
+         - From docs/blueprints/ to main README: ../../README.md
+         - From docs/blueprints/ subdirectories to blueprint index: ../README.md
+         - From individual blueprint files to blueprint index: ../README.md
+       - **CRITICAL**: When updating documentation, always verify existing links are still valid
+       - **CRITICAL**: If moving files or changing directory structure, update ALL affected links
+       - **CRITICAL**: Use tools to validate links after making changes (e.g., grep, ls, file existence checks)
+       - **CRITICAL**: Never assume file locations - always verify before creating links
+       - **CRITICAL**: When creating documentation index files, verify all referenced files exist
+       - **CRITICAL**: Include link validation as part of documentation review process
     
     6. **Blueprint Documentation Organization**:
        - Create individual documentation files for each blueprint
@@ -142,6 +169,28 @@
        - **CRITICAL**: Verify all internal documentation links are correct and functional
        - **CRITICAL**: Test all relative links from different directory levels to ensure proper path resolution
        - **CRITICAL**: Follow correct link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../README.md (links to blueprint index)
+    
+    8a. **Link Validation Workflow**:
+       - **CRITICAL**: Before creating any documentation links, follow this validation workflow:
+         1. Use `list_dir` tool to verify directory structure and file locations
+         2. Use `grep` tool to search for existing link patterns in documentation
+         3. Use `run_terminal_cmd` with `ls` commands to verify file existence
+         4. Calculate relative paths manually and verify they resolve correctly
+         5. Test link paths by checking if target files exist at calculated locations
+       - **CRITICAL**: When updating existing documentation with links:
+         1. First, identify all existing links in the file using grep
+         2. Check if each referenced file exists in the expected location
+         3. Verify directory structure hasn't changed since links were created
+         4. Update broken links to point to correct file locations
+         5. Validate all new links before finalizing documentation
+       - **CRITICAL**: Use these specific tools for link validation:
+         - `list_dir` to check directory contents and structure
+         - `grep` to find existing links and patterns in documentation
+         - `run_terminal_cmd` with `ls` to verify file existence
+         - `read_file` to check if referenced files contain expected content
+       - **CRITICAL**: Never create links without first verifying target files exist
+       - **CRITICAL**: Always test relative path calculations from source to target directories
+       - **CRITICAL**: Include link validation as a mandatory step in any documentation update process
   </instructions>
   
   <template>
@@ -851,6 +900,15 @@
     - **CRITICAL**: When updating existing files, make minimal changes and preserve the original content style
     - **CRITICAL**: Before making any documentation changes, analyze existing documentation to understand current state
     - **CRITICAL**: Use git history to understand original documentation style if needed
+    - **CRITICAL**: Before creating or updating any documentation links, verify the target files exist in the correct directory structure
+    - **CRITICAL**: Always check directory structure before creating relative links to prevent broken links
+    - **CRITICAL**: Use directory listing tools to verify file locations before creating links
+    - **CRITICAL**: Never assume file locations - always verify before creating links
+    - **CRITICAL**: When updating documentation, always verify existing links are still valid
+    - **CRITICAL**: If moving files or changing directory structure, update ALL affected links
+    - **CRITICAL**: Use tools to validate links after making changes (e.g., grep, ls, file existence checks)
+    - **CRITICAL**: When creating documentation index files, verify all referenced files exist
+    - **CRITICAL**: Include link validation as part of documentation review process
     - Documentation should be comprehensive but concise
     - Include practical examples and use cases
     - Maintain consistency across all documentation
@@ -874,5 +932,7 @@
       - From docs/blueprints/ subdirectories (script/, template/, automation/) to blueprint index: ../README.md
       - From individual blueprint files to blueprint index: ../README.md
       - From docs/blueprints/ to main README: ../../README.md
+      - From docs/automations/ to docs/packages/: ../packages/[filename].md
+      - From docs/packages/ to docs/automations/: ../automations/README.md
   </quality_standards>
 </prompt>

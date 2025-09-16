@@ -7,55 +7,55 @@ This directory contains comprehensive documentation for all automations in the H
 ### Security & Access Control
 Automations related to security, locks, and access control:
 
-- **[Security Package](security.md)**: Lock status indicators, emergency response, glass break sensors
-- **[Front Door](front_door.md)**: Entry door security and access control
-- **[Garage](garage.md)**: Garage door control and monitoring
+- **[Security Package](../packages/security.md)**: Lock status indicators, emergency response, glass break sensors
+- **[Front Door](../packages/front_door.md)**: Entry door security and access control
+- **[Garage](../packages/garage.md)**: Garage door control and monitoring
 
 ### Lighting & Environment
 Automations for lighting control and environmental management:
 
-- **[Office](office.md)**: Office lighting, climate control, and productivity features
-- **[Master Bedroom](master_bedroom.md)**: Bedroom comfort and lighting automation
-- **[Hallway](hallway.md)**: Hallway lighting and motion control
-- **[Downstairs Hallway](downstairs_hallway.md)**: Downstairs hallway automation
-- **[Stairway](stairway.md)**: Stairway lighting and safety features
-- **[Kitchen](kitchen.md)**: Kitchen lighting and appliance control
-- **[Living Room](living_room.md)**: Living room entertainment and lighting
+- **[Office](../packages/office.md)**: Office lighting, climate control, and productivity features
+- **[Master Bedroom](../packages/master_bedroom.md)**: Bedroom comfort and lighting automation
+- **[Hallway](../packages/hallway.md)**: Hallway lighting and motion control
+- **[Downstairs Hallway](../packages/downstairs_hallway.md)**: Downstairs hallway automation
+- **[Stairway](../packages/stairway.md)**: Stairway lighting and safety features
+- **[Kitchen](../packages/kitchen.md)**: Kitchen lighting and appliance control
+- **[Living Room](../packages/living_room.md)**: Living room entertainment and lighting
 
 ### Bathroom & Hygiene
 Automations for bathroom functionality and hygiene:
 
-- **[Master Bathroom](master_bathroom.md)**: Master bathroom automation
-- **[Downstairs Bathroom](downstairs_bathroom.md)**: Downstairs bathroom automation
-- **[Hallway Bathroom](hallway_bathroom.md)**: Hallway bathroom features
+- **[Master Bathroom](../packages/master_bathroom.md)**: Master bathroom automation
+- **[Downstairs Bathroom](../packages/downstairs_bathroom.md)**: Downstairs bathroom automation
+- **[Hallway Bathroom](../packages/hallway_bathroom.md)**: Hallway bathroom features
 
 ### Entertainment & Media
 Automations for entertainment systems and media control:
 
-- **[Media Music](media_music.md)**: Whole-home audio and entertainment
-- **[Appliances](appliances.md)**: Appliance control and monitoring
+- **[Media Music](../packages/media_music.md)**: Whole-home audio and entertainment
+- **[Appliances](../packages/appliances.md)**: Appliance control and monitoring
 
 ### Environmental Monitoring
 Automations for environmental monitoring and alerts:
 
-- **[Weather](weather.md)**: Weather monitoring and alerts
-- **[Weatherman](weatherman.md)**: Advanced weather forecasting
-- **[Air Quality](air_quality.md)**: Air quality monitoring and alerts
+- **[Weather](../packages/weather.md)**: Weather monitoring and alerts
+- **[Weatherman](../packages/weatherman.md)**: Advanced weather forecasting
+- **[Air Quality](../packages/air_quality.md)**: Air quality monitoring and alerts
 
 ### System & Infrastructure
 Automations for system management and infrastructure:
 
-- **[Server Rack](server_rack.md)**: Server infrastructure monitoring
-- **[Tablets](tablets.md)**: Tablet interface management
-- **[Notifications](notifications.md)**: Notification management
-- **[Presence](presence.md)**: Presence detection and automation
-- **[Assistant](assistant.md)**: Voice assistant integration
+- **[Server Rack](../packages/server_rack.md)**: Server infrastructure monitoring and battery alerts
+- **[Tablets](../packages/tablets.md)**: Tablet interface management
+- **[Notifications](../packages/notifications.md)**: Notification management
+- **[Presence](../packages/presence.md)**: Presence detection and automation
+- **[Assistant](../packages/assistant.md)**: Voice assistant integration
 
 ### Specialized Spaces
 Automations for specific room types and functions:
 
-- **[Guest Room](guest_room.md)**: Guest room automation
-- **[Gym](gym.md)**: Home gym automation
+- **[Guest Room](../packages/guest_room.md)**: Guest room automation
+- **[Gym](../packages/gym.md)**: Home gym automation
 
 ## Quick Reference
 
@@ -63,61 +63,61 @@ Automations for specific room types and functions:
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Security | [security.md](security.md) | Lock status indicators, emergency response | Home security |
-| Front Door | [front_door.md](front_door.md) | Entry security, access control | Entry management |
-| Garage | [garage.md](garage.md) | Garage door control, monitoring | Vehicle access |
+| Security | [security.md](../packages/security.md) | Lock status indicators, emergency response | Home security |
+| Front Door | [front_door.md](../packages/front_door.md) | Entry security, access control | Entry management |
+| Garage | [garage.md](../packages/garage.md) | Garage door control, monitoring | Vehicle access |
 
 ### Lighting & Environment
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Office | [office.md](office.md) | Lighting presets, occupancy control | Workspace automation |
-| Master Bedroom | [master_bedroom.md](master_bedroom.md) | Bedroom comfort, lighting | Sleep environment |
-| Hallway | [hallway.md](hallway.md) | Motion lighting, passage control | Passage management |
-| Downstairs Hallway | [downstairs_hallway.md](downstairs_hallway.md) | Hallway automation | Downstairs passage |
-| Stairway | [stairway.md](stairway.md) | Safety lighting, motion control | Safety features |
-| Kitchen | [kitchen.md](kitchen.md) | Kitchen lighting, appliances | Food preparation |
-| Living Room | [living_room.md](living_room.md) | Entertainment, lighting | Social area |
+| Office | [office.md](../packages/office.md) | Lighting presets, occupancy control | Workspace automation |
+| Master Bedroom | [master_bedroom.md](../packages/master_bedroom.md) | Bedroom comfort, lighting | Sleep environment |
+| Hallway | [hallway.md](../packages/hallway.md) | Motion lighting, passage control | Passage management |
+| Downstairs Hallway | [downstairs_hallway.md](../packages/downstairs_hallway.md) | Hallway automation | Downstairs passage |
+| Stairway | [stairway.md](../packages/stairway.md) | Safety lighting, motion control | Safety features |
+| Kitchen | [kitchen.md](../packages/kitchen.md) | Kitchen lighting, appliances | Food preparation |
+| Living Room | [living_room.md](../packages/living_room.md) | Entertainment, lighting | Social area |
 
 ### Bathroom & Hygiene
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Master Bathroom | [master_bathroom.md](master_bathroom.md) | Bathroom automation | Personal hygiene |
-| Downstairs Bathroom | [downstairs_bathroom.md](downstairs_bathroom.md) | Bathroom features | Hygiene automation |
-| Hallway Bathroom | [hallway_bathroom.md](hallway_bathroom.md) | Bathroom controls | Hygiene management |
+| Master Bathroom | [master_bathroom.md](../packages/master_bathroom.md) | Bathroom automation | Personal hygiene |
+| Downstairs Bathroom | [downstairs_bathroom.md](../packages/downstairs_bathroom.md) | Bathroom features | Hygiene automation |
+| Hallway Bathroom | [hallway_bathroom.md](../packages/hallway_bathroom.md) | Bathroom controls | Hygiene management |
 
 ### Entertainment & Media
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Media Music | [media_music.md](media_music.md) | Audio control, Harmony integration | Entertainment |
-| Appliances | [appliances.md](appliances.md) | Appliance automation | Device management |
+| Media Music | [media_music.md](../packages/media_music.md) | Audio control, Harmony integration | Entertainment |
+| Appliances | [appliances.md](../packages/appliances.md) | Appliance automation | Device management |
 
 ### Environmental Monitoring
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Weather | [weather.md](weather.md) | Weather monitoring, alerts | Environmental data |
-| Weatherman | [weatherman.md](weatherman.md) | Advanced forecasting | Weather prediction |
-| Air Quality | [air_quality.md](air_quality.md) | Air quality monitoring | Environmental health |
+| Weather | [weather.md](../packages/weather.md) | Weather monitoring, alerts | Environmental data |
+| Weatherman | [weatherman.md](../packages/weatherman.md) | Advanced forecasting | Weather prediction |
+| Air Quality | [air_quality.md](../packages/air_quality.md) | Air quality monitoring | Environmental health |
 
 ### System & Infrastructure
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Server Rack | [server_rack.md](server_rack.md) | Server monitoring | Infrastructure |
-| Tablets | [tablets.md](tablets.md) | Tablet management | User interface |
-| Notifications | [notifications.md](notifications.md) | Notification system | Communication |
-| Presence | [presence.md](presence.md) | Presence detection | Occupancy tracking |
-| Assistant | [assistant.md](assistant.md) | Voice assistant | Voice control |
+| Server Rack | [server_rack.md](../packages/server_rack.md) | Server monitoring, battery alerts | Infrastructure |
+| Tablets | [tablets.md](../packages/tablets.md) | Tablet management | User interface |
+| Notifications | [notifications.md](../packages/notifications.md) | Notification system | Communication |
+| Presence | [presence.md](../packages/presence.md) | Presence detection | Occupancy tracking |
+| Assistant | [assistant.md](../packages/assistant.md) | Voice assistant | Voice control |
 
 ### Specialized Spaces
 
 | Package | File | Key Automations | Primary Function |
 |---------|------|-----------------|------------------|
-| Guest Room | [guest_room.md](guest_room.md) | Guest room automation | Guest comfort |
-| Gym | [gym.md](gym.md) | Gym automation | Fitness environment |
+| Guest Room | [guest_room.md](../packages/guest_room.md) | Guest room automation | Guest comfort |
+| Gym | [gym.md](../packages/gym.md) | Gym automation | Fitness environment |
 
 ## Automation Patterns
 
