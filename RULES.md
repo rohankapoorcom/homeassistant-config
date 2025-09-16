@@ -49,6 +49,7 @@
 3. **Verify GUIDs**: Ensure all ID fields use proper GUIDs and are unique
 4. **Test automations**: Verify automations work in safe environment
 5. **Update documentation**: Follow `.ai/prompts/homeassistant-documentation.xml` standards
+6. **Use automation prompt**: Follow `.ai/prompts/homeassistant-automation-creation.xml` for new automations
 
 ## 🏗️ PROJECT STRUCTURE RULES
 
@@ -139,6 +140,7 @@ automation:
 
 ### Documentation Requirements
 - **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.xml`
+- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.xml` for creating new automations
 - **ALWAYS document custom integrations** and their purposes with proper attribution
 - **ALWAYS explain complex automations** with comments and use cases
 - **ALWAYS keep README.md updated** with current custom components and their purposes
@@ -227,6 +229,7 @@ automation:
 
 ### Documentation Standards
 - **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.xml`
+- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.xml` for creating new automations
 - **ALWAYS keep README.md updated** with current custom components and their purposes
 - **ALWAYS provide clear setup instructions** and troubleshooting guides
 - **ALWAYS maintain change logs** for major updates
