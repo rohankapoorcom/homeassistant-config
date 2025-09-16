@@ -90,6 +90,17 @@ The server rack package provides:
   - **OID**: .1.3.6.1.4.1.850.1.1.3.1.3.3.2.1.5.1.1
   - **Function**: Load monitoring
 
+### Template Sensors
+- `sensor.server_rack_backup_time_remaining`: Server rack backup time remaining
+  - **Unit**: minutes
+  - **Function**: Calculated runtime based on charging/discharging state
+  - **Dynamic Attributes**: Friendly name changes based on charging state
+
+- `sensor.server_rack_backup_power_source`: Server rack backup power source
+  - **Function**: Dynamic power source detection
+  - **States**: AC/DC Input, AC Input, DC Input, Battery
+  - **Logic**: Determines power source based on AC and DC input states
+
 ### SNMP Configuration
 - **Host**: SNMP UPS host (configured in secrets)
 - **Version**: SNMP version 2c
@@ -97,6 +108,35 @@ The server rack package provides:
 - **Base OID**: Various OIDs for different UPS parameters
 
 ## Automations
+
+### Update Server Rack Status Display
+- **ID**: `1701157132714`
+- **Description**: Display server rack climate controls status on the epaper displays
+- **Functionality**:
+  - Updates e-paper display with current temperature and humidity
+  - Shows target temperature and fan speed settings
+  - Displays climate control status with visual indicators
+  - Includes timestamp for status reference
+- **Trigger**: Time pattern (every 10 minutes)
+- **Mode**: Restart
+
+### Server Rack Battery Power Alert
+- **ID**: `2c8ca4d5-b0e5-48c9-9a6d-a3cd60d2a449`
+- **Description**: Notifies when server rack switches to battery power for more than 10 minutes. Monitors server rack backup and UPS power source sensors.
+- **Functionality**:
+  - Monitors both server rack backup and UPS power source sensors
+  - Sends dynamic alert messages identifying which system(s) are on battery power
+  - Provides comprehensive battery status information
+  - Includes safety checks to prevent false notifications
+- **Triggers**:
+  - Server rack backup power source switches to 'Battery' for 10+ minutes
+  - UPS source switches to 'Battery' for 10+ minutes
+- **Conditions**:
+  - Safety check: Verify at least one sensor is on battery power to prevent false notifications
+- **Actions**:
+  - Sends notification via `notify.rohan_kapoor` service
+  - Dynamic alert message with comprehensive battery information
+- **Mode**: Single
 
 ### Infrastructure Monitoring
 The package provides comprehensive infrastructure monitoring through:
