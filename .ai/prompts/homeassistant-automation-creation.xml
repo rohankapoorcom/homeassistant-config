@@ -144,16 +144,75 @@
     ```
   </condition_documentation>
   
+  <trigger_selection_guidelines>
+    ## Trigger Type Selection Guidelines
+    
+    ### State Triggers (Use When)
+    - **CRITICAL**: Use `state` triggers for "any change detection" scenarios
+    - **CRITICAL**: Use `state` triggers when you need dynamic threshold logic
+    - **CRITICAL**: Use `state` triggers for complex calculations involving multiple entities
+    - **CRITICAL**: Use `state` triggers when the threshold is calculated dynamically (e.g., temperature differences)
+    
+    ### Numeric State Triggers (Use When)
+    - **CRITICAL**: Use `numeric_state` triggers for "static threshold monitoring"
+    - **CRITICAL**: Use `numeric_state` triggers when you have a fixed threshold value
+    - **CRITICAL**: Use `numeric_state` triggers for simple above/below comparisons
+    - **CRITICAL**: Use `numeric_state` triggers when the threshold doesn't change based on other entities
+    
+    ### Example Decision Tree:
+    ```yaml
+    # Use state trigger for dynamic calculations
+    triggers:
+      - trigger: state
+        entity_id: sensor.temperature
+        # Logic: Calculate difference with another sensor dynamically
+    
+    # Use numeric_state trigger for fixed thresholds  
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.temperature
+        above: 25
+        # Logic: Simple above/below comparison
+    ```
+  </trigger_selection_guidelines>
+  
   <safety_check_patterns>
     ## Safety Check Condition Patterns
+    
+    ### Entity Availability Checks
+    - **CRITICAL**: Always check entity availability before using in calculations
+    - **CRITICAL**: Use `states('entity_id') != 'unavailable'` for sensor states
+    - **CRITICAL**: Use `state_attr('entity_id', 'attribute') is not none` for attributes
+    - **CRITICAL**: Never assume entities are available without verification
     
     ### False Notification Prevention
     - **CRITICAL**: Always include safety checks when using time-based delays (`for: minutes: X`)
     - **CRITICAL**: Verify current state at execution time, not just trigger time
     - **CRITICAL**: Use template conditions to validate that the triggering condition still exists
     
-    ### Common Safety Check Pattern:
+    ### Common Safety Check Patterns:
     ```yaml
+    # For sensor states
+    conditions:
+      - alias: "Safety check: Verify sensor is available"
+        condition: template
+        value_template: "{{ states('sensor.example') != 'unavailable' }}"
+    
+    # For entity attributes  
+    conditions:
+      - alias: "Safety check: Verify attribute is available"
+        condition: template
+        value_template: "{{ state_attr('climate.example', 'temperature') is not none }}"
+    
+    # For multiple entities
+    conditions:
+      - alias: "Safety check: Verify all required entities are available"
+        condition: template
+        value_template: >-
+          {{ states('sensor.temp1') != 'unavailable' and 
+             state_attr('climate.thermostat', 'temperature') is not none }}
+    
+    # Time-based safety check
     triggers:
       - trigger: state
         entity_id: sensor.example_sensor
@@ -164,10 +223,8 @@
       - alias: "Safety check: Verify sensor is still in target state to prevent false notifications"
         condition: template
         value_template: "{{ is_state('sensor.example_sensor', 'target_state') }}"
-    ```
     
-    ### Multi-Sensor Safety Check Pattern:
-    ```yaml
+    # Multi-Sensor Safety Check Pattern:
     conditions:
       - alias: "Safety check: Verify at least one sensor is in target state to prevent false notifications"
         condition: template
@@ -240,6 +297,34 @@
     - Information that doesn't add value
   </description_standards>
   
+  <eventual_consistency_patterns>
+    ## Eventual Consistency Patterns
+    
+    ### Startup Triggers (CRITICAL)
+    - **CRITICAL**: Always include `homeassistant.start` trigger for eventual consistency
+    - **CRITICAL**: Always include `automation_reloaded` trigger for configuration changes
+    - **CRITICAL**: These triggers ensure automation state is correct after restarts/reloads
+    - **CRITICAL**: Place startup triggers FIRST in the trigger list
+    
+    ### Standard Pattern:
+    ```yaml
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: state
+        entity_id: sensor.example
+        # ... other triggers
+    ```
+    
+    ### When to Use:
+    - **ALWAYS**: For automations that maintain state or perform calculations
+    - **ALWAYS**: For automations that depend on current entity states
+    - **ALWAYS**: For automations that need to be "caught up" after restarts
+    - **NEVER**: For purely reactive automations that don't need state consistency
+  </eventual_consistency_patterns>
+  
   <yaml_formatting>
     ## YAML Formatting Requirements
     
@@ -247,18 +332,27 @@
     - **CRITICAL**: Keep all lines under 120 characters for yamllint compliance
     - **CRITICAL**: Break long template expressions across multiple lines when needed
     - **CRITICAL**: Use proper indentation (2 spaces) consistently
+    - **CRITICAL**: When breaking lines, maintain logical grouping of related expressions
     
     ### Trailing Spaces
     - **CRITICAL**: Never include trailing spaces in YAML files
     - **CRITICAL**: Run yamllint after making changes to catch formatting issues
     - **CRITICAL**: Use proper blank line formatting (no trailing spaces on empty lines)
+    - **CRITICAL**: Check for trailing spaces after line length fixes
     
-    ### Template Formatting
+    ### Template Formatting Best Practices
     ```yaml
+    # Good: Logical grouping and proper line breaks
     value_template: >-
-      {% set var1 = is_state('sensor.example', 'state') %}
-      {% set var2 = is_state('sensor.example2', 'state') %}
-      {{ var1 or var2 }}
+      {% set current_temp = states('sensor.temp1') | float(0) %}
+      {% set target_temp = state_attr('climate.thermostat', 'temperature') | float(0) %}
+      {% set temp_diff = current_temp - target_temp %}
+      {{ temp_diff > 8 }}
+    
+    # Avoid: Unnecessary line breaks that hurt readability
+    value_template: >-
+      {% set current_temp = states('sensor.temp1') | 
+        float(0) %}
     ```
   </yaml_formatting>
   
@@ -507,8 +601,12 @@
   <documentation_integration>
     ## Documentation Integration Requirements
     
-    ### Automation Documentation
-    - **CRITICAL**: Create individual automation documentation files in docs/automations/
+    ### Automation Documentation Structure
+    - **CRITICAL**: Document automations ONLY in package documentation files (docs/packages/)
+    - **CRITICAL**: Do NOT create separate individual automation files unless explicitly requested
+    - **CRITICAL**: Follow established patterns - automations are documented within their package context
+    - **CRITICAL**: Update package documentation to include new automation details
+    - **CRITICAL**: Maintain consistency with existing documentation structure
     - **CRITICAL**: Use the homeassistant-documentation.xml prompt for documentation
     - **CRITICAL**: Include automation purpose, triggers, conditions, and actions
     - **CRITICAL**: Document entity dependencies and integration points
@@ -521,7 +619,7 @@
     - **CRITICAL**: Include automation in package entity listings
     
     ### Index Updates
-    - **CRITICAL**: Update docs/automations/README.md with new automation
+    - **CRITICAL**: Update docs/automations/README.md with new automation (if individual files are created)
     - **CRITICAL**: Update docs/packages/README.md with package changes
     - **CRITICAL**: Maintain alphabetical ordering in all lists
     - **CRITICAL**: Include proper cross-references between documentation files

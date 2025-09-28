@@ -75,6 +75,9 @@
        - **CRITICAL**: Do NOT overwrite existing documentation with new templates unless explicitly requested
        - **CRITICAL**: Maintain the original documentation's tone, formatting, and organizational structure
        - **CRITICAL**: When updating existing files, make minimal changes and preserve the original content style
+       - **CRITICAL**: Document automations ONLY in package documentation files (docs/packages/)
+       - **CRITICAL**: Do NOT create separate individual automation files unless explicitly requested
+       - **CRITICAL**: Follow established patterns - automations are documented within their package context
        - Always preserve and include dashboard screenshots when present
        - Do NOT include installation and setup instructions unless specifically requested
        - Emphasize the showcase/portfolio nature of the configuration
@@ -99,7 +102,7 @@
        - **CRITICAL**: Create comprehensive documentation for ALL packages in the packages/ directory
        - **CRITICAL**: Create comprehensive documentation for ALL automations in automations.yaml and package files
        - **CRITICAL**: Create package documentation files in docs/packages/ directory
-       - **CRITICAL**: Create automation documentation files in docs/automations/ directory
+       - **CRITICAL**: Create automation documentation files in docs/automations/ directory ONLY when explicitly requested
        - **CRITICAL**: Use correct relative link patterns: docs/packages/ and docs/automations/ use ../../README.md, docs/blueprints/ subdirectories use ../README.md, individual blueprint files use ../README.md (links to blueprint index)
        
     6a. **Link Validation and Directory Structure**:

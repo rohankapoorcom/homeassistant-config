@@ -138,6 +138,32 @@ The server rack package provides:
   - Dynamic alert message with comprehensive battery information
 - **Mode**: Single
 
+### Server Rack Exhaust Fan Max Speed Control
+- **ID**: `319350f9-c4b6-4030-ba68-e975b926828f`
+- **Description**: Automatically adjusts the max fan speed based on temperature difference. Sets max speed to 100% when temperature difference exceeds 8°F, otherwise 85%.
+- **Functionality**:
+  - Monitors current temperature and target temperature from thermostat
+  - Calculates temperature difference dynamically
+  - Adjusts fan max speed based on temperature conditions
+  - Provides immediate response to temperature changes
+  - Ensures eventual consistency with startup triggers
+- **Triggers**:
+  - Home Assistant startup (`homeassistant.start`)
+  - Automation reload (`automation_reloaded`)
+  - Current temperature sensor state changes
+  - Thermostat target temperature attribute changes
+- **Conditions**:
+  - Safety check: Verify both temperature sensors are available before adjusting fan speed
+- **Actions**:
+  - Calculates temperature difference (current - target)
+  - Sets max fan speed to 100% if difference > 8°F
+  - Sets max fan speed to 85% if difference ≤ 8°F
+- **Mode**: Restart
+- **Entities Used**:
+  - `sensor.server_rack_exhaust_fan_temperature_1`: Current temperature reading
+  - `climate.server_rack_exhaust_fan_fan_1_thermostat`: Thermostat with target temperature
+  - `number.server_rack_exhaust_fan_fan_1_max_fan_speed`: Fan max speed control
+
 ### Infrastructure Monitoring
 The package provides comprehensive infrastructure monitoring through:
 - **Real-Time Monitoring**: Real-time UPS and environmental monitoring

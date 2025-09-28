@@ -86,6 +86,12 @@
 - **Quote strings** when they contain special characters or spaces
 - **Use anchors and aliases** (`&anchor`, `*alias`) for repeated values
 - **Group related configurations** logically
+- **Keep all lines under 120 characters** for yamllint compliance
+- **Break long template expressions** across multiple lines when needed
+- **Maintain logical grouping** of related expressions when breaking lines
+- **Never include trailing spaces** in YAML files
+- **Check for trailing spaces** after line length fixes
+- **Use proper blank line formatting** (no trailing spaces on empty lines)
 
 ### Package Structure Template (AI MUST USE)
 ```yaml
@@ -146,7 +152,11 @@ automation:
 - **ALWAYS keep README.md updated** with current custom components and their purposes
 - **ALWAYS document non-standard configurations** and their rationale
 - **ALWAYS create package documentation** in `docs/packages/` directory
-- **ALWAYS create automation documentation** in `docs/automations/` directory
+- **ALWAYS document automations in package documentation files** (docs/packages/)
+- **NEVER create separate individual automation files** unless explicitly requested
+- **ALWAYS follow established documentation patterns** - automations belong in package context
+- **ALWAYS preserve existing documentation structure** when updating
+- **ALWAYS verify documentation follows user's preferred organization** before creating new files
 - **ALWAYS include blueprint documentation** with import buttons and usage examples
 - **ALWAYS maintain alphabetical ordering** in all component lists for easy reference
 - **ALWAYS verify component links** by checking HACS default repositories for accuracy
@@ -173,6 +183,28 @@ automation:
 - **ALWAYS follow [Home Assistant automation conditions](https://www.home-assistant.io/docs/automation/condition/)** syntax
 - **ALWAYS follow [Home Assistant automation actions](https://www.home-assistant.io/docs/automation/action/)** syntax
 - **ALWAYS use [Home Assistant automation templates](https://www.home-assistant.io/docs/automation/templating/)** correctly
+
+### Trigger Selection Guidelines
+- **ALWAYS use `state` triggers** for "any change detection" scenarios and dynamic threshold logic
+- **ALWAYS use `state` triggers** for complex calculations involving multiple entities
+- **ALWAYS use `state` triggers** when thresholds are calculated dynamically (e.g., temperature differences)
+- **ALWAYS use `numeric_state` triggers** for "static threshold monitoring" with fixed values
+- **ALWAYS use `numeric_state` triggers** for simple above/below comparisons
+- **ALWAYS use `numeric_state` triggers** when thresholds don't change based on other entities
+
+### Eventual Consistency Patterns
+- **ALWAYS include `homeassistant.start` trigger** for automations that maintain state or perform calculations
+- **ALWAYS include `automation_reloaded` trigger** for configuration changes
+- **ALWAYS place startup triggers FIRST** in the trigger list
+- **ALWAYS use eventual consistency** for automations that depend on current entity states
+- **NEVER use startup triggers** for purely reactive automations that don't need state consistency
+
+### Safety Check Requirements
+- **ALWAYS check entity availability** before using in calculations
+- **ALWAYS use `states('entity_id') != 'unavailable'`** for sensor states
+- **ALWAYS use `state_attr('entity_id', 'attribute') is not none`** for attributes
+- **ALWAYS include safety checks** when using time-based delays (`for: minutes: X`)
+- **ALWAYS verify current state** at execution time, not just trigger time
 
 ### Best Practices
 - **ALWAYS use blueprints** for common automation patterns

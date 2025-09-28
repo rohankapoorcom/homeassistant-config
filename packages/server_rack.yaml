@@ -424,3 +424,44 @@ automation:
             Time: {{ now().strftime('%m/%d/%Y at %I:%M %p') }}
 
             Please check power status and take appropriate action.
+
+  - id: 319350f9-c4b6-4030-ba68-e975b926828f
+    alias: 'Server Rack Exhaust Fan Max Speed Control'
+    description: >-
+      Automatically adjusts the max fan speed based on temperature difference.
+      Sets max speed to 100% when temperature difference exceeds 8°F, otherwise 85%.
+    mode: restart
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: state
+        entity_id: sensor.server_rack_exhaust_fan_temperature_1
+      - trigger: state
+        entity_id: climate.server_rack_exhaust_fan_fan_1_thermostat
+        attribute: temperature
+    conditions:
+      - alias: "Safety check: Verify both temperature sensors are available before adjusting fan speed"
+        condition: template
+        value_template: >-
+          {% set current_temp = states('sensor.server_rack_exhaust_fan_temperature_1') %}
+          {% set target_temp = state_attr('climate.server_rack_exhaust_fan_fan_1_thermostat',
+            'temperature') %}
+          {{ current_temp != 'unavailable' and target_temp is not none }}
+    actions:
+      - alias: "Calculate temperature difference and set appropriate max fan speed"
+        action: number.set_value
+        target:
+          entity_id: number.server_rack_exhaust_fan_fan_1_max_fan_speed
+        data:
+          value: >-
+            {% set current_temp = states('sensor.server_rack_exhaust_fan_temperature_1') | float(0) %}
+            {% set target_temp = state_attr('climate.server_rack_exhaust_fan_fan_1_thermostat',
+              'temperature') | float(0) %}
+            {% set temp_diff = current_temp - target_temp %}
+            {% if temp_diff > 8 %}
+              100
+            {% else %}
+              85
+            {% endif %}
