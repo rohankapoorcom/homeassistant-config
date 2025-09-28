@@ -10,6 +10,8 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
 
 ## Process Steps:
 
+**CRITICAL WARNING**: When extracting entities from template variables, ONLY extract the actual entity values (right side of colon), NOT the template variable names (left side of colon). Template variable names like `apple_tv_media_player_entity` are NOT entities - they are just variable names used in templates.
+
 1. **Identify Target Files**: Search for all YAML files in the specified directory (typically dashboards/components/panels or similar dashboard structure)
 
 2. **Extract Direct Entity References**: Use grep to find all lines containing "entity:" pattern across all YAML files in the target directory
@@ -35,6 +37,9 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
    - Look for `entity_id: entity_name` patterns in template variable contexts
    - Check for entity lists passed to lovelace_gen templates
    - Search for entity references in `!include` statements with variables
+   - **CRITICAL**: Only extract actual entity names, NOT template variable names
+   - **CRITICAL**: Template variable names like `apple_tv_media_player_entity` are NOT entities
+   - **CRITICAL**: Only extract the VALUES assigned to template variables (e.g., `media_player.living_room_apple_tv`)
 
 7. **Parse Entity Names**: Extract the actual entity names from lines like:
    - `entity: sensor.temperature`
@@ -48,6 +53,8 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
    - `entity: template` (used in custom:state-switch cards)
    - `entity: user` (used in custom:state-switch cards)
    - Template variables like `{{ camera.entity_id }}` (extract actual values instead)
+   - **Template variable names**: Exclude template variable names like `apple_tv_media_player_entity`, `shield_media_player_entity`, etc.
+   - **Template variable values**: Only extract the actual entity values assigned to template variables
    - **Camera entities**: Exclude all `camera.*` entities as they cannot be proxied through remote_homeassistant integration
    - **Weather entity replacement**: Replace `weather.local_weather` with `sensor.local_weather_forecast` for remote_homeassistant compatibility (weather entities require service response data which cannot be proxied)
    - Any other non-entity configuration values
@@ -90,8 +97,11 @@ grep pattern="entity_id:" path="/path/to/dashboards/components/panels" output_mo
 # Search for template variables in entity contexts
 grep pattern="{{.*entity_id.*}}" path="/path/to/dashboards/components/panels" output_mode="content"
 
-# Search for entity references in template variable definitions
+# Search for template variable definitions (be careful to distinguish variable names from entity values)
 grep pattern="entity_id: [a-zA-Z_][a-zA-Z0-9_.]*" path="/path/to/dashboards/components/panels" output_mode="content"
+
+# Search for template variable assignments (extract VALUES, not variable names)
+grep pattern="[a-zA-Z_][a-zA-Z0-9_]*_entity: [a-zA-Z_][a-zA-Z0-9_.]*" path="/path/to/dashboards/components/panels" output_mode="content"
 
 # Search parent directories for template variable definitions
 grep pattern="entity_id: [a-zA-Z_][a-zA-Z0-9_.]*" path="/path/to/dashboards" output_mode="content"
@@ -137,6 +147,7 @@ This enhanced process handles:
 - **Truncation issues**: Uses high head_limit and individual file searches
 - **Complete coverage**: Ensures no entities are missed due to output limits
 - **Camera exclusion**: Automatically excludes camera entities that cannot be proxied
+- **Template variable handling**: Correctly distinguishes between template variable names and entity values
 
 This is particularly useful for:
 - Creating entity lists for dashboard configurations
@@ -159,6 +170,9 @@ This is particularly useful for:
       3. Extract templated entities: `entity_id: camera.front_door`
       4. Resolve template variables: `{{ camera.entity_id }}` → `camera.front_door`
       5. Search parent directories for template variable definitions
+      6. **CORRECTLY handle template variables**: 
+         - `apple_tv_media_player_entity: media_player.living_room_apple_tv` → Extract `media_player.living_room_apple_tv` (NOT `apple_tv_media_player_entity`)
+         - `shield_media_player_entity: media_player.living_room_shield_tv` → Extract `media_player.living_room_shield_tv` (NOT `shield_media_player_entity`)
       
       **Output**: 
       ```yaml
