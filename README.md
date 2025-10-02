@@ -1,10 +1,11 @@
 # Home Assistant Configuration
 ![Project Maintenance][maintenance-shield]
 [![License][license-shield]](LICENSE.md)
-
 [![GitHub Actions][actions-shield]][actions]
 [![GitHub Activity][commits-shield]][commits]
 [![GitHub Last Commit][last-commit-shield]][commits]
+![CodeRabbit Pull Request Reviews][coderabbit-shield]
+
 
 ## About
 
@@ -231,3 +232,4 @@ SOFTWARE.
 [license-shield]: https://img.shields.io/github/license/rohankapoorcom/homeassistant-config.svg
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg
 [last-commit-shield]: https://img.shields.io/github/last-commit/rohankapoorcom/homeassistant-config.svg
+[coderabbit-shield]: https://img.shields.io/coderabbit/prs/github/rohankapoorcom/homeassistant-config?utm_source=oss&utm_medium=github&utm_campaign=rohankapoorcom%2Fhomeassistant-config&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews
