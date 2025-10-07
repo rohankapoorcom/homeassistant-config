@@ -17,7 +17,7 @@ automation:
         target:
           entity_id: |
             {{
-              expand(integration_entities('fullykiosk'))
+              expand(integration_entities('fully_kiosk'))
               | selectattr('entity_id', 'search', '_restart_browser')
               | map(attribute='entity_id')
               | list
