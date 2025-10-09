@@ -161,16 +161,25 @@ automation:
                   message: Carbon monoxide has been detected at Home
     mode: single
 
-  - id: '1737078956167'
+  - id: bdc4b839-39e7-4e6a-8b04-878647d1270b
     alias: Downstairs Ring Keypad Automations
-    description: 'Synchronize the downstairs ring keypad with alarmo.'
+    description: Synchronize the downstairs ring keypad with alarmo.
     use_blueprint:
       path: ImSorryButWho/synchronize-ring-alarm-keypad-v2-with-alarmo.yaml
       input:
-        keypad: f6f70b9f94a10a9d13e034c9a38d033e
+        keypad: c8f2c33548a267c7bd17de411ed9ecf3
         alarm: alarm_control_panel.alarmo
 
-  - id: '1737111319493'
+  - id: a6a0c700-14b9-43ff-89d7-9da4c9caf152
+    alias: Upstairs Ring Keypad Automations
+    description: Synchronize the upstairs ring keypad with alarmo.
+    use_blueprint:
+      path: ImSorryButWho/synchronize-ring-alarm-keypad-v2-with-alarmo.yaml
+      input:
+        keypad: c1097ff8e9f27f0d3f40426884851370
+        alarm: alarm_control_panel.alarmo
+
+  - id: 104f65d6-7995-4eeb-a24a-88ffb47e7988
     alias: Control Glass Break Sensors
     description: 'To save battery power, enable glass break sensors only when armed'
     triggers:
@@ -178,10 +187,7 @@ automation:
         entity_id:
           - alarm_control_panel.alarmo
     actions:
-      - wait_template: >
-          {{ is_state_attr('automation.downstairs_ring_keypad_automations', 'current', 0) }}
-        timeout: 5
-        continue_on_timeout: true
+      - delay: "{{ state_attr('alarm_control_panel.alarmo', 'delay') | int(30) }}"
       - choose:
           - conditions:
               - condition: state
