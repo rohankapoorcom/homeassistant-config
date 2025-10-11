@@ -276,6 +276,7 @@ automation:
 
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades
+    description: Automatically open/close the Kitchen Shades based on the Sun Position
     use_blueprint:
       path: rohankapoorcom/sun-based-cover-control.yaml
       input:
