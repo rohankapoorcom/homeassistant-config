@@ -33,7 +33,6 @@ binary_sensor:
     entities:
       - binary_sensor.garage_lights_motion
       - binary_sensor.garage_multisensor_motion
-      - binary_sensor.garage_presence_sensor_presence
 
 automation:
   - id: 8cbaf941-3de6-482e-9226-fbe103e7c84e
