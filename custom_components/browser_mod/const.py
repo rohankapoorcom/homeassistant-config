@@ -24,9 +24,11 @@ BROWSER_MOD_BROWSER_SERVICES = [
     "popup",
     "more_info",
     "close_popup",
+    "set_popup_style",
     "notification",
     "navigate",
     "refresh",
+    "change_browser_id",
     "set_theme",
     "console",
     "javascript",
@@ -34,4 +36,10 @@ BROWSER_MOD_BROWSER_SERVICES = [
 
 BROWSER_MOD_COMPONENT_SERVICES = [
     "deregister_browser",
+]
+
+DYNAMIC_ENTITIES = [
+    "camera",
+    "battery_level",
+    "charging",
 ]

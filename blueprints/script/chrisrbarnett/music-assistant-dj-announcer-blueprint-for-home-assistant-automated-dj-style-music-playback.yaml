@@ -1,0 +1,293 @@
+blueprint:
+  name: DJ Announcer (Music Assistant)
+  description: 'Play a playlist on any speaker, with DJ-style TTS intros between tracks.
+    Select speakers/rooms/playlists via aliases, entities or URIs.
+
+    '
+  domain: script
+  input: {}
+  source_url: https://community.home-assistant.io/t/music-assistant-dj-announcer-blueprint-for-home-assistant-automated-dj-style-music-playback/930764
+fields:
+  room:
+    name: Room (alias)
+    description: Choose a room alias to resolve the target player, or leave blank
+      if providing explicit speaker.
+    selector:
+      select:
+        options:
+        - Patio
+        - Living Room
+        - Office
+        - Bedroom
+        - Hall
+        - Master Bathroom
+        - Kitchen
+        custom_value: true
+  speaker:
+    name: Speaker (entity override)
+    description: Optional explicit media_player.* to use instead of alias.
+    selector:
+      entity:
+        domain: media_player
+  playlist:
+    name: Playlist
+    description: Pick a playlist from the pool, or paste a Music Assistant playlist
+      URI.
+    selector:
+      select:
+        options:
+        - 90s Hits Essentials
+        - BBQ Classics
+        - Yacht Rock Essentials
+        - 70s Hits Essentials
+        custom_value: true
+  tts_engine:
+    name: TTS engine
+    description: Optional TTS engine entity_id, blank for tts.home_assistant_cloud.
+    selector:
+      entity:
+        domain: tts
+  chime_wait_sec:
+    name: Cue breath (seconds)
+    description: Breath after Jetsons cue (default 2s).
+    default: 2
+    selector:
+      number:
+        min: 0
+        max: 6
+        step: 0.5
+variables:
+  _room_in: '{{ (room | default('''') | string) | trim | lower }}'
+  _speaker_in: '{{ (speaker | default('''') | string) | trim }}'
+  _tts_in: '{{ (tts_engine | default(''tts.home_assistant_cloud'') | string) | trim
+    }}'
+  _playlist_in: '{{ (playlist | default('''') | string) | trim }}'
+  _chime_wait: '{{ (chime_wait_sec | default(2.0)) | float(2) }}'
+  _aliases:
+    patio: media_player.patio_nabu
+    living room: media_player.homepod_ma
+    office: media_player.office_homepod_mini
+    bedroom: media_player.bedroom_homepod_mini_ma
+    hall: media_player.hall_homepod_mini_ma
+    master bathroom: media_player.master_bathroom_homepod_mini_ma
+    kitchen: media_player.kitchen_nabu
+  _playlist_name_map:
+    90s Hits Essentials: library://playlist/42
+    BBQ Classics: library://playlist/84
+    Yacht Rock Essentials: library://playlist/83
+    70s Hits Essentials: library://playlist/85
+    library://playlist/42: 90s Hits Essentials
+    library://playlist/84: BBQ Classics
+    library://playlist/83: Yacht Rock Essentials
+    library://playlist/85: 70s Hits Essentials
+  _playlist_pool_default:
+  - library://playlist/42
+  - library://playlist/84
+  - library://playlist/83
+  - library://playlist/85
+  _player: '{% set s = _speaker_in %} {% if s %}{{ s }} {% elif _aliases.get(_room_in)
+    %}{{ _aliases.get(_room_in) }} {% else %}{% endif %}'
+  _tts: "{% if '.' in _tts_in %}\n  {{ _tts_in }}\n{% else %}\n  tts.home_assistant_cloud\n{%
+    endif %}"
+  _playlist_uri: "{% set p = _playlist_in %}\n{% if p.startswith('library://playlist/')
+    %}\n  {{ p }}\n{% elif _playlist_name_map.get(p) %}\n  {{ _playlist_name_map.get(p)
+    }}\n{% else %}\n  {{ (_playlist_pool_default | random) | string }}\n{% endif %}"
+  _picked_playlist_speak: "{% set uri = _playlist_uri %}\n{% if uri.startswith('library://playlist/')
+    %}\n  {{ _playlist_name_map.get(uri, 'your playlist') }}\n{% else %}\n  {{ uri
+    }}\n{% endif %}"
+  _intro_openers:
+  - Alright, the lights are warm and the faders are live
+  - Hey there music lovers, welcome to the mix
+  - Good vibes coming your way
+  - Time to turn up the energy
+  - Let’s get this party started
+  - Welcome back to the sound zone
+  - Ready to dive into some great music
+  - The beats are calling and we’re answering
+  _intro_connectors:
+  - Spinning up
+  - Starting with
+  - Diving into
+  - Kicking off with
+  - Opening up
+  - Beginning our journey through
+  _track_intros:
+  - First up
+  - Starting strong with
+  - Opening with
+  - Leading off with
+  - Kicking things off with
+  - Here’s our opener
+  _transition_phrases:
+  - Up next on
+  - Coming up from
+  - Here’s another gem from
+  - Keep the energy flowing with
+  - Don’t touch that dial, we’ve got
+  - Staying in the groove with
+  - Next up from
+  - Continuing the vibe with
+  - Here comes
+  - Rolling into
+  _artist_connectors:
+  - by
+  - from
+  - courtesy of
+  - brought to you by
+  _outro_phrases:
+  - That’s the end of
+  - We’ve reached the final notes of
+  - Thanks for vibing with
+  - That’s a wrap on
+  - Hope you enjoyed the journey through
+  - Until next time, that was
+  _outro_closers:
+  - See you next time
+  - Keep the music playing
+  - Thanks for listening
+  - Catch you on the flip side
+  - Stay tuned for more great music
+  - Keep those good vibes going
+sequence:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ not _player }}'
+    sequence:
+    - service: persistent_notification.create
+      data:
+        title: DJ Announcer Error
+        message: Could not resolve a player. Provide a speaker entity or a known room
+          alias (Patio, Living Room, Office, Bedroom, Hall, Master Bathroom, Kitchen).
+        notification_id: dj_announcer_error
+    - stop: Missing/invalid player
+- service: logbook.log
+  data:
+    name: DJ Announcer
+    message: 'Chosen playlist: {{ _playlist_uri }} (speaks as: {{ _picked_playlist_speak
+      }})
+
+      '
+- service: media_player.shuffle_set
+  target:
+    entity_id: '{{ _player }}'
+  data:
+    shuffle: true
+- service: music_assistant.play_media
+  target:
+    entity_id: '{{ _player }}'
+  data:
+    media_type: playlist
+    media_id: '{{ _playlist_uri }}'
+    enqueue: replace
+- wait_template: '{{ states(_player) in [''playing'',''buffering''] }}'
+  timeout: 00:01:00
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ states(_player) not in [''playing'',''buffering''] }}'
+    sequence:
+    - service: music_assistant.play_media
+      target:
+        entity_id: '{{ _player }}'
+      data:
+        media_type: playlist
+        media_id: '{{ (_playlist_pool_default | random) }}'
+        enqueue: replace
+    - service: persistent_notification.create
+      data:
+        title: Music DJ Warning
+        message: Primary playlist failed. Fallback chosen.
+        notification_id: music_dj_fallback
+- wait_template: '{{ (state_attr(_player,''media_title'') | default('''',true) | trim)
+    != '''' }}'
+  timeout: 00:00:06
+  continue_on_timeout: true
+- variables:
+    _raw_title: '{{ state_attr(_player,''media_title'') | default(''this one'', true)
+      }}'
+    _raw_artist: "{% set a = state_attr(_player,'media_artist') | default('', true)
+      %} {% if not a %}\n  {% set al = state_attr(_player,'media_artist_list') | default([],
+      true) %}\n  {% set a = (al | list | join(', ')) %}\n{% endif %} {% set a = a
+      | replace('VEVO','') | replace('- Topic','') | replace(' - Topic','') | trim
+      %} {{ a }}"
+    _speak_title: '{{ _raw_title }}'
+    _speak_artist: '{% set t = (_raw_title | lower) %} {% set a = (_raw_artist | lower)
+      %} {% if a and a not in t and a != t %}{{ _raw_artist }}{% endif %}'
+- wait_template: '{{ as_timestamp(now()) - as_timestamp(states[_player].last_changed)
+    > _chime_wait }}'
+  timeout: 00:00:10
+  continue_on_timeout: true
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ states(_player) in [''playing'',''buffering''] and (state_attr(_player,''media_title'')
+        | default('''', true) | trim) != '''' }}
+
+        '
+    sequence:
+    - service: tts.speak
+      target:
+        entity_id: '{{ _tts }}'
+      data:
+        media_player_entity_id: '{{ _player }}'
+        cache: false
+        message: '{{ _intro_openers | random }}, {{ _intro_connectors | random }}
+          {{ _picked_playlist_speak }}, and {{ _track_intros | random }} it''s {{
+          _speak_title }}{% if _speak_artist %} by {{ _speak_artist }}{% endif %}.'
+- variables:
+    _last_title: '{{ state_attr(_player, ''media_title'') | default('''', true) }}'
+- repeat:
+    while:
+    - condition: template
+      value_template: '{{ states(_player) in [''playing'',''buffering''] and (state_attr(_player,''media_title'')
+        | default('''', true) | trim) != '''' }}
+
+        '
+    sequence:
+    - wait_template: '{{ state_attr(_player,''media_title'') | default('''', true)
+        != _last_title }}
+
+        '
+      timeout: 00:30:00
+      continue_on_timeout: true
+    - variables:
+        _last_title: '{{ state_attr(_player, ''media_title'') | default(_last_title,
+          true) }}'
+        _raw_title: '{{ _last_title | default(''this one'', true) }}'
+        _raw_artist: "{% set a = state_attr(_player,'media_artist') | default('',
+          true) %} {% if not a %}\n  {% set al = state_attr(_player,'media_artist_list')
+          | default([], true) %}\n  {% set a = (al | list | join(', ')) %}\n{% endif
+          %} {% set a = a | replace('VEVO','') | replace('- Topic','') | replace('
+          - Topic','') | trim %} {{ a }}"
+        _speak_title: '{{ _raw_title }}'
+        _speak_artist: '{% set t = (_raw_title | lower) %} {% set a = (_raw_artist
+          | lower) %} {% if a and a not in t and a != t %}{{ _raw_artist }}{% endif
+          %}'
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: "{{ states(_player) in ['playing','buffering']\n   and (state_attr(_player,'media_title')
+            | default('', true) | trim) != '' }}\n"
+        sequence:
+        - service: tts.speak
+          target:
+            entity_id: '{{ _tts }}'
+          data:
+            media_player_entity_id: '{{ _player }}'
+            cache: false
+            message: '{{ _transition_phrases | random }} {{ _picked_playlist_speak
+              }}:{% if _speak_title %} {{ _speak_title }}{% if _speak_artist %} {{
+              _artist_connectors | random }} {{ _speak_artist }}{% endif %} {% else
+              %} another great track{% endif %}.'
+- wait_template: '{{ states(_player) in [''idle'', ''off''] }}'
+  timeout: 01:00:00
+  continue_on_timeout: false
+- service: tts.speak
+  target:
+    entity_id: '{{ _tts }}'
+  data:
+    media_player_entity_id: '{{ _player }}'
+    cache: false
+    message: '{{ _outro_phrases | random }} {{ _picked_playlist_speak }}. {{ _outro_closers
+      | random }}'

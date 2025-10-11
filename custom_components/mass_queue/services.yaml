@@ -1,0 +1,160 @@
+get_queue_items:
+  fields:
+    limit:
+      name: Limit
+      description: Limit on the number of items in queue to return
+      required: false
+      example: 500
+      selector:
+        number:
+          min: 1
+          max: 1000
+          step: 1
+    offset:
+      name: Offset
+      description: Location in queue to start where zero equals the first item in queue, not the current item.
+      required: false
+      advanced: true
+      example: 50
+      selector:
+        number:
+          min: 1
+          max: 1000
+          step: 1
+    limit_before:
+      name: Limit Before
+      description: Number of items to pull before current active item in queue.
+      required: false
+      example: 5
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 1000
+          step: 1
+    limit_after:
+      name: Limit After
+      description: Number of items to pull after current active item in queue.
+      required: false
+      example: 50
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 1000
+          step: 1
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+remove_queue_item:
+  fields:
+    queue_item_id:
+      name: Queue Item ID
+      required: true
+      selector:
+        text:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+move_queue_item_up:
+  fields:
+    queue_item_id:
+      name: Queue Item ID
+      required: true
+      selector:
+        text:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+move_queue_item_down:
+  fields:
+    queue_item_id:
+      name: Queue Item ID
+      required: true
+      selector:
+        text:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+move_queue_item_next:
+  fields:
+    queue_item_id:
+      name: Queue Item ID
+      required: true
+      selector:
+        text:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+play_queue_item:
+  fields:
+    queue_item_id:
+      name: Queue Item ID
+      required: true
+      selector:
+        text:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+send_command:
+  fields:
+    command:
+      name: Command
+      description: Command to send to Music Assistant
+      required: true
+      selector:
+        text:
+    data:
+      name: Data
+      description: Command data to send
+      required: false
+      default: {}
+      selector:
+        object:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+
+unfavorite_current_item:
+  fields:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
