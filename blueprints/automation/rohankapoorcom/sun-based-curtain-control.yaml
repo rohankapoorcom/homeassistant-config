@@ -1,0 +1,107 @@
+---
+blueprint:
+  name: Sun-Based Curtain/Shade Control
+  description: >-
+    Automatically opens and closes curtains or shades based on sun position
+    and window/door status with customizable notification actions.
+    Features:
+    - Opens shades after sunrise (configurable offset, default 90 minutes)
+    - Closes shades after sunset, before sunrise, or when windows/doors close
+    - Open status sensor integration (prevents closing when windows/doors are open)
+    - Optional delay before closing
+    - Optional presence sensor check before opening
+    - Customizable notification actions (LED feedback, scripts, etc.)
+  domain: automation
+  input:
+    cover_entity:
+      name: Cover Entity
+      description: The curtain or shade entity to control
+      selector:
+        entity:
+          domain: cover
+    open_status_sensor:
+      name: Open Status Sensor
+      description: Binary sensor for window/door open/closed status
+      selector:
+        entity:
+          domain: binary_sensor
+    sunrise_offset:
+      name: Sunrise Offset
+      description: Time offset after sunrise to open shades
+      selector:
+        time:
+      default: "01:30:00"
+    close_delay:
+      name: Close Delay
+      description: Optional delay in seconds before closing shades
+      selector:
+        number:
+          min: 0
+          max: 60
+          unit_of_measurement: seconds
+      default: 0
+    presence_sensor:
+      name: Presence Sensor
+      description: Optional presence sensor to check before opening shades
+      selector:
+        entity:
+          domain: binary_sensor
+    notification_action:
+      name: Notification Action
+      description: Action to run for LED notifications (optional)
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-curtain-control.yaml
+
+variables:
+  open_status_sensor: !input open_status_sensor
+  presence_sensor: !input presence_sensor
+
+mode: single
+max_exceeded: silent
+triggers:
+  - platform: sun
+    event: sunset
+  - platform: sun
+    event: sunrise
+    offset: !input sunrise_offset
+  - trigger: state
+    entity_id: !input open_status_sensor
+    to: 'off'
+  - trigger: homeassistant
+    event: start
+  - trigger: event
+    event_type: automation_reloaded
+
+actions:
+  - choose:
+      - alias: Close shades after sunset or before sunrise
+        conditions:
+          - condition: or
+            conditions:
+              - condition: sun
+                after: sunset
+              - condition: sun
+                before: sunrise
+                before_offset: !input sunrise_offset
+        sequence:
+          - condition: template
+            value_template: "{{ is_state(open_status_sensor, 'off') }}"
+          - delay: !input close_delay
+          - action: cover.close_cover
+            target:
+              entity_id: !input cover_entity
+      - alias: Open shades after sunrise offset
+        conditions:
+          - condition: sun
+            after: sunrise
+            after_offset: !input sunrise_offset
+        sequence:
+          - wait_template: >-
+              {{ true if states(presence_sensor) == 'unknown'
+              else is_state(presence_sensor, 'off') }}
+          - action: cover.open_cover
+            target:
+              entity_id: !input cover_entity
+  - !input notification_action
