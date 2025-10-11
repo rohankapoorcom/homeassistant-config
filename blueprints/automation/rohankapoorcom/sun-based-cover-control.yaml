@@ -8,6 +8,7 @@ blueprint:
     - Opens shades after sunrise (configurable offset, default 90 minutes)
     - Closes shades after sunset, before sunrise, or when windows/doors close
     - Required open status sensor integration (prevents closing when windows/doors are open)
+    - Window/door close trigger evaluates if cover should close based on sun position
     - Optional delay before closing
     - Optional presence sensor check before opening
     - Customizable notification actions (LED feedback, scripts, etc.)
@@ -21,7 +22,7 @@ blueprint:
           domain: cover
     open_status_sensor:
       name: Open Status Sensor
-      description: Binary sensor for window/door open/closed status (required)
+      description: Binary sensor for window/door open/closed status (required). Triggers cover close evaluation when window/door closes.
       selector:
         entity:
           domain: binary_sensor

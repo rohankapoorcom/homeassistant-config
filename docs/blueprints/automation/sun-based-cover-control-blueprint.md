@@ -27,7 +27,7 @@ This blueprint creates an automation that:
 ### Triggers
 - **Sunset**: Closes shades after sunset
 - **Sunrise + Offset**: Opens shades after sunrise with configurable offset (default 90 minutes)
-- **Window/Door Close**: Closes shades immediately when windows/doors are closed
+- **Window/Door Close**: Triggers evaluation of whether shades should close based on sun position
 - **System Start**: Runs on Home Assistant startup
 - **Automation Reload**: Runs when automation is reloaded
 
@@ -37,6 +37,7 @@ This blueprint creates an automation that:
   - Applies optional delay before closing
   - Closes the cover entity
   - Executes notification action
+  - **Note**: Window/door close trigger evaluates sun position conditions, not a separate close sequence
   
 - **Open Sequence**:
   - Waits for presence sensor to be off (if configured)
