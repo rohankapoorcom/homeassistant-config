@@ -57,55 +57,21 @@ automation:
             target:
               entity_id: fan.gym_fan
 
-  - id: 067c456d-a3fa-4ee2-9969-b2a48445e369
-    alias: Manage the Gym Shades
-    description: Automatically open/close the Gym Shades based on the Sun Position
-    triggers:
-      - trigger: sun
-        event: sunset
-      - trigger: sun
-        event: sunrise
-        offset: '+1:30:00'
-      - trigger: state
-        entity_id: binary_sensor.gym_sliding_door_window_door_is_open
-        to: 'off'
-      - trigger: homeassistant
-        event: start
-      - trigger: event
-        event_type: automation_reloaded
-    actions:
-      - choose:
-          - alias: If it's after sunset or before sunrise, then close the shade.
-            conditions:
-              - condition: or
-                conditions:
-                  - condition: sun
-                    after: sunset
-                  - condition: sun
-                    before: sunrise
-                    before_offset: '+1:30:00'
-            sequence:
-              - condition: "{{ is_state('binary_sensor.gym_sliding_door_window_door_is_open', 'off') }}"
-              - action: cover.close_cover
-                target:
-                  entity_id: cover.gym_shades
-          - alias: If it's 90 minutes after sunrise, then open the shade.
-            conditions:
-              - condition: sun
-                after: sunrise
-                after_offset: '+1:30:00'
-            sequence:
-              - action: cover.open_cover
-                target:
-                  entity_id: cover.gym_shades
-      - action: zwave_js.bulk_set_partial_config_parameters
-        target:
-          device_id: 4ef91ee5285ec4ad43cb3dbf25b3faf7
-        data:
-          parameter: 99
-          value:
-            All LED Strip Effect - Color: 170
-            All LED Strip Effect - Level: 50
-            All LED Strip Effect - Duration: 20
-            All LED Strip Effect - Effect: Open/close
-    mode: single
+  - use_blueprint:
+      path: rohankapoorcom/sun-based-cover-control.yaml
+      input:
+        cover_entity: cover.gym_shades
+        open_status_sensor: binary_sensor.gym_sliding_door_window_door_is_open
+        sunrise_offset: "01:30:00"
+        close_delay: 0
+        notification_action:
+          - action: zwave_js.bulk_set_partial_config_parameters
+            target:
+              device_id: 4ef91ee5285ec4ad43cb3dbf25b3faf7
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 50
+                All LED Strip Effect - Duration: 20
+                All LED Strip Effect - Effect: Open/close
