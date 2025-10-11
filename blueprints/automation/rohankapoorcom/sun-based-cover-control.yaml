@@ -101,8 +101,8 @@ actions:
             after_offset: !input sunrise_offset
         sequence:
           - wait_template: >-
-              {{ true if states(presence_sensor) == 'unknown'
-              else is_state(presence_sensor, 'off') }}
+              {% set sensor = presence_sensor | default('') %}
+              {{ true if sensor == '' or states(sensor) == 'unknown' else is_state(sensor, 'off') }}
           - action: cover.open_cover
             target:
               entity_id: !input cover_entity
