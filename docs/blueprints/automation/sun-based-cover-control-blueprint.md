@@ -1,16 +1,16 @@
-# Sun-Based Curtain Control Blueprint Documentation
+# Sun-Based Cover Control Blueprint Documentation
 
 ## Overview
 Automatically opens and closes curtains or shades based on sun position and window/door status with customizable notification actions. This blueprint provides intelligent window covering automation that responds to natural light cycles while respecting window and door positions.
 
 ## Import Blueprint
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-curtain-control.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A//github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-cover-control.yaml)
 
 ## Blueprint Information
-- **Name**: Sun-Based Curtain/Shade Control
+- **Name**: Sun-Based Cover Control
 - **Domain**: automation
-- **Source URL**: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-curtain-control.yaml
+- **Source URL**: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-cover-control.yaml
 - **Author**: rohankapoorcom
 
 ## Input Parameters
@@ -55,7 +55,7 @@ This blueprint creates an automation that:
 ### Basic Living Room Curtains
 ```yaml
 - use_blueprint:
-    path: rohankapoorcom/sun-based-curtain-control.yaml
+    path: rohankapoorcom/sun-based-cover-control.yaml
     input:
       cover_entity: cover.living_room_curtains
       open_status_sensor: binary_sensor.living_room_windows
@@ -77,7 +77,7 @@ This blueprint creates an automation that:
 ### Master Bedroom with Presence Sensor
 ```yaml
 - use_blueprint:
-    path: rohankapoorcom/sun-based-curtain-control.yaml
+    path: rohankapoorcom/sun-based-cover-control.yaml
     input:
       cover_entity: cover.master_bedroom_shades
       open_status_sensor: binary_sensor.master_bedroom_sliding_door_window_door_is_open
@@ -97,7 +97,7 @@ This blueprint creates an automation that:
 ### Gym Shades (No Presence Sensor)
 ```yaml
 - use_blueprint:
-    path: rohankapoorcom/sun-based-curtain-control.yaml
+    path: rohankapoorcom/sun-based-cover-control.yaml
     input:
       cover_entity: cover.gym_shades
       open_status_sensor: binary_sensor.gym_sliding_door_window_door_is_open

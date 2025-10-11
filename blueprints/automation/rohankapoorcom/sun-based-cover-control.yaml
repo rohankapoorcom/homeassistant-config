@@ -1,6 +1,6 @@
 ---
 blueprint:
-  name: Sun-Based Curtain/Shade Control
+  name: Sun-Based Cover Control
   description: >-
     Automatically opens and closes curtains or shades based on sun position
     and window/door status with customizable notification actions.
@@ -52,7 +52,7 @@ blueprint:
       default: []
       selector:
         action: {}
-  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-curtain-control.yaml
+  source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/sun-based-cover-control.yaml
 
 variables:
   open_status_sensor: !input open_status_sensor
