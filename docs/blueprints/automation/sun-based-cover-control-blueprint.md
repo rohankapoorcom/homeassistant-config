@@ -65,7 +65,7 @@ This blueprint creates an automation that:
       notification_action:
         - action: zwave_js.bulk_set_partial_config_parameters
           target:
-            device_id: !input living_room_light_switch_device_id
+            device_id: LIVING_ROOM_LIGHT_SWITCH_DEVICE_ID
           data:
             parameter: 99
             value:
@@ -107,7 +107,7 @@ This blueprint creates an automation that:
       notification_action:
         - action: zwave_js.bulk_set_partial_config_parameters
           target:
-            device_id: !input gym_light_switch_device_id
+            device_id: GYM_LIGHT_SWITCH_DEVICE_ID
           data:
             parameter: 99
             value:
