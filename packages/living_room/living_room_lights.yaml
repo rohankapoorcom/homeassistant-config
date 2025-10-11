@@ -179,61 +179,25 @@ automation:
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
 
-  - id: 3f0b4ba4-678b-4b37-b956-440b78c98dbe
-    alias: Manage the Living Room Curtains
-    description: Automatically open/close the Living Room Curtains based on the Sun Position
-    triggers:
-      - trigger: sun
-        event: sunset
-      - trigger: sun
-        event: sunrise
-        offset: '+1:30:00'
-      - trigger: state
-        entity_id: binary_sensor.living_room_windows
-        to: 'off'
-      - trigger: homeassistant
-        event: start
-      - trigger: event
-        event_type: automation_reloaded
-    actions:
-      - choose:
-          - alias: If it's after sunset or before sunrise, then close the shade.
-            conditions:
-              - condition: or
-                conditions:
-                  - condition: sun
-                    after: sunset
-                  - condition: sun
-                    before: sunrise
-                    before_offset: '+1:30:00'
-            sequence:
-              - condition: "{{ is_state('binary_sensor.living_room_windows', 'off') }}"
-              - delay:
-                  seconds: 5
-              - action: cover.close_cover
-                target:
-                  entity_id: cover.living_room_curtains
-          - alias: If it's 90 minutes after sunrise, then open the shade.
-            conditions:
-              - condition: sun
-                after: sunrise
-                after_offset: '+1:30:00'
-            sequence:
-              - action: cover.open_cover
-                target:
-                  entity_id: cover.living_room_curtains
-      - action: zwave_js.bulk_set_partial_config_parameters
-        target:
-          device_id:
-            *living_room_light_switch_device_id
-        data:
-          parameter: 99
-          value:
-            All LED Strip Effect - Color: 170
-            All LED Strip Effect - Level: 40
-            All LED Strip Effect - Duration: 10
-            All LED Strip Effect - Effect: Open/close
-    mode: single
+  - use_blueprint:
+      path: rohankapoorcom/sun-based-cover-control.yaml
+      input:
+        cover_entity: cover.living_room_curtains
+        open_status_sensor: binary_sensor.living_room_windows
+        sunrise_offset: "01:30:00"
+        close_delay: 5
+        notification_action:
+          - action: zwave_js.bulk_set_partial_config_parameters
+            target:
+              device_id:
+                *living_room_light_switch_device_id
+            data:
+              parameter: 99
+              value:
+                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Level: 40
+                All LED Strip Effect - Duration: 10
+                All LED Strip Effect - Effect: Open/close
 
   - id: c1febace-175f-47ef-9c1a-3ffe22a96ccf
     alias: Manage Living Room Sheers on Window Close
