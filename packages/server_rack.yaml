@@ -82,7 +82,7 @@ sensor:
     version: 2c
     community: !secret snmp.ups.community
     baseoid: .1.3.6.1.2.1.33.1.2.3.0
-    unit_of_measurement: "minutes"
+    unit_of_measurement: "min"
     state_class: measurement
     device_class: duration
     name: "UPS Runtime Remaining"
