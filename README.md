@@ -59,14 +59,18 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 ### Utilities & Tools
 - **[browser_mod](https://github.com/thomasloven/hass-browser_mod)**: Browser-based automations and popups
 - **[lovelace_gen](https://github.com/thomasloven/hass-lovelace_gen)**: Dynamic Lovelace dashboard generation
+- **[mass_queue](https://github.com/droans/mass_queue)**: Mass (Music Assistant) queue management
+- **[midas](https://github.com/MattDahEpic/ha-midas)**: California energy prices from MIDAS API
 - **[mqtt_discoverystream](https://github.com/koying/mqtt_discoverystream_ha)**: MQTT device discovery and management
 - **[mqtt_vacuum_camera](https://github.com/sca075/mqtt_vacuum_camera)**: Robot vacuum camera integration
 - **[open_epaper_link](https://github.com/OpenEPaperLink/Home_Assistant_Integration)**: E-paper display integration
 - **[pirateweather](https://github.com/alexander0042/pirate-weather-hass)**: Alternative weather data provider
 - **[qr_generator](https://github.com/DeerMaximum/QR-Code-Generator)**: QR code generation for device setup
+- **[remote_homeassistant](https://github.com/AlexxIT/RemoteHomeAssistant)**: Remote Home Assistant integration
 - **[simpleicons](https://github.com/vigonotion/hass-simpleicons)**: Custom icon integration for enhanced UI
 - **[smartthinq_sensors](https://github.com/ollo69/ha-smartthinq-sensors)**: LG ThinQ sensor integration
 - **[spook](https://spook.boo/)**: Enhanced entity management and automation
+- **[spook_inverse](https://spook.boo/)**: Inverse entity management for advanced automation
 
 ## Custom Lovelace Cards
 
@@ -92,10 +96,11 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 ### Media & Entertainment
 - **[advanced-camera-card](https://github.com/dermotduffy/advanced-camera-card)**: Comprehensive camera card with live viewing, clips browsing, and fullscreen mode
 - **[lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)**: Robot vacuum mapping interface
+- **[mass-player-card](https://github.com/abmantis/mass-player-card)**: Mass (Music Assistant) player controls and interface
+- **[mass_card](https://github.com/abmantis/mass_card)**: Mass (Music Assistant) card for music streaming
 - **[mini-media-player](https://github.com/kalkih/mini-media-player)**: Compact media controls for audio/video
 - **[mixer-card](https://github.com/wrodie/mixer-card)**: Audio mixer controls with faders and sliders for audio devices
 - **[roku-card](https://github.com/custom-cards/roku-card)**: Roku device control and status
-- **[spotify-card](https://github.com/custom-cards/spotify-card)**: Spotify integration with playlist controls
 
 ### Utilities
 - **[config-template-card](https://github.com/iantrich/config-template-card)**: Template-based card configuration
