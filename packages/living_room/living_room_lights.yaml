@@ -208,6 +208,8 @@ automation:
                     before_offset: '+1:30:00'
             sequence:
               - condition: "{{ is_state('binary_sensor.living_room_windows', 'off') }}"
+              - delay:
+                  seconds: 5
               - action: cover.close_cover
                 target:
                   entity_id: cover.living_room_curtains
@@ -232,3 +234,39 @@ automation:
             All LED Strip Effect - Duration: 10
             All LED Strip Effect - Effect: Open/close
     mode: single
+
+  - id: c1febace-175f-47ef-9c1a-3ffe22a96ccf
+    alias: Manage Living Room Sheers on Window Close
+    description: >-
+      Automatically closes the living room sheers when the windows are closed.
+      Monitors the living room windows binary sensor state.
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.living_room_windows
+        to: 'off'
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+    conditions:
+      - alias: "Safety check: Verify windows are still closed to prevent false triggers"
+        condition: template
+        value_template: "{{ is_state('binary_sensor.living_room_windows', 'off') }}"
+    actions:
+      - delay:
+          seconds: 5
+      - action: cover.close_cover
+        target:
+          entity_id: cover.living_room_sheers
+      - action: zwave_js.bulk_set_partial_config_parameters
+        target:
+          device_id:
+            *living_room_light_switch_device_id
+        data:
+          parameter: 99
+          value:
+            All LED Strip Effect - Color: 170
+            All LED Strip Effect - Level: 40
+            All LED Strip Effect - Duration: 10
+            All LED Strip Effect - Effect: Open/close
