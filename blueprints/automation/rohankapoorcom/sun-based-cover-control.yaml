@@ -22,7 +22,9 @@ blueprint:
           domain: cover
     open_status_sensor:
       name: Open Status Sensor
-      description: Binary sensor for window/door open/closed status (required). Triggers cover close evaluation when window/door closes.
+      description: >-
+        Binary sensor for window/door open/closed status (required).
+        Triggers cover close evaluation when window/door closes.
       selector:
         entity:
           domain: binary_sensor
