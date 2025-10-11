@@ -93,7 +93,7 @@ actions:
           - action: cover.close_cover
             target:
               entity_id: !input cover_entity
-          - !input notification_action
+          - sequence: !input notification_action
       - alias: Open shades after sunrise offset
         conditions:
           - condition: sun
@@ -106,4 +106,4 @@ actions:
           - action: cover.open_cover
             target:
               entity_id: !input cover_entity
-          - !input notification_action
+          - sequence: !input notification_action
