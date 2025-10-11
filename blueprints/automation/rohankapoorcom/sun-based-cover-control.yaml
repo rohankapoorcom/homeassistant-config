@@ -47,6 +47,7 @@ blueprint:
       selector:
         entity:
           domain: binary_sensor
+      default: ""
     notification_action:
       name: Notification Action
       description: Action to run for LED notifications (optional)
