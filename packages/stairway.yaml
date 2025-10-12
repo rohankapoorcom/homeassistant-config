@@ -158,9 +158,9 @@ automation:
                 - light.downstairs_hallway_lights
                 - light.stairway_lights
         scene_3:
-          - action: light.turn_off
-            target:
-              area_id:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
                 - hallway
                 - hallway_bathroom
                 - living_room
@@ -170,9 +170,9 @@ automation:
                 - master_bedroom
                 - office
         scene_4:
-          - action: light.turn_off
-            target:
-              area_id:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
                 - downstairs_bathroom
                 - downstairs_hallway
                 - garage
