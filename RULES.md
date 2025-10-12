@@ -48,8 +48,9 @@
 2. **Check yamllint**: Execute `yamllint .` and fix any errors
 3. **Verify GUIDs**: Ensure all ID fields use proper GUIDs and are unique
 4. **Test automations**: Verify automations work in safe environment
-5. **Update documentation**: Follow `.ai/prompts/homeassistant-documentation.xml` standards
-6. **Use automation prompt**: Follow `.ai/prompts/homeassistant-automation-creation.xml` for new automations
+5. **Update documentation**: Follow `.ai/prompts/homeassistant-documentation.md` standards
+6. **Use automation prompt**: Follow `.ai/prompts/homeassistant-automation-creation.md` for new automations
+7. **Use blueprint prompt**: Follow `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable blueprints
 
 ## 🏗️ PROJECT STRUCTURE RULES
 
@@ -145,8 +146,9 @@ automation:
 ## ✅ REQUIRED PRACTICES (AI MUST ALWAYS DO)
 
 ### Documentation Requirements
-- **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.xml`
-- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.xml` for creating new automations
+- **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.md`
+- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.md` for creating new automations
+- **ALWAYS use** the blueprint generation prompt in `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable automation blueprints
 - **ALWAYS document custom integrations** and their purposes with proper attribution
 - **ALWAYS explain complex automations** with comments and use cases
 - **ALWAYS keep README.md updated** with current custom components and their purposes
@@ -260,8 +262,9 @@ automation:
 - **ALWAYS perform comprehensive testing**
 
 ### Documentation Standards
-- **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.xml`
-- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.xml` for creating new automations
+- **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.md`
+- **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.md` for creating new automations
+- **ALWAYS use** the blueprint generation prompt in `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable automation blueprints
 - **ALWAYS keep README.md updated** with current custom components and their purposes
 - **ALWAYS provide clear setup instructions** and troubleshooting guides
 - **ALWAYS maintain change logs** for major updates

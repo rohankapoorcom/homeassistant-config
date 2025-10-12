@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<prompt>
-  <name>Extract Home Assistant Entities from Dashboard Files</name>
-  <description>
-    Extract all unique entities referenced in Home Assistant dashboard YAML files and output them as a deduplicated, alphabetized YAML list.
-  </description>
-  
-  <instructions>
+# Extract Home Assistant Entities from Dashboard Files
+
+**Description:** Extract all unique entities referenced in Home Assistant dashboard YAML files and output them as a deduplicated, alphabetized YAML list.
+
+## Instructions
+
 You are tasked with extracting all Home Assistant entities referenced in dashboard YAML files and creating a comprehensive, deduplicated list.
 
 ## Process Steps:
@@ -64,13 +62,13 @@ You are tasked with extracting all Home Assistant entities referenced in dashboa
 10. **Alphabetize**: Sort all entities alphabetically by their full entity name
 
 11. **Format Output**: Present the final list in YAML format as:
-   ```yaml
-   entities:
-     - binary_sensor.example_sensor
-     - camera.front_door
-     - light.example_light
-     - sensor.example_temperature
-   ```
+    ```yaml
+    entities:
+      - binary_sensor.example_sensor
+      - camera.front_door
+      - light.example_light
+      - sensor.example_temperature
+    ```
 
 12. **Verification**: Double-check that all files were searched and no entities were missed due to truncation
 
@@ -157,35 +155,30 @@ This is particularly useful for:
 - Understanding dynamic dashboard systems that use templating
 - **Avoiding missing entities**: Handles large files and directories without truncation
 - **Remote Home Assistant compatibility**: Excludes camera entities that cannot be proxied and replaces weather entities with sensor equivalents
-  </instructions>
-  
-  <example>
-    <title>Enhanced Entity Extraction Example</title>
-    <content>
-      **Input**: Directory containing Home Assistant dashboard YAML files with templating
-      
-      **Process**: 
-      1. Extract direct entities: `entity: sensor.temperature`
-      2. Extract script entities: `script: turn_on_lights` → `script.turn_on_lights`
-      3. Extract templated entities: `entity_id: camera.front_door`
-      4. Resolve template variables: `{{ camera.entity_id }}` → `camera.front_door`
-      5. Search parent directories for template variable definitions
-      6. **CORRECTLY handle template variables**: 
-         - `apple_tv_media_player_entity: media_player.living_room_apple_tv` → Extract `media_player.living_room_apple_tv` (NOT `apple_tv_media_player_entity`)
-         - `shield_media_player_entity: media_player.living_room_shield_tv` → Extract `media_player.living_room_shield_tv` (NOT `shield_media_player_entity`)
-      
-      **Output**: 
-      ```yaml
-      entities:
-        - binary_sensor.downstairs_motion
-        - light.kitchen_lights
-        - sensor.local_weather_forecast
-        - sensor.temperature
-        - script.turn_on_lights
-        - switch.example_switch
-      ```
-      
-      **Total entities found**: 6 (including script and templated entities)
-    </content>
-  </example>
-</prompt>
+
+## Example
+
+**Input**: Directory containing Home Assistant dashboard YAML files with templating
+
+**Process**: 
+1. Extract direct entities: `entity: sensor.temperature`
+2. Extract script entities: `script: turn_on_lights` → `script.turn_on_lights`
+3. Extract templated entities: `entity_id: camera.front_door`
+4. Resolve template variables: `{{ camera.entity_id }}` → `camera.front_door`
+5. Search parent directories for template variable definitions
+6. **CORRECTLY handle template variables**: 
+   - `apple_tv_media_player_entity: media_player.living_room_apple_tv` → Extract `media_player.living_room_apple_tv` (NOT `apple_tv_media_player_entity`)
+   - `shield_media_player_entity: media_player.living_room_shield_tv` → Extract `media_player.living_room_shield_tv` (NOT `shield_media_player_entity`)
+
+**Output**: 
+```yaml
+entities:
+  - binary_sensor.downstairs_motion
+  - light.kitchen_lights
+  - sensor.local_weather_forecast
+  - sensor.temperature
+  - script.turn_on_lights
+  - switch.example_switch
+```
+
+**Total entities found**: 6 (including script and templated entities)
