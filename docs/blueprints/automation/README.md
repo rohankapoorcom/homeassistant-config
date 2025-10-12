@@ -94,6 +94,12 @@ This directory contains documentation for automation blueprints created by the r
 - **Key Features**: E-paper tag control, button automation
 - **Device Support**: Solum M3 e-paper tags
 
+### Sun-Based Cover Control
+- **File**: [sun-based-cover-control-blueprint.md](sun-based-cover-control-blueprint.md)
+- **Description**: Automatically opens/closes covers based on sun position and window status
+- **Key Features**: Sun-based automation, window/door integration, presence awareness, configurable timing
+- **Device Support**: Cover entities, binary sensors, optional presence sensors
+
 ### Tablet Battery Charging
 - **File**: [tablet-battery-charging-blueprint.md](tablet-battery-charging-blueprint.md)
 - **Description**: Intelligent battery management for tablets
@@ -137,6 +143,7 @@ This directory contains documentation for automation blueprints created by the r
 | Low Battery Level Detection Notification | [low-battery-level-detection-notification-blueprint.md](low-battery-level-detection-notification-blueprint.md) | Battery monitoring | All battery sensors |
 | Motion Light | [motion-light-blueprint.md](motion-light-blueprint.md) | Motion-activated lighting | Motion sensors and lights |
 | Solum M3 E-Paper Tag Buttons | [solum-m3-epaper-tag-buttons-blueprint.md](solum-m3-epaper-tag-buttons-blueprint.md) | E-paper tag controls | Solum M3 tags |
+| Sun-Based Cover Control | [sun-based-cover-control-blueprint.md](sun-based-cover-control-blueprint.md) | Sun-based automation, window/door integration | Cover entities, binary sensors |
 | Tablet Battery Charging | [tablet-battery-charging-blueprint.md](tablet-battery-charging-blueprint.md) | Tablet charging automation | Tablets |
 | Tuya TS0044 4-Button Remote | [tuya-ts0044-4-button-remote-blueprint.md](tuya-ts0044-4-button-remote-blueprint.md) | Remote control automation | Tuya TS0044 remotes |
 | Zooz ZEN32 Scene Controller Status Lights | [zooz-zen32-scene-controller-status-lights-blueprint.md](zooz-zen32-scene-controller-status-lights-blueprint.md) | Status light automation | Zooz ZEN32 controllers |

@@ -11,6 +11,8 @@ cards:
             entity: sensor.weather_station_indoor_temperature
           - type: entity
             entity: sensor.weather_station_indoor_humidity
+          - type: entity
+            entity: binary_sensor.kitchen_window_window_door_is_open
       - type: grid
         cards:
           - type: custom:decluttering-card

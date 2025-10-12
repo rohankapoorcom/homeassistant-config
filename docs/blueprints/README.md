@@ -32,6 +32,7 @@ Template blueprints for creating custom sensors and calculations.
 | Low Battery Level Detection Notification | automation | [low-battery-level-detection-notification-blueprint.md](automation/low-battery-level-detection-notification-blueprint.md) | Battery monitoring | All battery sensors |
 | Motion Light | automation | [motion-light-blueprint.md](automation/motion-light-blueprint.md) | Motion-activated lighting | Motion sensors and lights |
 | Solum M3 E-Paper Tag Buttons | automation | [solum-m3-epaper-tag-buttons-blueprint.md](automation/solum-m3-epaper-tag-buttons-blueprint.md) | E-paper tag controls | Solum M3 tags |
+| Sun-Based Cover Control | automation | [sun-based-cover-control-blueprint.md](automation/sun-based-cover-control-blueprint.md) | Sun-based automation, window/door integration | Cover entities, binary sensors |
 | Tablet Battery Charging | automation | [tablet-battery-charging-blueprint.md](automation/tablet-battery-charging-blueprint.md) | Tablet charging automation | Tablets |
 | Tuya TS0044 4-Button Remote | automation | [tuya-ts0044-4-button-remote-blueprint.md](automation/tuya-ts0044-4-button-remote-blueprint.md) | Remote control automation | Tuya TS0044 remotes |
 | Zooz ZEN32 Scene Controller Status Lights | automation | [zooz-zen32-scene-controller-status-lights-blueprint.md](automation/zooz-zen32-scene-controller-status-lights-blueprint.md) | Status light automation | Zooz ZEN32 controllers |
@@ -54,6 +55,7 @@ Template blueprints for creating custom sensors and calculations.
 - **Lock Light Controls**: Coordinated lock and lighting automation
 - **Low Battery Level Detection**: Battery monitoring and notifications
 - **Motion Light**: Motion-activated lighting automation
+- **Sun-Based Cover Control**: Intelligent window covering automation based on sun position and window status
 - **Tablet Battery Charging**: Tablet charging management
 
 ### Template Sensors
