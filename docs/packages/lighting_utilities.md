@@ -40,9 +40,11 @@ Turns off only lights that are currently "on" in specified areas, rather than se
 ```
 
 #### Input Parameters
+#### Input Parameters
+
 | Parameter | Type | Description | Example |
 |-----------|------|-------------|---------|
-| `areas` | List | List of area IDs to turn off lights in | `["kitchen", "living_room", "office"]` |
+| `areas`   | List | List of area IDs to turn off lights in | `["kitchen", "living_room", "office"]` |
 
 
 ## Template Logic Optimization
