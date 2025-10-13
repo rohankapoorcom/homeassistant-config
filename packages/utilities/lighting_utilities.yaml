@@ -29,16 +29,16 @@ script:
     sequence:
       - variables:
           lights_to_turn_off: >
-            {% set area_lights = [] %}
+            {% set ns = namespace(area_lights = []) %}
             {% for area in areas %}
-              {% set area_lights = area_lights +
+              {% set ns.area_lights = ns.area_lights +
                 expand(states.light)
                 | selectattr('entity_id', 'in', area_entities(area))
                 | selectattr('state', 'eq', 'on')
                 | map(attribute='entity_id')
                 | list %}
             {% endfor %}
-            {{ area_lights | unique | list }}
+            {{ ns.area_lights | unique | list }}
       - condition: template
         value_template: "{{ lights_to_turn_off | length > 0 }}"
       - service: light.turn_off
