@@ -1,0 +1,48 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  10/12/2025
+#  @package      :  Lighting Utilities
+#  @description  :  Centralized lighting utility scripts
+###############################################################################
+---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'lighting_utilities'
+
+################################################
+## Scripts
+################################################
+script:
+  turn_off_lights_in_areas:
+    alias: Turn Off Lights in Areas
+    description: "Turns off only lights that are currently on in specified areas"
+    fields:
+      areas:
+        description: "List of area IDs to turn off lights in"
+        example: '["kitchen", "living_room", "office"]'
+    sequence:
+      - variables:
+          lights_to_turn_off: >
+            {% set ns = namespace(area_lights = []) %}
+            {% for area in areas %}
+              {% set ns.area_lights = ns.area_lights +
+                expand(states.light)
+                | selectattr('entity_id', 'in', area_entities(area))
+                | selectattr('state', 'eq', 'on')
+                | map(attribute='entity_id')
+                | list %}
+            {% endfor %}
+            {{ ns.area_lights | unique | list }}
+      - condition: template
+        value_template: "{{ lights_to_turn_off | length > 0 }}"
+      - service: light.turn_off
+        target:
+          entity_id: "{{ lights_to_turn_off }}"
+    mode: parallel
+    max: 100

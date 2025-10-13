@@ -323,9 +323,9 @@ automation:
         inovelli_switch:
           - 391bbdf1c04fbdef1ba596217111f64d
         button_b2:
-          - action: light.turn_off
-            target:
-              area_id:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
                 - office
 
   - id: 1050b406-8102-486e-89b7-30f29fb39f35
@@ -349,9 +349,9 @@ automation:
             sequence:
               - delay:
                   minutes: 2
-              - action: light.turn_off
-                target:
-                  area_id:
+              - action: script.turn_off_lights_in_areas
+                data:
+                  areas:
                     - office
               - action: input_boolean.turn_off
                 target:

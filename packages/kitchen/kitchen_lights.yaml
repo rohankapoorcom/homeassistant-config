@@ -260,9 +260,10 @@ automation:
                 device_id:
                   *kitchen_light_switch_device_ids
         button_b4:
-          - action: light.turn_off
-            target:
-              area_id: kitchen
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
+                - kitchen
           - action: script.inovelli_blue_notifications
             data:
               led: All

@@ -170,9 +170,9 @@ automation:
       input:
         zooz_zen30: 91a73ad6fd7d0c4885fedd856cf2701d
         relay_1x:
-          - action: light.turn_off
-            target:
-              area_id:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
                 - hallway_bathroom
                 - living_room
                 - kitchen
@@ -185,9 +185,9 @@ automation:
                 - guest_room
                 - gym
         relay_2x:
-          - action: light.turn_off
-            target:
-              area_id:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
                 - hallway
                 - hallway_bathroom
                 - living_room
