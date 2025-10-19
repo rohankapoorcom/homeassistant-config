@@ -52,6 +52,42 @@
 6. **Use automation prompt**: Follow `.ai/prompts/homeassistant-automation-creation.md` for new automations
 7. **Use blueprint prompt**: Follow `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable blueprints
 
+## 🏠 HOUSE STRUCTURE (AI MUST FOLLOW)
+
+### Room Layout and Organization
+The house is organized into two main floors with specific room assignments:
+
+**Downstairs Areas:**
+- Downstairs Bathroom
+- Downstairs Hallway  
+- Garage
+- Guest Room
+- Gym
+- Under Stairs Closet
+
+**Upstairs Areas:**
+- Dining Room
+- Hallway
+- Hallway Bathroom
+- Kitchen
+- Living Room
+- Master Bathroom
+- Master Bedroom
+- Office
+- Office Closet
+- Upstairs Hallway Closet
+
+**Common Areas:**
+- Front Door
+- Stairway
+
+### Package Organization Rules
+- **ALWAYS organize room-specific packages** by floor (downstairs/upstairs) and room name
+- **ALWAYS use actual room names** from Home Assistant Areas interface
+- **ALWAYS group related functionality** within room folders (lighting, climate, media, etc.)
+- **ALWAYS separate system-wide packages** from room-specific packages
+- **ALWAYS maintain consistency** with the actual house layout when creating new packages
+
 ## 🏗️ PROJECT STRUCTURE RULES
 
 ### Directory Organization (AI MUST FOLLOW)
