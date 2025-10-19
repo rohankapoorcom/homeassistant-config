@@ -93,3 +93,34 @@ automation:
         motion_entity: binary_sensor.upstairs_hallway_closet_door_window_door_is_open
         light_target: light.upstairs_hallway_closet_lights
         no_motion_wait: 0
+
+  - id: '1717577172306'
+    alias: Hallway Outside Master Bedroom Scene Controls
+    description: >-
+      Scene controls in the hallway outside the master bedroom using Inovelli
+      Blue Series switch with LED notifications for visual feedback
+    use_blueprint:
+      path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
+      input:
+        inovelli_switch:
+          - cf7f37ae8d16893c8c78e6d0e6fe3b24
+        config_button:
+          - action: script.turn_off_lights_in_areas
+            data:
+              areas:
+                - upstairs_hallway_closet
+                - hallway
+                - hallway_bathroom
+                - kitchen
+                - living_room
+                - office
+          - action: script.inovelli_blue_notifications
+            metadata: {}
+            data:
+              led: All
+              color: Teal
+              effect: Fast Falling
+              duration: 10 Seconds
+              target:
+                device_id: cf7f37ae8d16893c8c78e6d0e6fe3b24
+              level: 30
