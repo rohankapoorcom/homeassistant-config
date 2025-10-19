@@ -337,7 +337,7 @@ cards:
         columns: 1
         square: false
     columns: 1
-    suqare: false
+    square: false
     view_layout:
       grid-area: right
 layout_type: custom:grid-layout
