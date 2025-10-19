@@ -150,20 +150,39 @@ cards:
             max: 30
             name: Output Current
       - type: grid
-        title: Delta Pro Inputs
-        cards:
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: switch.ecoflow_delta_pro_ac
-              - name: AC Charger
-          - type: custom:decluttering-card
-            template: slider_button_card
-            variables:
-              - entity: switch.ecoflow_delta_pro_dc
-              - name: DC Charger
-        columns: 4
+        columns: 2
         square: false
+        cards:
+          - type: grid
+            title: Delta Pro Inputs
+            cards:
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: switch.ecoflow_delta_pro_ac
+                  - name: AC Power
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: switch.ecoflow_delta_pro_dc
+                  - name: DC Power
+            columns: 2
+            square: false
+          - type: grid
+            title: Server Room
+            cards:
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: switch.speaker_amplifiers
+                  - name: Speaker Amps
+              - type: custom:decluttering-card
+                template: slider_button_card
+                variables:
+                  - entity: switch.server_rack_auxiliary
+                  - name: Auxiliary
+            columns: 2
+            square: false
       - type: glance
         title: UPS Status
         entities:
