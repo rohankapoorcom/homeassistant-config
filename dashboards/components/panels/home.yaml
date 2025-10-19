@@ -39,38 +39,12 @@ cards:
           - entity: sensor.server_rack_exhaust_fan_temperature_1
             name: Server Rack
         state_color: false
-      - type: custom:simple-thermostat
-        entity: climate.upstairs
-        header: true
-        layout:
-          step: row
-          mode:
-            names: false
-            icons: true
-            headings: false
-        control:
-          hvac: mode
-          preset:
-            eco:
-              icon: mdi:leaf
-            none:
-              icon: mdi:leaf-off
-      - type: custom:simple-thermostat
-        entity: climate.downstairs
-        header: true
-        layout:
-          step: row
-          mode:
-            names: false
-            icons: true
-            headings: false
-        control:
-          hvac: mode
-          preset:
-            eco:
-              icon: mdi:leaf
-            none:
-              icon: mdi:leaf-off
+      - type: alarm-panel
+        entity: alarm_control_panel.alarmo
+        name: Alarm
+        states:
+          - arm_home
+          - arm_away
     view_layout:
       grid-area: left
   - type: custom:layout-card

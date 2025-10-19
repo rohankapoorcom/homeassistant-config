@@ -83,7 +83,7 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 ### Home Automation
 - **[button-card](https://github.com/custom-cards/button-card)**: Customizable button interface for device control
 - **[numberbox-card](https://github.com/junkfix/numberbox-card)**: Numeric input controls for devices
-- **[simple-thermostat](https://github.com/nervetattoo/simple-thermostat)**: Thermostat interface with scheduling
+- **[simple-thermostat](https://github.com/nickdos/simple-thermostat)**: Thermostat interface with scheduling
 - **[slider-button-card](https://github.com/mattieha/slider-button-card)**: Slider controls with button actions
 
 ### Layout & Navigation
