@@ -158,6 +158,12 @@ cards:
             square: false
         columns: 1
         square: false
+    columns: 1
+    square: false
+    view_layout:
+      grid-area: left-top
+  - type: grid
+    cards:
       - type: custom:simple-thermostat
         entity: climate.upstairs
         header:
@@ -178,7 +184,7 @@ cards:
     columns: 1
     square: false
     view_layout:
-      grid-area: left
+      grid-area: left-bottom
   - type: grid
     cards:
       - type: grid
@@ -345,12 +351,14 @@ layout:
   grid-template-columns: 1fr 1fr
   grid-template-rows: auto
   grid-template-areas: |
-    "left right"
+    "left-top right"
+    "left-bottom right"
   mediaquery:
     '(max-width: 800px)':
       grid-template-columns: 1fr
       grid-template-areas: |
-        "left"
+        "left-top"
         "right"
+        "left-bottom"
 view_layout:
   grid-area: main
