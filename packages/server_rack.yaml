@@ -397,17 +397,19 @@ automation:
       - action: notify.rohan_kapoor
         data:
           title: 'Server Rack Battery Power Alert'
-          message: >-
+          message: |-
             {% set server_rack_battery = is_state('sensor.server_rack_backup_power_source', 'Battery') %}
             {% set ups_battery = is_state('sensor.ups_source', 'Battery') %}
             {% if server_rack_battery and ups_battery %}
               ⚠️ BOTH Server Rack Backup AND UPS are on battery power for 10+ minutes!
+
             {% elif server_rack_battery %}
               ⚠️ Server Rack Backup Power Source switched to battery for 10+ minutes!
+
             {% elif ups_battery %}
               ⚠️ UPS switched to battery power for 10+ minutes!
-            {% endif %}
 
+            {% endif %}
             Current Status:
             • Server Rack Backup: {{ states('sensor.server_rack_backup_power_source') }}
             • UPS Source: {{ states('sensor.ups_source') }}
@@ -415,7 +417,6 @@ automation:
             Battery Information:
             • UPS Battery Capacity: {{ states('sensor.ups_battery_capacity') }}%
             • UPS Runtime Remaining: {{ states('sensor.ups_runtime_remaining') }} minutes
-
             • Server Rack Backup Time Remaining: {{ states('sensor.server_rack_backup_time_remaining') }} minutes
             • Server Rack Main Battery: {{ states('sensor.server_rack_backup_main_battery') }}%
             • Server Rack Extra1 Battery: {{ states('sensor.server_rack_backup_extra1_battery') }}%
