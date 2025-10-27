@@ -1,8 +1,10 @@
 # yamllint disable-line rule:line-length
 ---
 blueprint:
-  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS)
-  description: Create automations based on scenes for the Inovelli Red Series VZW31-SN Switch.
+  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS) — fixed press normalization
+  description: >
+    Works with both string and numeric Central Scene values from Z-Wave JS.
+    Based on rohankapoorcom's blueprint with normalization for press events.
   domain: automation
   input:
     zwave_device:
@@ -269,98 +271,132 @@ blueprint:
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-switch.yaml
 mode: single
 max_exceeded: silent
+
 variables:
-  device_id: !input 'zwave_device'
+  device_id: !input zwave_device
+
 triggers:
   - trigger: event
     event_type: zwave_js_value_notification
-condition: '{{ trigger.event.data.device_id in device_id }}'
+
+condition: "{{ trigger.event.data.device_id in device_id }}"
+
 actions:
   - variables:
-      button_id: '{{ trigger.event.data.property_key_name }}'
-      press_count: '{{ trigger.event.data.value }}'
+      button_id: "{{ trigger.event.data.property_key_name | string }}"
+      _raw_press: "{{ trigger.event.data.value }}"
+      press: >-
+        {% set v = trigger.event.data.value %}
+        {% if v is string %}
+          {{ v }}
+        {% else %}
+          {% set map = {
+            0: 'KeyPressed',
+            1: 'KeyReleased',
+            2: 'KeyHeldDown',
+            3: 'KeyPressed2x',
+            4: 'KeyPressed3x',
+            5: 'KeyPressed4x',
+            6: 'KeyPressed5x'
+          } %}
+          {{ map.get(v, v) }}
+        {% endif %}
+
   - choose:
-      - conditions: '{{ button_id == "003" and press_count == "KeyPressed" }}'
-        sequence: !input 'config_button'
-      - conditions: '{{ button_id == "002" and press_count == "KeyPressed" }}'
-        sequence: !input 'button_a'
-      - conditions: '{{ button_id == "001" and press_count == "KeyPressed" }}'
-        sequence: !input 'button_b'
-      - conditions: '{{ button_id == "003" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'config_button2'
-      - conditions: '{{ button_id == "002" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'button_a2'
-      - conditions: '{{ button_id == "001" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'button_b2'
-      - conditions: '{{ button_id == "003" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'config_button3'
-      - conditions: '{{ button_id == "002" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'button_a3'
-      - conditions: '{{ button_id == "001" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'button_b3'
-      - conditions: '{{ button_id == "003" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'config_button4'
-      - conditions: '{{ button_id == "002" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'button_a4'
-      - conditions: '{{ button_id == "001" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'button_b4'
-      - conditions: '{{ button_id == "003" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'config_button5'
-      - conditions: '{{ button_id == "002" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'button_a5'
-      - conditions: '{{ button_id == "001" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'button_b5'
-      - conditions: '{{ button_id == "003" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'config_button_held'
-      - conditions: '{{ button_id == "002" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'button_a_held'
-      - conditions: '{{ button_id == "001" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'button_b_held'
-      - conditions: '{{ button_id == "003" and press_count == "KeyReleased" }}'
-        sequence: !input 'config_button_released'
-      - conditions: '{{ button_id == "002" and press_count == "KeyReleased" }}'
-        sequence: !input 'button_a_released'
-      - conditions: '{{ button_id == "001" and press_count == "KeyReleased" }}'
-        sequence: !input 'button_b_released'
-      - conditions: '{{ button_id == "006" and press_count == "KeyPressed" }}'
-        sequence: !input 'aux_config_button'
-      - conditions: '{{ button_id == "005" and press_count == "KeyPressed" }}'
-        sequence: !input 'aux_button_a'
-      - conditions: '{{ button_id == "004" and press_count == "KeyPressed" }}'
-        sequence: !input 'aux_button_b'
-      - conditions: '{{ button_id == "006" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'aux_config_button2'
-      - conditions: '{{ button_id == "005" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'aux_button_a2'
-      - conditions: '{{ button_id == "004" and press_count == "KeyPressed2x" }}'
-        sequence: !input 'aux_button_b2'
-      - conditions: '{{ button_id == "006" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'aux_config_button3'
-      - conditions: '{{ button_id == "005" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'aux_button_a3'
-      - conditions: '{{ button_id == "004" and press_count == "KeyPressed3x" }}'
-        sequence: !input 'aux_button_b3'
-      - conditions: '{{ button_id == "006" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'aux_config_button4'
-      - conditions: '{{ button_id == "005" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'aux_button_a4'
-      - conditions: '{{ button_id == "004" and press_count == "KeyPressed4x" }}'
-        sequence: !input 'aux_button_b4'
-      - conditions: '{{ button_id == "006" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'aux_config_button5'
-      - conditions: '{{ button_id == "005" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'aux_button_a5'
-      - conditions: '{{ button_id == "004" and press_count == "KeyPressed5x" }}'
-        sequence: !input 'aux_button_b5'
-      - conditions: '{{ button_id == "006" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_config_button_held'
-      - conditions: '{{ button_id == "005" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_button_a_held'
-      - conditions: '{{ button_id == "004" and press_count == "KeyHeldDown" }}'
-        sequence: !input 'aux_button_b_held'
-      - conditions: '{{ button_id == "006" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_config_button_released'
-      - conditions: '{{ button_id == "005" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_button_a_released'
-      - conditions: '{{ button_id == "004" and press_count == "KeyReleased" }}'
-        sequence: !input 'aux_button_b_released'
+      - conditions: "{{ button_id == '003' and press == 'KeyPressed' }}"
+        sequence: !input config_button
+      - conditions: "{{ button_id == '002' and press == 'KeyPressed' }}"
+        sequence: !input button_a
+      - conditions: "{{ button_id == '001' and press == 'KeyPressed' }}"
+        sequence: !input button_b
+
+      - conditions: "{{ button_id == '003' and press == 'KeyPressed2x' }}"
+        sequence: !input config_button2
+      - conditions: "{{ button_id == '002' and press == 'KeyPressed2x' }}"
+        sequence: !input button_a2
+      - conditions: "{{ button_id == '001' and press == 'KeyPressed2x' }}"
+        sequence: !input button_b2
+
+      - conditions: "{{ button_id == '003' and press == 'KeyPressed3x' }}"
+        sequence: !input config_button3
+      - conditions: "{{ button_id == '002' and press == 'KeyPressed3x' }}"
+        sequence: !input button_a3
+      - conditions: "{{ button_id == '001' and press == 'KeyPressed3x' }}"
+        sequence: !input button_b3
+
+      - conditions: "{{ button_id == '003' and press == 'KeyPressed4x' }}"
+        sequence: !input config_button4
+      - conditions: "{{ button_id == '002' and press == 'KeyPressed4x' }}"
+        sequence: !input button_a4
+      - conditions: "{{ button_id == '001' and press == 'KeyPressed4x' }}"
+        sequence: !input button_b4
+
+      - conditions: "{{ button_id == '003' and press == 'KeyPressed5x' }}"
+        sequence: !input config_button5
+      - conditions: "{{ button_id == '002' and press == 'KeyPressed5x' }}"
+        sequence: !input button_a5
+      - conditions: "{{ button_id == '001' and press == 'KeyPressed5x' }}"
+        sequence: !input button_b5
+
+      - conditions: "{{ button_id == '003' and press == 'KeyHeldDown' }}"
+        sequence: !input config_button_held
+      - conditions: "{{ button_id == '002' and press == 'KeyHeldDown' }}"
+        sequence: !input button_a_held
+      - conditions: "{{ button_id == '001' and press == 'KeyHeldDown' }}"
+        sequence: !input button_b_held
+
+      - conditions: "{{ button_id == '003' and press == 'KeyReleased' }}"
+        sequence: !input config_button_released
+      - conditions: "{{ button_id == '002' and press == 'KeyReleased' }}"
+        sequence: !input button_a_released
+      - conditions: "{{ button_id == '001' and press == 'KeyReleased' }}"
+        sequence: !input button_b_released
+
+      - conditions: "{{ button_id == '006' and press == 'KeyPressed' }}"
+        sequence: !input aux_config_button
+      - conditions: "{{ button_id == '005' and press == 'KeyPressed' }}"
+        sequence: !input aux_button_a
+      - conditions: "{{ button_id == '004' and press == 'KeyPressed' }}"
+        sequence: !input aux_button_b
+
+      - conditions: "{{ button_id == '006' and press == 'KeyPressed2x' }}"
+        sequence: !input aux_config_button2
+      - conditions: "{{ button_id == '005' and press == 'KeyPressed2x' }}"
+        sequence: !input aux_button_a2
+      - conditions: "{{ button_id == '004' and press == 'KeyPressed2x' }}"
+        sequence: !input aux_button_b2
+
+      - conditions: "{{ button_id == '006' and press == 'KeyPressed3x' }}"
+        sequence: !input aux_config_button3
+      - conditions: "{{ button_id == '005' and press == 'KeyPressed3x' }}"
+        sequence: !input aux_button_a3
+      - conditions: "{{ button_id == '004' and press == 'KeyPressed3x' }}"
+        sequence: !input aux_button_b3
+
+      - conditions: "{{ button_id == '006' and press == 'KeyPressed4x' }}"
+        sequence: !input aux_config_button4
+      - conditions: "{{ button_id == '005' and press == 'KeyPressed4x' }}"
+        sequence: !input aux_button_a4
+      - conditions: "{{ button_id == '004' and press == 'KeyPressed4x' }}"
+        sequence: !input aux_button_b4
+
+      - conditions: "{{ button_id == '006' and press == 'KeyPressed5x' }}"
+        sequence: !input aux_config_button5
+      - conditions: "{{ button_id == '005' and press == 'KeyPressed5x' }}"
+        sequence: !input aux_button_a5
+      - conditions: "{{ button_id == '004' and press == 'KeyPressed5x' }}"
+        sequence: !input aux_button_b5
+
+      - conditions: "{{ button_id == '006' and press == 'KeyHeldDown' }}"
+        sequence: !input aux_config_button_held
+      - conditions: "{{ button_id == '005' and press == 'KeyHeldDown' }}"
+        sequence: !input aux_button_a_held
+      - conditions: "{{ button_id == '004' and press == 'KeyHeldDown' }}"
+        sequence: !input aux_button_b_held
+
+      - conditions: "{{ button_id == '006' and press == 'KeyReleased' }}"
+        sequence: !input aux_config_button_released
+      - conditions: "{{ button_id == '005' and press == 'KeyReleased' }}"
+        sequence: !input aux_button_a_released
+      - conditions: "{{ button_id == '004' and press == 'KeyReleased' }}"
+        sequence: !input aux_button_b_released
