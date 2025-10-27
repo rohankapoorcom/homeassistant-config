@@ -1,7 +1,7 @@
 # yamllint disable-line rule:line-length
 ---
 blueprint:
-  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS) — fixed press normalization
+  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS)
   description: >
     Works with both string and numeric Central Scene values from Z-Wave JS.
     Based on rohankapoorcom's blueprint with normalization for press events.
