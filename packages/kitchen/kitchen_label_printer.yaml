@@ -22,7 +22,7 @@ shell_command:
 
 automation:
   - id: c4fdcb6b-1b34-4445-950e-122605812a25
-    alias: Print Kitchen Main Label
+    alias: Print Kitchen Label
     triggers:
       - trigger: state
         entity_id: input_button.print_main_label
@@ -30,14 +30,20 @@ automation:
       - action: shell_command.print_kitchen_label
         data:
           content: >
-            {{ states('input_text.label_text') }}
+            {{ states('input_text.label_text_first') }}
+            {%- if states('input_text.label_text_second') != "" -%}
+              \n{{ states('input_text.label_text_second') }}
+            {%- endif -%}
+            {%- if states('input_text.label_text_third') != "" -%}
+              \n{{ states('input_text.label_text_third') }}
+            {%- endif -%}
             {%- if is_state('input_boolean.print_date', 'on') -%}
               \n{{ states('input_datetime.label_date') }}
             {%- endif -%}
           copies: "{{ states('input_number.label_copies') | round(0) }}"
 
   - id: cc513eb7-2912-440d-baa9-9d4fd9fd056d
-    alias: Print Kitchen Tape Label
+    alias: Print Office Tape Label
     triggers:
       - trigger: state
         entity_id: input_button.print_tape_label
@@ -45,14 +51,20 @@ automation:
       - action: shell_command.print_tape_label
         data:
           content: >
-            {{ states('input_text.label_text') }}
+            {{ states('input_text.label_text_first') }}
+            {%- if states('input_text.label_text_second') != "" -%}
+              \n{{ states('input_text.label_text_second') }}
+            {%- endif -%}
+            {%- if states('input_text.label_text_third') != "" -%}
+              \n{{ states('input_text.label_text_third') }}
+            {%- endif -%}
             {%- if is_state('input_boolean.print_date', 'on') -%}
               \n{{ states('input_datetime.label_date') }}
             {%- endif -%}
           copies: "{{ states('input_number.label_copies') | round(0) }}"
 
   - id: 925e45b5-affc-46cd-921d-227d7777306e
-    alias: Print Office Label
+    alias: Print Office Main Label
     triggers:
       - trigger: state
         entity_id: input_button.print_office_label
@@ -60,7 +72,13 @@ automation:
       - action: shell_command.print_office_label
         data:
           content: >
-            {{ states('input_text.label_text') }}
+            {{ states('input_text.label_text_first') }}
+            {%- if states('input_text.label_text_second') != "" -%}
+              \n{{ states('input_text.label_text_second') }}
+            {%- endif -%}
+            {%- if states('input_text.label_text_third') != "" -%}
+              \n{{ states('input_text.label_text_third') }}
+            {%- endif -%}
             {%- if is_state('input_boolean.print_date', 'on') -%}
               \n{{ states('input_datetime.label_date') }}
             {%- endif -%}
