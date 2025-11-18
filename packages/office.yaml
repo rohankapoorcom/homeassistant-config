@@ -34,6 +34,7 @@ mqtt_discoverystream_alt:
       - button.standing_desk_preset_2
       - button.standing_desk_preset_3
       - button.standing_desk_preset_4
+      - input_boolean.office_streamdecks
       - input_boolean.sentinal_headset_enabled
       - light.center_key_light
       - light.left_key_light
