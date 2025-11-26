@@ -16,72 +16,84 @@ homeassistant:
         package: 'office'
 
 mqtt_discoverystream_alt:
-  base_topic: homeassistant-bitfocus-companion
-  publish_attributes: true
-  publish_timestamps: false
-  publish_discovery: true
-  include:
-    entities:
-      - binary_sensor.office_fan_high
-      - binary_sensor.office_fan_is_off
-      - binary_sensor.office_fan_medium
-      - binary_sensor.office_fan_slow
-      - binary_sensor.office_lights_100_percent
-      - binary_sensor.office_lights_25_percent
-      - binary_sensor.office_lights_50_percent
-      - binary_sensor.office_lights_75_percent
-      - button.standing_desk_preset_1
-      - button.standing_desk_preset_2
-      - button.standing_desk_preset_3
-      - button.standing_desk_preset_4
-      - input_boolean.office_streamdecks
-      - input_boolean.sentinal_headset_enabled
-      - light.center_key_light
-      - light.left_key_light
-      - light.office_backlighting
-      - light.office_desk_lower_lights
-      - light.office_play_gradient_tube
-      - light.office_shelf_lightstrip
-      - light.office_video_lights
-      - number.office_headphones_chromecast_level
-      - number.office_headphones_hyperdeck_level
-      - number.office_headphones_mac_level
-      - number.office_headphones_pc_level
-      - number.office_speakers_hyperdeck_level
-      - number.office_speakers_mac_level
-      - number.office_speakers_pc_level
-      - script.set_office_fan_high
-      - script.set_office_fan_medium
-      - script.set_office_fan_off
-      - script.set_office_fan_slow
-      - script.set_office_lights_100_percent
-      - script.set_office_lights_25_percent
-      - script.set_office_lights_50_percent
-      - script.set_office_lights_75_percent
-      - sensor.living_room_air_quality_score
-      - sensor.office_humidity
-      - sensor.office_illuminance
-      - sensor.office_speakers_volume
-      - sensor.office_temperature
-      - sensor.standing_desk_desk_height
-      - switch.office_ceiling_mics_mute
-      - switch.office_computers_in_kitchen_mute
-      - switch.office_computers_in_living_room_mute
-      - switch.office_computers_in_master_suite_mute
-      - switch.office_headphones_chromecast_mute
-      - switch.office_headphones_hyperdeck_mute
-      - switch.office_headphones_mac_mute
-      - switch.office_headphones_pc_mute
-      - switch.office_speakers_chromecast_mute
-      - switch.office_speakers_hyperdeck_mute
-      - switch.office_speakers_mac_mute
-      - switch.office_speakers_pc_mute
-      - switch.office_webcam_monitor
-      - switch.unused_plug
-  local_status:
-    topic: "homeassistant/status"
-  remote_status:
-    topic: "homeassistant-bitfocus-companion/status"
+  - base_topic: homeassistant-bitfocus-companion
+    publish_attributes: true
+    publish_timestamps: false
+    publish_discovery: true
+    include:
+      entities:
+        - binary_sensor.office_fan_high
+        - binary_sensor.office_fan_is_off
+        - binary_sensor.office_fan_medium
+        - binary_sensor.office_fan_slow
+        - binary_sensor.office_lights_100_percent
+        - binary_sensor.office_lights_25_percent
+        - binary_sensor.office_lights_50_percent
+        - binary_sensor.office_lights_75_percent
+        - button.standing_desk_preset_1
+        - button.standing_desk_preset_2
+        - button.standing_desk_preset_3
+        - button.standing_desk_preset_4
+        - input_boolean.office_streamdecks
+        - input_boolean.sentinal_headset_enabled
+        - light.center_key_light
+        - light.left_key_light
+        - light.office_backlighting
+        - light.office_desk_lower_lights
+        - light.office_play_gradient_tube
+        - light.office_shelf_lightstrip
+        - light.office_video_lights
+        - number.office_headphones_chromecast_level
+        - number.office_headphones_hyperdeck_level
+        - number.office_headphones_mac_level
+        - number.office_headphones_pc_level
+        - number.office_speakers_hyperdeck_level
+        - number.office_speakers_mac_level
+        - number.office_speakers_pc_level
+        - script.set_office_fan_high
+        - script.set_office_fan_medium
+        - script.set_office_fan_off
+        - script.set_office_fan_slow
+        - script.set_office_lights_100_percent
+        - script.set_office_lights_25_percent
+        - script.set_office_lights_50_percent
+        - script.set_office_lights_75_percent
+        - sensor.living_room_air_quality_score
+        - sensor.office_humidity
+        - sensor.office_illuminance
+        - sensor.office_speakers_volume
+        - sensor.office_temperature
+        - sensor.standing_desk_desk_height
+        - switch.office_ceiling_mics_mute
+        - switch.office_computers_in_kitchen_mute
+        - switch.office_computers_in_living_room_mute
+        - switch.office_computers_in_master_suite_mute
+        - switch.office_headphones_chromecast_mute
+        - switch.office_headphones_hyperdeck_mute
+        - switch.office_headphones_mac_mute
+        - switch.office_headphones_pc_mute
+        - switch.office_speakers_chromecast_mute
+        - switch.office_speakers_hyperdeck_mute
+        - switch.office_speakers_mac_mute
+        - switch.office_speakers_pc_mute
+        - switch.office_webcam_monitor
+        - switch.unused_plug
+    local_status:
+      topic: "homeassistant/status"
+    remote_status:
+      topic: "homeassistant-bitfocus-companion/status"
+  # - base_topic: homeassistant-dashboard
+  #   publish_attributes: true
+  #   publish_timestamps: false
+  #   publish_discovery: true
+  #   include:
+  #     entities:
+  #       - entity_a
+  #       - entity_b
+  #   local_status:
+  #     topic: "homeassistant/status"
+  #   remote_status:
+  #     topic: "homeassistant-dashboard/status"
 
 ################################################
 ## Binary Sensor
