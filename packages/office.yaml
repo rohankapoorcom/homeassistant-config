@@ -82,18 +82,18 @@ mqtt_discoverystream_alt:
       topic: "homeassistant/status"
     remote_status:
       topic: "homeassistant-bitfocus-companion/status"
-  # - base_topic: homeassistant-dashboard
-  #   publish_attributes: true
-  #   publish_timestamps: false
-  #   publish_discovery: true
-  #   include:
-  #     entities:
-  #       - entity_a
-  #       - entity_b
-  #   local_status:
-  #     topic: "homeassistant/status"
-  #   remote_status:
-  #     topic: "homeassistant-dashboard/status"
+    # - base_topic: homeassistant-dashboard
+    #   publish_attributes: true
+    #   publish_timestamps: false
+    #   publish_discovery: true
+    #   include:
+    #     entities:
+    #       - entity_a
+    #       - entity_b
+    #   local_status:
+    #     topic: "homeassistant/status"
+    #   remote_status:
+    #     topic: "homeassistant-dashboard/status"
 
 ################################################
 ## Binary Sensor
