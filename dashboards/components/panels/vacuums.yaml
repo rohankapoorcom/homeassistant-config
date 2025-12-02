@@ -387,7 +387,7 @@ cards:
         entity: vacuum.valetudo_garage_vacuum
         vacuum_platform: Hypfer/Valetudo
         map_modes:
-         - template: vacuum_clean_segment
+          - template: vacuum_clean_segment
             predefined_selections:
               - id: "1"
                 icon:
