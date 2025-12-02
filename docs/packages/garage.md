@@ -119,6 +119,20 @@ The automation includes sophisticated logic:
 - **Actions**:
   - Command the garage vacuum to return to base
 
+### Daily Garage Cleaning
+- **ID**: `6802a847-eb44-4698-ab4e-94af83d4f8c8`
+- **Description**: Schedules a nightly cleaning of the garage using the garage vacuum at 11:00 PM, but only if the garage door has opened at least once in the last 24 hours. Ensures both the garage door cover and binary sensor are closed before starting the cleaning run.
+- **Mode**: Single
+- **Triggers**:
+  - Time-based trigger at 11:00 PM every day
+- **Conditions**:
+  - Template condition verifying the garage door has changed state at least once in the last 24 hours
+  - Combined safety check verifying both the garage door cover and binary sensor are closed
+- **Actions**:
+  1. Set the garage vacuum cleaning mode to vacuum-only (no mopping)
+  2. Set the garage vacuum fan speed to max
+  3. Start the garage cleaning run
+
 ## Dependencies
 - **Motion Sensors**: Multiple motion sensor integration
 - **Garage Door**: Garage door control and monitoring

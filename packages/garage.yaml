@@ -34,6 +34,38 @@ binary_sensor:
       - binary_sensor.garage_lights_motion
       - binary_sensor.garage_multisensor_motion
 
+################################################
+## Template Sensor
+################################################
+template:
+  - trigger:
+      - platform: state
+        entity_id:
+          - cover.garage_door
+        not_to:
+          - unavailable
+          - unknown
+        not_from:
+          - unavailable
+          - unknown
+    sensor:
+      - unique_id: 8e28f5a9-4f22-4763-a7a5-1304ee20d8a4
+        name: Garage Door Change History
+        state: "OK"
+        attributes:
+          changes: >
+            {% set current = this.attributes.get('changes', {}) %}
+            {% set new =
+              { trigger.entity_id:
+                {
+                  'datetime': trigger.to_state.last_changed.isoformat(),
+                  'from': trigger.from_state.state,
+                  'to': trigger.to_state.state
+                }
+              }
+            %}
+            {{ dict(current, **new) }}
+
 automation:
   - id: 8cbaf941-3de6-482e-9226-fbe103e7c84e
     alias: Control the Garage Lights
@@ -213,12 +245,58 @@ automation:
         from: 'closed'
         to: 'opening'
     conditions:
-      - alias: Safety check: Ensure garage vacuum is away from dock and available
+      - alias: "Safety check: Ensure garage vacuum is away from dock and available"
         condition: template
         value_template: >-
           {{ states('vacuum.valetudo_garage_vacuum')
           not in ['docked', 'unavailable'] }}
     actions:
       - action: vacuum.return_to_base
+        target:
+          entity_id: vacuum.valetudo_garage_vacuum
+
+  - id: 6802a847-eb44-4698-ab4e-94af83d4f8c8
+    alias: Daily Garage Cleaning
+    description: >-
+      Cleans the garage every night at 11:00 PM using the garage vacuum
+      if the garage door has opened at least once in the last 24 hours.
+      Ensures both the garage door cover and binary sensor are closed before
+      starting the cleaning run.
+    mode: single
+    triggers:
+      - trigger: time
+        at: '23:00:00'
+    conditions:
+      - alias: "Verify garage door opened at least once in last 24 hours"
+        condition: template
+        value_template: >-
+          {% set changes = state_attr('sensor.garage_door_change_history', 'changes') %}
+          {% if changes is none or 'cover.garage_door' not in changes %}
+            false
+          {% else %}
+            {% set last_change = changes['cover.garage_door'].datetime | as_datetime %}
+            {{ (as_timestamp(now()) - as_timestamp(last_change)) < 86400 }}
+          {% endif %}
+      - alias: "Verify garage door (for cars) and garage door (for humans) are both closed before cleaning"
+        condition: and
+        conditions:
+          - condition: state
+            entity_id: cover.garage_door
+            state: 'closed'
+          - condition: state
+            entity_id: binary_sensor.garage_door_lock_window_door_is_open
+            state: 'off'
+    actions:
+      - action: select.select_option
+        target:
+          entity_id: select.valetudo_garage_vacuum_mode
+        data:
+          option: vacuum
+      - action: select.select_option
+        target:
+          entity_id: select.valetudo_garage_vacuum_fan
+        data:
+          option: max
+      - action: vacuum.start
         target:
           entity_id: vacuum.valetudo_garage_vacuum
