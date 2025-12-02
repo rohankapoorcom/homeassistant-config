@@ -373,11 +373,6 @@ cards:
               --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
               --map-card-room-label-color: rgb(255, 255, 255);
             }
-    view_layout:
-      grid_area: right
-  - type: custom:layout-card
-    layout_type: vertical
-    cards:
       - type: custom:xiaomi-vacuum-map-card
         title: Garage
         map_source:
