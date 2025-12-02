@@ -375,6 +375,98 @@ cards:
             }
     view_layout:
       grid_area: right
+- type: custom:layout-card
+    layout_type: vertical
+    cards:
+      - type: custom:xiaomi-vacuum-map-card
+        title: Garage
+        map_source:
+          camera: camera.valetudo_garage_vacuum_map
+        calibration_source:
+          camera: true
+        entity: vacuum.valetudo_garage_vacuum
+        vacuum_platform: Hypfer/Valetudo
+        map_modes:
+         - template: vacuum_clean_segment
+            predefined_selections:
+              - id: "1"
+                icon:
+                  name: mdi:garage
+                  x: 3387
+                  "y": 3040
+                label:
+                  text: Garage
+                  x: 3387
+                  "y": 3040
+                  offset_y: 35
+                outline:
+                  - - 3170
+                    - 2710
+                  - - 3605
+                    - 2710
+                  - - 3605
+                    - 3370
+                  - - 3170
+                    - 3370
+          - template: vacuum_clean_zone
+          - template: vacuum_goto
+        map_locked: true
+        two_finger_pan: true
+        internal_variables:
+          topic: valetudo/garage-vacuum
+        append_icons: true
+        append_tiles: true
+        icons:
+          - icon: mdi:water-check
+            tooltip: Cleaning Mode
+            type: menu
+            menu_id: cleaning_mode
+            icon_id: cleaning_mode
+            entity: select.valetudo_garage_vacuum_mode
+            available_values_attribute: options
+            icon_mapping:
+              mop: mdi:water
+              vacuum: mdi:broom
+              vacuum_and_mop: mdi:water-check
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+          - icon: mdi:water-check
+            tooltip: Water
+            type: menu
+            menu_id: water
+            icon_id: water
+            entity: select.valetudo_garage_vacuum_water
+            available_values_attribute: options
+            icon_mapping:
+              low: mdi:water-percent
+              medium: mdi:water-percent
+              high: mdi:water-percent
+            tap_action:
+              action: call-service
+              service: select.select_option
+              service_data:
+                option: '[[value]]'
+                entity_id: '[[entity_id]]'
+        tiles:
+          - tile_id: cleaning_mode
+            entity: select.valetudo_garage_vacuum_mode
+            label: Mode
+            icon: mdi:developer-board
+            translations:
+              vacuum_and_mop: both
+        card_mod:
+          style: |
+            ha-card {
+              --map-card-internal-zoomer-background: transparent!important;
+              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
+              --map-card-room-label-color: rgb(255, 255, 255);
+            }
+    view_layout:
+      grid_area: right
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr
