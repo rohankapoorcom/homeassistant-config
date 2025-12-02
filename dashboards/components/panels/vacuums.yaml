@@ -375,7 +375,7 @@ cards:
             }
     view_layout:
       grid_area: right
-- type: custom:layout-card
+  - type: custom:layout-card
     layout_type: vertical
     cards:
       - type: custom:xiaomi-vacuum-map-card
