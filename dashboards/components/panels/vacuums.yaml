@@ -222,6 +222,7 @@ cards:
               --map-card-internal-zoomer-background: transparent!important;
               --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
               --map-card-room-label-color: rgb(255, 255, 255);
+              height: 650px;
             }
 
     view_layout:
@@ -372,6 +373,7 @@ cards:
               --map-card-internal-zoomer-background: transparent!important;
               --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
               --map-card-room-label-color: rgb(255, 255, 255);
+              height: 650px;
             }
       - type: custom:xiaomi-vacuum-map-card
         title: Garage
@@ -459,6 +461,7 @@ cards:
               --map-card-internal-zoomer-background: transparent!important;
               --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
               --map-card-room-label-color: rgb(255, 255, 255);
+              height: 650px;
             }
     view_layout:
       grid_area: right
