@@ -108,6 +108,17 @@ The automation includes sophisticated logic:
 - **Comprehensive Control**: Control of lights and tablet screen
 - **Error Handling**: Silent error handling for maximum exceeded scenarios
 
+### Send Garage Vacuum Home When Garage Door Opens
+- **ID**: `4c9eaa93-7d04-4e3c-94b1-bfda6e3a89b9`
+- **Description**: Sends the garage vacuum back to its dock when the garage door starts opening and the garage vacuum is not currently docked.
+- **Mode**: Single
+- **Triggers**:
+  - Garage door opening (closed to opening)
+- **Conditions**:
+  - Safety check to ensure the garage vacuum is available and not currently docked
+- **Actions**:
+  - Command the garage vacuum to return to base
+
 ## Dependencies
 - **Motion Sensors**: Multiple motion sensor integration
 - **Garage Door**: Garage door control and monitoring
