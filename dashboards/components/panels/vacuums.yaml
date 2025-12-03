@@ -440,6 +440,10 @@ cards:
               mop: mdi:water
               vacuum: mdi:broom
               vacuum_and_mop: mdi:water-check
+            value_translation_keys:
+              mop: Mop
+              vacuum: Vacuum
+              vacuum_and_mop: Vacuum + Mop
             tap_action:
               action: call-service
               service: select.select_option
