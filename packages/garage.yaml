@@ -284,7 +284,7 @@ automation:
             entity_id: cover.garage_door
             state: 'closed'
           - condition: state
-            entity_id: binary_sensor.garage_door_lock_window_door_is_open
+            entity_id: binary_sensor.garage_door_window_door_is_open
             state: 'off'
     actions:
       - action: select.select_option
