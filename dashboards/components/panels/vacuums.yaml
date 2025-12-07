@@ -1,3 +1,137 @@
+# YAML anchors for shared configurations
+x-card-mod-style: &card-mod-style
+  style: |
+    ha-card {
+      --map-card-internal-zoomer-background: transparent!important;
+      --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
+      --map-card-room-label-color: rgb(255, 255, 255);
+    }
+    .map-wrapper {
+      height: 250px !important;
+    }
+
+x-map-modes-templates: &map-modes-templates
+  - template: vacuum_clean_zone
+  - template: vacuum_goto
+
+x-vacuum-common-props: &vacuum-common-props
+  vacuum_platform: Hypfer/Valetudo
+  map_locked: true
+  two_finger_pan: true
+  append_icons: false
+  append_tiles: true
+
+x-icon-play: &icon-play
+  icon: mdi:play
+  tooltip: Start
+  tap_action:
+    action: call-service
+    service: vacuum.start
+
+x-icon-pause: &icon-pause
+  icon: mdi:pause
+  tooltip: Pause
+  tap_action:
+    action: call-service
+    service: vacuum.pause
+
+x-icon-stop: &icon-stop
+  icon: mdi:stop
+  tooltip: Stop
+  tap_action:
+    action: call-service
+    service: vacuum.stop
+
+x-icon-return: &icon-return
+  icon: mdi:home-map-marker
+  tooltip: Return to base
+  tap_action:
+    action: call-service
+    service: vacuum.return_to_base
+
+x-icon-locate: &icon-locate
+  icon: mdi:map-marker
+  tooltip: Locate
+  tap_action:
+    action: call-service
+    service: vacuum.locate
+
+x-icon-fan-speed: &icon-fan-speed
+  icon: valetudo:fan-medium
+  tooltip: Change fan speed
+  type: menu
+  menu_id: fan_speed
+  icon_id: fan_speed
+  available_values_attribute: options
+  icon_mapping:
+    min: valetudo:fan-min
+    low: valetudo:fan-low
+    medium: valetudo:fan-medium
+    high: valetudo:fan-high
+    max: valetudo:fan-max
+  value_translation_keys:
+    min: Min
+    low: Low
+    medium: Medium
+    high: High
+    max: Max
+  tap_action:
+    action: call-service
+    service: select.select_option
+    service_data:
+      option: "[[value]]"
+      entity_id: "[[entity_id]]"
+
+x-icon-cleaning-mode: &icon-cleaning-mode
+  icon: m3of:app-registration
+  tooltip: Cleaning Mode
+  type: menu
+  menu_id: cleaning_mode
+  icon_id: cleaning_mode
+  available_values_attribute: options
+  icon_mapping:
+    mop: valetudo:mode-mop
+    vacuum: valetudo:mode-vacuum
+    vacuum_and_mop: valetudo:mode-vacuum-and-mop
+    vacuum_then_mop: valetudo:mode-vacuum-then-mop
+  value_translation_keys:
+    mop: Mop
+    vacuum: Vacuum
+    vacuum_and_mop: Vacuum + Mop
+    vacuum_then_mop: Vacuum -> Mop
+  tap_action:
+    action: call-service
+    service: select.select_option
+    service_data:
+      option: "[[value]]"
+      entity_id: "[[entity_id]]"
+
+x-icon-water: &icon-water
+  icon: valetudo:water-low
+  tooltip: Water
+  type: menu
+  menu_id: water
+  icon_id: water
+  available_values_attribute: options
+  icon_mapping:
+    min: valetudo:water-min
+    low: valetudo:water-low
+    medium: valetudo:water-medium
+    high: valetudo:water-high
+    max: valetudo:water-max
+  value_translation_keys:
+    min: Min
+    low: Low
+    medium: Medium
+    high: High
+    max: Max
+  tap_action:
+    action: call-service
+    service: select.select_option
+    service_data:
+      option: "[[value]]"
+      entity_id: "[[entity_id]]"
+
 type: custom:layout-card
 cards:
   - type: custom:layout-card
@@ -10,7 +144,7 @@ cards:
         calibration_source:
           camera: true
         entity: vacuum.valetudo_upstairs_vacuum
-        vacuum_platform: Hypfer/Valetudo
+        <<: *vacuum-common-props
         map_modes:
           - template: vacuum_clean_segment
             predefined_selections:
@@ -56,11 +190,11 @@ cards:
                 icon:
                   name: mdi:floor-plan
                   x: 2767
-                  'y': 3675
+                  'y': 3475
                 label:
                   text: Hallway
                   x: 2767
-                  'y': 3675
+                  'y': 3475
                   offset_y: 35
                 outline:
                   - - 2390
@@ -68,9 +202,9 @@ cards:
                   - - 3145
                     - 3410
                   - - 3145
-                    - 3940
+                    - 3560
                   - - 2390
-                    - 3940
+                    - 3560
               - id: '4'
                 icon:
                   name: mdi:bed-king
@@ -166,55 +300,76 @@ cards:
                     - 3445
                   - - 2795
                     - 3445
-          - template: vacuum_clean_zone
-          - template: vacuum_goto
-        map_locked: true
-        two_finger_pan: true
+          <<: *map-modes-templates
         internal_variables:
           topic: valetudo/upstairs-vacuum
-        append_icons: true
-        append_tiles: true
         icons:
-          - icon: mdi:water-check
-            tooltip: Cleaning Mode
-            type: menu
-            menu_id: cleaning_mode
-            icon_id: cleaning_mode
+          - <<: *icon-play
+            conditions:
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: cleaning
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.start
+              service_data:
+                entity_id: vacuum.valetudo_upstairs_vacuum
+          - <<: *icon-pause
+            conditions:
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.pause
+              service_data:
+                entity_id: vacuum.valetudo_upstairs_vacuum
+          - <<: *icon-stop
+            conditions:
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.stop
+              service_data:
+                entity_id: vacuum.valetudo_upstairs_vacuum
+          - <<: *icon-return
+            conditions:
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_upstairs_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.return_to_base
+              service_data:
+                entity_id: vacuum.valetudo_upstairs_vacuum
+          - <<: *icon-locate
+            tap_action:
+              action: call-service
+              service: vacuum.locate
+              service_data:
+                entity_id: vacuum.valetudo_upstairs_vacuum
+          - <<: *icon-fan-speed
+            entity: select.valetudo_upstairs_vacuum_fan
+          - <<: *icon-cleaning-mode
             entity: select.valetudo_upstairs_vacuum_mode
-            available_values_attribute: options
-            icon_mapping:
-              mop: mdi:water
-              vacuum: mdi:broom
-              vacuum_and_mop: mdi:water-check
-              vacuum_then_mop: mdi:water-check
-            value_translation_keys:
-              mop: Mop
-              vacuum: Vacuum
-              vacuum_and_mop: Vacuum + Mop
-              vacuum_then_mop: Vacuum -> Mop
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
-          - icon: mdi:water-check
-            tooltip: Water
-            type: menu
-            menu_id: water
-            icon_id: water
+          - <<: *icon-water
             entity: select.valetudo_upstairs_vacuum_water
-            available_values_attribute: options
-            icon_mapping:
-              low: mdi:water-percent
-              medium: mdi:water-percent
-              high: mdi:water-percent
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
         tiles:
           - tile_id: cleaning_mode
             entity: select.valetudo_upstairs_vacuum_mode
@@ -225,16 +380,7 @@ cards:
               vacuum: Vacuum
               vacuum_and_mop: Vacuum + Mop
               vacuum_then_mop: Vacuum -> Mop
-        card_mod:
-          style: |
-            ha-card {
-              --map-card-internal-zoomer-background: transparent!important;
-              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
-              --map-card-room-label-color: rgb(255, 255, 255);
-            }
-            .map-wrapper {
-              height: 250px !important;
-            }
+        card_mod: *card-mod-style
     view_layout:
       grid_area: left
   - type: custom:layout-card
@@ -247,7 +393,7 @@ cards:
         calibration_source:
           camera: true
         entity: vacuum.valetudo_downstairs_vacuum
-        vacuum_platform: Hypfer/Valetudo
+        <<: *vacuum-common-props
         map_modes:
           - template: vacuum_clean_segment
             predefined_selections:
@@ -327,53 +473,76 @@ cards:
                     - 3675
                   - - 3210
                     - 3675
-          - template: vacuum_clean_zone
-          - template: vacuum_goto
-        map_locked: true
-        two_finger_pan: true
+          <<: *map-modes-templates
         internal_variables:
           topic: valetudo/downstairs-vacuum
-        append_icons: true
-        append_tiles: true
         icons:
-          - icon: mdi:water-check
-            tooltip: Cleaning Mode
-            type: menu
-            menu_id: cleaning_mode
-            icon_id: cleaning_mode
+          - <<: *icon-play
+            conditions:
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: cleaning
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.start
+              service_data:
+                entity_id: vacuum.valetudo_downstairs_vacuum
+          - <<: *icon-pause
+            conditions:
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.pause
+              service_data:
+                entity_id: vacuum.valetudo_downstairs_vacuum
+          - <<: *icon-stop
+            conditions:
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.stop
+              service_data:
+                entity_id: vacuum.valetudo_downstairs_vacuum
+          - <<: *icon-return
+            conditions:
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_downstairs_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.return_to_base
+              service_data:
+                entity_id: vacuum.valetudo_downstairs_vacuum
+          - <<: *icon-locate
+            tap_action:
+              action: call-service
+              service: vacuum.locate
+              service_data:
+                entity_id: vacuum.valetudo_downstairs_vacuum
+          - <<: *icon-fan-speed
+            entity: select.valetudo_downstairs_vacuum_fan
+          - <<: *icon-cleaning-mode
             entity: select.valetudo_downstairs_vacuum_mode
-            available_values_attribute: options
-            icon_mapping:
-              mop: mdi:water
-              vacuum: mdi:broom
-              vacuum_and_mop: mdi:water-check
-            value_translation_keys:
-              mop: Mop
-              vacuum: Vacuum
-              vacuum_and_mop: Vacuum + Mop
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
-          - icon: mdi:water-check
-            tooltip: Water
-            type: menu
-            menu_id: water
-            icon_id: water
+          - <<: *icon-water
             entity: select.valetudo_downstairs_vacuum_water
-            available_values_attribute: options
-            icon_mapping:
-              low: mdi:water-percent
-              medium: mdi:water-percent
-              high: mdi:water-percent
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
         tiles:
           - tile_id: cleaning_mode
             entity: select.valetudo_downstairs_vacuum_mode
@@ -383,16 +552,7 @@ cards:
               mop: Mop
               vacuum: Vacuum
               vacuum_and_mop: Vacuum + Mop
-        card_mod:
-          style: |
-            ha-card {
-              --map-card-internal-zoomer-background: transparent!important;
-              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
-              --map-card-room-label-color: rgb(255, 255, 255);
-            }
-            .map-wrapper {
-              height: 250px !important;
-            }
+        card_mod: *card-mod-style
       - type: custom:xiaomi-vacuum-map-card
         title: Garage
         map_source:
@@ -400,7 +560,7 @@ cards:
         calibration_source:
           camera: true
         entity: vacuum.valetudo_garage_vacuum
-        vacuum_platform: Hypfer/Valetudo
+        <<: *vacuum-common-props
         map_modes:
           - template: vacuum_clean_segment
             predefined_selections:
@@ -423,57 +583,76 @@ cards:
                     - 3370
                   - - 3170
                     - 3370
-          - template: vacuum_clean_zone
-          - template: vacuum_goto
-        map_locked: true
-        two_finger_pan: true
+          <<: *map-modes-templates
         internal_variables:
           topic: valetudo/garage-vacuum
-        append_icons: true
-        append_tiles: true
         icons:
-          - icon: mdi:water-check
-            tooltip: Cleaning Mode
-            type: menu
-            menu_id: cleaning_mode
-            icon_id: cleaning_mode
+          - <<: *icon-play
+            conditions:
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: cleaning
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.start
+              service_data:
+                entity_id: vacuum.valetudo_garage_vacuum
+          - <<: *icon-pause
+            conditions:
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.pause
+              service_data:
+                entity_id: vacuum.valetudo_garage_vacuum
+          - <<: *icon-stop
+            conditions:
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: idle
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: error
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: paused
+            tap_action:
+              action: call-service
+              service: vacuum.stop
+              service_data:
+                entity_id: vacuum.valetudo_garage_vacuum
+          - <<: *icon-return
+            conditions:
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: docked
+              - entity: vacuum.valetudo_garage_vacuum
+                value_not: returning
+            tap_action:
+              action: call-service
+              service: vacuum.return_to_base
+              service_data:
+                entity_id: vacuum.valetudo_garage_vacuum
+          - <<: *icon-locate
+            tap_action:
+              action: call-service
+              service: vacuum.locate
+              service_data:
+                entity_id: vacuum.valetudo_garage_vacuum
+          - <<: *icon-fan-speed
+            entity: select.valetudo_garage_vacuum_fan
+          - <<: *icon-cleaning-mode
             entity: select.valetudo_garage_vacuum_mode
-            available_values_attribute: options
-            icon_mapping:
-              mop: mdi:water
-              vacuum: mdi:broom
-              vacuum_and_mop: mdi:water-check
-            value_translation_keys:
-              mop: Mop
-              vacuum: Vacuum
-              vacuum_and_mop: Vacuum + Mop
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
-          - icon: mdi:water-check
-            tooltip: Water
-            type: menu
-            menu_id: water
-            icon_id: water
+          - <<: *icon-water
             entity: select.valetudo_garage_vacuum_water
-            available_values_attribute: options
-            icon_mapping:
-              mop: mdi:water
-              vacuum: mdi:broom
-              vacuum_and_mop: mdi:water-check
-            value_translation_keys:
-              mop: Mop
-              vacuum: Vacuum
-              vacuum_and_mop: Vacuum + Mop
-            tap_action:
-              action: call-service
-              service: select.select_option
-              service_data:
-                option: '[[value]]'
-                entity_id: '[[entity_id]]'
         tiles:
           - tile_id: cleaning_mode
             entity: select.valetudo_garage_vacuum_mode
@@ -483,16 +662,7 @@ cards:
               mop: Mop
               vacuum: Vacuum
               vacuum_and_mop: Vacuum + Mop
-        card_mod:
-          style: |
-            ha-card {
-              --map-card-internal-zoomer-background: transparent!important;
-              --map-card-room-outline-line-color: rgb(255, 255, 255, 0);
-              --map-card-room-label-color: rgb(255, 255, 255);
-            }
-            .map-wrapper {
-              height: 250px !important;
-            }
+        card_mod: *card-mod-style
     view_layout:
       grid_area: right
 layout_type: custom:grid-layout
@@ -508,4 +678,4 @@ layout:
         "left"
         "right"
 view_layout:
-  grid-area: main
+  grid_area: main
