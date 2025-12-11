@@ -27,6 +27,18 @@ sensor:
           {{ states('sensor.master_bathroom_humidity') | float(0) - states('sensor.upstairs_humidity') | float(0) }}
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Master Bathroom Motion
+    unique_id: 6cec7211-de89-47db-88d9-d4819215f328
+    device_class: motion
+    entities:
+      - binary_sensor.master_bathroom_multisensor_motion
+      - binary_sensor.master_bathroom_light_switch_occupancy
+
+################################################
 ## Automation
 ################################################
 automation:
@@ -96,7 +108,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
         inovelli_switch:
-          - d80e98e0621de0822a33348e7e141e8b
+          - edc22c892680134e50d60c30188e384b
         config_button:
           - action: switch.toggle
             target:
@@ -126,7 +138,7 @@ automation:
                   effect: Pulse
                   duration: Indefinitely
                   target:
-                    device_id: d80e98e0621de0822a33348e7e141e8b
+                    device_id: edc22c892680134e50d60c30188e384b
         default:
           - action: script.inovelli_blue_notifications
             data:
@@ -136,7 +148,7 @@ automation:
               effect: Clear
               duration: Indefinitely
               target:
-                device_id: d80e98e0621de0822a33348e7e141e8b
+                device_id: edc22c892680134e50d60c30188e384b
 
   - id: f99edeb0-3062-4ba6-9584-a7eca41fef12
     alias: Control the Master Bathroom Towel Warmer
