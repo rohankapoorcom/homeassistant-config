@@ -15,6 +15,17 @@ homeassistant:
         package: 'hallway'
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Upstairs Hallway Motion
+    unique_id: 8bcb5487-b6e0-4b41-9ded-e5cb869a59bf
+    device_class: motion
+    entities:
+      - binary_sensor.hallway_lights_aux_switch_2_occupancy
+
+################################################
 ## Automations
 ################################################
 automation:
@@ -103,7 +114,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
         inovelli_switch:
-          - cf7f37ae8d16893c8c78e6d0e6fe3b24
+          - 0b647c4397c85dcea6e32a7a6f222617
         config_button:
           - action: script.turn_off_lights_in_areas
             data:
@@ -122,5 +133,5 @@ automation:
               effect: Fast Falling
               duration: 10 Seconds
               target:
-                device_id: cf7f37ae8d16893c8c78e6d0e6fe3b24
+                device_id: 0b647c4397c85dcea6e32a7a6f222617
               level: 30
