@@ -317,7 +317,7 @@ cards:
           - tile_id: cleaning_mode
             entity: select.valetudo_upstairs_vacuum_mode
             label: Mode
-            icon: mdi:developer-board
+            icon: m3of:app-registration
             translations:
               mop: Mop
               vacuum: Vacuum
@@ -576,7 +576,7 @@ cards:
           - tile_id: cleaning_mode
             entity: select.valetudo_downstairs_vacuum_mode
             label: Mode
-            icon: mdi:developer-board
+            icon: m3of:app-registration
             translations:
               mop: Mop
               vacuum: Vacuum
@@ -772,7 +772,7 @@ cards:
           - tile_id: cleaning_mode
             entity: select.valetudo_garage_vacuum_mode
             label: Mode
-            icon: mdi:developer-board
+            icon: m3of:app-registration
             translations:
               mop: Mop
               vacuum: Vacuum
