@@ -199,9 +199,9 @@ cards:
               - type: entity
                 entity: sensor.upstairs_humidity
               - type: entity
-                entity: binary_sensor.front_door_window_door_is_open
-              - type: entity
                 entity: binary_sensor.upstairs_hallway_motion
+              - type: entity
+                entity: binary_sensor.front_door_window_door_is_open
           - type: grid
             cards:
               - type: custom:decluttering-card
