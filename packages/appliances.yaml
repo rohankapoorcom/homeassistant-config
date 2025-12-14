@@ -22,6 +22,8 @@ homeassistant:
 automation:
   - id: 22220e6d-5b70-4718-8a3c-7080f270f928
     alias: Turn on the Hot Water Pump when there is motion in any of the bathrooms
+    description: |
+      Ensures that the hot water pump circulates hot water to all fixtures when there is motion near any of the sinks.
     triggers:
       - trigger: state
         entity_id:
@@ -29,6 +31,7 @@ automation:
           - binary_sensor.hallway_bathroom_motion
           - binary_sensor.downstairs_bathroom_motion
           - binary_sensor.kitchen_motion
+          - binary_sensors.downstairs_hallway_motion
         from: 'off'
         to: 'on'
     actions:

@@ -7,6 +7,17 @@
 ---
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Downstairs Hallway Motion
+    unique_id: 4efe0f31-8bf8-426e-8eb1-31cd59f889e4
+    device_class: motion
+    entities:
+      - binary_sensor.downstairs_hallway_lights_load_switch_occupancy
+
+################################################
 ## Automations
 ################################################
 automation:
@@ -26,7 +37,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
         inovelli_switch:
-          - 1b083dd3571388e94041b98699fb31cf
+          - cd886aa54686a23eb0ef9ea9a5fb0d20
         config_button:
           - action: button.press
             data: {}

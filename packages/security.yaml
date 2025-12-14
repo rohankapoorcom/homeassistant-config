@@ -96,7 +96,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-lock-notifications.yaml
       input:
         lock_entity: lock.garage_door_lock
-        inovelli_switch: 1b083dd3571388e94041b98699fb31cf
+        inovelli_switch: cd886aa54686a23eb0ef9ea9a5fb0d20
 
   - id: 278143dd-38fe-41db-bf51-d54369e3ae32
     alias: Turn on Downstairs Hallway Lights when Garage Door Unlocked
