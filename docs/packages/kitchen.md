@@ -94,7 +94,7 @@ This package provides comprehensive kitchen automation with:
 
 #### Kitchen Light Switch Zigbee Scene Controls
 - **Blueprint**: `rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml`
-- **Device IDs**: `5580d638554510eabf0b5d3dbabe1263`, `1ba8afa3f33d85ff33d77a5a13dfd364`
+- **Device IDs**: `ff2b9426281125e3833ee5edf69f5ab0`, `1ba8afa3f33d85ff33d77a5a13dfd364`
 - **Config Button**: Toggle shades with LED notification
 - **Button A2**: Cabinet lights on (100%, 3000K)
 - **Button B2**: Cabinet lights off
@@ -185,7 +185,7 @@ light:
 ### Device IDs
 ```yaml
 kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
-  - 5580d638554510eabf0b5d3dbabe1263
+  - ff2b9426281125e3833ee5edf69f5ab0
   - 1ba8afa3f33d85ff33d77a5a13dfd364
 ```
 
