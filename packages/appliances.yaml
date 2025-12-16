@@ -31,7 +31,7 @@ automation:
           - binary_sensor.hallway_bathroom_motion
           - binary_sensor.downstairs_bathroom_motion
           - binary_sensor.kitchen_motion
-          - binary_sensors.downstairs_hallway_motion
+          - binary_sensor.downstairs_hallway_motion
         from: 'off'
         to: 'on'
     actions:
