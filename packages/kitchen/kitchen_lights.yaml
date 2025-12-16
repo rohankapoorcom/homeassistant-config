@@ -20,10 +20,21 @@ homeassistant:
         - 1ba8afa3f33d85ff33d77a5a13dfd364
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Kitchen Motion
+    unique_id: 8b4d1f31-f15c-47b6-916e-afc97df757d3
+    device_class: occupancy
+    entities:
+      - binary_sensor.kitchen_motion_sensor_motion
+      - binary_sensor.kitchen_lights_load_switch_occupancy
+
+################################################
 ## Light
 ################################################
 light:
-
   - platform: group
     name: Kitchen Cabinet Lights
     unique_id: b5d9b202-096a-4fa1-80eb-6d2c4f491374
@@ -296,3 +307,41 @@ automation:
               target:
                 device_id:
                   *kitchen_light_switch_device_ids
+
+  - id: 44e3bc66-fac6-489a-812f-6d9ddf1bd6a4
+    alias: Control the Kitchen Lights by Occupancy Sensor
+    description: >
+      When the Kitchen is Occupied, turn on the lights.
+      When the Kitchen is Unoccupied, turn off all but the cabinet lights.
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: state
+        entity_id: binary_sensor.kitchen_motion
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.kitchen_motion
+                state: 'off'
+            sequence:
+              - delay:
+                  minutes: 2
+              - action: light.turn_off
+                target:
+                  entity_id: light.kitchen_lights
+        default:
+          sequence:
+            - if:
+                - condition: numeric_state
+                  entity_id:
+                    - sensor.kitchen_lights_load_switch_illuminance
+                  below: 60
+              then:
+                - action: light.turn_on
+                  target:
+                    entity_id:
+                      - light.kitchen_lights
+                      - light.kitchen_cabinet_lights
