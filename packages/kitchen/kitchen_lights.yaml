@@ -332,13 +332,20 @@ automation:
               - action: light.turn_off
                 target:
                   entity_id: light.kitchen_lights
+              - if:
+                  - condition: state
+                    entity_id: cover.kitchen_shades
+                    state: open
+                then:
+                  - action: light.turn_off
+                    target:
+                      entity_id: light.kitchen_cabinet_lights
         default:
           sequence:
             - if:
                 - condition: numeric_state
-                  entity_id:
-                    - sensor.kitchen_lights_load_switch_illuminance
-                  below: 60
+                  entity_id: sensor.kitchen_lights_load_switch_illuminance
+                  below: 40
               then:
                 - action: light.turn_on
                   target:
