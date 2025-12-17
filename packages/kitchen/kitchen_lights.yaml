@@ -352,3 +352,4 @@ automation:
                     entity_id:
                       - light.kitchen_lights
                       - light.kitchen_cabinet_lights
+    mode: restart
