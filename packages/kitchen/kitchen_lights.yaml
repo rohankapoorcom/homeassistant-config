@@ -350,6 +350,14 @@ automation:
                 - action: light.turn_on
                   target:
                     entity_id:
-                      - light.kitchen_lights
                       - light.kitchen_cabinet_lights
+            - if:
+                - condition: numeric_state
+                  entity_id: sensor.kitchen_lights_load_switch_illuminance
+                  below: 60
+              then:
+                - action: light.turn_on
+                  target:
+                    entity_id:
+                      - light.kitchen_lights
     mode: restart
