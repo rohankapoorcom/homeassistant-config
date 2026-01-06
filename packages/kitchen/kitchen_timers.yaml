@@ -101,7 +101,7 @@ automation:
 
           - action: tts.speak
             target:
-              entity_id: media_player.announcements
+              entity_id: tts.speaches
             data:
               cache: true
               message: >
@@ -116,7 +116,6 @@ automation:
             data:
               title: "⏱️ Timer Expired"
               message: "{{ timer_label | default('Timer') }} has completed!"
-              tag: "timer_{{ timer_id | default('unknown') }}"
               channel: Timers
               importance: high
               notification_icon: mdi:timer-outline
