@@ -1,0 +1,125 @@
+###############################################################################
+#  @author       :  Rohan Kapoor
+#  @date         :  01/06/2026
+#  @package      :  Kitchen Timers
+#  @description  :  Logic for handling the timers in the kitchen.
+#                   Based off of https://github.com/eyalgal/simple-timer-card/blob/main/mqtt-hybrid-model.md
+###############################################################################
+---
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'kitchen_timers'
+
+mqtt:
+  sensor:
+    - name: Simple Timer Store
+      unique_id: simple_timer_store
+      state_topic: simple_timer_card/timers/state
+      value_template: "{{ value_json.version | default(1) }}"
+      json_attributes_topic: simple_timer_card/timers
+
+input_text:
+  simple_timer_card_backend_processed:
+    name: "Simple Timer Card Backend Processed"
+    max: 255
+
+automation:
+  - id: 5d177645-64d5-485e-9b49-e7fba42590ac
+    alias: "Simple Timer Card: Backend Failsafe"
+    description: "Handles expired MQTT timers when no UI is open"
+    trigger:
+      - platform: time_pattern
+        seconds: "/1"
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('sensor.simple_timer_store') not in ['unknown', 'unavailable']
+          and state_attr('sensor.simple_timer_store', 'timers') | count > 0 }}
+    action:
+      - repeat:
+          for_each: "{{ state_attr('sensor.simple_timer_store', 'timers') }}"
+          sequence:
+            - if:
+                # Condition 1: Is the timer's end time in the past?
+                - condition: template
+                  value_template: "{{ repeat.item.end < (now().timestamp() * 1000) }}"
+                # Condition 2: Have we NOT already processed this timer?
+                - condition: template
+                  value_template: "{{ repeat.item.id not in states('input_text.simple_timer_card_backend_processed') }}"
+              then:
+                # If both are true, just fire the event. The notification automation will handle the rest.
+                - event: stc_timer_expired
+                  event_data:
+                    id: "{{ repeat.item.id }}"
+                    label: "{{ repeat.item.label }}"
+      # This part of the automation cleans up very old IDs from the helper to prevent it from getting too long.
+      - if:
+          - condition: template
+            value_template: "{{ states('input_text.simple_timer_card_backend_processed') | length > 200 }}"
+        then:
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.simple_timer_card_backend_processed
+            data:
+              value: "{{ states('input_text.simple_timer_card_backend_processed').split(',')[-10:] | join(',') }}"
+    mode: single
+
+  - id: c7f2e812-5bff-421c-bd8e-c9d65001b594
+    alias: "Timer Notification: Timer Finished"
+    description: "Sends an audible notification when any timer expires"
+    trigger:
+      - platform: mqtt
+        topic: simple_timer_card/events/expired
+        id: "frontend"
+
+      - platform: event
+        event_type: stc_timer_expired
+        id: "backend"
+
+    variables:
+      timer_id: "{{ trigger.payload_json.id if trigger.id == 'frontend' else trigger.event.data.id }}"
+      timer_label: "{{ trigger.payload_json.label if trigger.id == 'frontend' else trigger.event.data.label }}"
+
+    action:
+      # This 'if' block now acts as our condition to prevent duplicate runs.
+      - if:
+          - condition: template
+            value_template: "{{ timer_id not in states('input_text.simple_timer_card_backend_processed') }}"
+        then:
+          # If the timer is new, immediately add its ID to our helper to "claim" it.
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.simple_timer_card_backend_processed
+            data:
+              value: "{{ states('input_text.simple_timer_card_backend_processed') ~ ',' ~ timer_id }}"
+
+          - action: tts.speak
+            target:
+              entity_id: media_player.announcements
+            data:
+              cache: true
+              message: >
+                "{{ timer_label | default('Timer') }} has completed!"
+              language: en
+              options:
+                voice: af_heart
+              media_player_entity_id:
+                - media_player.announcements
+
+                # - service: notify.mobile_app_your_phone # <-- Your notification service
+                #   data:
+                #     title: "⏱️ Timer Expired"
+                #     message: "{{ timer_label | default('Timer') }} is done!"
+                #     data:
+                #       tag: "timer_{{ timer_id | default('unknown') }}"
+                #       channel: Timers
+                #       importance: high
+                #       notification_icon: mdi:timer-outline
+
+    mode: single
