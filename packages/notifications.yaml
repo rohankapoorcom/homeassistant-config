@@ -35,7 +35,7 @@ notify:
       - action: mobile_app_rohans_ipad_pro_5th_generation
       - action: mobile_app_rohans_ipad_pro_6th_gen
       - action: mobile_app_rohan_s_samsung_z_fold_4
-  
+
   - platform: group
     name: Rohan Kapoor Mobile Apps
     services:

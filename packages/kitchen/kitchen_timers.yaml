@@ -112,14 +112,13 @@ automation:
               media_player_entity_id:
                 - media_player.announcements
 
-            - action: notify.rohank_kapoor_mobile_apps
-              data:
-                title: "⏱️ Timer Expired"
-                message: "{{ timer_label | default('Timer') }} has completed!"
-                data:
-                  tag: "timer_{{ timer_id | default('unknown') }}"
-                  channel: Timers
-                  importance: high
-                  notification_icon: mdi:timer-outline
+          - action: notify.rohan_kapoor_mobile_apps
+            data:
+              title: "⏱️ Timer Expired"
+              message: "{{ timer_label | default('Timer') }} has completed!"
+              tag: "timer_{{ timer_id | default('unknown') }}"
+              channel: Timers
+              importance: high
+              notification_icon: mdi:timer-outline
 
     mode: single
