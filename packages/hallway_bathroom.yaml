@@ -49,6 +49,18 @@ fan:
         speed_count: 1
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Hallway Bathroom Motion
+    unique_id: 34114483-c5d8-4513-ac69-2b1228d2b212
+    device_class: motion
+    entities:
+      - binary_sensor.hallway_bathroom_multisensor_motion
+      - binary_sensor.hallway_bathroom_lights_occupancy
+
+################################################
 ## Automation
 ################################################
 automation:
