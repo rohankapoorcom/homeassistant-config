@@ -17,7 +17,7 @@ homeassistant:
 
       kitchen_light_switch_device_ids: &kitchen_light_switch_device_ids
         - ff2b9426281125e3833ee5edf69f5ab0
-        - 1ba8afa3f33d85ff33d77a5a13dfd364
+        - 8d17beb93c0922a46bc4ea30137e4b46
 
 ################################################
 ## Binary Sensor
