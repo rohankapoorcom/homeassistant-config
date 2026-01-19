@@ -30,6 +30,15 @@ binary_sensor:
     entities:
       - binary_sensor.kitchen_motion_sensor_motion
       - binary_sensor.kitchen_lights_load_switch_area1occupancy
+      - binary_sensor.kitchen_lights_aux_switch_area1occupancy
+
+  - platform: group
+    name: Kitchen Sink Occupancy
+    unique_id: 252456a9-ef1c-4b28-aa65-d92a71653a8b
+    device_class: occupancy
+    entities:
+      - binary_sensor.kitchen_lights_load_switch_area2occupancy
+      - binary_sensor.kitchen_lights_aux_switch_area2occupancy
 
 ################################################
 ## Light
@@ -380,12 +389,12 @@ automation:
       - trigger: event
         event_type: automation_reloaded
       - trigger: state
-        entity_id: binary_sensor.kitchen_lights_load_switch_area2occupancy
+        entity_id: binary_sensor.kitchen_sink_occupancy
     actions:
       - choose:
           - conditions:
               - condition: state
-                entity_id: binary_sensor.kitchen_lights_load_switch_area2occupancy
+                entity_id: binary_sensor.kitchen_sink_occupancy
                 state: 'off'
             sequence:
               - delay:

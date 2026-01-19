@@ -21,9 +21,10 @@ binary_sensor:
   - platform: group
     name: Upstairs Hallway Motion
     unique_id: 8bcb5487-b6e0-4b41-9ded-e5cb869a59bf
-    device_class: motion
+    device_class: occupancy
     entities:
       - binary_sensor.hallway_lights_aux_switch_2_occupancy
+      - binary_sensor.kitchen_lights_aux_switch_occupancy
 
 ################################################
 ## Automations
