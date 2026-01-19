@@ -29,7 +29,7 @@ binary_sensor:
     device_class: occupancy
     entities:
       - binary_sensor.kitchen_motion_sensor_motion
-      - binary_sensor.kitchen_lights_load_switch_occupancy
+      - binary_sensor.kitchen_lights_load_switch_area1occupancy
 
 ################################################
 ## Light
@@ -360,4 +360,41 @@ automation:
                   target:
                     entity_id:
                       - light.kitchen_lights
+    mode: restart
+
+- id: 89a642f0-805b-4578-9f5b-aa558f5ac35d
+    alias: Control the Kitchen Sink Lights by Occupancy Sensor
+    description: >
+      When the Sink is Occupied, turn on the sink lights.
+      When the Sink is Unoccupied, turn off the sink lights.
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: state
+        entity_id: binary_sensor.kitchen_lights_load_switch_area2occupancy
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.kitchen_lights_load_switch_area2occupancy
+                state: 'off'
+            sequence:
+              - delay:
+                  minutes: 2
+              - action: light.turn_off
+                target:
+                  entity_id: light.sink_accent_lights
+        default:
+          sequence:
+            - if:
+                - condition: numeric_state
+                  entity_id: sensor.kitchen_lights_load_switch_illuminance
+                  below: 250
+              then:
+                - action: light.turn_on
+                  target:
+                    entity_id:
+                      - light.sink_accent_lights
     mode: restart
