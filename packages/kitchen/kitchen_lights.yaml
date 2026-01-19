@@ -362,7 +362,7 @@ automation:
                       - light.kitchen_lights
     mode: restart
 
-- id: 89a642f0-805b-4578-9f5b-aa558f5ac35d
+  - id: 89a642f0-805b-4578-9f5b-aa558f5ac35d
     alias: Control the Kitchen Sink Lights by Occupancy Sensor
     description: >
       When the Sink is Occupied, turn on the sink lights.
