@@ -93,10 +93,11 @@ actions:
           - condition: template
             value_template: "{{ is_state(open_status_sensor, 'off') }}"
           - delay: !input close_delay
-          - action: cover.close_cover
-            target:
-              entity_id: !input cover_entity
-          - sequence: !input notification_action
+          - parallel:
+              - action: cover.close_cover
+                target:
+                  entity_id: !input cover_entity
+              - sequence: !input notification_action
       - alias: Open shades after sunrise offset
         conditions:
           - condition: sun
