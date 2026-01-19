@@ -167,124 +167,131 @@ automation:
       input:
         inovelli_switch: *kitchen_light_switch_device_ids
         config_button:
-          - action: cover.toggle
-            target:
-              entity_id: cover.kitchen_shades
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 170
-              level: 50
-              effect: Open/Close
-              duration: 20 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: cover.toggle
+                target:
+                  entity_id: cover.kitchen_shades
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 170
+                  level: 50
+                  effect: Open/Close
+                  duration: 20 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_a2:
-          - action: light.turn_on
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              brightness_pct: 100
-              kelvin: 3000
-              transition: 2
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 70
-              level: 50
-              effect: Medium Rising
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: light.turn_on
+                target:
+                  entity_id: light.kitchen_cabinet_lights
+                data:
+                  brightness_pct: 100
+                  kelvin: 3000
+                  transition: 2
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 70
+                  level: 50
+                  effect: Medium Rising
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_b2:
-          - action: light.turn_off
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              transition: 2
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 70
-              level: 10
-              effect: Medium Falling
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: light.turn_off
+                target:
+                  entity_id: light.kitchen_cabinet_lights
+                data:
+                  transition: 2
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 70
+                  level: 10
+                  effect: Medium Falling
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_a3:
-          - action: light.turn_on
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              brightness_pct: 100
-              kelvin: 3000
-              transition: 2
-          - action: light.turn_on
-            target:
-              entity_id: light.kitchen_lights
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 130
-              level: 50
-              effect: Medium Rising
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: light.turn_on
+                target:
+                  entity_id: light.kitchen_cabinet_lights
+                data:
+                  brightness_pct: 100
+                  kelvin: 3000
+                  transition: 2
+              - action: light.turn_on
+                target:
+                  entity_id: light.kitchen_lights
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 130
+                  level: 50
+                  effect: Medium Rising
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_b3:
-          - action: light.turn_off
-            target:
-              entity_id: light.kitchen_cabinet_lights
-            data:
-              transition: 2
-          - action: light.turn_off
-            target:
-              entity_id: light.kitchen_lights
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 130
-              level: 10
-              effect: Medium Falling
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: light.turn_off
+                target:
+                  entity_id: light.kitchen_cabinet_lights
+                data:
+                  transition: 2
+              - action: light.turn_off
+                target:
+                  entity_id: light.kitchen_lights
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 130
+                  level: 10
+                  effect: Medium Falling
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_a4:
-          - action: light.turn_on
-            target:
-              area_id: kitchen
-            data:
-              brightness_pct: 100
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 142
-              level: 50
-              effect: Medium Rising
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: light.turn_on
+                target:
+                  area_id: kitchen
+                data:
+                  brightness_pct: 100
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 142
+                  level: 50
+                  effect: Medium Rising
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
         button_b4:
-          - action: script.turn_off_lights_in_areas
-            data:
-              areas:
-                - kitchen
-          - action: script.inovelli_blue_notifications
-            data:
-              led: All
-              color: 142
-              level: 10
-              effect: Medium Falling
-              duration: 15 Seconds
-              target:
-                device_id:
-                  *kitchen_light_switch_device_ids
+          - parallel:
+              - action: script.turn_off_lights_in_areas
+                data:
+                  areas:
+                    - kitchen
+              - action: script.inovelli_blue_notifications
+                data:
+                  led: All
+                  color: 142
+                  level: 10
+                  effect: Medium Falling
+                  duration: 15 Seconds
+                  target:
+                    device_id:
+                      *kitchen_light_switch_device_ids
 
   - id: ea920c86-437a-4224-8329-7cad4537dc1a
     alias: Manage the Kitchen Shades

@@ -116,22 +116,23 @@ automation:
         inovelli_switch:
           - 0b647c4397c85dcea6e32a7a6f222617
         config_button:
-          - action: script.turn_off_lights_in_areas
-            data:
-              areas:
-                - upstairs_hallway_closet
-                - hallway
-                - hallway_bathroom
-                - kitchen
-                - living_room
-                - office
-          - action: script.inovelli_blue_notifications
-            metadata: {}
-            data:
-              led: All
-              color: Teal
-              effect: Fast Falling
-              duration: 10 Seconds
-              target:
-                device_id: 0b647c4397c85dcea6e32a7a6f222617
-              level: 30
+          - parallel:
+              - action: script.turn_off_lights_in_areas
+                data:
+                  areas:
+                    - upstairs_hallway_closet
+                    - hallway
+                    - hallway_bathroom
+                    - kitchen
+                    - living_room
+                    - office
+              - action: script.inovelli_blue_notifications
+                metadata: {}
+                data:
+                  led: All
+                  color: Teal
+                  effect: Fast Falling
+                  duration: 10 Seconds
+                  target:
+                    device_id: 0b647c4397c85dcea6e32a7a6f222617
+                  level: 30

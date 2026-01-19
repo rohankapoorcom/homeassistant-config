@@ -106,7 +106,8 @@ actions:
           - wait_template: >-
               {% set sensor = presence_sensor | default('') %}
               {{ true if sensor == '' or states(sensor) == 'unknown' else is_state(sensor, 'off') }}
-          - action: cover.open_cover
-            target:
-              entity_id: !input cover_entity
-          - sequence: !input notification_action
+          - parallel:
+              - action: cover.open_cover
+                target:
+                  entity_id: !input cover_entity
+              - sequence: !input notification_action
