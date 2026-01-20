@@ -56,75 +56,10 @@ light:
 ################################################
 script:
   update_dishwasher_display:
-    description: "Update the dishwasher display with the current state"
-    fields:
-      state:
-        description: "The current state of the dishwasher (Clean, Dirty, Running)"
-        example: Running
-    sequence:
-      - action: open_epaper_link.drawcustom
-        data:
-          background: white
-          rotate: 0
-          ttl: 300
-          dither: false
-          payload:
-            - type: text
-              value: "{{ state }}"
-              font: ppb.ttf
-              x: 220
-              y: 64
-              size: 70
-              color: red
-              anchor: mm
-            - type: text
-              value: As of {{ now().strftime('%m/%d/%Y at %I:%M %p') }}
-              font: ppb.ttf
-              x: 375
-              y: 160
-              size: 15
-              color: black
-              anchor: rs
-            - type: icon
-              value: silverware-clean
-              x: 40
-              y: 64
-              size: 60
-              color: black
-              anchor: mm
-            - type: text
-              value: Dirty
-              font: ppb.ttf
-              x: 15
-              y: 130
-              size: 15
-              color: black
-              anchor: ls
-            - type: text
-              value: Clean
-              font: ppb.ttf
-              x: 100
-              y: 130
-              size: 15
-              color: black
-              anchor: ls
-            - type: icon
-              value: arrow-down
-              x: 33
-              y: 160
-              size: 25
-              color: red
-              anchor: ms
-            - type: icon
-              value: arrow-down
-              x: 125
-              y: 160
-              size: 25
-              color: red
-              anchor: ms
-        target:
-          device_id:
-            - a3f2009d29c8d2526fb0ad4c94097c63
+    use_blueprint:
+      path: rohankapoorcom/update-dishwasher-epaper-display.yaml
+      input:
+        epaper_tag: a3f2009d29c8d2526fb0ad4c94097c63
 
 ################################################
 ## Automation
@@ -407,7 +342,7 @@ automation:
             - if:
                 - condition: numeric_state
                   entity_id: sensor.kitchen_lights_load_switch_illuminance
-                  below: 250
+                  below: 225
               then:
                 - action: light.turn_on
                   target:
