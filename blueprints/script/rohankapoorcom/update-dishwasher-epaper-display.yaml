@@ -9,7 +9,6 @@ blueprint:
     epaper_tag:
       name: E-Paper Tag
       description: The OpenEPaperLink e-paper tag device to update
-      required: true
       selector:
         device:
           filter:
