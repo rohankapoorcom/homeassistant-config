@@ -333,7 +333,7 @@ automation:
                 state: 'off'
             sequence:
               - delay:
-                  minutes: 2
+                  seconds: 30
               - action: light.turn_off
                 target:
                   entity_id: light.sink_accent_lights
@@ -342,7 +342,7 @@ automation:
             - if:
                 - condition: numeric_state
                   entity_id: sensor.kitchen_lights_load_switch_illuminance
-                  below: 225
+                  below: 200
               then:
                 - action: light.turn_on
                   target:
