@@ -32,6 +32,14 @@ blueprint:
           min: 0
           max: 3600
           unit_of_measurement: seconds
+    turn_on_condition:
+      name: Only turn on when
+      description: Optional. Light turns on only when this condition is true. Default allows always.
+      default:
+        condition: template
+        value_template: "true"
+      selector:
+        condition:
 
 mode: restart
 max_exceeded: silent
@@ -55,11 +63,12 @@ actions:
             state: 'on'
         sequence:
           - choose:
-              - alias: If the light_target is not on, then turn it on.
+              - alias: If the light_target is not on and turn_on_condition is met, then turn it on.
                 conditions:
                   - condition: state
                     entity_id: !input light_target
                     state: 'off'
+                  - !input turn_on_condition
                 sequence:
                   - action: light.turn_on
                     target:
