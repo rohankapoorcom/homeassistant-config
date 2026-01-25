@@ -118,7 +118,7 @@ automation:
               - action: script.inovelli_blue_notifications
                 data:
                   led: All
-                  color: 170
+                  color: 200
                   level: 50
                   effect: Open/Close
                   duration: 20 Seconds
@@ -251,7 +251,7 @@ automation:
           - action: script.inovelli_blue_notifications
             data:
               led: All
-              color: 170
+              color: 200
               level: 50
               effect: Open/Close
               duration: 20 Seconds
@@ -342,7 +342,7 @@ automation:
             - if:
                 - condition: numeric_state
                   entity_id: sensor.kitchen_lights_load_switch_illuminance
-                  below: 200
+                  below: 175
               then:
                 - action: light.turn_on
                   target:

@@ -142,7 +142,7 @@ automation:
             data:
               parameter: 99
               value:
-                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Color: 200
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
@@ -158,7 +158,7 @@ automation:
             data:
               parameter: 99
               value:
-                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Color: 200
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
@@ -174,7 +174,7 @@ automation:
             data:
               parameter: 99
               value:
-                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Color: 200
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
@@ -197,7 +197,7 @@ automation:
             data:
               parameter: 99
               value:
-                All LED Strip Effect - Color: 170
+                All LED Strip Effect - Color: 200
                 All LED Strip Effect - Level: 40
                 All LED Strip Effect - Duration: 10
                 All LED Strip Effect - Effect: Open/close
@@ -233,7 +233,7 @@ automation:
         data:
           parameter: 99
           value:
-            All LED Strip Effect - Color: 170
+            All LED Strip Effect - Color: 200
             All LED Strip Effect - Level: 40
             All LED Strip Effect - Duration: 10
             All LED Strip Effect - Effect: Open/close

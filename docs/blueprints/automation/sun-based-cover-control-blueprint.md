@@ -69,7 +69,7 @@ This blueprint creates an automation that:
           data:
             parameter: 99
             value:
-              All LED Strip Effect - Color: 170
+              All LED Strip Effect - Color: 200
               All LED Strip Effect - Level: 40
               All LED Strip Effect - Duration: 10
               All LED Strip Effect - Effect: Open/close
@@ -89,7 +89,7 @@ This blueprint creates an automation that:
         - action: script.inovelli_blue_notifications
           data:
             led: All
-            color: 170
+            color: 200
             level: 40
             duration: 10
             effect: Open/close
@@ -111,7 +111,7 @@ This blueprint creates an automation that:
           data:
             parameter: 99
             value:
-              All LED Strip Effect - Color: 170
+              All LED Strip Effect - Color: 200
               All LED Strip Effect - Level: 40
               All LED Strip Effect - Duration: 10
               All LED Strip Effect - Effect: Open/close
