@@ -98,6 +98,9 @@ automation:
       - trigger: state
         entity_id: input_datetime.water_heater_last_cleaning
     actions:
+      - wait_template: "{{ not is_state('sensor.0000021f85043b1c_last_seen', 'unavailable') }}"
+        timeout: 00:05:00
+        continue_on_timeout: false
       - action: open_epaper_link.drawcustom
         data:
           background: white
