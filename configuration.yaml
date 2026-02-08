@@ -110,9 +110,6 @@ ingress:
     icon: mdi:music
     #    parent: hidden
 
-battery_notes:
-  hide_battery: true
-
 remote_homeassistant:
   instances:
 
