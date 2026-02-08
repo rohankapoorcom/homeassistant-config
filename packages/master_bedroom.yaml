@@ -19,35 +19,34 @@ homeassistant:
         - 9a1774a5d28bf6aa7c84198969517bd0
 
 ################################################
-## Fan
+## Template
 ################################################
-fan:
-  - platform: template
-    fans:
-      master_bedroom_fan:
-        friendly_name: Master Bedroom Fan
-        unique_id: e7adcd00-14ac-4b1b-8366-5951aacd1482
-        value_template: "{{is_state('light.master_bedroom_fan', 'on')}}"
-        percentage_template: >
-          {{ (state_attr('light.master_bedroom_fan', 'brightness') | float(0) * 0.392)  | round(0)}}
-        turn_on:
-          action: light.turn_on
-          target:
-            entity_id:
-              - light.master_bedroom_fan
-        turn_off:
-          action: light.turn_off
-          target:
-            entity_id:
-              - light.master_bedroom_fan
-        set_percentage:
-          action: light.turn_on
-          data:
-            brightness_pct: "{{ percentage }}"
-          target:
-            entity_id:
-              - light.master_bedroom_fan
+template:
+  - fan:
+      - unique_id: e7adcd00-14ac-4b1b-8366-5951aacd1482
+        name: Master Bedroom Fan
+        default_entity_id: fan.master_bedroom_fan
+        state: "{{ is_state('light.master_bedroom_fan', 'on') }}"
         speed_count: 3
+        percentage: >
+          {{ (state_attr('light.master_bedroom_fan', 'brightness') | float(0) * 0.392) | round(0) }}
+        turn_on:
+          - action: light.turn_on
+            target:
+              entity_id:
+                - light.master_bedroom_fan
+        turn_off:
+          - action: light.turn_off
+            target:
+              entity_id:
+                - light.master_bedroom_fan
+        set_percentage:
+          - action: light.turn_on
+            data:
+              brightness_pct: "{{ percentage }}"
+            target:
+              entity_id:
+                - light.master_bedroom_fan
 
 ################################################
 ## Script

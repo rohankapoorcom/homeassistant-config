@@ -15,15 +15,15 @@ homeassistant:
         package: 'master_bathroom'
 
 ################################################
-## Sensor
+## Template
 ################################################
-sensor:
-  - platform: template
-    sensors:
-      master_bathroom_relative_humidity:
-        friendly_name: 'Relative Humidity'
+template:
+  - sensor:
+      - unique_id: b2c3d4e5-f6a7-4890-b123-456789012345
+        name: Relative Humidity
         unit_of_measurement: '%'
-        value_template: >
+        default_entity_id: sensor.master_bathroom_relative_humidity
+        state: >
           {{ states('sensor.master_bathroom_humidity') | float(0) - states('sensor.upstairs_humidity') | float(0) }}
 
 ################################################

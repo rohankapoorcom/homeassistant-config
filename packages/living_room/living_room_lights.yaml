@@ -19,61 +19,55 @@ homeassistant:
         - 257a7b48517ba7c9cc28fa70842c24f6
 
 ################################################
-## Binary Sensor
+## Template
 ################################################
-binary_sensor:
-  - platform: template
-    sensors:
-      living_room_fan_slow:
-        friendly_name: Living Room Fan Set to Slow
-        value_template: >
+template:
+  - binary_sensor:
+      - unique_id: c1d2e3f4-a5b6-4789-c012-345678901234
+        name: Living Room Fan Set to Slow
+        default_entity_id: binary_sensor.living_room_fan_slow
+        state: >
           {% set living_room_fan_percentage = state_attr('fan.living_room_fan', 'percentage') | int(0) %}
           {{ living_room_fan_percentage > 0 and living_room_fan_percentage <= 52 }}
-
-      living_room_fan_medium:
-        friendly_name: Living Room Fan Set to Medium
-        value_template: >
+      - unique_id: d2e3f4a5-b6c7-4890-d123-456789012345
+        name: Living Room Fan Set to Medium
+        default_entity_id: binary_sensor.living_room_fan_medium
+        state: >
           {% set living_room_fan_percentage = state_attr('fan.living_room_fan', 'percentage') | int(0) %}
           {{ living_room_fan_percentage > 52 and living_room_fan_percentage <= 81 }}
-
-      living_room_fan_high:
-        friendly_name: Living Room Fan Set to High
-        value_template: "{{ state_attr('fan.living_room_fan', 'percentage') | int(0) > 81 }}"
-
-      living_room_fan_off:
-        friendly_name: Living Room Fan Set to High
-        value_template: "{{ is_state('fan.living_room_fan', 'off') }}"
-
-################################################
-## Fan
-################################################
-fan:
-  - platform: template
-    fans:
-      living_room_fan:
-        friendly_name: Living Room Fan
-        unique_id: 2e23a699-aa54-49ea-8485-e01faf98275a
-        value_template: "{{is_state('light.living_room_fan', 'on')}}"
-        percentage_template: >
-          {{ (state_attr('light.living_room_fan', 'brightness') | float(0) * 0.392)  | round(0)}}
-        turn_on:
-          action: light.turn_on
-          target:
-            entity_id:
-              - light.living_room_fan
-        turn_off:
-          action: light.turn_off
-          target:
-            entity_id:
-              - light.living_room_fan
-        set_percentage:
-          action: light.turn_on
-          data:
-            brightness_pct: "{{ percentage }}"
-          target:
-            entity_id:
-              - light.living_room_fan
+      - unique_id: e3f4a5b6-c7d8-4901-e234-567890123456
+        name: Living Room Fan Set to High
+        default_entity_id: binary_sensor.living_room_fan_high
+        state: "{{ state_attr('fan.living_room_fan', 'percentage') | int(0) > 81 }}"
+      - unique_id: f4a5b6c7-d8e9-4012-f345-678901234567
+        name: Living Room Fan Set to Off
+        default_entity_id: binary_sensor.living_room_fan_off
+        state: "{{ is_state('fan.living_room_fan', 'off') }}"
+  - fan:
+      - unique_id: 2e23a699-aa54-49ea-8485-e01faf98275a
+        name: Living Room Fan
+        default_entity_id: fan.living_room_fan
+        state: "{{ is_state('light.living_room_fan', 'on') }}"
         speed_count: 3
+        percentage: >
+          {{ (state_attr('light.living_room_fan', 'brightness') | float(0) * 0.392) | round(0) }}
+        turn_on:
+          - action: light.turn_on
+            target:
+              entity_id:
+                - light.living_room_fan
+        turn_off:
+          - action: light.turn_off
+            target:
+              entity_id:
+                - light.living_room_fan
+        set_percentage:
+          - action: light.turn_on
+            data:
+              brightness_pct: "{{ percentage }}"
+            target:
+              entity_id:
+                - light.living_room_fan
 
 ################################################
 ## Automation

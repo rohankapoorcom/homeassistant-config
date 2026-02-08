@@ -15,38 +15,32 @@ homeassistant:
         package: 'hallway_bathroom'
 
 ################################################
-## Sensor
+## Template
 ################################################
-sensor:
-  - platform: template
-    sensors:
-      hallway_bathroom_relative_humidity:
-        friendly_name: 'Relative Humidity'
+template:
+  - sensor:
+      - unique_id: c3d4e5f6-a7b8-4901-c234-567890123456
+        name: Relative Humidity
         unit_of_measurement: '%'
-        value_template: >
+        default_entity_id: sensor.hallway_bathroom_relative_humidity
+        state: >
           {{ states('sensor.hallway_bathroom_humidity') | float(0) - states('sensor.upstairs_humidity') | float(0) }}
-
-################################################
-## Fan
-################################################
-fan:
-  - platform: template
-    fans:
-      hallway_bathroom_fan:
-        friendly_name: Hallway Bathroom Fan
-        unique_id: 02e672a4-e454-4216-8cf5-4c965ecc858f
-        value_template: "{{is_state('light.hallway_bathroom_fan', 'on')}}"
-        turn_on:
-          action: light.turn_on
-          target:
-            entity_id:
-              - light.hallway_bathroom_fan
-        turn_off:
-          action: light.turn_off
-          target:
-            entity_id:
-              - light.hallway_bathroom_fan
+  - fan:
+      - unique_id: 02e672a4-e454-4216-8cf5-4c965ecc858f
+        name: Hallway Bathroom Fan
+        default_entity_id: fan.hallway_bathroom_fan
+        state: "{{ is_state('light.hallway_bathroom_fan', 'on') }}"
         speed_count: 1
+        turn_on:
+          - action: light.turn_on
+            target:
+              entity_id:
+                - light.hallway_bathroom_fan
+        turn_off:
+          - action: light.turn_off
+            target:
+              entity_id:
+                - light.hallway_bathroom_fan
 
 ################################################
 ## Binary Sensor

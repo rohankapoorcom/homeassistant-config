@@ -15,18 +15,17 @@ homeassistant:
         package: 'downstairs_bathroom'
 
 ################################################
-## Sensor
+## Template
 ################################################
-sensor:
-  - platform: template
-    sensors:
-      downstairs_bathroom_relative_humidity:
-        friendly_name: 'Relative Humidity'
+template:
+  - sensor:
+      - unique_id: a1b2c3d4-e5f6-4789-a012-345678901234
+        name: Relative Humidity
         unit_of_measurement: '%'
-        # yamllint disable rule:line-length
-        value_template: >
-          {{ states('sensor.downstairs_bathroom_humidity') | float(0) - states('sensor.downstairs_humidity') | float(0) }}
-        # yamllint enable rule:line-length
+        default_entity_id: sensor.downstairs_bathroom_relative_humidity
+        state: >
+          {{ states('sensor.downstairs_bathroom_humidity') | float(0)
+            - states('sensor.downstairs_humidity') | float(0) }}
 
 ################################################
 ## Automation

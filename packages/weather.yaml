@@ -24,19 +24,18 @@ homeassistant:
       <<: *customize
 
 ################################################
-## Sensor
+## Template
 ################################################
-sensor:
-  - platform: template
-    sensors:
-
-      exterior_temperature:
-        value_template: "{{state_attr('weather.pirateweather', 'temperature') | round(1, default=0)}}"
+template:
+  - sensor:
+      - unique_id: a7b8c9d0-e1f2-4345-a678-901234567890
+        default_entity_id: sensor.exterior_temperature
+        state: "{{ state_attr('weather.pirateweather', 'temperature') | round(1, default=0) }}"
         device_class: temperature
         unit_of_measurement: "°F"
-
-      exterior_humidity:
-        value_template: "{{state_attr('weather.pirateweather', 'humidity') | round(1, default=0)}}"
+      - unique_id: b8c9d0e1-f2a3-4456-b789-012345678901
+        default_entity_id: sensor.exterior_humidity
+        state: "{{ state_attr('weather.pirateweather', 'humidity') | round(1, default=0) }}"
         device_class: humidity
         unit_of_measurement: "%"
 

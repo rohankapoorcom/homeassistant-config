@@ -34,20 +34,19 @@ media_player:
       - media_player.whole_house
 
 ################################################
-## Sensor
+## Template
 ################################################
-sensor:
-  - platform: template
-    sensors:
-
-      all_speakers_media_title:
-        friendly_name: Title
-        value_template: "{{ state_attr('media_player.all_speakers', 'media_title') }}"
-
-      all_speakers_media_artist:
-        friendly_name: Artist
-        value_template: "{{ state_attr('media_player.all_speakers', 'media_artist') }}"
-
-      1second_silence_url:
-        value_template: !secret media_content_id.1second_silence
+template:
+  - sensor:
+      - unique_id: d4e5f6a7-b8c9-4012-d345-678901234567
+        name: Title
+        default_entity_id: sensor.all_speakers_media_title
+        state: "{{ state_attr('media_player.all_speakers', 'media_title') }}"
+      - unique_id: e5f6a7b8-c9d0-4123-e456-789012345678
+        name: Artist
+        default_entity_id: sensor.all_speakers_media_artist
+        state: "{{ state_attr('media_player.all_speakers', 'media_artist') }}"
+      - unique_id: f6a7b8c9-d0e1-4234-f567-890123456789
+        default_entity_id: sensor._1second_silence_url
+        state: !secret media_content_id.1second_silence
 

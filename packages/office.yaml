@@ -96,50 +96,95 @@ mqtt_discoverystream_alt:
       #     topic: "homeassistant-dashboard/status"
 
 ################################################
-## Binary Sensor
+## Template
 ################################################
-binary_sensor:
-  - platform: template
-    sensors:
-      office_lights_25_percent:
-        friendly_name: Office Lights 25% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 64) }}"
-
-      office_lights_50_percent:
-        friendly_name: Office Lights 50% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 128) }}"
-
-      office_lights_75_percent:
-        friendly_name: Office Lights 75% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 191) }}"
-
-      office_lights_100_percent:
-        friendly_name: Office Lights 100% Enabled
-        value_template: "{{ is_state_attr('light.office_lights', 'brightness', 255) }}"
-
-      office_fan_is_off:
-        friendly_name: Office Fan is Off
-        value_template: "{{ is_state('fan.office_fan', 'off') }}"
-
-      office_fan_slow:
-        friendly_name: Office Fan Set to Slow
-        value_template: >
+template:
+  - binary_sensor:
+      - unique_id: a3b4c5d6-e7f8-4901-a234-567890123456
+        name: Office Lights 25% Enabled
+        default_entity_id: binary_sensor.office_lights_25_percent
+        state: "{{ is_state_attr('light.office_lights', 'brightness', 64) }}"
+      - unique_id: b4c5d6e7-f8a9-4012-b345-678901234567
+        name: Office Lights 50% Enabled
+        default_entity_id: binary_sensor.office_lights_50_percent
+        state: "{{ is_state_attr('light.office_lights', 'brightness', 128) }}"
+      - unique_id: c5d6e7f8-a9b0-4123-c456-789012345678
+        name: Office Lights 75% Enabled
+        default_entity_id: binary_sensor.office_lights_75_percent
+        state: "{{ is_state_attr('light.office_lights', 'brightness', 191) }}"
+      - unique_id: d6e7f8a9-b0c1-4234-d567-890123456789
+        name: Office Lights 100% Enabled
+        default_entity_id: binary_sensor.office_lights_100_percent
+        state: "{{ is_state_attr('light.office_lights', 'brightness', 255) }}"
+      - unique_id: e7f8a9b0-c1d2-4345-e678-901234567890
+        name: Office Fan is Off
+        default_entity_id: binary_sensor.office_fan_is_off
+        state: "{{ is_state('fan.office_fan', 'off') }}"
+      - unique_id: f8a9b0c1-d2e3-4456-f789-012345678901
+        name: Office Fan Set to Slow
+        default_entity_id: binary_sensor.office_fan_slow
+        state: >
           {{ is_state('fan.office_fan', 'on')
             and state_attr('fan.office_fan', 'percentage') > 0
             and state_attr('fan.office_fan', 'percentage') <= 52 }}
-
-      office_fan_medium:
-        friendly_name: Office Fan Set to Medium
-        value_template: >
+      - unique_id: a9b0c1d2-e3f4-4567-a890-123456789012
+        name: Office Fan Set to Medium
+        default_entity_id: binary_sensor.office_fan_medium
+        state: >
           {{ is_state('fan.office_fan', 'on')
             and state_attr('fan.office_fan', 'percentage') > 52
             and state_attr('fan.office_fan', 'percentage') <= 81 }}
-
-      office_fan_high:
-        friendly_name: Office Fan Set to High
-        value_template: >
+      - unique_id: b0c1d2e3-f4a5-4678-b901-234567890123
+        name: Office Fan Set to High
+        default_entity_id: binary_sensor.office_fan_high
+        state: >
           {{ is_state('fan.office_fan', 'on')
             and state_attr('fan.office_fan', 'percentage') > 81 }}
+  - light:
+      - unique_id: b0ef72e2-eea5-4e16-b71f-793371b1d564
+        name: Office Video Lights
+        default_entity_id: light.office_video_lights
+        state: >-
+          {{ is_state_attr('light.center_key_light', 'brightness', 51)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.left_key_light', 'brightness', 38)
+            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.office_backlighting', 'brightness', 255)
+            and is_state_attr('light.office_backlighting', 'color_temp', 156)
+            and is_state('light.office_lights', 'off')
+          }}
+        turn_on:
+          - action: light.turn_on
+            target:
+              entity_id: light.center_key_light
+            data:
+              color_temp: 143
+              brightness: 51
+          - action: light.turn_on
+            target:
+              entity_id: light.left_key_light
+            data:
+              color_temp: 143
+              brightness: 38
+          - action: light.turn_on
+            target:
+              entity_id: light.office_backlighting
+            data:
+              color_temp: 156
+              brightness: 255
+          - action: light.turn_off
+            target:
+              entity_id: light.office_lights
+        turn_off:
+          - action: light.turn_off
+            target:
+              entity_id: light.center_key_light
+          - action: light.turn_off
+            target:
+              entity_id: light.left_key_light
+          - action: light.turn_off
+            target:
+              entity_id: light.office_backlighting
 
 ################################################
 ## Input Boolean
@@ -156,46 +201,6 @@ light:
   - platform: switch
     name: Office Closet Lights
     entity_id: switch.office_closet_lights
-
-  - platform: template
-    lights:
-      office_video_lights:
-        friendly_name: Office Video Lights
-        unique_id: b0ef72e2-eea5-4e16-b71f-793371b1d564
-        value_template: >-
-          {{ is_state_attr('light.center_key_light', 'brightness', 51)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
-            and is_state_attr('light.left_key_light', 'brightness', 38)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
-            and is_state_attr('light.office_backlighting', 'brightness', 255)
-            and is_state_attr('light.office_backlighting', 'color_temp', 156)
-            and is_state('light.office_lights', 'off')
-          }}
-        turn_on:
-          - action: light.turn_on
-            entity_id: light.center_key_light
-            data:
-              color_temp: 143
-              brightness: 51
-          - action: light.turn_on
-            entity_id: light.left_key_light
-            data:
-              color_temp: 143
-              brightness: 38
-          - action: light.turn_on
-            entity_id: light.office_backlighting
-            data:
-              color_temp: 156
-              brightness: 255
-          - action: light.turn_off
-            entity_id: light.office_lights
-        turn_off:
-          - action: light.turn_off
-            entity_id: light.center_key_light
-          - action: light.turn_off
-            entity_id: light.left_key_light
-          - action: light.turn_off
-            entity_id: light.office_backlighting
 
 ################################################
 ## Script

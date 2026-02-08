@@ -7,21 +7,22 @@
 ---
 
 ################################################
-## Binary Sensor
+## Template
 ################################################
-binary_sensor:
-  - platform: template
-    sensors:
-      downstairs_lights_on:
-        friendly_name: Downstairs Lights On
-        value_template: >
+template:
+  - binary_sensor:
+      - unique_id: c9d0e1f2-a3b4-4567-c890-123456789012
+        name: Downstairs Lights On
+        default_entity_id: binary_sensor.downstairs_lights_on
+        state: >
           {{
             is_state('light.stairway_lights', 'on')
             and is_state('light.downstairs_hallway_lights', 'on')
           }}
-      downstairs_lights_off:
-        friendly_name: Downstairs Lights Off
-        value_template: >
+      - unique_id: d0e1f2a3-b4c5-4678-d901-234567890123
+        name: Downstairs Lights Off
+        default_entity_id: binary_sensor.downstairs_lights_off
+        state: >
           {{
             expand(states.light)
             | selectattr('entity_id', 'in', area_entities('downstairs_bathroom'))
@@ -59,16 +60,18 @@ binary_sensor:
             | count
             == 0
           }}
-      upstairs_lights_on:
-        friendly_name: Upstairs Lights On
-        value_template: >
+      - unique_id: e1f2a3b4-c5d6-4789-e012-345678901234
+        name: Upstairs Lights On
+        default_entity_id: binary_sensor.upstairs_lights_on
+        state: >
           {{
             is_state('light.hallway_lights', 'on')
             and is_state('light.kitchen_cabinet_lights', 'on')
           }}
-      upstairs_lights_off:
-        friendly_name: Upstairs Lights Off
-        value_template: >
+      - unique_id: f2a3b4c5-d6e7-4890-f123-456789012345
+        name: Upstairs Lights Off
+        default_entity_id: binary_sensor.upstairs_lights_off
+        state: >
           {{
             expand(states.light)
             | selectattr('entity_id', 'in', area_entities('hallway'))
