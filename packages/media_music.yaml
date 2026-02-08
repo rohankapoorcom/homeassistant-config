@@ -46,7 +46,4 @@ template:
         name: Artist
         default_entity_id: sensor.all_speakers_media_artist
         state: "{{ state_attr('media_player.all_speakers', 'media_artist') }}"
-      - unique_id: f6a7b8c9-d0e1-4234-f567-890123456789
-        default_entity_id: sensor._1second_silence_url
-        state: !secret media_content_id.1second_silence
 
