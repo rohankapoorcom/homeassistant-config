@@ -7,8 +7,8 @@ This directory contains documentation for custom blueprints created by the repos
 ### [Automation Blueprints](automation/README.md)
 Comprehensive collection of automation blueprints covering device-specific controls, lighting automation, battery management, and general home automation.
 
-### Script Blueprints
-*(None created by repository owner)*
+### [Script Blueprints](script/README.md)
+Script blueprints for creating reusable scripts for device control and status updates.
 
 ### [Template Blueprints](template/README.md)
 Template blueprints for creating custom sensors and calculations.
@@ -35,9 +35,10 @@ Template blueprints for creating custom sensors and calculations.
 | Sun-Based Cover Control | automation | [sun-based-cover-control-blueprint.md](automation/sun-based-cover-control-blueprint.md) | Sun-based automation, window/door integration | Cover entities, binary sensors |
 | Tablet Battery Charging | automation | [tablet-battery-charging-blueprint.md](automation/tablet-battery-charging-blueprint.md) | Tablet charging automation | Tablets |
 | Tuya TS0044 4-Button Remote | automation | [tuya-ts0044-4-button-remote-blueprint.md](automation/tuya-ts0044-4-button-remote-blueprint.md) | Remote control automation | Tuya TS0044 remotes |
+| Update Dishwasher E-Paper Display | script | [update-dishwasher-epaper-display-blueprint.md](script/update-dishwasher-epaper-display-blueprint.md) | Status display, timestamp, icons | OpenEPaperLink displays |
+| US AQI | template | [us-aqi-blueprint.md](template/us-aqi-blueprint.md) | EPA-compliant AQI calculation | Any PM2.5 sensor |
 | Zooz ZEN32 Scene Controller Status Lights | automation | [zooz-zen32-scene-controller-status-lights-blueprint.md](automation/zooz-zen32-scene-controller-status-lights-blueprint.md) | Status light automation | Zooz ZEN32 controllers |
 | Zooz ZEN32 Scene Controls | automation | [zooz-zen32-scene-controls-blueprint.md](automation/zooz-zen32-scene-controls-blueprint.md) | Scene control automation | Zooz ZEN32 controllers |
-| US AQI | template | [us-aqi-blueprint.md](template/us-aqi-blueprint.md) | EPA-compliant AQI calculation | Any PM2.5 sensor |
 
 ## Blueprint Categories
 
@@ -57,6 +58,9 @@ Template blueprints for creating custom sensors and calculations.
 - **Motion Light**: Motion-activated lighting automation
 - **Sun-Based Cover Control**: Intelligent window covering automation based on sun position and window status
 - **Tablet Battery Charging**: Tablet charging management
+
+### Script Blueprints
+- **Update Dishwasher E-Paper Display**: Script for updating e-paper displays with dishwasher status
 
 ### Template Sensors
 - **US AQI**: EPA-compliant air quality index calculation from PM2.5 sensors

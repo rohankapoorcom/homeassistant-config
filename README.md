@@ -58,6 +58,8 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 
 ### Utilities & Tools
 - **[browser_mod](https://github.com/thomasloven/hass-browser_mod)**: Browser-based automations and popups
+- **[hacs](https://hacs.xyz/)**: Home Assistant Community Store for managing custom integrations and cards
+- **[ingress](https://github.com/lovelylain/hass_ingress)**: Embed external web services as Home Assistant panels
 - **[lovelace_gen](https://github.com/thomasloven/hass-lovelace_gen)**: Dynamic Lovelace dashboard generation
 - **[mass_queue](https://github.com/droans/mass_queue)**: Mass (Music Assistant) queue management
 - **[midas](https://github.com/MattDahEpic/ha-midas)**: California energy prices from MIDAS API
@@ -117,8 +119,8 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 This configuration includes a comprehensive collection of custom blueprints created by the repository owner for various automation scenarios.
 
 ### Blueprint Types Available
-- **Automation Blueprints**: 19 blueprints covering device-specific automations, lighting controls, battery management, and more
-- **Script Blueprints**: *(None created by repository owner)*
+- **Automation Blueprints**: 20 blueprints covering device-specific automations, lighting controls, battery management, and more
+- **Script Blueprints**: 1 blueprint for e-paper display control
 - **Template Blueprints**: 1 blueprint for air quality calculations
 
 ### Key Blueprint Categories
@@ -138,6 +140,7 @@ The configuration uses a package-based organization system for modular and maint
 - **[appliances.yaml](docs/packages/appliances.md)**: Appliance control and monitoring
 - **[assistant.yaml](docs/packages/assistant.md)**: Voice assistant integration
 - **[default_config.yaml](docs/packages/default_config.md)**: Default configuration settings
+- **[lighting_utilities.yaml](docs/packages/lighting_utilities.md)**: Centralized lighting utility scripts
 - **[media_music.yaml](docs/packages/media_music.md)**: Whole-home audio and entertainment
 - **[notifications.yaml](docs/packages/notifications.md)**: Notification management
 - **[presence.yaml](docs/packages/presence.md)**: Presence detection and automation

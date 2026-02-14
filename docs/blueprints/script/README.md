@@ -4,13 +4,17 @@ This directory contains documentation for script blueprints created by the repos
 
 ## Blueprints in this Type
 
-*(None created by repository owner)*
+### Update Dishwasher E-Paper Display
+- **File**: [update-dishwasher-epaper-display-blueprint.md](update-dishwasher-epaper-display-blueprint.md)
+- **Description**: Update OpenEPaperLink e-paper displays with dishwasher status (Clean, Dirty, Running)
+- **Key Features**: Visual status display, timestamp tracking, silverware icon, state indicators
+- **Device Support**: OpenEPaperLink e-paper displays
 
 ## Quick Reference
 
 | Blueprint | File | Domain | Key Features | Device Support |
 |-----------|------|--------|--------------|----------------|
-| *(No script blueprints created by repository owner)* | | | | |
+| Update Dishwasher E-Paper Display | [update-dishwasher-epaper-display-blueprint.md](update-dishwasher-epaper-display-blueprint.md) | script | Status display, timestamp, icons | OpenEPaperLink displays |
 
 ## Related Documentation
 
