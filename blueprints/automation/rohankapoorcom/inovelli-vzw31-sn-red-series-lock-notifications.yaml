@@ -1,7 +1,7 @@
 ---
 blueprint:
-  name: Inovelli VZW31-SN Lock Notifications
-  description: Displays the current status of the lock using an Inovelli Red Series VZW31-SN Dimmer Switch
+  name: Inovelli Red Series Switch Lock Notifications (VZW31-SN / VZW30-SN / VZW32-SN)
+  description: Displays the current status of the lock using an Inovelli Red Series switch (VZW31-SN, VZW30-SN, VZW32-SN).
   domain: automation
   input:
     lock_entity:
@@ -12,12 +12,19 @@ blueprint:
           domain: lock
     zwave_device:
       name: Inovelli Switch
-      description: List of available Inovelli VZW31-SN switches.
+      description: List of available Inovelli Red Series switches (VZW31-SN, VZW30-SN, VZW32-SN).
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Inovelli
-          model: VZW31-SN
+          filter:
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW31-SN
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW30-SN
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW32-SN
   source_url: https://github.com/rohankapoorcom/homeassistant-config/blob/master/blueprints/automation/rohankapoorcom/inovelli-vzw31-sn-red-series-lock-notifications.yaml
 mode: single
 max_exceeded: silent

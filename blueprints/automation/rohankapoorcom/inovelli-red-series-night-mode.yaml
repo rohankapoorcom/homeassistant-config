@@ -69,7 +69,7 @@ actions:
               device_id: !input zwave_device
             data:
               parameter: >
-                {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
+                {% if device_attr(zwave_device, 'model') in ['VZW31-SN', 'VZW30-SN', 'VZW32-SN'] %}
                   Default Level (Local)
                 {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
                   Default Level
@@ -80,7 +80,7 @@ actions:
               device_id: !input zwave_device
             data:
               parameter: >
-                {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
+                {% if device_attr(zwave_device, 'model') in ['VZW31-SN', 'VZW30-SN', 'VZW32-SN'] %}
                   Default Level (Remote)
                 {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
                   Default Level (Z-Wave)
@@ -92,7 +92,7 @@ actions:
           device_id: !input zwave_device
         data:
           parameter: >
-            {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
+            {% if device_attr(zwave_device, 'model') in ['VZW31-SN', 'VZW30-SN', 'VZW32-SN'] %}
               Default Level (Local)
             {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
               Default Level
@@ -103,7 +103,7 @@ actions:
           device_id: !input zwave_device
         data:
           parameter: >
-            {% if device_attr(zwave_device, 'model') == 'VZW31-SN' %}
+            {% if device_attr(zwave_device, 'model') in ['VZW31-SN', 'VZW30-SN', 'VZW32-SN'] %}
               Default Level (Remote)
             {% elif device_attr(zwave_device, 'model') == 'LZW31-SN' %}
               Default Level (Z-Wave)

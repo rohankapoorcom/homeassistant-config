@@ -1,18 +1,25 @@
 # yamllint disable-line rule:line-length
 ---
 blueprint:
-  name: Inovelli Red Series VZW31-SN Red Series Switch (ZWave-JS)
-  description: Create automations based on scenes for the Inovelli Red Series VZW31-SN Switch.
+  name: Inovelli Red Series Switch (VZW31-SN / VZW30-SN / VZW32-SN) (ZWave-JS)
+  description: Create automations based on scenes for Inovelli Red Series switches (VZW31-SN, VZW30-SN, VZW32-SN).
   domain: automation
   input:
     zwave_device:
       name: Inovelli Switch
-      description: List of available Inovelli VZW31-SN switches.
+      description: List of available Inovelli Red Series switches (VZW31-SN, VZW30-SN, VZW32-SN).
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Inovelli
-          model: VZW31-SN
+          filter:
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW31-SN
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW30-SN
+            - integration: zwave_js
+              manufacturer: Inovelli
+              model: VZW32-SN
           multiple: true
     config_button:
       name: Config Press 1x
