@@ -1,7 +1,8 @@
 ---
 blueprint:
   name: Inovelli Red Series Switch Lock Notifications (VZW31-SN / VZW30-SN / VZW32-SN)
-  description: Displays the current status of the lock using an Inovelli Red Series switch (VZW31-SN, VZW30-SN, VZW32-SN).
+  description: >
+    Displays the current status of the lock using an Inovelli Red Series switch (VZW31-SN, VZW30-SN, VZW32-SN).
   domain: automation
   input:
     lock_entity:

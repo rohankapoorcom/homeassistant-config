@@ -28,6 +28,18 @@ template:
             - states('sensor.downstairs_humidity') | float(0) }}
 
 ################################################
+## Binary Sensor
+################################################
+binary_sensor:
+  - platform: group
+    name: Downstairs Bathroom Motion
+    unique_id: fd56f9fb-095a-47c9-9539-e8ccf7299d80
+    device_class: motion
+    entities:
+      - binary_sensor.downstairs_bathroom_multisensor_motion
+      - binary_sensor.downstairs_bathroom_light_switch_occupancy
+
+################################################
 ## Automation
 ################################################
 automation:
@@ -107,7 +119,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
         inovelli_switch:
-          - 33460b8b136ed24ff7e8b0cc47d6e2c5
+          - 8a2d6e613c91c00f4de5be066eeebf4c
         config_button:
           - action: switch.toggle
             target:
@@ -137,7 +149,7 @@ automation:
                   effect: Pulse
                   duration: Indefinitely
                   target:
-                    device_id: 33460b8b136ed24ff7e8b0cc47d6e2c5
+                    device_id: 8a2d6e613c91c00f4de5be066eeebf4c
         default:
           - action: script.inovelli_blue_notifications
             data:
@@ -147,7 +159,7 @@ automation:
               effect: Clear
               duration: Indefinitely
               target:
-                device_id: 33460b8b136ed24ff7e8b0cc47d6e2c5
+                device_id: 8a2d6e613c91c00f4de5be066eeebf4c
 
   - id: d47d0430-2b3b-40eb-8ea0-f0bf1e61b5b7
     alias: Control the Downtairs Bathroom Towel Warmer
