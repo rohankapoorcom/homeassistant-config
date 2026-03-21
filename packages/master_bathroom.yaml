@@ -112,7 +112,7 @@ automation:
       path: rohankapoorcom/inovelli-vzm31-sn-blue-series-switch.yaml
       input:
         inovelli_switch:
-          - edc22c892680134e50d60c30188e384b
+          - 0e1a226820e55bf59a628f17ede4307c
         config_button:
           - action: switch.toggle
             target:
@@ -142,7 +142,7 @@ automation:
                   effect: Pulse
                   duration: Indefinitely
                   target:
-                    device_id: edc22c892680134e50d60c30188e384b
+                    device_id: 0e1a226820e55bf59a628f17ede4307c
         default:
           - action: script.inovelli_blue_notifications
             data:
@@ -152,7 +152,7 @@ automation:
               effect: Clear
               duration: Indefinitely
               target:
-                device_id: edc22c892680134e50d60c30188e384b
+                device_id: 0e1a226820e55bf59a628f17ede4307c
 
   - id: f99edeb0-3062-4ba6-9584-a7eca41fef12
     alias: Control the Master Bathroom Towel Warmer
