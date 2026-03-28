@@ -33,19 +33,8 @@ cards:
               name: Music
               media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_living_room_speakers
+              require_sound_mode: MCH STEREO
             icon: mdi:audio-video
-            styles:
-              icon:
-                - color: |
-                    [[[
-                      var avr_attributes = states['media_player.denon_avr_x4300h'].attributes;
-                      if (avr_attributes.source === variables.source
-                          && avr_attributes.sound_mode == 'MCH STEREO') {
-                        return 'var(--paper-item-icon-active-color)';
-                      } else  {
-                        return 'var(--paper-item-icon-color)';
-                      }
-                    ]]]
           - type: custom:button-card
             template: remote
             entity: media_player.denon_avr_x4300h
@@ -54,19 +43,8 @@ cards:
               name: Video Call
               media_player_entity: media_player.denon_avr_x4300h
               script: turn_on_the_living_room_video_conferencing_system
+              require_sound_mode: STEREO
             icon: mdi:video
-            styles:
-              icon:
-                - color: |
-                    [[[
-                      var avr_attributes = states['media_player.denon_avr_x4300h'].attributes;
-                      if (avr_attributes.source === variables.source
-                          && avr_attributes.sound_mode == 'STEREO') {
-                        return 'var(--paper-item-icon-active-color)';
-                      } else  {
-                        return 'var(--paper-item-icon-color)';
-                      }
-                    ]]]
           - type: custom:button-card
             template: remote
             entity: media_player.denon_avr_x4300h

@@ -14,14 +14,42 @@ remote:
       - padding-left: 1ex
     card:
       - font-size: 12px
+      - '--ha-card-background': |
+          [[[
+            const ent = variables.media_player_entity;
+            const attrs = states[ent]?.attributes ?? {};
+            const active = attrs.source === variables.source
+              && (!variables.require_sound_mode
+                || attrs.sound_mode === variables.require_sound_mode);
+            if (active) {
+              return 'linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color, var(--primary-color)) 100%)';
+            }
+            return 'rgba(0, 0, 0, 0)';
+          ]]]
+      - '--ha-card-glass-tint': |
+          [[[
+            const ent = variables.media_player_entity;
+            const attrs = states[ent]?.attributes ?? {};
+            const active = attrs.source === variables.source
+              && (!variables.require_sound_mode
+                || attrs.sound_mode === variables.require_sound_mode);
+            if (active) {
+              return 'linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color, var(--primary-color)) 100%)';
+            }
+            return 'unset';
+          ]]]
     icon:
       - color: |
           [[[
-            if (states[variables.media_player_entity].attributes.source === variables.source) {
-              return 'var(--paper-item-icon-active-color)';
-            } else  {
-              return 'var(--paper-item-icon-color)';
+            const ent = variables.media_player_entity;
+            const attrs = states[ent]?.attributes ?? {};
+            const active = attrs.source === variables.source
+              && (!variables.require_sound_mode
+                || attrs.sound_mode === variables.require_sound_mode);
+            if (active) {
+              return 'var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))';
             }
+            return 'var(--paper-item-icon-color)';
           ]]]
   tap_action:
     action: call-service
