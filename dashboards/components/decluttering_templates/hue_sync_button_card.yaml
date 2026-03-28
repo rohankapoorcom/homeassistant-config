@@ -4,7 +4,10 @@ hue_sync_button_card:
     layout: icon_label
     show_label: true
     show_name: true
+    # Entity is media_player; without this, button-card picks a near-black inactive color.
     color_type: icon
+    color: var(--paper-item-icon-color)
+    size: 50%
     entity: media_player.living_room_sync_box
     icon: mdi:led-strip-variant
     name: Backlight
@@ -18,6 +21,14 @@ hue_sync_button_card:
       action: call-service
       service: '[[script]]'
       haptic: success
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4))) !important;
+          border: var(--ha-card-border, none);
+          border-radius: var(--ha-card-border-radius, 10px);
+          font-size: 12px;
+        }
     state:
       - operator: template
         value: >

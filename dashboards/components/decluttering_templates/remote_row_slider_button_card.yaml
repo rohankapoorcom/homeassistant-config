@@ -1,41 +1,46 @@
-# Slider tiles styled like `button_card_templates/remote.yaml` (frosted chip + theme
-# border). Used on TV remote bottom rows only; keep `slider_button_card` unchanged for
-# other dashboards.
+# Slider tiles visually aligned with `button_card_templates/remote.yaml`. The stock
+# slider-button-card ignores a top-level `styles` map; it applies `.button.off` with
+# `--btn-bg-color-off` (solid blue-gray). Use `card_mod` to get frosted chips and
+# transparent off-state fill. Used on TV remote bottom rows only.
 remote_row_slider_button_card:
   card:
     type: custom:slider-button-card
     entity: '[[entity]]'
     name: '[[name]]'
     action_button: '[[action_button]]'
-    styles:
-      card:
-        - border-radius: var(--ha-card-border-radius, 10px)
-        - padding: 8px 6px
-        - margin: 0
-        - font-size: 12px
-        - '--ha-card-background': var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)))
-        - border: var(--ha-card-border, none)
-      grid:
-        - grid-template-areas: '"i l l" "n n n"'
-        - grid-template-rows: 33% auto
-        - grid-template-columns: 33% auto
-      icon:
-        - width: 28px
-        - padding: 0px 0px 0px 0px
-        - color: var(--button-card-light-color-no-temperature)
-      label:
-        - font-size: 12px
-        - justify-self: right
-        - padding: 0px 0px 0px 0px
-        - padding-left: 1ex
-        - color: var(--secondary-text-color)
-      name:
-        - justify-self: middle
-        - align-self: end
-        - font-size: 12px
-        - padding: 0px 0px 0px 0px
-        - color: var(--primary-text-color)
-        - white-space: normal
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
+          border: var(--ha-card-border, none);
+          border-radius: var(--ha-card-border-radius, 10px);
+          font-size: 12px;
+          --btn-bg-color-off: transparent;
+          --btn-bg-color-on: transparent;
+        }
+        .button {
+          min-height: 3.25rem !important;
+          padding: 8px 6px !important;
+          box-sizing: border-box;
+        }
+        .button.off {
+          background-color: transparent !important;
+        }
+        .text {
+          padding: 0.35rem 0.4rem !important;
+        }
+        .name {
+          font-size: 12px !important;
+        }
+        .state {
+          font-size: 12px !important;
+        }
+        .slider .slider-bg {
+          opacity: 0.33;
+        }
+        .off .slider .slider-bg {
+          opacity: 1;
+        }
     slider:
       direction: '[[direction]]'
       background: triangle
