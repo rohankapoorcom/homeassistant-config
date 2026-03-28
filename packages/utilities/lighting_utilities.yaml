@@ -21,7 +21,7 @@ homeassistant:
 script:
   turn_off_lights_in_areas:
     alias: Turn Off Lights in Areas
-    description: "Turns off only lights that are currently on in specified areas"
+    description: "Turns off only visible (non-hidden) lights that are currently on in specified areas"
     fields:
       areas:
         description: "List of area IDs to turn off lights in"
@@ -34,6 +34,7 @@ script:
               {% set ns.area_lights = ns.area_lights +
                 expand(states.light)
                 | selectattr('entity_id', 'in', area_entities(area))
+                | rejectattr('entity_id', 'is_hidden_entity')
                 | selectattr('state', 'eq', 'on')
                 | map(attribute='entity_id')
                 | list %}
