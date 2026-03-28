@@ -23,9 +23,11 @@ hue_sync_button_card:
       style: |
         ha-card {
           --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
-          border: var(--ha-card-border, none);
+          border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12));
           border-radius: var(--ha-card-border-radius, 10px);
           font-size: 12px;
+          min-height: 7rem;
+          box-sizing: border-box;
         }
     state:
       - operator: template
@@ -55,8 +57,9 @@ hue_sync_button_card:
         - padding: 8px 6px
         - margin: 0
         - font-size: 12px
+        - min-height: 7rem
         - '--ha-card-background': var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)))
-        - border: var(--ha-card-border, none)
+        - border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12))
       grid:
         - grid-template-areas: '"i l l" "n n n"'
         - grid-template-rows: 33% auto

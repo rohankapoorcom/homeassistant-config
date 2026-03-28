@@ -1,7 +1,7 @@
-# TV-remote-only slider tiles. Transparent chip fill per
-# https://github.com/custom-cards/slider-button-card — override --btn-bg-color-*
-# on :host via card_mod; keep layout/stock heights (do not shrink .button or fade
-# .slider-bg). Frosted chrome on ha-card to match `button_card_templates/remote.yaml`.
+# TV-remote-only slider tiles. Match `button_card_templates/remote.yaml` frosted
+# chips; see https://github.com/custom-cards/slider-button-card — :host overrides.
+# Off state: same surface as ha-card (not transparent) so tiles read like top source
+# buttons; on state: .button is not .off so fill stays clear for the gradient.
 remote_row_slider_button_card:
   card:
     type: custom:slider-button-card
@@ -11,7 +11,7 @@ remote_row_slider_button_card:
     card_mod:
       style: |
         :host {
-          --btn-bg-color-off: transparent;
+          --btn-bg-color-off: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
           --btn-bg-color-on: transparent;
           --label-color-on: var(--primary-text-color);
           --label-color-off: var(--primary-text-color);
@@ -22,7 +22,7 @@ remote_row_slider_button_card:
         }
         ha-card {
           --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
-          border: var(--ha-card-border, none);
+          border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12));
           border-radius: var(--ha-card-border-radius, 10px);
           font-size: 12px;
         }
