@@ -3,5 +3,8 @@ sidebar_button_active:
   styles:
     card:
       - '--ha-card-background': >-
-          linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color)
-          100%)
+          linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+          var(--slider-color, var(--primary-color)) 100%)
+      - '--ha-card-glass-tint': >-
+          linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+          var(--slider-color, var(--primary-color)) 100%)

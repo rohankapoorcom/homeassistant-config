@@ -14,10 +14,16 @@ light_button:
   state:
     - styles:
         card:
-          - border: solid 1px var(--paper-item-icon-active-color)
-          - box-shadow: 0px 0px 10px 3px var(--paper-item-icon-active-color)
+          - border: solid 2px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+          - box-shadow: 0px 0px 12px 4px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+          - '--ha-card-background': >-
+              linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+              var(--slider-color, var(--primary-color)) 100%)
+          - '--ha-card-glass-tint': >-
+              linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+              var(--slider-color, var(--primary-color)) 100%)
         label:
-          - color: var(--paper-item-icon-active-color)
+          - color: var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
       value: 'on'
     - styles:
         card:
