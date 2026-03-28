@@ -1,7 +1,7 @@
-# Slider tiles visually aligned with `button_card_templates/remote.yaml`. The stock
-# slider-button-card ignores a top-level `styles` map; it applies `.button.off` with
-# `--btn-bg-color-off` (solid blue-gray). Use `card_mod` to get frosted chips and
-# transparent off-state fill. Used on TV remote bottom rows only.
+# TV-remote-only slider tiles. Transparent chip fill per
+# https://github.com/custom-cards/slider-button-card — override --btn-bg-color-*
+# on :host via card_mod; keep layout/stock heights (do not shrink .button or fade
+# .slider-bg). Frosted chrome on ha-card to match `button_card_templates/remote.yaml`.
 remote_row_slider_button_card:
   card:
     type: custom:slider-button-card
@@ -10,40 +10,26 @@ remote_row_slider_button_card:
     action_button: '[[action_button]]'
     card_mod:
       style: |
+        :host {
+          --btn-bg-color-off: transparent;
+          --btn-bg-color-on: transparent;
+          --label-color-on: var(--primary-text-color);
+          --label-color-off: var(--primary-text-color);
+          --state-color-on: var(--primary-text-color);
+          --state-color-off: var(--secondary-text-color);
+          --action-icon-color-on: var(--paper-item-icon-color);
+          --action-icon-color-off: var(--paper-item-icon-color);
+        }
         ha-card {
           --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
           border: var(--ha-card-border, none);
           border-radius: var(--ha-card-border-radius, 10px);
           font-size: 12px;
-          --btn-bg-color-off: transparent;
-          --btn-bg-color-on: transparent;
-        }
-        .button {
-          min-height: 3.25rem !important;
-          padding: 8px 6px !important;
-          box-sizing: border-box;
-        }
-        .button.off {
-          background-color: transparent !important;
-        }
-        .text {
-          padding: 0.35rem 0.4rem !important;
-        }
-        .name {
-          font-size: 12px !important;
-        }
-        .state {
-          font-size: 12px !important;
-        }
-        .slider .slider-bg {
-          opacity: 0.33;
-        }
-        .off .slider .slider-bg {
-          opacity: 1;
         }
     slider:
       direction: '[[direction]]'
-      background: triangle
+      background: gradient
+      use_percentage_bg_opacity: false
       toggle_on_click: '[[toggle_on_click]]'
   default:
     - direction: left-right
