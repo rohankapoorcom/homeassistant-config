@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import cast
 
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.components.binary_sensor import (
+    DOMAIN as BINARY_SENSOR_DOMAIN,
+    BinarySensorDeviceClass,
+)
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN, SensorDeviceClass
+from homeassistant.config_entries import ConfigEntry, ConfigSubentry
 from homeassistant.const import (
     CONF_DEVICE_ID,
     PERCENTAGE,
@@ -19,14 +20,16 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers import (
+    device_registry as dr,
+    entity_registry as er,
+    issue_registry as ir,
+)
 from homeassistant.helpers.entity_registry import RegistryEntry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util.hass_dict import HassKey
 
-from .common import utcnow_no_timezone, validate_is_float
+from .common import fix_datetime_string, utcnow_no_timezone, validate_is_float
 from .const import (
     ATTR_BATTERY_LAST_REPLACED,
     ATTR_BATTERY_LEVEL,
@@ -41,16 +44,16 @@ from .const import (
     ATTR_PREVIOUS_BATTERY_LEVEL,
     ATTR_REMOVE,
     ATTR_SOURCE_ENTITY_ID,
+    CONF_ADVANCED_SETTINGS,
     CONF_BATTERY_LOW_TEMPLATE,
     CONF_BATTERY_LOW_THRESHOLD,
+    CONF_BATTERY_PERCENTAGE_TEMPLATE,
     CONF_BATTERY_QUANTITY,
     CONF_BATTERY_TYPE,
     CONF_FILTER_OUTLIERS,
     CONF_SOURCE_ENTITY_ID,
     DEFAULT_BATTERY_INCREASE_THRESHOLD,
     DEFAULT_BATTERY_LOW_THRESHOLD,
-    DEFAULT_LIBRARY_URL,
-    DEFAULT_SCHEMA_URL,
     DOMAIN,
     EVENT_BATTERY_INCREASED,
     EVENT_BATTERY_THRESHOLD,
@@ -63,9 +66,11 @@ from .store import BatteryNotesStorage
 
 _LOGGER = logging.getLogger(__name__)
 
+
 @dataclass
 class BatteryNotesDomainConfig:
     """Class for sharing config data within the BatteryNotes integration."""
+
     enable_autodiscovery: bool = True
     show_all_devices: bool = False
     enable_replaced: bool = True
@@ -73,15 +78,15 @@ class BatteryNotesDomainConfig:
     round_battery: bool = False
     default_battery_low_threshold: int = DEFAULT_BATTERY_LOW_THRESHOLD
     battery_increased_threshod: int = DEFAULT_BATTERY_INCREASE_THRESHOLD
-    library_url: str = DEFAULT_LIBRARY_URL
-    schema_url: str = DEFAULT_SCHEMA_URL
     library_last_update: datetime | None = None
     user_library: str = ""
     store: BatteryNotesStorage | None = None
 
+
 MY_KEY: HassKey[BatteryNotesDomainConfig] = HassKey(DOMAIN)
 
 type BatteryNotesConfigEntry = ConfigEntry[BatteryNotesData]
+
 
 @dataclass
 class BatteryNotesData:
@@ -89,10 +94,11 @@ class BatteryNotesData:
 
     domain_config: BatteryNotesDomainConfig
     store: BatteryNotesStorage
-    coordinator: BatteryNotesCoordinator | None = None
+    loaded_subentries: dict[str, ConfigSubentry]
+    subentry_coordinators: dict[str, BatteryNotesSubentryCoordinator] | None = None
 
 
-class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
+class BatteryNotesSubentryCoordinator(DataUpdateCoordinator[None]):
     """Define an object to hold Battery Notes device."""
 
     config_entry: BatteryNotesConfigEntry
@@ -103,8 +109,13 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
     battery_quantity: int
     battery_low_threshold: int
     battery_low_template: str | None
+    battery_percentage_template: str | None
     wrapped_battery: RegistryEntry | None = None
     wrapped_battery_low: RegistryEntry | None = None
+    is_orphaned: bool = False
+    last_wrapped_battery_state_write: datetime = utcnow_no_timezone() - timedelta(
+        hours=2
+    )
     _current_battery_level: str | None = None
     _previous_battery_low: bool | None = None
     _previous_battery_level: str | None = None
@@ -115,10 +126,11 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
     _source_entity_name: str | None = None
     _outlier_filter: LowOutlierFilter | None = None
 
-    def __init__(
+    def __init__(  # noqa: PLR0912
         self,
         hass: HomeAssistant,
         config_entry: BatteryNotesConfigEntry,
+        subentry: ConfigSubentry,
     ):
         """Initialize."""
         super().__init__(hass, _LOGGER, config_entry=config_entry, name=DOMAIN)
@@ -126,35 +138,40 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         self.reset_jobs: list[CALLBACK_TYPE] = []
 
         self.config_entry = config_entry
+        self.subentry = subentry
 
-        self.device_id = config_entry.data.get(CONF_DEVICE_ID, None)
-        self.source_entity_id = config_entry.data.get(CONF_SOURCE_ENTITY_ID, None)
+        self.device_id = self.subentry.data.get(CONF_DEVICE_ID, None)
+        self.source_entity_id = self.subentry.data.get(CONF_SOURCE_ENTITY_ID, None)
 
         if not self._link_to_source():
             self.is_orphaned = True
             return
 
-        self.battery_type = cast(str, self.config_entry.data.get(CONF_BATTERY_TYPE))
+        self.battery_type = cast(str, self.subentry.data.get(CONF_BATTERY_TYPE, ""))
         try:
             self.battery_quantity = cast(
-                int, self.config_entry.data.get(CONF_BATTERY_QUANTITY)
+                int, self.subentry.data.get(CONF_BATTERY_QUANTITY, 1)
             )
         except ValueError:
             self.battery_quantity = 1
 
         self.battery_low_threshold = int(
-            self.config_entry.data.get(CONF_BATTERY_LOW_THRESHOLD, 0)
+            self.subentry.data.get(CONF_BATTERY_LOW_THRESHOLD, 0)
         )
 
         if hasattr(self.config_entry, "runtime_data"):
             if self.battery_low_threshold == 0:
                 self.battery_low_threshold = self.config_entry.runtime_data.domain_config.default_battery_low_threshold
 
-        self.battery_low_template = self.config_entry.data.get(
-            CONF_BATTERY_LOW_TEMPLATE
+        self.battery_low_template = self.subentry.data[CONF_ADVANCED_SETTINGS].get(
+            CONF_BATTERY_LOW_TEMPLATE, None
         )
 
-        if config_entry.data.get(CONF_FILTER_OUTLIERS, False):
+        self.battery_percentage_template = self.subentry.data[
+            CONF_ADVANCED_SETTINGS
+        ].get(CONF_BATTERY_PERCENTAGE_TEMPLATE, None)
+
+        if self.subentry.data[CONF_ADVANCED_SETTINGS].get(CONF_FILTER_OUTLIERS, False):
             self._outlier_filter = LowOutlierFilter(window_size=3, radius=80)
             _LOGGER.debug("Outlier filter enabled")
 
@@ -175,12 +192,12 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
 
                 if device_entry and device_entry.created_at.year > 1970:
                     last_replaced = device_entry.created_at.strftime(
-                        "%Y-%m-%dT%H:%M:%S:%f"
+                        "%Y-%m-%dT%H:%M:%S.%f"
                     )
             elif self.source_entity_id:
                 entity = entity_registry.async_get(self.source_entity_id)
                 if entity and entity.created_at.year > 1970:
-                    last_replaced = entity.created_at.strftime("%Y-%m-%dT%H:%M:%S:%f")
+                    last_replaced = entity.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
 
             _LOGGER.debug(
                 "Defaulting %s battery last replaced to %s",
@@ -201,7 +218,7 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             )
             self.last_reported = last_reported
 
-    def _link_to_source(self) -> bool:
+    def _link_to_source(self) -> bool:  # noqa: PLR0912
         """Get the source device or entity, determine name and associate our wrapped battery if available."""
         device_registry = dr.async_get(self.hass)
         entity_registry = er.async_get(self.hass)
@@ -213,9 +230,10 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                 ir.async_create_issue(
                     self.hass,
                     DOMAIN,
-                    f"missing_device_{self.config_entry.entry_id}",
+                    f"missing_device_{self.subentry.subentry_id}",
                     data={
                         "entry_id": self.config_entry.entry_id,
+                        "subentry_id": self.subentry.subentry_id,
                         "device_id": self.device_id,
                         "source_entity_id": self.source_entity_id,
                     },
@@ -223,13 +241,13 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                     severity=ir.IssueSeverity.WARNING,
                     translation_key="missing_device",
                     translation_placeholders={
-                        "name": self.config_entry.title,
+                        "name": self.subentry.title,
                     },
                 )
 
                 _LOGGER.warning(
                     "%s is orphaned, unable to find entity %s",
-                    self.config_entry.entry_id,
+                    self.subentry.subentry_id,
                     self.source_entity_id,
                 )
                 return False
@@ -248,27 +266,15 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                     entity.unit_of_measurement,
                 )
 
-            if entity.device_id:
-                device_entry = device_registry.async_get(entity.device_id)
-                if device_entry:
-                    self.device_name = (
-                        device_entry.name_by_user
-                        or device_entry.name
-                        or self.config_entry.title
-                    )
-                else:
-                    self.device_name = self.config_entry.title
-            else:
-                self.device_name = self.config_entry.title
+            self.device_name = self.subentry.title
         else:
             for entity in entity_registry.entities.values():
-
                 if not entity.device_id or entity.device_id != self.device_id:
                     continue
-                if (
-                    not entity.domain
-                    or entity.domain not in [SENSOR_DOMAIN, BINARY_SENSOR_DOMAIN]
-                ):
+                if not entity.domain or entity.domain not in [
+                    SENSOR_DOMAIN,
+                    BINARY_SENSOR_DOMAIN,
+                ]:
                     continue
                 if not entity.platform or entity.platform == DOMAIN:
                     continue
@@ -300,17 +306,20 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                 device_entry = device_registry.async_get(self.device_id)
             if device_entry:
                 self.device_name = (
-                    device_entry.name_by_user or device_entry.name or self.config_entry.title
+                    self.subentry.title
+                    if self.subentry
+                    else device_entry.name_by_user or device_entry.name or ""
                 )
             else:
-                self.device_name = self.config_entry.title
+                self.device_name = self.subentry.title
 
                 ir.async_create_issue(
                     self.hass,
                     DOMAIN,
-                    f"missing_device_{self.config_entry.entry_id}",
+                    f"missing_device_{self.subentry.subentry_id}",
                     data={
                         "entry_id": self.config_entry.entry_id,
+                        "subentry_id": self.subentry.subentry_id,
                         "device_id": self.device_id,
                         "source_entity_id": self.source_entity_id,
                     },
@@ -318,13 +327,13 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                     severity=ir.IssueSeverity.WARNING,
                     translation_key="missing_device",
                     translation_placeholders={
-                        "name": self.config_entry.title,
+                        "name": self.subentry.title,
                     },
                 )
 
                 _LOGGER.warning(
                     "%s is orphaned, unable to find device %s",
-                    self.config_entry.entry_id,
+                    self.subentry.subentry_id,
                     self.device_id,
                 )
                 return False
@@ -332,12 +341,9 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         return True
 
     @property
-    def fake_device(self) -> bool:
-        """Return if an actual device registry entry."""
-        if self.config_entry.data.get(CONF_SOURCE_ENTITY_ID, None):
-            if self.config_entry.data.get(CONF_DEVICE_ID, None) is None:
-                return True
-        return False
+    def unique_id(self) -> str:
+        """Return a unique ID for the coordinator."""
+        return f"{self.config_entry.entry_id}_{self.subentry.subentry_id}"
 
     @property
     def source_entity_name(self):
@@ -349,19 +355,32 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                 entity_registry = er.async_get(self.hass)
                 device_registry = dr.async_get(self.hass)
                 registry_entry = entity_registry.async_get(self.source_entity_id)
-                device_entry = device_registry.async_get(self.device_id) if self.device_id else None
-                assert(registry_entry)
+                device_entry = (
+                    device_registry.async_get(self.device_id)
+                    if self.device_id
+                    else None
+                )
 
-                if registry_entry.name is None and registry_entry.has_entity_name and device_entry:
-                    self._source_entity_name = (
-                        registry_entry.name or registry_entry.original_name or device_entry.name_by_user or device_entry.name or self.source_entity_id
-                    )
-                else:
-                    self._source_entity_name = (
-                        registry_entry.name or registry_entry.original_name or self.source_entity_id
-                    )
-
-            assert(self._source_entity_name)
+                if registry_entry:
+                    if (
+                        registry_entry
+                        and registry_entry.name is None
+                        and registry_entry.has_entity_name
+                        and device_entry
+                    ):
+                        self._source_entity_name = (
+                            registry_entry.name
+                            or registry_entry.original_name
+                            or device_entry.name_by_user
+                            or device_entry.name
+                            or self.source_entity_id
+                        )
+                    else:
+                        self._source_entity_name = (
+                            registry_entry.name
+                            or registry_entry.original_name
+                            or self.source_entity_id
+                        )
 
         return self._source_entity_name
 
@@ -377,7 +396,8 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         if (
             self._previous_battery_low_template_state is not None
             and self.battery_low_template
-            and value not in [
+            and value
+            not in [
                 STATE_UNAVAILABLE,
                 STATE_UNKNOWN,
             ]
@@ -401,13 +421,15 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             )
 
             _LOGGER.debug(
-                "battery_threshold event fired Low: %s via template", self.battery_low
+                "battery_threshold event fired Low: %s via battery_low_template setter",
+                self.battery_low,
             )
 
             if (
                 self._previous_battery_low_template_state
                 and not self._battery_low_template_state
-                and value not in [
+                and value
+                not in [
                     STATE_UNAVAILABLE,
                     STATE_UNKNOWN,
                 ]
@@ -431,7 +453,6 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
 
                 _LOGGER.debug("battery_increased event fired via template")
 
-
         self._previous_battery_low_template_state = value
 
     @property
@@ -443,11 +464,10 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
     def battery_low_binary_state(self, value):
         """Set the current battery low status from a binary sensor and fire events if valid."""
         self._battery_low_binary_state = value
-        if (self._previous_battery_low_binary_state is not None
-            and value not in [
-                STATE_UNAVAILABLE,
-                STATE_UNKNOWN,
-            ]):
+        if self._previous_battery_low_binary_state is not None and value not in [
+            STATE_UNAVAILABLE,
+            STATE_UNKNOWN,
+        ]:
             self.hass.bus.async_fire(
                 EVENT_BATTERY_THRESHOLD,
                 {
@@ -467,14 +487,15 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             )
 
             _LOGGER.debug(
-                "battery_threshold event fired Low: %s via binary sensor",
+                "battery_threshold event fired Low: %s via battery_low_binary_state setter",
                 self.battery_low,
             )
 
             if (
                 self._previous_battery_low_binary_state
                 and not self._battery_low_binary_state
-                and value not in [
+                and value
+                not in [
                     STATE_UNAVAILABLE,
                     STATE_UNKNOWN,
                 ]
@@ -517,7 +538,9 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                     "Checking outlier (%s=%s) -> %s",
                     self.device_id or self.source_entity_id or "",
                     value,
-                    "skip" if self._outlier_filter.skip_processing else self._outlier_filter.filter_state(value),
+                    "skip"
+                    if self._outlier_filter.skip_processing
+                    else self._outlier_filter.filter_state(value),
                 )
                 if self._outlier_filter.skip_processing:
                     return
@@ -547,10 +570,15 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
                     },
                 )
 
-                _LOGGER.debug("battery_threshold event fired Low: %s", self.battery_low)
+                _LOGGER.debug(
+                    "battery_threshold event fired Low: %s via current_battery_level setter",
+                    self.battery_low,
+                )
 
             # Battery increased event
-            increase_threshold = self.config_entry.runtime_data.domain_config.battery_increased_threshod
+            increase_threshold = (
+                self.config_entry.runtime_data.domain_config.battery_increased_threshod
+            )
 
             if self._current_battery_level not in [STATE_UNAVAILABLE, STATE_UNKNOWN]:
                 if (
@@ -584,6 +612,8 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             self._previous_battery_low = self.battery_low
             self._previous_battery_level = self._current_battery_level
 
+        self.async_set_updated_data(None)
+
     @property
     def battery_type_and_quantity(self) -> str:
         """Merge battery type & quantity."""
@@ -598,16 +628,24 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             return None
 
         if self.source_entity_id:
-            entry = self.config_entry.runtime_data.store.async_get_entity(self.source_entity_id)
+            entry = self.config_entry.runtime_data.store.async_get_entity(
+                self.source_entity_id
+            )
         else:
-            entry = self.config_entry.runtime_data.store.async_get_device(self.device_id)
+            entry = self.config_entry.runtime_data.store.async_get_device(
+                self.device_id
+            )
 
-        if entry:
-            if LAST_REPLACED in entry and entry[LAST_REPLACED] is not None:
-                last_replaced_date = datetime.fromisoformat(
-                    str(entry[LAST_REPLACED]) + "+00:00"
-                )
-                return last_replaced_date
+        if entry and LAST_REPLACED in entry and entry[LAST_REPLACED] is not None:
+            entry_last_replaced = str(entry[LAST_REPLACED])
+            if not entry_last_replaced.endswith("+00:00"):
+                entry_last_replaced += "+00:00"
+
+            try:
+                return datetime.fromisoformat(entry_last_replaced)
+            except ValueError:
+                entry_last_replaced = fix_datetime_string(entry_last_replaced)
+                return datetime.fromisoformat(entry_last_replaced)
         return None
 
     @last_replaced.setter
@@ -631,17 +669,24 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             return None
 
         if self.source_entity_id:
-            entry = self.config_entry.runtime_data.store.async_get_entity(self.source_entity_id)
+            entry = self.config_entry.runtime_data.store.async_get_entity(
+                self.source_entity_id
+            )
         else:
-            entry = self.config_entry.runtime_data.store.async_get_device(self.device_id)
+            entry = self.config_entry.runtime_data.store.async_get_device(
+                self.device_id
+            )
 
-        if entry:
-            if LAST_REPORTED in entry:
-                if entry[LAST_REPORTED]:
-                    last_reported_date = datetime.fromisoformat(
-                        str(entry[LAST_REPORTED]) + "+00:00"
-                    )
-                    return last_reported_date
+        if entry and LAST_REPORTED in entry and entry[LAST_REPORTED] is not None:
+            entry_last_reported = str(entry[LAST_REPORTED])
+            if not entry_last_reported.endswith("+00:00"):
+                entry_last_reported += "+00:00"
+
+            try:
+                return datetime.fromisoformat(entry_last_reported)
+            except ValueError:
+                entry_last_reported = fix_datetime_string(entry_last_reported)
+                return datetime.fromisoformat(entry_last_reported)
 
         return None
 
@@ -657,7 +702,7 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         if self.source_entity_id:
             self.async_update_entity_config(entity_id=self.source_entity_id, data=entry)
         else:
-            assert(self.device_id)
+            assert self.device_id
             self.async_update_device_config(device_id=self.device_id, data=entry)
 
     @property
@@ -667,9 +712,13 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
             return None
 
         if self.source_entity_id:
-            entry = self.config_entry.runtime_data.store.async_get_entity(self.source_entity_id)
+            entry = self.config_entry.runtime_data.store.async_get_entity(
+                self.source_entity_id
+            )
         else:
-            entry = self.config_entry.runtime_data.store.async_get_device(self.device_id)
+            entry = self.config_entry.runtime_data.store.async_get_device(
+                self.device_id
+            )
 
         if entry:
             if LAST_REPORTED_LEVEL in entry:
@@ -686,7 +735,7 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         if self.source_entity_id:
             self.async_update_entity_config(entity_id=self.source_entity_id, data=entry)
         else:
-            assert(self.device_id)
+            assert self.device_id
             self.async_update_device_config(device_id=self.device_id, data=entry)
 
     @property
@@ -694,8 +743,10 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
         """Check if battery low against threshold."""
         if self.battery_low_template:
             return self.battery_low_template_state
-        elif self.wrapped_battery:
-            if validate_is_float(self.current_battery_level):
+        elif self.battery_percentage_template or self.wrapped_battery:
+            if self.current_battery_level is not None and validate_is_float(
+                self.current_battery_level
+            ):
                 return bool(
                     float(self.current_battery_level) < self.battery_low_threshold
                 )
@@ -717,7 +768,12 @@ class BatteryNotesCoordinator(DataUpdateCoordinator[None]):
     def _rounded_level(self, value) -> float:
         """Round the level, if preferred."""
         if validate_is_float(value):
-            return round(float(value), None if self.config_entry.runtime_data.domain_config.round_battery else 1)
+            return round(
+                float(value),
+                None
+                if self.config_entry.runtime_data.domain_config.round_battery
+                else 1,
+            )
         else:
             return value
 

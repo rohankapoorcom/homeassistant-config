@@ -31,6 +31,15 @@
       "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "download_local": "Attempt fallback support for local media images. May cause performance issues. Only enable if you cannot see media images for your players."
+        }
+      }
+    }
+  },
   "issues": {
     "invalid_server_version": {
       "title": "The Music Assistant server is not the correct version",
@@ -159,6 +168,196 @@
         "entity": {
           "name": "Entity",
           "description": "Music Assistant Media Player Entity."
+        }
+      }
+    },
+    "get_recommendations": {
+      "name": "Get Recommendations",
+      "description": "Get recommendations from your music providers.",
+      "fields": {
+        "entity": {
+          "name": "Entity",
+          "description": "Music Assistant Media Player Entity."
+        },
+        "providers": {
+          "name": "Providers",
+          "description": "Limit recommendations to the specified providers."
+        }
+      }
+    },
+    "get_group_volume": {
+      "name": "Get Group Volume",
+      "description": "Returns the volume for a player group.",
+      "fields": {
+        "entity": {
+          "name": "Entity",
+          "description": "Music Assistant Media Player Entity."
+        }
+      }
+    },
+    "set_group_volume": {
+      "name": "Set Group Volume",
+      "description": "Sets the volume for a player group.",
+      "fields": {
+        "entity": {
+          "name": "Entity",
+          "description": "Music Assistant Media Player Entity."
+        },
+        "volume_level": {
+          "name": "Volume Level",
+          "description": "Volume level to set the player to."
+        }
+      }
+    },
+    "clear_queue_from_here": {
+      "name": "Clear Queue From Here",
+      "description": "Clears all items before/after the current track in a queue.",
+      "fields": {
+        "entity": {
+          "name": "Entity",
+          "description": "Music Assistant Media Player Entity."
+        }
+      }
+    },
+    "get_playlist_tracks": {
+      "name": "Get Playlist Tracks",
+      "description": "Returns all tracks for the playlist given.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Playlist URI",
+          "description": "URI for the playlist."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Page of results to return. If not provided, returns all."
+        }
+      }
+    },
+    "get_album_tracks": {
+      "name": "Get Album Tracks",
+      "description": "Returns all tracks for the album given.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Album URI",
+          "description": "URI for the album."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Page of results to return. If not provided, returns all."
+        }
+      }
+    },
+    "get_artist_tracks": {
+      "name": "Get Artist Tracks",
+      "description": "Returns all tracks for the artist given.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Artist URI",
+          "description": "URI for the artist."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Page of results to return. If not provided, returns all."
+        }
+      }
+    },
+    "get_podcast_episodes": {
+      "name": "Get Podcast Episodes",
+      "description": "Returns all episodes for the podcast given.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Podcast URI",
+          "description": "URI for the podcast."
+        }
+      }
+    },
+    "get_playlist": {
+      "name": "Get Playlist",
+      "description": "Returns information about a playlist from the server.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Playlist URI",
+          "description": "URI for the playlist."
+        }
+      }
+    },
+    "get_album": {
+      "name": "Get Album",
+      "description": "Returns information about an album from the server.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Album URI",
+          "description": "URI for the album."
+        }
+      }
+    },
+    "get_artist": {
+      "name": "Get Artist",
+      "description": "Returns information about an artist from the server.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Artist URI",
+          "description": "URI for the artist."
+        }
+      }
+    },
+    "get_podcast": {
+      "name": "Get Podcast",
+      "description": "Returns information about a podcast from the server.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "uri": {
+          "name": "Podcast URI",
+          "description": "URI for the podcast."
+        }
+      }
+    },
+    "remove_playlist_tracks": {
+      "name": "Remove Playlist Tracks",
+      "description": "Removes one or more tracks from a playlist based on position.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config Entry ID",
+          "description": "Config Entry ID for the Music Assistant Queue Items instance."
+        },
+        "playlist_id": {
+          "name": "Playlist ID",
+          "description": "ID of the playlist."
+        },
+        "positions_to_remove": {
+          "name": "Positions to remove",
+          "description": "Position(s) of items to remove from the playlist."
         }
       }
     }

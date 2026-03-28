@@ -1,5 +1,5 @@
 """Sensors for Rand256.
-Version 2024.12.0
+Version: 2025.10.0
 """
 
 from __future__ import annotations
@@ -7,7 +7,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-import logging
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -24,12 +23,10 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import CONF_VACUUM_IDENTIFIERS, DOMAIN, SENSOR_NO_DATA
 from .coordinator import MQTTVacuumCoordinator
 
-SCAN_INTERVAL = timedelta(seconds=3)
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
-_LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class VacuumSensorDescription(SensorEntityDescription):
     """A class that describes vacuum sensor entities."""
 
@@ -37,11 +34,12 @@ class VacuumSensorDescription(SensorEntityDescription):
     parent_key: str = None
     keys: list[str] = None
     value: Callable = None
+    native_unit_of_measurement: str = None
 
 
 SENSOR_TYPES = {
     "consumable_main_brush": VacuumSensorDescription(
-        native_unit_of_measurement=UnitOfTime.SECONDS,
+        native_unit_of_measurement=UnitOfTime.HOURS,
         key="mainBrush",
         icon="mdi:brush",
         name="Main brush",
@@ -49,7 +47,7 @@ SENSOR_TYPES = {
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     "consumable_side_brush": VacuumSensorDescription(
-        native_unit_of_measurement=UnitOfTime.SECONDS,
+        native_unit_of_measurement=UnitOfTime.HOURS,
         key="sideBrush",
         icon="mdi:brush",
         name="Side brush",
@@ -57,10 +55,18 @@ SENSOR_TYPES = {
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     "consumable_filter": VacuumSensorDescription(
-        native_unit_of_measurement=UnitOfTime.SECONDS,
-        key="filter",
+        native_unit_of_measurement=UnitOfTime.HOURS,
+        key="filter_life",
         icon="mdi:air-filter",
         name="Filter",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    "clean_sensor": VacuumSensorDescription(
+        native_unit_of_measurement=UnitOfTime.HOURS,
+        key="sensor",
+        icon="mdi:access-point",
+        name="Clean sensors",
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -73,7 +79,7 @@ SENSOR_TYPES = {
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     "current_clean_time": VacuumSensorDescription(
-        native_unit_of_measurement=UnitOfTime.SECONDS,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
         key="currentCleanTime",
         icon="mdi:timer-sand",
         name="Current clean time",
@@ -96,7 +102,7 @@ SENSOR_TYPES = {
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     "clean_time": VacuumSensorDescription(
-        native_unit_of_measurement=UnitOfTime.SECONDS,
+        native_unit_of_measurement=UnitOfTime.HOURS,
         key="cleanTime",
         icon="mdi:timer-sand",
         name="Total clean time",
@@ -188,24 +194,13 @@ class VacuumSensor(CoordinatorEntity, SensorEntity):
         self.entity_description = description
         self.coordinator = coordinator
         self._attr_native_value = None
-        self._attr_unique_id = f"{coordinator.file_name}_{sensor_type}"
-        self.entity_id = f"sensor.{coordinator.file_name}_{sensor_type}"
+        self._attr_unique_id = f"{coordinator.context.file_name}_{sensor_type}"
+        self.entity_id = f"sensor.{coordinator.context.file_name}_{sensor_type}"
         self._identifiers = vacuum_identifier
 
     async def async_will_remove_from_hass(self) -> None:
         """Handle entity removal from Home Assistant."""
         await super().async_will_remove_from_hass()
-
-    @callback
-    async def async_update(self):
-        """Update the sensor's state."""
-        if self.coordinator.last_update_success:
-            await self.async_handle_coordinator_update()
-
-    @property
-    def should_poll(self) -> bool:
-        """Indicate if the sensor should poll for updates."""
-        return True
 
     @callback
     async def _extract_attributes(self):
@@ -214,7 +209,7 @@ class VacuumSensor(CoordinatorEntity, SensorEntity):
         if self.entity_description.parent_key:
             data = getattr(data, self.entity_description.key)
             if data is None:
-                return
+                return {}
         return {
             attr: getattr(data, attr)
             for attr in self.entity_description.attributes
@@ -222,7 +217,7 @@ class VacuumSensor(CoordinatorEntity, SensorEntity):
         }
 
     @callback
-    async def async_handle_coordinator_update(self):
+    def _handle_coordinator_update(self):
         """Fetch the latest state from the coordinator and update the sensor."""
         data = self.coordinator.sensor_data
         if data is None:
@@ -276,7 +271,6 @@ def process_timestamp(native_value):
 
         return utc_time
     except ValueError:
-        _LOGGER.debug(f"Invalid timestamp: {native_value}")
         return None
 
 

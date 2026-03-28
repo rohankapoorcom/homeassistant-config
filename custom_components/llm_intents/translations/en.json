@@ -1,0 +1,238 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Tools for Assist",
+        "description": "Select the services you want to enable for Tools for Assist.",
+        "data": {
+          "search_provider": "Web Search Provider",
+          "google_places_enabled": "Enable Google Places",
+          "youtube_enabled": "Enable YouTube Search",
+          "wikipedia_enabled": "Enable Wikipedia Search",
+          "weather_enabled": "Enable Weather Forecast",
+          "basic_utilities_enabled": "Enable Basic Utilities"
+        }
+      },
+      "brave": {
+        "title": "Configure Brave Web Search",
+        "description": "Configure Brave Web Search API settings.",
+        "data": {
+          "brave_api_key": "API Key",
+          "brave_num_results": "Number of Results",
+          "brave_country_code": "Country Code (optional)",
+          "brave_latitude": "Latitude (optional)",
+          "brave_longitude": "Longitude (optional)",
+          "brave_timezone": "Timezone (optional)",
+          "brave_post_code": "Post Code (optional)",
+          "brave_max_snippets_per_url": "Max snippets per result"
+        }
+      },
+      "brave_llm": {
+        "title": "Configure Brave LLM Context Search",
+        "description": "Configure Brave LLM Context API settings.",
+        "data": {
+          "brave_api_key": "API Key",
+          "brave_num_results": "Number of Results",
+          "brave_country_code": "Country Code (optional)",
+          "brave_latitude": "Latitude (optional)",
+          "brave_longitude": "Longitude (optional)",
+          "brave_timezone": "Timezone (optional)",
+          "brave_post_code": "Post Code (optional)",
+          "brave_max_snippets_per_url": "Max snippets per result",
+          "brave_max_tokens_per_url": "Max tokens per result",
+          "brave_context_threshold_mode": "Context threshold mode"
+        }
+      },
+      "searxng": {
+        "title": "Configure SearXNG Web Search",
+        "description": "Configure SearXNG Web Search API settings.",
+        "data": {
+          "searxng_server_url": "Server URL",
+          "searxng_num_results": "Number of Results"
+        },
+        "data_description": {
+          "searxng_server_url": "Protocol, host, and port, eg: http://localhost:8080"
+        }
+      },
+      "google_places": {
+        "title": "Configure Google Places",
+        "description": "Configure Google Places API settings.",
+        "data": {
+          "google_api_key": "Google API Key",
+          "google_places_rank_preference": "Rank Preference",
+          "google_places_num_results": "Number of Results",
+          "google_places_latitude": "Location Bias Latitude (optional)",
+          "google_places_longitude": "Location Bias Longitude (optional)",
+          "google_places_radius": "Location Bias Radius (KM)"
+        }
+      },
+      "youtube": {
+        "title": "Configure YouTube Search",
+        "description": "Configure YouTube search settings. Uses the same Google API key as Google Places.",
+        "data": {
+          "google_api_key": "Google API Key"
+        }
+      },
+      "wikipedia": {
+        "title": "Configure Wikipedia",
+        "description": "Configure Wikipedia search settings.",
+        "data": {
+          "wikipedia_num_results": "Number of Results"
+        }
+      },
+      "weather": {
+        "title": "Configure Weather",
+        "description": "Configure Weather sources.",
+        "data": {
+          "weather_daily_entity": "Daily Weather Entity",
+          "weather_hourly_entity": "Hourly Weather Entity",
+          "current_temperature_entity": "Current Temperature Sensor"
+        },
+        "data_description": {
+          "weather_daily_entity": "Weather entity to pull daily forecast data from",
+          "weather_hourly_entity": "Optional weather entity to include hourly forecast data from",
+          "current_temperature_entity": "Optional temperature sensor to include \"current\" temperature from"
+        }
+      },
+      "basic_utilities": {
+        "title": "Configure Basic Utilities",
+        "description": "Select which basic utility tools to enable.",
+        "data": {
+          "calculator_enabled": "Enable Calculator",
+          "unit_converter_enabled": "Enable Unit Converter",
+          "date_info_enabled": "Enable Calendar Day Info"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only one instance of Tools for Assist is allowed"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tools for Assist Options",
+        "description": "Choose what you want to do:",
+        "menu_options": {
+          "configure": "Configure Search Services",
+          "configure_weather": "Configure Weather Forecast",
+          "configure_basic_utilities": "Configure Basic Utilities"
+        }
+      },
+      "configure": {
+        "title": "Configure Search Services",
+        "description": "Select which services to you would like to use.",
+        "data": {
+          "search_provider": "Web Search Provider",
+          "google_places_enabled": "Enable Google Places",
+          "youtube_enabled": "Enable YouTube Search",
+          "wikipedia_enabled": "Enable Wikipedia Search"
+        }
+      },
+      "configure_weather": {
+        "title": "Configure Weather Forecast",
+        "description": "Select which services to you would like to use.",
+        "data": {
+          "weather_enabled": "Enable Weather Forecast"
+        }
+      },
+      "brave": {
+        "title": "Configure Brave Web Search",
+        "description": "Configure Brave Web Search API settings.",
+        "data": {
+          "brave_api_key": "API Key",
+          "brave_num_results": "Number of Results",
+          "brave_country_code": "Country Code (optional)",
+          "brave_latitude": "Latitude (optional)",
+          "brave_longitude": "Longitude (optional)",
+          "brave_timezone": "Timezone (optional)",
+          "brave_post_code": "Post Code (optional)",
+          "brave_max_snippets_per_url": "Max snippets per result"
+        }
+      },
+      "brave_llm": {
+        "title": "Configure Brave LLM Context Search",
+        "description": "Configure Brave LLM Context API settings.",
+        "data": {
+          "brave_api_key": "API Key",
+          "brave_num_results": "Number of Results",
+          "brave_country_code": "Country Code (optional)",
+          "brave_latitude": "Latitude (optional)",
+          "brave_longitude": "Longitude (optional)",
+          "brave_timezone": "Timezone (optional)",
+          "brave_post_code": "Post Code (optional)",
+          "brave_max_snippets_per_url": "Max snippets per result",
+          "brave_max_tokens_per_url": "Max tokens per result",
+          "brave_context_threshold_mode": "Context threshold mode"
+        }
+      },
+      "searxng": {
+        "title": "Configure SearXNG Web Search",
+        "description": "Configure SearXNG Web Search API settings.",
+        "data": {
+          "searxng_server_url": "Server URL",
+          "searxng_num_results": "Number of Results"
+        },
+        "data_description": {
+          "searxng_server_url": "Protocol, host, and port, eg: http://localhost:8080"
+        }
+      },
+      "google_places": {
+        "title": "Configure Google Places",
+        "description": "Configure Google Places API settings.",
+        "data": {
+          "google_api_key": "Google API Key",
+          "google_places_rank_preference": "Rank Preference",
+          "google_places_num_results": "Number of Results",
+          "google_places_latitude": "Location Bias Latitude (optional)",
+          "google_places_longitude": "Location Bias Longitude (optional)",
+          "google_places_radius": "Location Bias Radius (KM)"
+        }
+      },
+      "youtube": {
+        "title": "Configure YouTube Search",
+        "description": "Configure YouTube search settings. Uses the same Google API key as Google Places.",
+        "data": {
+          "google_api_key": "Google API Key"
+        }
+      },
+      "wikipedia": {
+        "title": "Configure Wikipedia",
+        "description": "Configure Wikipedia search settings.",
+        "data": {
+          "wikipedia_num_results": "Number of Results"
+        }
+      },
+      "weather": {
+        "title": "Configure Weather",
+        "description": "Configure Weather sources.",
+        "data": {
+          "weather_daily_entity": "Daily Weather Entity",
+          "weather_hourly_entity": "Hourly Weather Entity",
+          "current_temperature_entity": "Current Temperature Sensor"
+        },
+        "data_description": {
+          "weather_daily_entity": "Weather entity to pull daily forecast data from",
+          "weather_hourly_entity": "Optional weather entity to include hourly forecast data from",
+          "current_temperature_entity": "Optional temperature sensor to include \"current\" temperature from"
+        }
+      },
+      "configure_basic_utilities": {
+        "title": "Configure Basic Utilities",
+        "description": "Enable or disable Basic Utilities tools.",
+        "data": {
+          "basic_utilities_enabled": "Enable Basic Utilities"
+        }
+      },
+      "basic_utilities": {
+        "title": "Configure Basic Utilities",
+        "description": "Select which basic utility tools to enable.",
+        "data": {
+          "calculator_enabled": "Enable Calculator",
+          "unit_converter_enabled": "Enable Unit Converter",
+          "date_info_enabled": "Enable Calendar Day Info"
+        }
+      }
+    }
+  }
+}

@@ -158,3 +158,226 @@ unfavorite_current_item:
         entity:
           domain: media_player
           integration: music_assistant
+get_recommendations:
+  fields:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+    providers:
+      name: Providers
+      description: Limit recommendations to the specified providers.
+      required: false
+      selector:
+        text:
+          multiple: true
+get_group_volume:
+  fields:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+set_group_volume:
+  fields:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+    volume_level:
+      name: Volume Level
+      description: Volume level to set the player to.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+clear_queue_from_here:
+  fields:
+    entity:
+      name: Entity
+      description: Music Assistant Media Player Entity
+      required: true
+      selector:
+        entity:
+          domain: media_player
+          integration: music_assistant
+get_playlist_tracks:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Playlist URI
+      description: URI for the playlist
+      selector:
+        text:
+      example: "library://playlist/12"
+      required: true
+    page:
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 1
+          mode: box
+      required: false
+      example: 0
+get_album_tracks:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Album URI
+      description: URI for the album
+      selector:
+        text:
+      example: "library://album/12"
+      required: true
+    page:
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 1
+          mode: box
+      required: false
+      example: 0
+get_artist_tracks:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Artist URI
+      description: URI for the artist
+      selector:
+        text:
+      example: "library://artist/12"
+      required: true
+    page:
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 1
+          mode: box
+      required: false
+      example: 0
+get_podcast_episodes:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Podcast URI
+      description: URI for the podcast
+      selector:
+        text:
+      example: "library://podcast/12"
+      required: true
+get_album:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Album URI
+      description: URI for the Album
+      selector:
+        text:
+      example: "library://album/12"
+      required: true
+get_artist:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Artist URI
+      description: URI for the artist
+      selector:
+        text:
+      example: "library://artist/12"
+      required: true
+get_playlist:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Playlist URI
+      description: URI for the playlist
+      selector:
+        text:
+      example: "library://playlist/12"
+      required: true
+get_podcast:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    uri:
+      name: Podcast URI
+      description: URI for the podcast
+      selector:
+        text:
+      example: "library://podcast/12"
+      required: true
+remove_playlist_tracks:
+  fields:
+    config_entry_id:
+      name: Config Entry ID
+      required: true
+      selector:
+        config_entry:
+          integration: mass_queue
+    playlist_id:
+      required: true
+      selector:
+        text:
+    positions_to_remove:
+      required: true
+      selector:
+        text:
+          multiple: true

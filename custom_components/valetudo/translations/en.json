@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Valetudo",
+        "menu_options": {
+          "icons": "Setup Valetudo Icons",
+          "augmentations": "Setup Augmentations"
+        }
+      },
+      "icons": {
+        "title": "Setup Valetudo Icons",
+        "description": "This will load the custom Valetudo icons for use everywhere in Home Assistant. They can be accessed using the 'valetudo:' prefix. After setup, a refresh might be necessary."
+      },
+      "augmentations": {
+        "title": "Setup Augmentations",
+        "description": "This will augment all ValetudoRobots with e.g. the approximated Segment the Robot is currently in."
+      }
+    },
+    "abort": {
+      "icons_instance_exists": "Valetudo icons are already set up. A refresh might be necessary for them to become visible.",
+      "augmentations_instance_exists": "Augmentations are already set up."
+    }
+  }
+}

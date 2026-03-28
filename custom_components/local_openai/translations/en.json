@@ -1,0 +1,183 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Local OpenAI Server",
+        "data": {
+          "server_name": "Server Name",
+          "base_url": "Server URL",
+          "api_key": "API key"
+        },
+        "data_description": {
+          "api_key": "If required to authenticate with the service"
+        },
+        "sections": {
+          "weaviate_options": {
+            "name": "Weaviate configuration",
+            "description": "Query a Weaviate vector database with user messages and augment the generation with semantically-similar results",
+            "data": {
+              "weaviate_host": "Weaviate server address",
+              "weaviate_api_key": "API key"
+            },
+            "data_description": {
+              "weaviate_host": "Including protocol and port",
+              "weaviate_api_key": "Your API key, if authentication is required"
+            }
+          }
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Local OpenAI Server",
+        "data": {
+          "server_name": "Server Name",
+          "base_url": "Server URL",
+          "api_key": "API key"
+        },
+        "data_description": {
+          "api_key": "If required to authenticate with the service"
+        },
+        "sections": {
+          "weaviate_options": {
+            "name": "Weaviate configuration",
+            "data": {
+              "weaviate_host": "Weaviate server address",
+              "weaviate_api_key": "API key"
+            },
+            "data_description": {
+              "weaviate_host": "Including protocol and port",
+              "weaviate_api_key": "Your API key, if authentication is required"
+            }
+          }
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not communicate with the LLM server",
+      "unknown": "An unknown error occurred",
+      "cannot_connect_weaviate": "Could not communicate with the Weaviate server"
+    },
+    "abort": {
+      "already_configured": "Already configured",
+      "reconfigure_successful": "LLM Server has been reconfigured"
+    }
+  },
+  "config_subentries": {
+    "conversation": {
+      "step": {
+        "user": {
+          "title": "Configure the new conversation agent",
+          "data": {
+            "model": "Model",
+            "prompt": "System Prompt",
+            "llm_hass_api": "Tool Providers",
+            "strip_emojis": "Strip emojis from response",
+            "suggested_value": "Suggested value",
+            "temperature": "Temperature",
+            "max_message_history": "Max message history size (0 for no limit)",
+            "parallel_tool_calls": "Parallel tool calling",
+            "content_injection_method": "Date/Time context injection role"
+          },
+          "data_description": {
+            "model": "The model to use for the conversation agent",
+            "prompt": "Instruct how the LLM should respond. This can be a template",
+            "parallel_tool_calls": "Allow the model to use multiple tools in a single turn",
+            "temperature": "Lower for more predictable responses, higher for more randomness",
+            "content_injection_method": "The message role to insert dynamic content as. See the readme for details"
+          },
+          "sections": {
+            "chat_template_opts": {
+              "name": "Chat Template Arguments",
+              "data": {
+                "chat_template_kwargs": "Add custom arguments that are supported by your chosen model"
+              }
+            },
+            "weaviate_options": {
+              "name": "Weaviate configuration",
+              "data": {
+                "weaviate_class_name": "Weaviate object class name",
+                "weaviate_max_results": "Maximum number of results",
+                "weaviate_threshold": "Result score threshold",
+                "weaviate_hybrid_search_alpha": "Hybrid search alpha"
+              },
+              "data_description": {
+                "weaviate_threshold": "Higher for stricter results",
+                "weaviate_hybrid_search_alpha": "Balance between 0 for pure keyword search, and 1 for pure vector similarity search"
+              }
+            }
+          }
+        },
+        "reconfigure": {
+          "title": "Reconfigure the conversation agent",
+          "data": {
+            "model": "Model",
+            "prompt": "System Prompt",
+            "llm_hass_api": "Tool Providers",
+            "strip_emojis": "Strip emojis from response",
+            "suggested_value": "Suggested value",
+            "temperature": "Temperature",
+            "max_message_history": "Max message history size (0 for no limit)",
+            "parallel_tool_calls": "Parallel tool calling",
+            "content_injection_method": "Date/Time context injection role"
+          },
+          "data_description": {
+            "model": "The model to use for the conversation agent",
+            "prompt": "Instruct how the LLM should respond. This can be a template",
+            "parallel_tool_calls": "Allow the model to use multiple tools in a single turn",
+            "temperature": "Lower for more predictable responses, higher for more randomness",
+            "content_injection_method": "The message role to insert dynamic content as. See the readme for details"
+          },
+          "sections": {
+            "chat_template_opts": {
+              "name": "Chat Template Arguments",
+              "data": {
+                "chat_template_kwargs": "Add custom arguments that are supported by your chosen model"
+              }
+            },
+            "weaviate_options": {
+              "name": "Weaviate configuration",
+              "data": {
+                "weaviate_class_name": "Weaviate object class name",
+                "weaviate_max_results": "Maximum number of results",
+                "weaviate_threshold": "Result score threshold",
+                "weaviate_hybrid_search_alpha": "Hybrid search alpha"
+              },
+              "data_description": {
+                "weaviate_threshold": "Higher for stricter results",
+                "weaviate_hybrid_search_alpha": "Balance between 0 for pure keyword search, and 1 for pure vector similarity search"
+              }
+            }
+          }
+        }
+      },
+      "initiate_flow": {
+        "user": "Add conversation agent"
+      },
+      "entry_type": "Conversation agent",
+      "error": {
+        "cannot_connect_weaviate": "Could not communicate with the Weaviate server"
+      },
+      "abort": {
+        "cannot_connect": "Could not communicate with the LLM server",
+        "unknown": "An unknown error occurred",
+        "reconfigure_successful": "Conversation Agent has been reconfigured"
+      }
+    },
+    "ai_task_data": {
+      "step": {
+        "user": {
+          "data": {
+            "model": "The model to use for the AI Task agent"
+          }
+        }
+      },
+      "initiate_flow": {
+        "user": "Add AI task"
+      },
+      "entry_type": "AI task",
+      "abort": {
+        "cannot_connect": "Could not communicate with the server",
+        "unknown": "An unknown error occurred"
+      }
+    }
+  }
+}

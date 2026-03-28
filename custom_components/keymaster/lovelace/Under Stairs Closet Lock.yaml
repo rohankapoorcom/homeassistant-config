@@ -1,0 +1,1100 @@
+  - title: Under Stairs Closet Lock
+    path: keymaster_under_stairs_closet_lock
+    type: sections
+    max_columns: 4
+    badges:
+    - type: entity
+      show_name: false
+      color: ''
+      tap_action:
+        action: none
+      entity: sensor.under_stairs_closet_lock_lock_name
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: none
+      name: Parent Lock
+      entity: sensor.under_stairs_closet_lock_parent_lock
+    - type: entity
+      show_name: false
+      color: ''
+      tap_action:
+        action: none
+      entity: binary_sensor.under_stairs_closet_lock_network
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: toggle
+      name: Lock Notifications
+      entity: switch.under_stairs_closet_lock_lock_notifications
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: toggle
+      name: Door Notifications
+      entity: switch.under_stairs_closet_lock_door_notifications
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: toggle
+      name: Lock
+      entity: lock.under_stairs_closet_lock
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: none
+      name: Door
+      entity: binary_sensor.under_stairs_closet_door_window_door_is_open
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: none
+      name: Battery
+      entity: sensor.under_stairs_closet_lock_battery_level
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: toggle
+      name: Auto Lock
+      entity: switch.under_stairs_closet_lock_auto_lock
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: toggle
+      name: Retry Lock
+      entity: switch.under_stairs_closet_lock_retry_lock
+      visibility:
+      - condition: state
+        entity: switch.under_stairs_closet_lock_auto_lock
+        state: 'on'
+    - type: entity
+      show_name: true
+      color: ''
+      name: Day Auto Lock
+      entity: number.under_stairs_closet_lock_day_auto_lock
+      visibility:
+      - condition: state
+        entity: switch.under_stairs_closet_lock_auto_lock
+        state: 'on'
+    - type: entity
+      show_name: true
+      color: ''
+      name: Night Auto Lock
+      entity: number.under_stairs_closet_lock_night_auto_lock
+      visibility:
+      - condition: state
+        entity: switch.under_stairs_closet_lock_auto_lock
+        state: 'on'
+    - type: entity
+      show_name: true
+      color: ''
+      tap_action:
+        action: none
+      name: Auto Lock Timer
+      entity: sensor.under_stairs_closet_lock_auto_lock_timer
+      visibility:
+      - condition: state
+        entity: sensor.under_stairs_closet_lock_auto_lock_timer
+        state_not: unknown
+      - condition: state
+        entity: sensor.under_stairs_closet_lock_auto_lock_timer
+        state_not: unavailable
+    sections:
+    - type: grid
+      cards:
+      - type: heading
+        heading: Code Slot 1
+        heading_style: title
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_1_override_parent
+          state: 'off'
+          condition: state
+        card:
+          type: entities
+          show_header_toggle: false
+          state_color: true
+          entities:
+          - entity: text.garage_door_lock_code_slot_1_name
+            name: Name
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: text.garage_door_lock_code_slot_1_pin
+            name: PIN
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: switch.garage_door_lock_code_slot_1_enabled
+            name: Enabled
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: binary_sensor.under_stairs_closet_lock_code_slot_1_active
+            name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: sensor.under_stairs_closet_lock_code_slot_1_sync_status
+            name: Sync Status
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_1_override_parent
+            name: Override Parent
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_1_notifications
+            name: Notifications
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.garage_door_lock_code_slot_1_limit_by_number_of_uses
+            name: Limit by Number of Uses
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - type: conditional
+            conditions:
+            - entity: switch.garage_door_lock_code_slot_1_limit_by_number_of_uses
+              state: 'on'
+            row:
+              entity: number.garage_door_lock_code_slot_1_uses_remaining
+              name: Uses Remaining
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+              type: simple-entity
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_1_override_parent
+          state: 'on'
+          condition: state
+        card:
+          type: conditional
+          conditions: []
+          card:
+            type: entities
+            show_header_toggle: false
+            state_color: true
+            entities:
+            - entity: text.under_stairs_closet_lock_code_slot_1_name
+              name: Name
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: text.under_stairs_closet_lock_code_slot_1_pin
+              name: PIN
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_1_enabled
+              name: Enabled
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: binary_sensor.under_stairs_closet_lock_code_slot_1_active
+              name: Active
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: sensor.under_stairs_closet_lock_code_slot_1_sync_status
+              name: Sync Status
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_1_override_parent
+              name: Override Parent
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_1_notifications
+              name: Notifications
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_1_limit_by_number_of_uses
+              name: Limit by Number of Uses
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: conditional
+              conditions:
+              - entity: switch.under_stairs_closet_lock_code_slot_1_limit_by_number_of_uses
+                state: 'on'
+              row:
+                entity: number.under_stairs_closet_lock_code_slot_1_uses_remaining
+                name: Uses Remaining
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+            - type: divider
+            - entity: button.under_stairs_closet_lock_code_slot_1_reset
+              name: Reset Slot
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+    - type: grid
+      cards:
+      - type: heading
+        heading: Code Slot 2
+        heading_style: title
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_2_override_parent
+          state: 'off'
+          condition: state
+        card:
+          type: entities
+          show_header_toggle: false
+          state_color: true
+          entities:
+          - entity: text.garage_door_lock_code_slot_2_name
+            name: Name
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: text.garage_door_lock_code_slot_2_pin
+            name: PIN
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: switch.garage_door_lock_code_slot_2_enabled
+            name: Enabled
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: binary_sensor.under_stairs_closet_lock_code_slot_2_active
+            name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: sensor.under_stairs_closet_lock_code_slot_2_sync_status
+            name: Sync Status
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_2_override_parent
+            name: Override Parent
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_2_notifications
+            name: Notifications
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.garage_door_lock_code_slot_2_limit_by_number_of_uses
+            name: Limit by Number of Uses
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - type: conditional
+            conditions:
+            - entity: switch.garage_door_lock_code_slot_2_limit_by_number_of_uses
+              state: 'on'
+            row:
+              entity: number.garage_door_lock_code_slot_2_uses_remaining
+              name: Uses Remaining
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+              type: simple-entity
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_2_override_parent
+          state: 'on'
+          condition: state
+        card:
+          type: conditional
+          conditions: []
+          card:
+            type: entities
+            show_header_toggle: false
+            state_color: true
+            entities:
+            - entity: text.under_stairs_closet_lock_code_slot_2_name
+              name: Name
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: text.under_stairs_closet_lock_code_slot_2_pin
+              name: PIN
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_2_enabled
+              name: Enabled
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: binary_sensor.under_stairs_closet_lock_code_slot_2_active
+              name: Active
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: sensor.under_stairs_closet_lock_code_slot_2_sync_status
+              name: Sync Status
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_2_override_parent
+              name: Override Parent
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_2_notifications
+              name: Notifications
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_2_limit_by_number_of_uses
+              name: Limit by Number of Uses
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: conditional
+              conditions:
+              - entity: switch.under_stairs_closet_lock_code_slot_2_limit_by_number_of_uses
+                state: 'on'
+              row:
+                entity: number.under_stairs_closet_lock_code_slot_2_uses_remaining
+                name: Uses Remaining
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+            - type: divider
+            - entity: button.under_stairs_closet_lock_code_slot_2_reset
+              name: Reset Slot
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+    - type: grid
+      cards:
+      - type: heading
+        heading: Code Slot 3
+        heading_style: title
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_3_override_parent
+          state: 'off'
+          condition: state
+        card:
+          type: entities
+          show_header_toggle: false
+          state_color: true
+          entities:
+          - entity: text.garage_door_lock_code_slot_3_name
+            name: Name
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: text.garage_door_lock_code_slot_3_pin
+            name: PIN
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: switch.garage_door_lock_code_slot_3_enabled
+            name: Enabled
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: binary_sensor.under_stairs_closet_lock_code_slot_3_active
+            name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: sensor.under_stairs_closet_lock_code_slot_3_sync_status
+            name: Sync Status
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_3_override_parent
+            name: Override Parent
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_3_notifications
+            name: Notifications
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.garage_door_lock_code_slot_3_limit_by_number_of_uses
+            name: Limit by Number of Uses
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - type: conditional
+            conditions:
+            - entity: switch.garage_door_lock_code_slot_3_limit_by_number_of_uses
+              state: 'on'
+            row:
+              entity: number.garage_door_lock_code_slot_3_uses_remaining
+              name: Uses Remaining
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+              type: simple-entity
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_3_override_parent
+          state: 'on'
+          condition: state
+        card:
+          type: conditional
+          conditions: []
+          card:
+            type: entities
+            show_header_toggle: false
+            state_color: true
+            entities:
+            - entity: text.under_stairs_closet_lock_code_slot_3_name
+              name: Name
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: text.under_stairs_closet_lock_code_slot_3_pin
+              name: PIN
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_3_enabled
+              name: Enabled
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: binary_sensor.under_stairs_closet_lock_code_slot_3_active
+              name: Active
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: sensor.under_stairs_closet_lock_code_slot_3_sync_status
+              name: Sync Status
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_3_override_parent
+              name: Override Parent
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_3_notifications
+              name: Notifications
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_3_limit_by_number_of_uses
+              name: Limit by Number of Uses
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: conditional
+              conditions:
+              - entity: switch.under_stairs_closet_lock_code_slot_3_limit_by_number_of_uses
+                state: 'on'
+              row:
+                entity: number.under_stairs_closet_lock_code_slot_3_uses_remaining
+                name: Uses Remaining
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+            - type: divider
+            - entity: button.under_stairs_closet_lock_code_slot_3_reset
+              name: Reset Slot
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+    - type: grid
+      cards:
+      - type: heading
+        heading: Code Slot 4
+        heading_style: title
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_4_override_parent
+          state: 'off'
+          condition: state
+        card:
+          type: entities
+          show_header_toggle: false
+          state_color: true
+          entities:
+          - entity: text.garage_door_lock_code_slot_4_name
+            name: Name
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: text.garage_door_lock_code_slot_4_pin
+            name: PIN
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: switch.garage_door_lock_code_slot_4_enabled
+            name: Enabled
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: binary_sensor.under_stairs_closet_lock_code_slot_4_active
+            name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: sensor.under_stairs_closet_lock_code_slot_4_sync_status
+            name: Sync Status
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_4_override_parent
+            name: Override Parent
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_4_notifications
+            name: Notifications
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.garage_door_lock_code_slot_4_limit_by_number_of_uses
+            name: Limit by Number of Uses
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - type: conditional
+            conditions:
+            - entity: switch.garage_door_lock_code_slot_4_limit_by_number_of_uses
+              state: 'on'
+            row:
+              entity: number.garage_door_lock_code_slot_4_uses_remaining
+              name: Uses Remaining
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+              type: simple-entity
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_4_override_parent
+          state: 'on'
+          condition: state
+        card:
+          type: conditional
+          conditions: []
+          card:
+            type: entities
+            show_header_toggle: false
+            state_color: true
+            entities:
+            - entity: text.under_stairs_closet_lock_code_slot_4_name
+              name: Name
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: text.under_stairs_closet_lock_code_slot_4_pin
+              name: PIN
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_4_enabled
+              name: Enabled
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: binary_sensor.under_stairs_closet_lock_code_slot_4_active
+              name: Active
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: sensor.under_stairs_closet_lock_code_slot_4_sync_status
+              name: Sync Status
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_4_override_parent
+              name: Override Parent
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_4_notifications
+              name: Notifications
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_4_limit_by_number_of_uses
+              name: Limit by Number of Uses
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: conditional
+              conditions:
+              - entity: switch.under_stairs_closet_lock_code_slot_4_limit_by_number_of_uses
+                state: 'on'
+              row:
+                entity: number.under_stairs_closet_lock_code_slot_4_uses_remaining
+                name: Uses Remaining
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+            - type: divider
+            - entity: button.under_stairs_closet_lock_code_slot_4_reset
+              name: Reset Slot
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+    - type: grid
+      cards:
+      - type: heading
+        heading: Code Slot 5
+        heading_style: title
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_5_override_parent
+          state: 'off'
+          condition: state
+        card:
+          type: entities
+          show_header_toggle: false
+          state_color: true
+          entities:
+          - entity: text.garage_door_lock_code_slot_5_name
+            name: Name
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: text.garage_door_lock_code_slot_5_pin
+            name: PIN
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: switch.garage_door_lock_code_slot_5_enabled
+            name: Enabled
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - entity: binary_sensor.under_stairs_closet_lock_code_slot_5_active
+            name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: sensor.under_stairs_closet_lock_code_slot_5_sync_status
+            name: Sync Status
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_5_override_parent
+            name: Override Parent
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.under_stairs_closet_lock_code_slot_5_notifications
+            name: Notifications
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: switch.garage_door_lock_code_slot_5_limit_by_number_of_uses
+            name: Limit by Number of Uses
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            type: simple-entity
+          - type: conditional
+            conditions:
+            - entity: switch.garage_door_lock_code_slot_5_limit_by_number_of_uses
+              state: 'on'
+            row:
+              entity: number.garage_door_lock_code_slot_5_uses_remaining
+              name: Uses Remaining
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+              type: simple-entity
+      - type: conditional
+        conditions:
+        - entity: switch.under_stairs_closet_lock_code_slot_5_override_parent
+          state: 'on'
+          condition: state
+        card:
+          type: conditional
+          conditions: []
+          card:
+            type: entities
+            show_header_toggle: false
+            state_color: true
+            entities:
+            - entity: text.under_stairs_closet_lock_code_slot_5_name
+              name: Name
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: text.under_stairs_closet_lock_code_slot_5_pin
+              name: PIN
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_5_enabled
+              name: Enabled
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: binary_sensor.under_stairs_closet_lock_code_slot_5_active
+              name: Active
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: sensor.under_stairs_closet_lock_code_slot_5_sync_status
+              name: Sync Status
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_5_override_parent
+              name: Override Parent
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - entity: switch.under_stairs_closet_lock_code_slot_5_notifications
+              name: Notifications
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: divider
+            - entity: switch.under_stairs_closet_lock_code_slot_5_limit_by_number_of_uses
+              name: Limit by Number of Uses
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none
+            - type: conditional
+              conditions:
+              - entity: switch.under_stairs_closet_lock_code_slot_5_limit_by_number_of_uses
+                state: 'on'
+              row:
+                entity: number.under_stairs_closet_lock_code_slot_5_uses_remaining
+                name: Uses Remaining
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+            - type: divider
+            - entity: button.under_stairs_closet_lock_code_slot_5_reset
+              name: Reset Slot
+              tap_action:
+                action: none
+              hold_action:
+                action: none
+              double_tap_action:
+                action: none

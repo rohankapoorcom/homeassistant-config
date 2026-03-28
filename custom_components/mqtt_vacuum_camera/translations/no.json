@@ -3,88 +3,218 @@
     "step": {
       "user": {
         "data": {
-          "vacuum_entity": "Støvsuger Entitet ID",
-          "vacuum_config_entry": "Støvsuger Konfigurasjonsdata",
-          "vacuum_map": "Støvsuger Emne",
-          "vacuum_identifiers": "Støvsuger MQTT-id",
+          "vacuum_entity": "Vakuumrobot-enhets-ID",
+          "vacuum_config_entry": "Konfigurasjonsdata for støvsugerrobot",
+          "vacuum_map": "Vakuumrobot Emne",
+          "vacuum_identifiers": "Støvsugerrobot MQTT-ID",
           "unique_id": ""
         },
         "data_description": {
-          "vacuum_entity": "Støvsuger Entitet ID"
+          "vacuum_entity": "Vakuumrobot-enhets-ID"
         },
-        "description": "Kamerainnstilling.",
-        "title": "MQTT Kameraoppsett"
+        "description": "Kameraoppsett.",
+        "title": "MQTT-kameraoppsett"
       }
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "MQTT Kameraalternativer",
-        "description": "### _Standardalternativer_:",
-        "data": {
-          "camera_config_action": "Handling"
+        "title": "MQTT-kameraalternativer",
+        "description": "Konfigurer kameraalternativer",
+        "menu_options": {
+          "image_opt": "Bildeinnstillinger",
+          "colours": "Fargekonfigurasjon",
+          "materials": "Materialgjengivelse",
+          "save_options": "Lagre alternativer"
         }
       },
-      "advanced": {
-        "title": "MQTT Kameraalternativer",
-        "description": "### _Avanserte alternativer_:",
-        "data": {
-          "camera_config_action": "Handling"
-        }
-      },
-      "download_logs": {
-        "title": "MQTT Kameraloggfil",
-        "description": "### _Kopier loggfiler_:",
-        "data": {
-          "camera_logs_progres": "Hva skal gjøres?"
-        }
+      "main_menu": {
+        "title": "Hovedmeny",
+        "description": "Gå tilbake til hovedmenyen"
       },
       "image_opt": {
+        "title": "Bildeinnstillinger",
+        "description": "Konfigurer innstillinger for bildevisning",
+        "menu_options": {
+          "image_basic_opt": "Grunnleggende innstillinger",
+          "status_text": "Statustekst",
+          "draw_elements": "Synlighet av kartelementer",
+          "floor_management": "Gulvledelse",
+          "obstacle_link_config": "Innstillinger for hindringsbildekobling",
+          "main_menu": "Tilbake til hovedmenyen"
+        }
+      },
+      "colours": {
+        "title": "Fargekonfigurasjon",
+        "description": "Konfigurer kartfarger",
+        "menu_options": {
+          "base_colours": "Grunnfarger",
+          "rooms_colours_1": "Rom 1-8",
+          "rooms_colours_2": "Rom 9-16",
+          "floor_only": "Kun gulv",
+          "transparency": "Innstillinger for gjennomsiktighet",
+          "main_menu": "Tilbake til hovedmenyen"
+        }
+      },
+      "draw_elements": {
+        "title": "Synlighet av kartelementer",
+        "description": "Konfigurer hvilke elementer som skal vises på kartet",
+        "menu_options": {
+          "map_elements": "Kartelementer",
+          "segments_visibility": "Segmenters synlighet",
+          "main_menu": "Tilbake til hovedmenyen"
+        }
+      },
+      "map_elements": {
+        "title": "Kartelementer",
+        "description": "Konfigurer hvilke elementer som skal vises på kartet",
+        "data": {
+          "disable_floor": "Skjul gulv",
+          "disable_wall": "Skjul vegger",
+          "disable_robot": "Skjul robot",
+          "disable_charger": "Skjul lader",
+          "disable_virtual_walls": "Skjul virtuelle vegger",
+          "disable_restricted_areas": "Skjul begrensede områder",
+          "disable_no_mop_areas": "Skjul områder uten mopp",
+          "disable_obstacles": "Skjul hindringer",
+          "disable_path": "Skjul sti",
+          "disable_predicted_path": "Skjul forventet bane",
+          "disable_go_to_target": "Skjul mål for gå til"
+        },
+        "data_description": {
+          "disable_floor": "Når denne funksjonen er aktivert, vil gulvet ikke vises på kartet.",
+          "disable_wall": "Når denne funksjonen er aktivert, vises ikke vegger på kartet.",
+          "disable_robot": "Når denne funksjonen er aktivert, vil roboten ikke vises på kartet.",
+          "disable_charger": "Når denne funksjonen er aktivert, vises ikke ladestasjonen på kartet.",
+          "disable_virtual_walls": "Når denne funksjonen er aktivert, vises ikke virtuelle vegger på kartet.",
+          "disable_restricted_areas": "Når denne funksjonen er aktivert, vises ikke begrensede områder på kartet.",
+          "disable_no_mop_areas": "Når denne funksjonen er aktivert, vises ikke områder hvor det ikke er mulig å moppe på kartet.",
+          "disable_obstacles": "Når denne funksjonen er aktivert, vises ikke hindringer på kartet.",
+          "disable_path": "Når denne funksjonen er aktivert, vises ikke rengjøringsbanen på kartet.",
+          "disable_predicted_path": "Når denne funksjonen er aktivert, vises ikke den forventede ruten på kartet.",
+          "disable_go_to_target": "Når denne funksjonen er aktivert, vises ikke målene på kartet."
+        }
+      },
+      "segments_visibility": {
+        "title": "Segmenters synlighet",
+        "description": "Konfigurer hvilke romsegmenter som skal vises på kartet",
+        "data": {
+          "disable_room_1": "Skjul rom 1",
+          "disable_room_2": "Skjul rom 2",
+          "disable_room_3": "Skjul rom 3",
+          "disable_room_4": "Skjul rom 4",
+          "disable_room_5": "Skjul rom 5",
+          "disable_room_6": "Skjul rom 6",
+          "disable_room_7": "Skjul rom 7",
+          "disable_room_8": "Skjul rom 8",
+          "disable_room_9": "Skjul rom 9",
+          "disable_room_10": "Skjul rom 10",
+          "disable_room_11": "Skjul rom 11",
+          "disable_room_12": "Skjul rom 12",
+          "disable_room_13": "Skjul rom 13",
+          "disable_room_14": "Skjul rom 14",
+          "disable_room_15": "Skjul rom 15"
+        },
+        "data_description": {
+          "disable_room_1": "Når denne funksjonen er aktivert, vil rom 1 {room_0_name} ikke vises på kartet.",
+          "disable_room_2": "Når denne funksjonen er aktivert, vil rom 2 {room_1_name} ikke vises på kartet.",
+          "disable_room_3": "Når denne funksjonen er aktivert, vil rom 3 {room_2_name} ikke vises på kartet.",
+          "disable_room_4": "Når denne funksjonen er aktivert, vil rom 4 {room_3_name} ikke vises på kartet.",
+          "disable_room_5": "Når denne funksjonen er aktivert, vil rom 5 {room_4_name} ikke vises på kartet.",
+          "disable_room_6": "Når denne funksjonen er aktivert, vil rom 6 {room_5_name} ikke vises på kartet.",
+          "disable_room_7": "Når denne funksjonen er aktivert, vil rom 7 {room_6_name} ikke vises på kartet.",
+          "disable_room_8": "Når denne funksjonen er aktivert, vil rom 8 {room_7_name} ikke vises på kartet.",
+          "disable_room_9": "Når denne funksjonen er aktivert, vil rom 9 {room_8_name} ikke vises på kartet.",
+          "disable_room_10": "Når denne funksjonen er aktivert, vil rom 10 {room_9_name} ikke vises på kartet.",
+          "disable_room_11": "Når denne funksjonen er aktivert, vil rom 11 {room_10_name} ikke vises på kartet.",
+          "disable_room_12": "Når denne funksjonen er aktivert, vil rom 12 {room_11_name} ikke vises på kartet.",
+          "disable_room_13": "Når denne funksjonen er aktivert, vil rom 13 {room_12_name} ikke vises på kartet.",
+          "disable_room_14": "Når denne funksjonen er aktivert, vil rom 14 {room_13_name} ikke vises på kartet.",
+          "disable_room_15": "Når denne funksjonen er aktivert, vil rom 15 {room_14_name} ikke vises på kartet."
+        }
+      },
+      "transparency": {
+        "title": "Innstillinger for gjennomsiktighet",
+        "description": "Konfigurer innstillinger for gjennomsiktighet (alfa) for kartelementer",
+        "menu_options": {
+          "alpha_1": "Basertransparens",
+          "alpha_floor": "Gulvtransparens",
+          "alpha_2": "Rom 1-8 Gjennomsiktighet",
+          "alpha_3": "Rom 9–16 Gjennomsiktighet",
+          "main_menu": "Tilbake til hovedmenyen"
+        }
+      },
+      "materials": {
+        "title": "Materialgjengivelse",
+        "description": "Konfigurer materialgjenkjenning og gjengivelse (treplanker, fliser, tepper)",
+        "data": {
+          "disable_material_overlay": "Deaktiver materialoverlegg (tre og fliser)",
+          "disable_carpets": "Skjul tepper",
+          "color_carpet": "Teppefarge",
+          "color_material_wood": "Treplankens farge",
+          "color_material_tile": "Flisefarge",
+          "alpha_carpet": "Teppets gjennomsiktighet",
+          "alpha_material_wood": "Treets gjennomsiktighet",
+          "alpha_material_tile": "Flisens gjennomsiktighet"
+        },
+        "data_description": {
+          "disable_material_overlay": "Slå av materialoverleggsrendering for tre og fliser på kartet",
+          "disable_carpets": "Når denne funksjonen er aktivert, vises ikke tepper på kartet.",
+          "color_carpet": "Farge for teppematerialer (RGB)",
+          "color_material_wood": "Farge for treplankematerialer (RGB)",
+          "color_material_tile": "Farge for flisematerialer (RGB)",
+          "alpha_carpet": "Gjennomsiktighetsnivå for tepper (0-255)",
+          "alpha_material_wood": "Gjennomsiktighetsnivå for treplanker (0-255)",
+          "alpha_material_tile": "Gjennomsiktighetsnivå for fliser (0-255)"
+        }
+      },
+      "floor_management": {
+        "title": "Gulvledelse",
+        "description": "Administrer flere etasjer og deres triminnstillinger",
+        "menu_options": {
+          "select_floor": "Velg aktiv etasje",
+          "add_floor": "Legg til nytt gulv",
+          "edit_floor": "Rediger gulvinstillinger",
+          "delete_floor": "Slett etasje",
+          "update_floor_data": "Oppdater gulvdata",
+          "main_menu": "Tilbake til hovedmenyen"
+        }
+      },
+      "image_basic_opt": {
         "data": {
           "rotate_image": "Roter",
-          "margins": "Bildemarginer.",
+          "margins": "Bilde marginer.",
           "auto_zoom": "Aktiver automatisk zoom",
-          "zoom_lock_ratio": "Lås sideforhold.",
-          "aspect_ratio": "Bilde Sideforhold.",
-          "enable_www_snapshots": "Eksporter PNG-snapshots."
+          "zoom_lock_ratio": "Lås bildeforhold.",
+          "aspect_ratio": "Bildeformat.",
+          "robot_size": "Størrelsen på roboten.",
+          "mop_path_width": "Moppens bredde",
+          "def_context_type": "Bildeformat"
         },
         "data_description": {
-          "rotate_image": "Grader 0, 90, 180, 270",
-          "margins": "Automatisk beskjæringsmarginer i piksler.",
-          "aspect_ratio": "Bilde Sideforhold."
+          "rotate_image": "Grad 0, 90, 180, 270",
+          "margins": "Automatisk beskjæring av marginer i piksler.",
+          "aspect_ratio": "Bildeformat.",
+          "robot_size": "Størrelsen på roboten i piksler 8-25.",
+          "mop_path_width": "Bredden på støvsugerbanen i moppemodus (1–50 piksler, må være mindre enn robotens størrelse).",
+          "def_context_type": "Velg bildeformat for kameraet (JPEG, PNG eller PIL). JPEG anbefales for best mulig kompatibilitet."
         },
-        "description": "Kamera Bildealternativer",
+        "description": "Kameraets bildealternativer",
         "title": "Bildealternativer"
-      },
-      "image_offset": {
-        "data": {
-          "offset_top": "Toppoffset",
-          "offset_bottom": "Bunnen offset",
-          "offset_left": "Venstre offset",
-          "offset_right": "Høyre offset"
-        },
-        "data_description": {
-          "offset_top": "Toppoffset rotasjon 0 i piksler.",
-          "offset_bottom": "Bunnen offset rotasjon 0 i piksler.",
-          "offset_left": "Venstre offset rotasjon 0 i piksler.",
-          "offset_right": "Høyre offset rotasjon 0 i piksler."
-        },
-        "description": "Kamera Bilde Offset",
-        "title": "Bildeoffset"
       },
       "status_text": {
         "data": {
-          "show_vac_status": "Vis støvsugerstatus.",
+          "show_vac_status": "Vis vakuumstatus.",
           "vac_status_font": "Fira Sans",
           "vac_status_size": "Tekststørrelse",
-          "vac_status_position": "Tekstposisjon: Bunnen (AV)",
+          "vac_status_position": "Tekstposisjon: Nederst (AV)",
           "color_text": "[255, 255, 255]"
         },
         "data_description": {
-          "vac_status_font": "Tekstskrift standard Fira Serif.",
-          "vac_status_size": "Tekststørrelse standard 50.",
-          "color_text": "Støvsugerstatus Tekstfarge."
+          "vac_status_font": "Standard skrift Fira Serif.",
+          "vac_status_size": "Standard tekststørrelse 50.",
+          "color_text": "Vakuumstatus Tekstfarge."
         },
         "description": "Bildealternativer",
         "title": "Status Tekstalternativer"
@@ -93,49 +223,52 @@
         "data": {
           "color_charger": "[255, 128, 0]",
           "color_move": "[238, 247, 255]",
+          "color_mop_move": "[238, 247, 255]",
           "color_wall": "[255, 255, 0]",
           "color_robot": "[255, 255, 204]",
           "color_go_to": "[0, 255, 0]",
           "color_no_go": "[255, 0, 0]",
           "color_zone_clean": "[255, 255, 255]",
           "color_background": "[0, 125, 255]",
-          "add_base_alpha": "Konfigurer Gjennomsiktighet:"
+          "add_base_alpha": "Konfigurer gjennomsiktighet:"
         },
         "data_description": {
-          "color_charger": "Laderfarge.",
-          "color_move": "Flyttefarge.",
+          "color_charger": "Last inn farge.",
+          "color_move": "Flytt farge.",
+          "color_mop_move": "Farge på moppebane (kun Hypfer-støvsugere).",
           "color_wall": "Veggfarge.",
           "color_robot": "Robotfarge.",
-          "color_go_to": "Gå til farge.",
-          "color_no_go": "Ikke gå farge.",
-          "color_zone_clean": "Sone rengjøre farge.",
+          "color_go_to": "Favorittfarge.",
+          "color_no_go": "Farge som ikke kan brukes.",
+          "color_zone_clean": "Sone ren farge.",
           "color_background": "Bakgrunnsfarge."
         },
-        "description": "Kamera Fargealternativer.",
-        "title": "Basisfarger Oppsett"
+        "description": "Kamerafarger Alternativer.",
+        "title": "Oppsett av grunnfarger"
       },
       "alpha_1": {
         "data": {
-          "alpha_charger": "Lader Alpha   ",
-          "alpha_move": "Bevegelser Alpha     ",
-          "alpha_wall": "Vegger Alpha     ",
-          "alpha_robot": "Robot Alpha     ",
-          "alpha_go_to": "Gå Til Område Alpha",
-          "alpha_no_go": "Ikke Gå Område Alpha",
-          "alpha_zone_clean": "Sone Rengjør Alpha",
-          "alpha_background": "Bakgrunn Alpha",
-          "alpha_text": "Tekst Alpha      "
+          "alpha_charger": "Last inn Alpha",
+          "alpha_move": "Flytter Alpha",
+          "alpha_mop_move": "Moppesti Alfa",
+          "alpha_wall": "Vegger Alpha",
+          "alpha_robot": "Alfa Robot",
+          "alpha_go_to": "Gå til område Alpha",
+          "alpha_no_go": "Forbudt område Alfa",
+          "alpha_zone_clean": "Sone Clean Alpha",
+          "alpha_background": "Bakgrunn Alfa",
+          "alpha_text": "Tekst Alfa"
         },
-        "description": "Kameraalternativer. Alpha 1",
-        "title": "Alpha Kanal Basisfarger"
+        "description": "Kamerainnstillinger. Alpha 1",
+        "title": "Alfakanalens grunnfarger"
       },
       "floor_only": {
         "data": {
           "color_room_0": "[135, 206, 250]",
-          "add_room_1_alpha": "Konfigurer Gjennomsiktighet:"
+          "add_room_1_alpha": "Konfigurer gjennomsiktighet:"
         },
         "data_description": {
-          "color_room_0": "### **Gulvfarge**"
+          "color_room_0": "**Gulvfarge**"
         }
       },
       "rooms_colours_1": {
@@ -148,19 +281,19 @@
           "color_room_5": "[96, 123, 139]",
           "color_room_6": "[224, 255, 255]",
           "color_room_7": "[209, 238, 238]",
-          "add_room_1_alpha": "Konfigurer Gjennomsiktighet:"
+          "add_room_1_alpha": "Konfigurer gjennomsiktighet:"
         },
         "data_description": {
-          "color_room_0": "Rom 1",
-          "color_room_1": "Rom 2",
-          "color_room_2": "Rom 3",
-          "color_room_3": "Rom 4",
-          "color_room_4": "Rom 5",
-          "color_room_5": "Rom 6",
-          "color_room_6": "Rom 7",
-          "color_room_7": "Rom 8"
+          "color_room_0": "**{room_0_name} Farge**",
+          "color_room_1": "**{room_1_name} Farge**",
+          "color_room_2": "**{room_2_name} Farge**",
+          "color_room_3": "**{room_3_name} Farge**",
+          "color_room_4": "**{room_4_name} Farge**",
+          "color_room_5": "**{room_5_name} Farge**",
+          "color_room_6": "**{room_6_name} Farge**",
+          "color_room_7": "**{room_7_name} Farge**"
         },
-        "description": "Kamera Fargealternativer.",
+        "description": "Kamerafarger Alternativer.",
         "title": "Rom 1 til 8 Farger"
       },
       "rooms_colours_2": {
@@ -173,19 +306,19 @@
           "color_room_13": "[245, 176, 65]",
           "color_room_14": "[82, 190, 128]",
           "color_room_15": "[72, 201, 176]",
-          "add_room_2_alpha": "Konfigurer Gjennomsiktighet:"
+          "add_room_2_alpha": "Konfigurer gjennomsiktighet:"
         },
         "data_description": {
-          "color_room_8": "Rom 9",
-          "color_room_9": "Rom 10",
-          "color_room_10": "Rom 11",
-          "color_room_11": "Rom 12",
-          "color_room_12": "Rom 13",
-          "color_room_13": "Rom 14",
-          "color_room_14": "Rom 15",
-          "color_room_15": "Rom 16"
+          "color_room_8": "**{room_8_name} Farge**",
+          "color_room_9": "**{room_9_name} Farge**",
+          "color_room_10": "**{room_10_name} Farge**",
+          "color_room_11": "**{room_11_name} Farge**",
+          "color_room_12": "**{room_12_name} Farge**",
+          "color_room_13": "**{room_13_name} Farge**",
+          "color_room_14": "**{room_14_name} Farge**",
+          "color_room_15": "**{room_15_name} Farge**"
         },
-        "description": "Kamera Fargealternativer.",
+        "description": "Kamerafarger Alternativer.",
         "title": "Rom 9 til 15 Farger"
       },
       "alpha_floor": {
@@ -195,75 +328,116 @@
       },
       "alpha_2": {
         "data": {
-          "alpha_room_0": "Rom 1",
-          "alpha_room_1": "Rom 2",
-          "alpha_room_2": "Rom 3",
-          "alpha_room_3": "Rom 4",
-          "alpha_room_4": "Rom 5",
-          "alpha_room_5": "Rom 6",
-          "alpha_room_6": "Rom 7",
-          "alpha_room_7": "Rom 8"
+          "alpha_room_0": "{room_0_name} Alfa",
+          "alpha_room_1": "{room_1_name} Alfa",
+          "alpha_room_2": "{room_2_name} Alfa",
+          "alpha_room_3": "{room_3_name} Alfa",
+          "alpha_room_4": "{room_4_name} Alfa",
+          "alpha_room_5": "{room_5_name} Alfa",
+          "alpha_room_6": "{room_6_name} Alfa",
+          "alpha_room_7": "{room_7_name} Alfa"
         },
-        "description": "Kameraalternativer. Alpha 2",
-        "title": "Alpha Kanal Rom Farger"
+        "description": "Kamerainnstillinger. Alpha 2",
+        "title": "Alfakanalrom Farger"
       },
       "alpha_3": {
         "data": {
-          "alpha_room_8": "Rom 9",
-          "alpha_room_9": "Rom 10",
-          "alpha_room_10": "Rom 11",
-          "alpha_room_11": "Rom 12",
-          "alpha_room_12": "Rom 13",
-          "alpha_room_13": "Rom 14",
-          "alpha_room_14": "Rom 15",
-          "alpha_room_15": "Rom 16"
+          "alpha_room_8": "{room_8_name} Alfa",
+          "alpha_room_9": "{room_9_name} Alfa",
+          "alpha_room_10": "{room_10_name} Alfa",
+          "alpha_room_11": "{room_11_name} Alfa",
+          "alpha_room_12": "{room_12_name} Alfa",
+          "alpha_room_13": "{room_13_name} Alfa",
+          "alpha_room_14": "{room_14_name} Alfa",
+          "alpha_room_15": "{room_15_name} Alfa"
         },
-        "description": "Kameraalternativer. Alpha 3",
-        "title": "Alpha Kanal Rom Farger"
+        "description": "Kamerainnstillinger. Alpha 3",
+        "title": "Alfakanalrom Farger"
+      },
+      "select_floor": {
+        "title": "Velg aktiv etasje",
+        "description": "Velg hvilken etasje som er aktiv for øyeblikket. Kameraet vil bruke triminnstillingene for den valgte etasjen.",
+        "data": {
+          "current_floor": "Aktiv gulv"
+        },
+        "data_description": {
+          "current_floor": "Velg gulvet som er aktivt for øyeblikket. Aktuelt: {current_floor}"
+        }
+      },
+      "add_floor": {
+        "title": "Legg til ny etasje",
+        "description": "{info}",
+        "data": {
+          "floor_name": "Gulvnavn",
+          "map_name": "Kartnavn (valgfritt)"
+        },
+        "data_description": {
+          "floor_name": "Velg blant Home Assistant-etasjer eller skriv inn et eget navn",
+          "map_name": "Valgfritt navn for denne etasjen"
+        }
+      },
+      "edit_floor": {
+        "title": "Rediger gulvinstillinger",
+        "description": "Rediger kartnavn for etasje: {floor_name}. {trim_info}. Trimverdiene beregnes automatisk – bruk 'Update Floor Data' for å oppdatere dem.",
+        "data": {
+          "floor_name": "Velg etasje for redigering",
+          "map_name": "Kartnavn (valgfritt)"
+        },
+        "data_description": {
+          "floor_name": "Velg hvilken etasje du vil redigere",
+          "map_name": "Valgfritt navn for denne etasjen"
+        }
+      },
+      "delete_floor": {
+        "title": "Slett etasje",
+        "description": "Fjern et gulv fra konfigurasjonen. Hvis du sletter det aktive gulvet, vil det bli tilbakestilt til 'floor_0'.",
+        "data": {
+          "floor_name": "Gulv å slette"
+        },
+        "data_description": {
+          "floor_name": "Velg hvilken etasje som skal slettes"
+        }
+      },
+      "obstacle_link_config": {
+        "title": "Innstillinger for hindringsbildekobling",
+        "description": "Konfigurer URL-innstillingene for nedlasting av hindringsbilder. Disse innstillingene styrer hvordan kameraet henter hindringsbilder fra støvsugerens API-endepunkt.",
+        "data": {
+          "obstacle_link_protocol": "Protokoll",
+          "obstacle_link_port": "Portnummer",
+          "obstacle_link_ip": "Vakuum IP-adresse"
+        },
+        "data_description": {
+          "obstacle_link_protocol": "Velg protokollen som skal brukes (HTTP eller HTTPS)",
+          "obstacle_link_port": "Portnummer for vakuumets API-endepunkt (standard: 80 for HTTP, 443 for HTTPS)",
+          "obstacle_link_ip": "IP-adressen til støvsugeren din (autodetektert fra MQTT hvis tilgjengelig)"
+        }
       }
     }
   },
   "selector": {
-    "camera_config_action": {
+    "trim_actions": {
       "options": {
-        "opt_1": "Konfigurer Bilde",
-        "opt_2": "Konfigurer Generelle Farger",
-        "opt_3": "Farger Rom 1 til 8",
-        "opt_4": "Farger Rom 9 til 16",
-        "opt_5": "Avanserte Alternativer"
-      }
-    },
-    "camera_config_advanced": {
-      "options": {
-        "opt_1": "Konfigurer Bilde Offset",
-        "opt_2": "Konfigurer Status Tekst",
-        "opt_3": "Kopier Kamera Logger til www",
-        "opt_4": "Gi nytt navn til Fargealternativer",
-        "opt_5": "Tilbakestill karttrim"
-      }
-    },
-    "camera_logs_progres": {
-      "options": {
-        "opt_1": "Kopier Logger til www",
-        "opt_2": "Fjern Logger fra www"
+        "save": "Lagre endringer",
+        "reset": "Tilbakestill til oppdagede verdier",
+        "delete": "Slett alle trimmer"
       }
     },
     "vacuum_status": {
       "options": {
         "connected": "Tilkoblet",
         "disconnected": "Frakoblet",
-        "charging": "Lader",
-        "cleaning": "Rengjør",
+        "charging": "Lading",
+        "cleaning": "Rengjøring",
         "docked": "Dokket",
-        "idle": "Inaktiv",
+        "idle": "Tomgang",
         "paused": "Pauset",
-        "returning": "Vender tilbake"
+        "returning": "Returnering"
       }
     }
   },
   "services": {
     "reload": {
-      "name": "Last inn på nytt",
+      "name": "Laste på nytt",
       "description": "Last inn MQTT Vacuum Camera Platform på nytt."
     },
     "turn_off": {
@@ -275,8 +449,8 @@
       "description": "Slår på kameraet."
     },
     "reset_trims": {
-      "name": "Tilbakestill bildebeskjæringer",
-      "description": "Tilbakestiller beskjæringene av kartene."
+      "name": "Tilbakestill bilder Trimmer",
+      "description": "Tilbakestiller trimmingen av kartene."
     },
     "snapshot": {
       "name": "Ta øyeblikksbilde",
@@ -284,14 +458,32 @@
       "fields": {
         "filename": {
           "name": "Filnavn",
-          "description": "Mal for et filnavn. Tilgjengelig variabel er `entity_id`."
+          "description": "Mal for filnavn. Tilgjengelig variabel er `entity_id`."
         }
       }
     }
   },
   "exceptions": {
     "no_entity_id_provided": {
-      "message": "entity_id mangler i tjenestekonfigurasjonen."
+      "message": "Manglende entity_id i konfigurasjonen."
+    },
+    "missing_zone_or_zone_ids": {
+      "message": "Enten 'zone' eller 'zone_ids' må oppgis."
+    },
+    "zone_must_be_list": {
+      "message": "Parameteren 'Zone' må være en liste."
+    },
+    "zoneid_must_be_list": {
+      "message": "Parameteren 'Zone_Ids' må være en liste."
+    },
+    "zone_list_length": {
+      "message": "'Zone' må ha minst 1 element som inneholder en liste med 4 heltall."
+    },
+    "mqtt_service_not_found": {
+      "message": "MQTT-integrasjon er ikke tilgjengelig. Kontroller at MQTT er konfigurert."
+    },
+    "mqtt_publish_failed": {
+      "message": "Kunne ikke publisere kommandoen til støvsuger via MQTT."
     }
   }
 }

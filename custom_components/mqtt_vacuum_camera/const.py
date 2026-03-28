@@ -1,16 +1,22 @@
 """Constants for the mqtt_vacuum_camera integration.
-Version 2025.2.2"""
+Last Updated on version: 2025.10.0
+"""
 
+from enum import Enum
 import logging
+from typing import Final
+
 from homeassistant.components.camera import DOMAIN as CAMERA_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.vacuum import DOMAIN as VACUUM_DOMAIN
 
-"""Required in Config_Flow"""
-DOMAIN = "mqtt_vacuum_camera"
-DEFAULT_NAME = "mqtt vacuum camera"
+# Required in Config_Flow
+DOMAIN: Final = "mqtt_vacuum_camera"
+DEFAULT_NAME: Final = "mqtt vacuum camera"
+ICON: Final = "mdi:camera"
+NAME: Final = "MQTT Vacuum Camera"
 
-"""Required in Coordinator and Services"""
+# Required in Coordinator and Services
 CAMERA = CAMERA_DOMAIN
 VACUUM = VACUUM_DOMAIN
 SENSOR = SENSOR_DOMAIN
@@ -33,33 +39,107 @@ CONF_VACUUM_CONNECTION_STRING = "vacuum_map"
 CONF_VACUUM_ENTITY_ID = "vacuum_entity"
 CONF_VACUUM_CONFIG_ENTRY_ID = "vacuum_config_entry"
 CONF_VACUUM_IDENTIFIERS = "vacuum_identifiers"
-CONF_SNAPSHOTS_ENABLE = "enable_www_snapshots"
-CONF_EXPORT_SVG = "get_svg_file"
+CONF_ROBOT_SIZE = "robot_size"
+CONF_MOP_PATH_WIDTH = "mop_path_width"
 CONF_AUTO_ZOOM = "auto_zoom"
 CONF_ZOOM_LOCK_RATIO = "zoom_lock_ratio"
-CONF_TRIMS_SAVE = "save_trims"
-ICON = "mdi:camera"
-NAME = "MQTT Vacuum Camera"
+CONF_DEF_CONTEXT_TYPE = "def_context_type"
 
-LOGGER = logging.getLogger(__package__)
-
-
-DEFAULT_IMAGE_SIZE = {
-    "x": 5120,
-    "y": 5120,
-    "centre": [(5120 // 2), (5120 // 2)],
+# Image format options (MIME types) - only valid PIL formats
+ALLOWED_IMAGE_FORMAT: dict[str, str] = {
+    "png": "image/png",
+    "jpeg": "image/jpeg",
 }
 
-COLORS = [
-    "wall",
-    "zone_clean",
-    "robot",
-    "background",
-    "move",
-    "charger",
-    "no_go",
-    "go_to",
+CONF_TRIMS_SAVE = "save_trims"
+CONF_TRIMS_DATA = "trims_data"
+CONF_FLOORS_DATA = "floors_data"
+CONF_CURRENT_FLOOR = "current_floor"
+CONF_FLOOR_NAME = "floor_name"
+CONF_MAP_NAME = "map_name"
+CONF_TRIM_UP = "trim_up"
+CONF_TRIM_DOWN = "trim_down"
+CONF_TRIM_LEFT = "trim_left"
+CONF_TRIM_RIGHT = "trim_right"
+CONF_TRIM_ACTION = "trim_action"
+
+# Obstacle image link configuration
+CONF_OBSTACLE_LINK_PROTOCOL = "obstacle_link_protocol"
+CONF_OBSTACLE_LINK_PORT = "obstacle_link_port"
+CONF_OBSTACLE_LINK_IP = "obstacle_link_ip"
+
+# Trim Actions
+TRIM_ACTION_SAVE = "save"
+TRIM_ACTION_RESET = "reset"
+TRIM_ACTION_DELETE = "delete"
+
+# Object visibility options
+CONF_DISABLE_FLOOR = "disable_floor"
+CONF_DISABLE_WALL = "disable_wall"
+CONF_DISABLE_ROBOT = "disable_robot"
+CONF_DISABLE_CHARGER = "disable_charger"
+CONF_DISABLE_VIRTUAL_WALLS = "disable_virtual_walls"
+CONF_DISABLE_RESTRICTED_AREAS = "disable_restricted_areas"
+CONF_DISABLE_NO_MOP_AREAS = "disable_no_mop_areas"
+CONF_DISABLE_OBSTACLES = "disable_obstacles"
+CONF_DISABLE_PATH = "disable_path"
+CONF_DISABLE_PREDICTED_PATH = "disable_predicted_path"
+CONF_DISABLE_GO_TO_TARGET = "disable_go_to_target"
+CONF_DISABLE_CARPETS = "disable_carpets"
+CONF_DISABLE_MATERIAL_OVERLAY = "disable_material_overlay"
+
+# List of all draw element flags for easier iteration
+DRAW_FLAGS = [
+    CONF_DISABLE_FLOOR,
+    CONF_DISABLE_WALL,
+    CONF_DISABLE_ROBOT,
+    CONF_DISABLE_CHARGER,
+    CONF_DISABLE_VIRTUAL_WALLS,
+    CONF_DISABLE_RESTRICTED_AREAS,
+    CONF_DISABLE_NO_MOP_AREAS,
+    CONF_DISABLE_OBSTACLES,
+    CONF_DISABLE_PATH,
+    CONF_DISABLE_PREDICTED_PATH,
+    CONF_DISABLE_GO_TO_TARGET,
 ]
+
+# Room/Segment visibility options
+CONF_DISABLE_ROOM_1 = "disable_room_1"
+CONF_DISABLE_ROOM_2 = "disable_room_2"
+CONF_DISABLE_ROOM_3 = "disable_room_3"
+CONF_DISABLE_ROOM_4 = "disable_room_4"
+CONF_DISABLE_ROOM_5 = "disable_room_5"
+CONF_DISABLE_ROOM_6 = "disable_room_6"
+CONF_DISABLE_ROOM_7 = "disable_room_7"
+CONF_DISABLE_ROOM_8 = "disable_room_8"
+CONF_DISABLE_ROOM_9 = "disable_room_9"
+CONF_DISABLE_ROOM_10 = "disable_room_10"
+CONF_DISABLE_ROOM_11 = "disable_room_11"
+CONF_DISABLE_ROOM_12 = "disable_room_12"
+CONF_DISABLE_ROOM_13 = "disable_room_13"
+CONF_DISABLE_ROOM_14 = "disable_room_14"
+CONF_DISABLE_ROOM_15 = "disable_room_15"
+
+# List of all room visibility flags for easier iteration
+ROOM_FLAGS = [
+    CONF_DISABLE_ROOM_1,
+    CONF_DISABLE_ROOM_2,
+    CONF_DISABLE_ROOM_3,
+    CONF_DISABLE_ROOM_4,
+    CONF_DISABLE_ROOM_5,
+    CONF_DISABLE_ROOM_6,
+    CONF_DISABLE_ROOM_7,
+    CONF_DISABLE_ROOM_8,
+    CONF_DISABLE_ROOM_9,
+    CONF_DISABLE_ROOM_10,
+    CONF_DISABLE_ROOM_11,
+    CONF_DISABLE_ROOM_12,
+    CONF_DISABLE_ROOM_13,
+    CONF_DISABLE_ROOM_14,
+    CONF_DISABLE_ROOM_15,
+]
+
+LOGGER = logging.getLogger(__package__)
 
 SENSOR_NO_DATA = {
     "mainBrush": 0,
@@ -82,8 +162,6 @@ SENSOR_NO_DATA = {
     "robot_in_room": "Unsupported",
 }
 
-DEFAULT_PIXEL_SIZE = 5
-
 DEFAULT_VALUES = {
     "rotate_image": "0",
     "margins": "100",
@@ -98,12 +176,46 @@ DEFAULT_VALUES = {
     "vac_status_font": "custom_components/mqtt_vacuum_camera/utils/fonts/FiraSans.ttf",
     "vac_status_size": 50,
     "vac_status_position": True,
-    "get_svg_file": False,
+    "robot_size": 25,
     "save_trims": True,
-    "trims_data": {"trim_left": 0, "trim_up": 0, "trim_right": 0, "trim_down": 0},
-    "enable_www_snapshots": False,
+    "trims_data": {"trim_up": 0, "trim_left": 0, "trim_down": 0, "trim_right": 0},
+    "floors_data": {},
+    "current_floor": "floor_0",
+    "obstacle_link_protocol": "http",
+    "obstacle_link_port": 80,
+    "obstacle_link_ip": "",
+    "disable_floor": False,
+    "disable_wall": False,
+    "disable_robot": False,
+    "disable_charger": False,
+    "disable_virtual_walls": False,
+    "disable_restricted_areas": False,
+    "disable_no_mop_areas": False,
+    "disable_obstacles": False,
+    "disable_path": False,
+    "disable_predicted_path": False,
+    "disable_go_to_target": False,
+    "disable_carpets": False,
+    "disable_material_overlay": False,
+    "disable_room_1": False,
+    "disable_room_2": False,
+    "disable_room_3": False,
+    "disable_room_4": False,
+    "disable_room_5": False,
+    "disable_room_6": False,
+    "disable_room_7": False,
+    "disable_room_8": False,
+    "disable_room_9": False,
+    "disable_room_10": False,
+    "disable_room_11": False,
+    "disable_room_12": False,
+    "disable_room_13": False,
+    "disable_room_14": False,
+    "disable_room_15": False,
     "color_charger": [255, 128, 0],
+    "color_carpet": [255, 192, 203],
     "color_move": [238, 247, 255],
+    "color_mop_move": [238, 247, 255],
     "color_wall": [255, 255, 0],
     "color_robot": [255, 255, 204],
     "color_go_to": [0, 255, 0],
@@ -111,8 +223,12 @@ DEFAULT_VALUES = {
     "color_zone_clean": [255, 255, 255],
     "color_background": [0, 125, 255],
     "color_text": [255, 255, 255],
+    "color_material_wood": [40, 40, 40],
+    "color_material_tile": [40, 40, 40],
     "alpha_charger": 255.0,
+    "alpha_carpet": 255.0,
     "alpha_move": 255.0,
+    "alpha_mop_move": 100.0,
     "alpha_wall": 255.0,
     "alpha_robot": 255.0,
     "alpha_go_to": 255.0,
@@ -120,6 +236,9 @@ DEFAULT_VALUES = {
     "alpha_zone_clean": 125.0,
     "alpha_background": 255.0,
     "alpha_text": 255.0,
+    "alpha_material_wood": 38.0,
+    "alpha_material_tile": 45.0,
+    "mop_path_width": 10,
     "color_room_0": [135, 206, 250],
     "color_room_1": [176, 226, 255],
     "color_room_2": [165, 105, 18],
@@ -163,16 +282,51 @@ KEYS_TO_UPDATE = [
     "offset_left",
     "offset_right",
     "trims_data",
+    "floors_data",
+    "current_floor",
     "auto_zoom",
     "zoom_lock_ratio",
+    "def_context_type",
     "show_vac_status",
     "vac_status_size",
     "vac_status_position",
+    "obstacle_link_protocol",
+    "obstacle_link_port",
+    "obstacle_link_ip",
     "vac_status_font",
-    "get_svg_file",
-    "enable_www_snapshots",
+    "robot_size",
+    "disable_floor",
+    "disable_wall",
+    "disable_robot",
+    "disable_charger",
+    "disable_virtual_walls",
+    "disable_restricted_areas",
+    "disable_no_mop_areas",
+    "disable_obstacles",
+    "disable_path",
+    "disable_predicted_path",
+    "disable_go_to_target",
+    "disable_carpets",
+    "disable_material_overlay",
+    "disable_room_1",
+    "disable_room_2",
+    "disable_room_3",
+    "disable_room_4",
+    "disable_room_5",
+    "disable_room_6",
+    "disable_room_7",
+    "disable_room_8",
+    "disable_room_9",
+    "disable_room_10",
+    "disable_room_11",
+    "disable_room_12",
+    "disable_room_13",
+    "disable_room_14",
+    "disable_room_15",
     "color_charger",
+    "color_carpet",
     "color_move",
+    "color_mop_move",
     "color_wall",
     "color_robot",
     "color_go_to",
@@ -180,8 +334,12 @@ KEYS_TO_UPDATE = [
     "color_zone_clean",
     "color_background",
     "color_text",
+    "color_material_wood",
+    "color_material_tile",
     "alpha_charger",
+    "alpha_carpet",
     "alpha_move",
+    "alpha_mop_move",
     "alpha_wall",
     "alpha_robot",
     "alpha_go_to",
@@ -189,6 +347,9 @@ KEYS_TO_UPDATE = [
     "alpha_zone_clean",
     "alpha_background",
     "alpha_text",
+    "alpha_material_wood",
+    "alpha_material_tile",
+    "mop_path_width",
     "color_room_0",
     "color_room_1",
     "color_room_2",
@@ -232,6 +393,30 @@ ALPHA_VALUES = {
 TEXT_SIZE_VALUES = {
     "min": 5,  # Minimum value
     "max": 51,  # Maximum value
+    "step": 1,  # Step value
+}
+
+DEFAULT_ROOMS_NAMES = {
+    "room_0_name": "Room 1",
+    "room_1_name": "Room 2",
+    "room_2_name": "Room 3",
+    "room_3_name": "Room 4",
+    "room_4_name": "Room 5",
+    "room_5_name": "Room 6",
+    "room_6_name": "Room 7",
+    "room_7_name": "Room 8",
+    "room_8_name": "Room 9",
+    "room_9_name": "Room 10",
+    "room_10_name": "Room 11",
+    "room_11_name": "Room 12",
+    "room_12_name": "Room 13",
+    "room_13_name": "Room 14",
+    "room_14_name": "Room 15",
+}
+
+ROBOT_SIZE_VALUES = {
+    "min": 8,  # Minimum value
+    "max": 25,  # Maximum value
     "step": 1,  # Step value
 }
 
@@ -283,6 +468,11 @@ FONTS_AVAILABLE = [
     },
 ]
 
+PROTOCOL_VALUES = [
+    {"label": "HTTP", "value": "http"},
+    {"label": "HTTPS", "value": "https"},
+]
+
 NOT_STREAMING_STATES = {
     "idle",
     "paused",
@@ -300,6 +490,13 @@ DECODED_TOPICS = {
     "/$state",
     "/BatteryStateAttribute/level",
     "/WifiConfigurationCapability/ips",
+    "/AttachmentStateAttribute/mop",
+    "/AttachmentStateAttribute/dustbin",
+    "/AttachmentStateAttribute/watertank",
+    "/OperationModeControlCapability/preset",
+    "/WaterUsageControlCapability/preset",
+    "/DockStatusStateAttribute/status",
+    "/ValetudoEvents/valetudo_events",
     "/state",  # Rand256
     "/destinations",  # Rand256
     "/command",  # Rand256
@@ -324,7 +521,9 @@ IS_OFFSET = "add_offset"
 
 """Base Colours RGB"""
 COLOR_CHARGER = "color_charger"
+COLOR_CARPET = "color_carpet"
 COLOR_MOVE = "color_move"
+COLOR_MOP_MOVE = "color_mop_move"
 COLOR_ROBOT = "color_robot"
 COLOR_NO_GO = "color_no_go"
 COLOR_GO_TO = "color_go_to"
@@ -332,6 +531,10 @@ COLOR_BACKGROUND = "color_background"
 COLOR_ZONE_CLEAN = "color_zone_clean"
 COLOR_WALL = "color_wall"
 COLOR_TEXT = "color_text"
+
+"""Material Colours RGB"""
+COLOR_MATERIAL_WOOD = "color_material_wood"
+COLOR_MATERIAL_TILE = "color_material_tile"
 
 "Rooms Colours RGB"
 COLOR_ROOM_0 = "color_room_0"
@@ -353,7 +556,9 @@ COLOR_ROOM_15 = "color_room_15"
 
 """Alpha for RGBA Colours"""
 ALPHA_CHARGER = "alpha_charger"
+ALPHA_CARPET = "alpha_carpet"
 ALPHA_MOVE = "alpha_move"
+ALPHA_MOP_MOVE = "alpha_mop_move"
 ALPHA_ROBOT = "alpha_robot"
 ALPHA_NO_GO = "alpha_no_go"
 ALPHA_GO_TO = "alpha_go_to"
@@ -378,13 +583,16 @@ ALPHA_ROOM_13 = "alpha_room_13"
 ALPHA_ROOM_14 = "alpha_room_14"
 ALPHA_ROOM_15 = "alpha_room_15"
 
+"""Material Alpha values"""
+ALPHA_MATERIAL_WOOD = "alpha_material_wood"
+ALPHA_MATERIAL_TILE = "alpha_material_tile"
+
 """ Constants for the attribute keys """
 ATTR_FRIENDLY_NAME = "friendly_name"
 ATTR_VACUUM_BATTERY = "vacuum_battery"
 ATTR_VACUUM_POSITION = "vacuum_position"
 ATTR_VACUUM_TOPIC = "vacuum_topic"
 ATTR_VACUUM_STATUS = "vacuum_status"
-ATTR_JSON_DATA = "json_data"
 ATTR_VACUUM_JSON_ID = "vacuum_json_id"
 ATTR_CALIBRATION_POINTS = "calibration_points"
 ATTR_SNAPSHOT = "snapshot"
@@ -395,8 +603,20 @@ ATTR_POINTS = "points"
 ATTR_OBSTACLES = "obstacles"
 ATTR_CAMERA_MODE = "camera_mode"
 
+# Timings (shared constants; wiring will be done later with no behavior change today)
+DOWNLOAD_TIMEOUT = 6
+CAMERA_SCAN_INTERVAL_S = 3.0
+RENDER_TIMEOUT_S = 2.9
+FRAME_INTERVAL_S = 0.2
+MJPEG_INTERVAL_S = 1.0
 
-class CameraModes:
+# Obstacle detection
+OBSTACLE_SEARCH_RADIUS_MULTIPLIER = (
+    65  # Multiplier for obstacle search radius calculation
+)
+
+
+class CameraModes(str, Enum):
     """Constants for the camera modes"""
 
     MAP_VIEW = "map_view"

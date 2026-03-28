@@ -4,20 +4,35 @@
   "bluetooth": [
     {
       "manufacturer_id": 4919
+    },
+    {
+      "manufacturer_id": 9286
     }
   ],
   "codeowners": [
-    "@jonasniesner"
+    "@jonasniesner",
+    "@g4bri3lDev"
   ],
   "config_flow": true,
   "dependencies": [
     "bluetooth",
     "recorder"
   ],
+  "dhcp": [
+    {
+      "hostname": "openepaperlink-*"
+    }
+  ],
   "documentation": "https://github.com/OpenEPaperLink/Home_Assistant_Integration",
   "integration_type": "hub",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/OpenEPaperLink/Home_Assistant_Integration/issues",
+  "preview_features": {
+    "oepl_ble_updates": {
+      "learn_more_url": "https://github.com/OpenEPaperLink/OEPL_BLE",
+      "report_issue_url": "https://github.com/OpenEPaperLink/Home_Assistant_Integration/issues"
+    }
+  },
   "requirements": [
     "qrcode[pil]==7.4.2",
     "requests_toolbelt==1.0.0",
@@ -29,5 +44,5 @@
     "numpy>=1.26.4",
     "Pillow>=10.4.0"
   ],
-  "version": "2.1.0"
+  "version": "2.8.0"
 }

@@ -3,14 +3,14 @@
     "step": {
       "user": {
         "data": {
-          "vacuum_entity": "Идентификатор устройства пылесоса",
-          "vacuum_config_entry": "Данные конфигурации пылесоса",
-          "vacuum_map": "Тема пылесоса",
-          "vacuum_identifiers": "Идентификатор MQTT пылесоса",
+          "vacuum_entity": "Идентификатор вакуумного робота",
+          "vacuum_config_entry": "Данные конфигурации вакуумного робота",
+          "vacuum_map": "Тема «Вакуумный робот»",
+          "vacuum_identifiers": "Вакуумный робот MQTT id",
           "unique_id": ""
         },
         "data_description": {
-          "vacuum_entity": "Идентификатор устройства пылесоса"
+          "vacuum_entity": "Идентификатор вакуумного робота"
         },
         "description": "Настройка камеры.",
         "title": "Настройка камеры MQTT"
@@ -20,122 +20,255 @@
   "options": {
     "step": {
       "init": {
-        "title": "Опции камеры MQTT",
-        "description": "### _Стандартные опции_:",
-        "data": {
-          "camera_config_action": "Действие"
+        "title": "Параметры камеры MQTT",
+        "description": "Настройка параметров камеры",
+        "menu_options": {
+          "image_opt": "Настройки изображения",
+          "colours": "Настройка цветов",
+          "materials": "Рендеринг материалов",
+          "save_options": "Сохранить параметры"
         }
       },
-      "advanced": {
-        "title": "Опции камеры MQTT",
-        "description": "### _Расширенные опции_:",
-        "data": {
-          "camera_config_action": "Действие"
-        }
-      },
-      "download_logs": {
-        "title": "Файл журнала камеры MQTT",
-        "description": "### _Копирование файлов журнала_:",
-        "data": {
-          "camera_logs_progres": "Что делать?"
-        }
+      "main_menu": {
+        "title": "Главное меню",
+        "description": "Вернуться в главное меню"
       },
       "image_opt": {
+        "title": "Настройки изображения",
+        "description": "Настройка параметров отображения изображений",
+        "menu_options": {
+          "image_basic_opt": "Основные настройки",
+          "status_text": "Текст статуса",
+          "draw_elements": "Видимость элементов карты",
+          "floor_management": "Управление этажами",
+          "obstacle_link_config": "Настройки ссылки на изображение препятствия",
+          "main_menu": "Вернуться к главному меню"
+        }
+      },
+      "colours": {
+        "title": "Настройка цветов",
+        "description": "Настройка цветов карты",
+        "menu_options": {
+          "base_colours": "Основные цвета",
+          "rooms_colours_1": "Комнаты 1-8",
+          "rooms_colours_2": "Номера 9-16",
+          "floor_only": "Только пол",
+          "transparency": "Настройки прозрачности",
+          "main_menu": "Вернуться к главному меню"
+        }
+      },
+      "draw_elements": {
+        "title": "Видимость элементов карты",
+        "description": "Настройте, какие элементы будут отображаться на карте",
+        "menu_options": {
+          "map_elements": "Элементы карты",
+          "segments_visibility": "Видимость сегментов",
+          "main_menu": "Вернуться к главному меню"
+        }
+      },
+      "map_elements": {
+        "title": "Элементы карты",
+        "description": "Настройте, какие элементы будут отображаться на карте",
         "data": {
-          "rotate_image": "Поворот",
+          "disable_floor": "Скрыть пол",
+          "disable_wall": "Скрыть стены",
+          "disable_robot": "Скрыть робота",
+          "disable_charger": "Скрыть Загрузить",
+          "disable_virtual_walls": "Скрыть виртуальные стены",
+          "disable_restricted_areas": "Скрыть ограниченные области",
+          "disable_no_mop_areas": "Скрыть области, не подлежащие уборке",
+          "disable_obstacles": "Скрыть препятствия",
+          "disable_path": "Скрыть путь",
+          "disable_predicted_path": "Скрыть прогнозируемый путь",
+          "disable_go_to_target": "Скрыть переход к цели"
+        },
+        "data_description": {
+          "disable_floor": "При включении этаж не будет отображаться на карте.",
+          "disable_wall": "При включении стены не будут отображаться на карте.",
+          "disable_robot": "При включении робот не будет отображаться на карте.",
+          "disable_charger": "При включении зарядное устройство не будет отображаться на карте.",
+          "disable_virtual_walls": "При включении виртуальные стены не будут отображаться на карте.",
+          "disable_restricted_areas": "При включении ограниченные зоны не будут отображаться на карте.",
+          "disable_no_mop_areas": "При включении этой функции зоны, в которых не проводится уборка, не будут отображаться на карте.",
+          "disable_obstacles": "При включении препятствия не будут отображаться на карте.",
+          "disable_path": "При включении пути очистки не будет отображаться на карте.",
+          "disable_predicted_path": "При включении прогнозируемый маршрут не будет отображаться на карте.",
+          "disable_go_to_target": "При включении этой функции цели перехода не будут отображаться на карте."
+        }
+      },
+      "segments_visibility": {
+        "title": "Видимость сегментов",
+        "description": "Настройте, какие сегменты помещений будут отображаться на карте",
+        "data": {
+          "disable_room_1": "Скрыть комнату 1",
+          "disable_room_2": "Скрыть комнату 2",
+          "disable_room_3": "Скрыть комнату 3",
+          "disable_room_4": "Скрыть комнату 4",
+          "disable_room_5": "Скрыть комнату 5",
+          "disable_room_6": "Скрыть комнату 6",
+          "disable_room_7": "Скрыть комнату 7",
+          "disable_room_8": "Скрыть комнату 8",
+          "disable_room_9": "Скрыть комнату 9",
+          "disable_room_10": "Скрыть комнату 10",
+          "disable_room_11": "Скрыть комнату 11",
+          "disable_room_12": "Скрыть комнату 12",
+          "disable_room_13": "Скрыть комнату 13",
+          "disable_room_14": "Скрыть комнату 14",
+          "disable_room_15": "Скрыть комнату 15"
+        },
+        "data_description": {
+          "disable_room_1": "При включении комната 1 {room_0_name} не будет отображаться на карте.",
+          "disable_room_2": "При включении комната 2 {room_1_name} не будет отображаться на карте.",
+          "disable_room_3": "При включении комната 3 {room_2_name} не будет отображаться на карте.",
+          "disable_room_4": "При включении комната 4 {room_3_name} не будет отображаться на карте.",
+          "disable_room_5": "При включении комната 5 {room_4_name} не будет отображаться на карте.",
+          "disable_room_6": "При включении комната 6 {room_5_name} не будет отображаться на карте.",
+          "disable_room_7": "При включении комната 7 {room_6_name} не будет отображаться на карте.",
+          "disable_room_8": "При включении комната 8 {room_7_name} не будет отображаться на карте.",
+          "disable_room_9": "При включении комната 9 {room_8_name} не будет отображаться на карте.",
+          "disable_room_10": "При включении комната 10 {room_9_name} не будет отображаться на карте.",
+          "disable_room_11": "При включении комната 11 {room_10_name} не будет отображаться на карте.",
+          "disable_room_12": "При включении комната 12 {room_11_name} не будет отображаться на карте.",
+          "disable_room_13": "При включении комната 13 {room_12_name} не будет отображаться на карте.",
+          "disable_room_14": "При включении комната 14 {room_13_name} не будет отображаться на карте.",
+          "disable_room_15": "При включении комната 15 {room_14_name} не будет отображаться на карте."
+        }
+      },
+      "transparency": {
+        "title": "Настройки прозрачности",
+        "description": "Настройка прозрачности (альфа) элементов карты",
+        "menu_options": {
+          "alpha_1": "Прозрачность базы",
+          "alpha_floor": "Прозрачность пола",
+          "alpha_2": "Комнаты 1-8 Прозрачность",
+          "alpha_3": "Комнаты 9-16 Прозрачность",
+          "main_menu": "Вернуться к главному меню"
+        }
+      },
+      "materials": {
+        "title": "Рендеринг материалов",
+        "description": "Настройка обнаружения и рендеринга материалов (деревянные доски, плитка, ковры)",
+        "data": {
+          "disable_material_overlay": "Отключить наложение материалов (дерево и плитка)",
+          "disable_carpets": "Скрыть ковры",
+          "color_carpet": "Цвет ковра",
+          "color_material_wood": "Цвет деревянной доски",
+          "color_material_tile": "Цвет плитки",
+          "alpha_carpet": "Прозрачность ковра",
+          "alpha_material_wood": "Прозрачность дерева",
+          "alpha_material_tile": "Прозрачность плитки"
+        },
+        "data_description": {
+          "disable_material_overlay": "Отключить рендеринг наложения материалов для дерева и плитки на карте",
+          "disable_carpets": "При включении ковры не будут отображаться на карте.",
+          "color_carpet": "Цвет для ковровых материалов (RGB)",
+          "color_material_wood": "Цвет для деревянных досок (RGB)",
+          "color_material_tile": "Цвет для плиточных материалов (RGB)",
+          "alpha_carpet": "Уровень прозрачности для ковров (0-255)",
+          "alpha_material_wood": "Уровень прозрачности для деревянных досок (0-255)",
+          "alpha_material_tile": "Уровень прозрачности плиток (0-255)"
+        }
+      },
+      "floor_management": {
+        "title": "Управление этажами",
+        "description": "Управление несколькими этажами и их настройками отделки",
+        "menu_options": {
+          "select_floor": "Выбрать активный этаж",
+          "add_floor": "Добавить новый этаж",
+          "edit_floor": "Изменить настройки этажа",
+          "delete_floor": "Удалить этаж",
+          "update_floor_data": "Обновление данных о полу",
+          "main_menu": "Вернуться к главному меню"
+        }
+      },
+      "image_basic_opt": {
+        "data": {
+          "rotate_image": "Повернуть",
           "margins": "Поля изображения.",
           "auto_zoom": "Включить автоматическое масштабирование",
           "zoom_lock_ratio": "Заблокировать соотношение сторон.",
           "aspect_ratio": "Соотношение сторон изображения.",
-          "enable_www_snapshots": "Экспортировать снимки PNG."
+          "robot_size": "Размер робота.",
+          "mop_path_width": "Ширина дорожки швабры",
+          "def_context_type": "Формат изображения"
         },
         "data_description": {
-          "rotate_image": "Градусы 0, 90, 180, 270",
-          "margins": "Автоматическое обрезание полей в пикселях.",
-          "aspect_ratio": "Соотношение сторон изображения."
+          "rotate_image": "Угол 0, 90, 180, 270",
+          "margins": "Автоматическая обрезка полей в пикселях.",
+          "aspect_ratio": "Соотношение сторон изображения.",
+          "robot_size": "Размер робота в пикселях 8-25.",
+          "mop_path_width": "Ширина вакуумного пути в режиме швабры (1–50 пикселей, должна быть меньше размера робота).",
+          "def_context_type": "Выберите формат изображения для камеры (JPEG, PNG или PIL). Для обеспечения максимальной совместимости рекомендуется использовать формат JPEG."
         },
-        "description": "Опции изображения камеры",
-        "title": "Опции изображения"
-      },
-      "image_offset": {
-        "data": {
-          "offset_top": "Верхний сдвиг",
-          "offset_bottom": "Нижний сдвиг",
-          "offset_left": "Левый сдвиг",
-          "offset_right": "Правый сдвиг"
-        },
-        "data_description": {
-          "offset_top": "Верхний сдвиг при повороте 0 в пикселях.",
-          "offset_bottom": "Нижний сдвиг при повороте 0 в пикселях.",
-          "offset_left": "Левый сдвиг при повороте 0 в пикселях.",
-          "offset_right": "Правый сдвиг при повороте 0 в пикселях."
-        },
-        "description": "Смещение изображения камеры",
-        "title": "Смещение изображения"
+        "description": "Параметры изображения камеры",
+        "title": "Параметры изображения"
       },
       "status_text": {
         "data": {
-          "show_vac_status": "Показать статус пылесоса.",
-          "vac_status_font": "Fira Sans",
+          "show_vac_status": "Показать состояние вакуума.",
+          "vac_status_font": "Фира Санс",
           "vac_status_size": "Размер текста",
-          "vac_status_position": "Позиция текста: Внизу (ВЫКЛ)",
+          "vac_status_position": "Положение текста: внизу (ВЫКЛ.)",
           "color_text": "[255, 255, 255]"
         },
         "data_description": {
           "vac_status_font": "Шрифт текста по умолчанию Fira Serif.",
           "vac_status_size": "Размер текста по умолчанию 50.",
-          "color_text": "Цвет текста статуса пылесоса."
+          "color_text": "Цвет текста состояния вакуума."
         },
-        "description": "Опции изображения",
-        "title": "Опции текста статуса"
+        "description": "Параметры изображения",
+        "title": "Параметры текста статуса"
       },
       "base_colours": {
         "data": {
           "color_charger": "[255, 128, 0]",
           "color_move": "[238, 247, 255]",
+          "color_mop_move": "[238, 247, 255]",
           "color_wall": "[255, 255, 0]",
           "color_robot": "[255, 255, 204]",
           "color_go_to": "[0, 255, 0]",
           "color_no_go": "[255, 0, 0]",
           "color_zone_clean": "[255, 255, 255]",
           "color_background": "[0, 125, 255]",
-          "add_base_alpha": "Настройка Прозрачности:"
+          "add_base_alpha": "Настройка прозрачности:"
         },
         "data_description": {
-          "color_charger": "Цвет зарядного устройства.",
-          "color_move": "Цвет движения.",
-          "color_wall": "Цвет стены.",
-          "color_robot": "Цвет робота.",
-          "color_go_to": "Цвет Перейти к.",
-          "color_no_go": "Цвет запрета.",
-          "color_zone_clean": "Цвет зоны очистки.",
+          "color_charger": "Загрузить цвет.",
+          "color_move": "Переместить цвет.",
+          "color_mop_move": "Цвет пути швабры (только для пылесосов Hypfer).",
+          "color_wall": "Цвет стен.",
+          "color_robot": "Цветной робот.",
+          "color_go_to": "Идеальный цвет.",
+          "color_no_go": "Неприемлемый цвет.",
+          "color_zone_clean": "Чистый цвет зоны.",
           "color_background": "Цвет фона."
         },
-        "description": "Опции цвета камеры.",
-        "title": "Настройки базовых цветов"
+        "description": "Параметры цветов камеры.",
+        "title": "Настройка базовых цветов"
       },
       "alpha_1": {
         "data": {
-          "alpha_charger": "Зарядка Альфа   ",
-          "alpha_move": "Движения Альфа     ",
-          "alpha_wall": "Стены Альфа     ",
-          "alpha_robot": "Робот Альфа     ",
-          "alpha_go_to": "Перейти к Области Альфа",
-          "alpha_no_go": "Область без Перехода Альфа",
-          "alpha_zone_clean": "Область Очистки Зоны Альфа",
+          "alpha_charger": "Загрузить Alpha",
+          "alpha_move": "Движения Альфа",
+          "alpha_mop_move": "Путь мопа Альфа",
+          "alpha_wall": "Стены Альфа",
+          "alpha_robot": "Альфа-робот",
+          "alpha_go_to": "Перейти в область Альфа",
+          "alpha_no_go": "Зона запретного доступа Альфа",
+          "alpha_zone_clean": "Зона Чистая Альфа",
           "alpha_background": "Фон Альфа",
-          "alpha_text": "Текст Альфа      "
+          "alpha_text": "Текст Альфа"
         },
-        "description": "Опции камеры. Альфа 1",
-        "title": "Цвета Альфа Канала Базовые"
+        "description": "Параметры камеры. Alpha 1",
+        "title": "Базовые цвета альфа-канала"
       },
       "floor_only": {
         "data": {
           "color_room_0": "[135, 206, 250]",
-          "add_room_1_alpha": "Настройка Прозрачности:"
+          "add_room_1_alpha": "Настройка прозрачности:"
         },
         "data_description": {
-          "color_room_0": "### **Цвет пола**"
+          "color_room_0": "**Цвет пола**"
         }
       },
       "rooms_colours_1": {
@@ -148,20 +281,20 @@
           "color_room_5": "[96, 123, 139]",
           "color_room_6": "[224, 255, 255]",
           "color_room_7": "[209, 238, 238]",
-          "add_room_1_alpha": "Настройка Прозрачности:"
+          "add_room_1_alpha": "Настройка прозрачности:"
         },
         "data_description": {
-          "color_room_0": "Комната 1",
-          "color_room_1": "Комната 2",
-          "color_room_2": "Комната 3",
-          "color_room_3": "Комната 4",
-          "color_room_4": "Комната 5",
-          "color_room_5": "Комната 6",
-          "color_room_6": "Комната 7",
-          "color_room_7": "Комната 8"
+          "color_room_0": "**{room_0_name} Цвет**",
+          "color_room_1": "**{room_1_name} Цвет**",
+          "color_room_2": "**{room_2_name} Цвет**",
+          "color_room_3": "**{room_3_name} Цвет**",
+          "color_room_4": "**{room_4_name} Цвет**",
+          "color_room_5": "**{room_5_name} Цвет**",
+          "color_room_6": "**{room_6_name} Цвет**",
+          "color_room_7": "**{room_7_name} Цвет**"
         },
-        "description": "Опции цвета камеры.",
-        "title": "Комнаты 1 до 8 Цвета"
+        "description": "Параметры цветов камеры.",
+        "title": "Номера с 1 по 8 Цвета"
       },
       "rooms_colours_2": {
         "data": {
@@ -173,20 +306,20 @@
           "color_room_13": "[245, 176, 65]",
           "color_room_14": "[82, 190, 128]",
           "color_room_15": "[72, 201, 176]",
-          "add_room_2_alpha": "Настройка Прозрачности:"
+          "add_room_2_alpha": "Настройка прозрачности:"
         },
         "data_description": {
-          "color_room_8": "Комната 9",
-          "color_room_9": "Комната 10",
-          "color_room_10": "Комната 11",
-          "color_room_11": "Комната 12",
-          "color_room_12": "Комната 13",
-          "color_room_13": "Комната 14",
-          "color_room_14": "Комната 15",
-          "color_room_15": "Комната 16"
+          "color_room_8": "**{room_8_name} Цвет**",
+          "color_room_9": "**{room_9_name} Цвет**",
+          "color_room_10": "**{room_10_name} Цвет**",
+          "color_room_11": "**{room_11_name} Цвет**",
+          "color_room_12": "**{room_12_name} Цвет**",
+          "color_room_13": "**{room_13_name} Цвет**",
+          "color_room_14": "**{room_14_name} Цвет**",
+          "color_room_15": "**{room_15_name} Цвет**"
         },
-        "description": "Опции цвета камеры.",
-        "title": "Комнаты 9 до 15 Цвета"
+        "description": "Параметры цветов камеры.",
+        "title": "Номера с 9 по 15 Цвета"
       },
       "alpha_floor": {
         "data": {
@@ -195,76 +328,117 @@
       },
       "alpha_2": {
         "data": {
-          "alpha_room_0": "Комната 1",
-          "alpha_room_1": "Комната 2",
-          "alpha_room_2": "Комната 3",
-          "alpha_room_3": "Комната 4",
-          "alpha_room_4": "Комната 5",
-          "alpha_room_5": "Комната 6",
-          "alpha_room_6": "Комната 7",
-          "alpha_room_7": "Комната 8"
+          "alpha_room_0": "{room_0_name} Альфа",
+          "alpha_room_1": "{room_1_name} Альфа",
+          "alpha_room_2": "{room_2_name} Альфа",
+          "alpha_room_3": "{room_3_name} Альфа",
+          "alpha_room_4": "{room_4_name} Альфа",
+          "alpha_room_5": "{room_5_name} Альфа",
+          "alpha_room_6": "{room_6_name} Альфа",
+          "alpha_room_7": "{room_7_name} Альфа"
         },
-        "description": "Опции камеры. Альфа 2",
-        "title": "Канал Альфа Цвета Комнат"
+        "description": "Параметры камеры. Alpha 2",
+        "title": "Цвета комнат альфа-канала"
       },
       "alpha_3": {
         "data": {
-          "alpha_room_8": "Комната 9",
-          "alpha_room_9": "Комната 10",
-          "alpha_room_10": "Комната 11",
-          "alpha_room_11": "Комната 12",
-          "alpha_room_12": "Комната 13",
-          "alpha_room_13": "Комната 14",
-          "alpha_room_14": "Комната 15",
-          "alpha_room_15": "Комната 16"
+          "alpha_room_8": "{room_8_name} Альфа",
+          "alpha_room_9": "{room_9_name} Альфа",
+          "alpha_room_10": "{room_10_name} Альфа",
+          "alpha_room_11": "{room_11_name} Альфа",
+          "alpha_room_12": "{room_12_name} Альфа",
+          "alpha_room_13": "{room_13_name} Альфа",
+          "alpha_room_14": "{room_14_name} Альфа",
+          "alpha_room_15": "{room_15_name} Альфа"
         },
-        "description": "Опции камеры. Альфа 3",
-        "title": "Канал Альфа Цвета Комнат"
+        "description": "Параметры камеры. Alpha 3",
+        "title": "Цвета комнат альфа-канала"
+      },
+      "select_floor": {
+        "title": "Выбрать активный этаж",
+        "description": "Выберите, какой этаж в данный момент активен. Камера будет использовать настройки обрезки для выбранного этажа.",
+        "data": {
+          "current_floor": "Активный пол"
+        },
+        "data_description": {
+          "current_floor": "Выберите пол, который в данный момент активен. Текущий: {current_floor}"
+        }
+      },
+      "add_floor": {
+        "title": "Добавить новый этаж",
+        "description": "{info}",
+        "data": {
+          "floor_name": "Название этажа",
+          "map_name": "Название карты (необязательно)"
+        },
+        "data_description": {
+          "floor_name": "Выберите из списка этажей Home Assistant или введите собственное название.",
+          "map_name": "Дополнительное дружественное название для этого этажа"
+        }
+      },
+      "edit_floor": {
+        "title": "Изменить настройки этажа",
+        "description": "Изменить название карты для этажа: {floor_name}. {trim_info}. Значения обрезки рассчитываются автоматически — используйте 'Update Floor Data' для их обновления.",
+        "data": {
+          "floor_name": "Выберите этаж для редактирования",
+          "map_name": "Название карты (необязательно)"
+        },
+        "data_description": {
+          "floor_name": "Выберите, какой этаж редактировать",
+          "map_name": "Дополнительное дружественное название для этого этажа"
+        }
+      },
+      "delete_floor": {
+        "title": "Удалить этаж",
+        "description": "Удалите этаж из конфигурации. Если вы удалите текущий активный этаж, он будет сброшен до 'floor_0'.",
+        "data": {
+          "floor_name": "Этаж для удаления"
+        },
+        "data_description": {
+          "floor_name": "Выберите, какой этаж удалить"
+        }
+      },
+      "obstacle_link_config": {
+        "title": "Настройки ссылки на изображение препятствия",
+        "description": "Настройте параметры URL для загрузки изображений препятствий. Эти настройки определяют, как камера получает изображения препятствий из конечной точки API вашего пылесоса.",
+        "data": {
+          "obstacle_link_protocol": "Протокол",
+          "obstacle_link_port": "Номер порта",
+          "obstacle_link_ip": "Вакуумный IP-адрес"
+        },
+        "data_description": {
+          "obstacle_link_protocol": "Выберите протокол для использования (HTTP или HTTPS)",
+          "obstacle_link_port": "Номер порта для конечной точки API вакуума (по умолчанию: 80 для HTTP, 443 для HTTPS)",
+          "obstacle_link_ip": "IP-адрес вашего пылесоса (автоматически определяется из MQTT, если доступно)"
+        }
       }
     }
   },
   "selector": {
-    "camera_config_action": {
+    "trim_actions": {
       "options": {
-        "opt_1": "Настроить изображение",
-        "opt_2": "Настроить Общие Цвета",
-        "opt_3": "Цвета Комнат 1 до 8",
-        "opt_4": "Цвета Комнат 9 до 16",
-        "opt_5": "Расширенные Опции"
-      }
-    },
-    "camera_config_advanced": {
-      "options": {
-        "opt_1": "Настроить Смещение Изображения",
-        "opt_2": "Настроить Текст Статуса",
-        "opt_3": "Копировать Журналы Камеры на www",
-        "opt_4": "Переименовать Опции Цветов",
-        "opt_5": "Сбросить обрезки карты"
-      }
-    },
-    "camera_logs_progres": {
-      "options": {
-        "opt_1": "Копировать Журналы на www",
-        "opt_2": "Удалить Журналы из www"
+        "save": "Сохранить изменения",
+        "reset": "Сброс до обнаруженных значений",
+        "delete": "Удалить все обрезки"
       }
     },
     "vacuum_status": {
       "options": {
         "connected": "Подключено",
         "disconnected": "Отключено",
-        "charging": "Заряжается",
+        "charging": "Зарядка",
         "cleaning": "Чистка",
-        "docked": "Пришвартовано",
+        "docked": "Пришвартованный",
         "idle": "Бездействие",
         "paused": "Приостановлено",
-        "returning": "Возврат"
+        "returning": "Возвращение"
       }
     }
   },
   "services": {
     "reload": {
       "name": "Перезагрузить",
-      "description": "Перезагрузить платформу MQTT Vacuum Camera."
+      "description": "Перезагрузите платформу MQTT Vacuum Camera."
     },
     "turn_off": {
       "name": "[%key:common::action::turn_off%]",
@@ -275,8 +449,8 @@
       "description": "Включает камеру."
     },
     "reset_trims": {
-      "name": "Сбросить обрезки изображений",
-      "description": "Сбрасывает обрезки карт."
+      "name": "Сбросить изображения Обрезки",
+      "description": "Сбрасывает настройки карт."
     },
     "snapshot": {
       "name": "Сделать снимок",
@@ -291,7 +465,25 @@
   },
   "exceptions": {
     "no_entity_id_provided": {
-      "message": "В конфигурации сервиса отсутствует entity_id."
+      "message": "Отсутствует entity_id в конфигурации."
+    },
+    "missing_zone_or_zone_ids": {
+      "message": "Должно быть указано либо 'zone', либо 'zone_ids'."
+    },
+    "zone_must_be_list": {
+      "message": "Параметр 'Zone' должен быть списком."
+    },
+    "zoneid_must_be_list": {
+      "message": "Параметр 'Zone_Ids' должен быть списком."
+    },
+    "zone_list_length": {
+      "message": "'Zone' должен содержать как минимум 1 элемент, содержащий список из 4 целых чисел."
+    },
+    "mqtt_service_not_found": {
+      "message": "Интеграция MQTT недоступна. Убедитесь, что MQTT настроен."
+    },
+    "mqtt_publish_failed": {
+      "message": "Не удалось опубликовать команду на очистку через MQTT."
     }
   }
 }

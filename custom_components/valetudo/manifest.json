@@ -1,0 +1,15 @@
+{
+  "domain": "valetudo",
+  "name": "Valetudo",
+  "after_dependencies": ["mqtt", "http"],
+  "codeowners": [
+    "@hypfer"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Hypfer/hass-valetudo",
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/Hypfer/hass-valetudo/issues",
+  "requirements": [],
+  "version": "2026.01.1"
+}

@@ -1,0 +1,3 @@
+publish_discovery_state:
+  name: Publish discovery and state
+  description: "Publish discovery and state for included entities"

@@ -124,6 +124,58 @@ class FrigateApiClient:
             ),
         )
 
+    async def async_get_reviews(
+        self,
+        cameras: list[str] | None = None,
+        labels: list[str] | None = None,
+        zones: list[str] | None = None,
+        severity: str | None = None,
+        after: float | None = None,
+        before: float | None = None,
+        limit: int | None = None,
+        reviewed: bool | None = None,
+        decode_json: bool = True,
+    ) -> list[dict[str, Any]]:
+        """Get review items from the API."""
+        params = {
+            "cameras": ",".join(cameras) if cameras else None,
+            "labels": ",".join(labels) if labels else None,
+            "zones": ",".join(zones) if zones else None,
+            "severity": severity,
+            "after": after,
+            "before": before,
+            "limit": limit,
+            "reviewed": int(reviewed) if reviewed is not None else None,
+        }
+
+        return cast(
+            list[dict[str, Any]],
+            await self.api_wrapper(
+                "get",
+                str(
+                    URL(self._host)
+                    / "api/review"
+                    % {k: v for k, v in params.items() if v is not None}
+                ),
+                decode_json=decode_json,
+            ),
+        )
+
+    async def async_set_reviews_viewed(
+        self,
+        ids: list[str],
+        viewed: bool = True,
+    ) -> dict[str, Any]:
+        """Mark reviews as viewed/unviewed."""
+        return cast(
+            dict[str, Any],
+            await self.api_wrapper(
+                "post",
+                str(URL(self._host) / "api/reviews/viewed"),
+                data={"ids": ids, "reviewed": viewed},
+            ),
+        )
+
     async def async_get_event_summary(
         self,
         has_clip: bool | None = None,
@@ -158,6 +210,39 @@ class FrigateApiClient:
             await self.api_wrapper("get", str(URL(self._host) / "api/config")),
         )
 
+    async def async_get_faces(self) -> list[str]:
+        """Get list of known faces."""
+        try:
+            result = await self.api_wrapper(
+                "get", str(URL(self._host) / "api/faces"), decode_json=True
+            )
+
+            if isinstance(result, dict):
+                return [name for name in result.keys() if name != "train"]
+
+            return []
+        except FrigateApiClientError:
+            return []
+
+    async def async_get_classification_model_classes(
+        self, model_name: str
+    ) -> list[str]:
+        """Get list of classification classes for a model."""
+        try:
+            result = await self.api_wrapper(
+                "get",
+                str(URL(self._host) / f"api/classification/{model_name}/dataset"),
+                decode_json=True,
+            )
+
+            if isinstance(result, dict) and "categories" in result:
+                categories = result["categories"]
+                if isinstance(categories, dict):
+                    return [name for name in categories.keys() if name != "none"]
+            return []
+        except FrigateApiClientError:
+            return []
+
     async def async_get_ptz_info(
         self,
         camera: str,
@@ -191,6 +276,7 @@ class FrigateApiClient:
         playback_factor: str,
         start_time: float,
         end_time: float,
+        name: str | None = None,
         decode_json: bool = True,
     ) -> dict[str, Any] | str:
         """Export recording."""
@@ -200,7 +286,7 @@ class FrigateApiClient:
                 URL(self._host)
                 / f"api/export/{camera}/start/{start_time}/end/{end_time}"
             ),
-            data={"playback": playback_factor},
+            data={"playback": playback_factor, "name": name},
             decode_json=decode_json,
         )
         return cast(dict[str, Any], result) if decode_json else result
@@ -295,6 +381,30 @@ class FrigateApiClient:
             timeout=REVIEW_SUMMARIZE_TIMEOUT,
         )
         return cast(dict[str, Any], result) if decode_json else result
+
+    async def async_chat_completion(
+        self,
+        query: str,
+        camera_name: str | None = None,
+    ) -> dict[str, Any]:
+        """Send a chat completion request to Frigate."""
+        data: dict[str, Any] = {
+            "messages": [{"role": "user", "content": query}],
+            "max_tool_iterations": 5,
+            "stream": False,
+        }
+        if camera_name:
+            data["include_live_image"] = camera_name
+
+        return cast(
+            dict[str, Any],
+            await self.api_wrapper(
+                "post",
+                str(URL(self._host) / "api/chat/completion"),
+                data=data,
+                timeout=REVIEW_SUMMARIZE_TIMEOUT,
+            ),
+        )
 
     async def _get_token(self) -> None:
         """

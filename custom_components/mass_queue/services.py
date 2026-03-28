@@ -2,46 +2,63 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import (
-    HomeAssistant,
     ServiceCall,
     SupportsResponse,
     callback,
 )
-from homeassistant.exceptions import ServiceValidationError
-from homeassistant.helpers import entity_registry as er
 
 from .const import (
     ATTR_CONFIG_ENTRY_ID,
+    ATTR_PAGE,
     ATTR_PLAYER_ENTITY,
+    ATTR_PLAYLIST_ID,
+    ATTR_POSITIONS_TO_REMOVE,
+    ATTR_QUEUE_ITEM_ID,
+    ATTR_URI,
     DOMAIN,
+    LOGGER,
+    SERVICE_CLEAR_QUEUE_FROM_HERE,
+    SERVICE_GET_ALBUM,
+    SERVICE_GET_ALBUM_TRACKS,
+    SERVICE_GET_ARTIST,
+    SERVICE_GET_ARTIST_TRACKS,
+    SERVICE_GET_GROUP_VOLUME,
+    SERVICE_GET_PLAYLIST,
+    SERVICE_GET_PLAYLIST_TRACKS,
+    SERVICE_GET_PODCAST,
+    SERVICE_GET_PODCAST_EPISODES,
     SERVICE_GET_QUEUE_ITEMS,
+    SERVICE_GET_RECOMMENDATIONS,
     SERVICE_MOVE_QUEUE_ITEM_DOWN,
     SERVICE_MOVE_QUEUE_ITEM_NEXT,
     SERVICE_MOVE_QUEUE_ITEM_UP,
     SERVICE_PLAY_QUEUE_ITEM,
+    SERVICE_REMOVE_PLAYLIST_TRACKS,
     SERVICE_REMOVE_QUEUE_ITEM,
     SERVICE_SEND_COMMAND,
+    SERVICE_SET_GROUP_VOLUME,
     SERVICE_UNFAVORITE_CURRENT_ITEM,
 )
 from .schemas import (
+    CLEAR_QUEUE_FROM_HERE_SERVICE_SCHEMA,
+    GET_DATA_SERVICE_SCHEMA,
+    GET_GROUP_VOLUME_SERVICE_SCHEMA,
+    GET_PODCAST_EPISODES_SERVICE_SCHEMA,
+    GET_RECOMMENDATIONS_SERVICE_SCHEMA,
+    GET_TRACKS_SERVICE_SCHEMA,
     MOVE_QUEUE_ITEM_DOWN_SERVICE_SCHEMA,
     MOVE_QUEUE_ITEM_NEXT_SERVICE_SCHEMA,
     MOVE_QUEUE_ITEM_UP_SERVICE_SCHEMA,
     PLAY_QUEUE_ITEM_SERVICE_SCHEMA,
     QUEUE_ITEMS_SERVICE_SCHEMA,
+    REMOVE_PLAYLIST_TRACKS_SERVICE_SCHEMA,
     REMOVE_QUEUE_ITEM_SERVICE_SCHEMA,
     SEND_COMMAND_SERVICE_SCHEMA,
+    SET_GROUP_VOLUME_SERVICE_SCHEMA,
     UNFAVORITE_CURRENT_ITEM_SERVICE_SCHEMA,
 )
-
-if TYPE_CHECKING:
-    from music_assistant_client import MusicAssistantClient
-
-    from . import MassQueueEntryData
+from .utils import get_entity_actions_controller, process_recommendations
 
 
 @callback
@@ -103,59 +120,97 @@ def register_actions(hass) -> None:
         schema=UNFAVORITE_CURRENT_ITEM_SERVICE_SCHEMA,
         supports_response=SupportsResponse.NONE,
     )
-
-
-def _get_mass_entity_config_entry_id(hass, entity_id):
-    """Helper to grab config entry ID from entity ID."""
-    registry = er.async_get(hass)
-    return registry.async_get(entity_id).config_entry_id
-
-
-@callback
-def _get_config_entry(
-    hass: HomeAssistant,
-    config_entry_id: str,
-) -> MusicAssistantClient:
-    """Get Music Assistant Client from config_entry_id."""
-    entry: MassQueueEntryData | None
-    if not (entry := hass.config_entries.async_get_entry(config_entry_id)):
-        exc = "Entry not found."
-        raise ServiceValidationError(exc)
-    if entry.state is not ConfigEntryState.LOADED:
-        exc = "Entry not loaded"
-        raise ServiceValidationError(exc)
-    return entry
-
-
-def get_mass_entry(hass, entity_id):
-    """Helper function to pull MA Config Entry."""
-    config_id = _get_mass_entity_config_entry_id(hass, entity_id)
-    return _get_config_entry(hass, config_id)
-
-
-def _get_mass_queue_entries(hass):
-    """Gets all entries for mass_queue domain."""
-    entries = hass.config_entries.async_entries()
-    return [entry for entry in entries if entry.domain == "mass_queue"]
-
-
-def find_mass_queue_entry(hass, mass_url):
-    """Finds the mass_queue entry for the given MA URL."""
-    entries = _get_mass_queue_entries(hass)
-    for entry in entries:
-        entry_url = entry.runtime_data.mass.connection.ws_server_url
-        if entry_url == mass_url:
-            return entry
-    msg = f"Cannot find entry for Music Assistant at {mass_url}"
-    raise ServiceValidationError(msg)
-
-
-def get_entity_actions_controller(hass, entity_id):
-    """Gets the actions for the selected entity."""
-    mass_entry = get_mass_entry(hass, entity_id)
-    mass = mass_entry.runtime_data.mass.connection.ws_server_url
-    mass_queue_entry = find_mass_queue_entry(hass, mass)
-    return mass_queue_entry.runtime_data.actions
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_RECOMMENDATIONS,
+        get_recommendations,
+        schema=GET_RECOMMENDATIONS_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_GROUP_VOLUME,
+        get_group_volume,
+        schema=GET_GROUP_VOLUME_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_SET_GROUP_VOLUME,
+        set_group_volume,
+        schema=SET_GROUP_VOLUME_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.NONE,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_CLEAR_QUEUE_FROM_HERE,
+        clear_queue_from_here,
+        schema=CLEAR_QUEUE_FROM_HERE_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.NONE,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_PLAYLIST_TRACKS,
+        get_playlist_tracks,
+        schema=GET_TRACKS_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_ALBUM_TRACKS,
+        get_album_tracks,
+        schema=GET_TRACKS_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_ARTIST_TRACKS,
+        get_artist_tracks,
+        schema=GET_TRACKS_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_PODCAST_EPISODES,
+        get_podcast_episodes,
+        schema=GET_PODCAST_EPISODES_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_ALBUM,
+        get_album,
+        schema=GET_DATA_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_ARTIST,
+        get_artist,
+        schema=GET_DATA_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_PLAYLIST,
+        get_playlist,
+        schema=GET_DATA_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_GET_PODCAST,
+        get_podcast,
+        schema=GET_DATA_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_REMOVE_PLAYLIST_TRACKS,
+        remove_playlist_tracks,
+        schema=REMOVE_PLAYLIST_TRACKS_SERVICE_SCHEMA,
+        supports_response=SupportsResponse.NONE,
+    )
 
 
 async def get_queue_items(call: ServiceCall):
@@ -221,3 +276,163 @@ async def unfavorite_current_item(call: ServiceCall):
     hass = call.hass
     actions = get_entity_actions_controller(hass, entity_id)
     await actions.unfavorite_item(call)
+
+
+async def get_recommendations(call: ServiceCall):
+    """Service wrapper to get recommendations from providers."""
+    entity_id = call.data[ATTR_PLAYER_ENTITY]
+    hass = call.hass
+    actions = get_entity_actions_controller(hass, entity_id)
+    result = await actions.get_recommendations(call)
+    return {"response": process_recommendations(result)}
+
+
+async def get_group_volume(call: ServiceCall):
+    """Service wrapper to get grouped volume."""
+    entity_id = call.data[ATTR_PLAYER_ENTITY]
+    hass = call.hass
+    actions = get_entity_actions_controller(hass, entity_id)
+    result = await actions.get_group_volume(call)
+    return {"volume_level": result}
+
+
+async def set_group_volume(call: ServiceCall):
+    """Service wrapper to set grouped volume."""
+    entity_id = call.data[ATTR_PLAYER_ENTITY]
+    hass = call.hass
+    actions = get_entity_actions_controller(hass, entity_id)
+    await actions.set_group_volume(call)
+
+
+def filter_queue_after(queue, current_idx):
+    """Returns all items after the current active track."""
+    if current_idx == len(queue):
+        return []
+    return queue[current_idx + 1 :]
+
+
+async def clear_queue_from_here(call: ServiceCall):
+    """Service wrapper to clear queue from point."""
+    entity_id = call.data[ATTR_PLAYER_ENTITY]
+    hass = call.hass
+    actions = get_entity_actions_controller(hass, entity_id)
+    current_idx = await actions.get_queue_index(entity_id)
+    LOGGER.debug(f"Current Index: {current_idx}")
+    queue_id = actions.get_queue_id(entity_id)
+    LOGGER.debug(f"Queue ID: {queue_id}")
+    queue = actions._controller.queues.get(queue_id)
+    LOGGER.debug(f"Queue length: {len(queue)}")
+    client = actions._client
+    if len(queue) == current_idx:
+        return
+    items = queue[current_idx + 1 :]
+    LOGGER.debug(f"Filtered length: {len(items)}")
+    LOGGER.debug(f"First item to remove {items[0]}")
+    LOGGER.debug(f"Last item to remove {items[-1]}")
+    for item in items:
+        queue_item_id = item[ATTR_QUEUE_ITEM_ID]
+        await client.player_queues.queue_command_delete(queue_id, queue_item_id)
+
+
+async def get_album_tracks(call: ServiceCall):
+    """Gets all tracks in an album."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    page = call.data.get(ATTR_PAGE)
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return {
+        "tracks": await actions.get_album_tracks(uri, page),
+    }
+
+
+async def get_artist_tracks(call: ServiceCall):
+    """Gets all tracks for an artist."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return {
+        "tracks": await actions.get_artist_tracks(uri),
+    }
+
+
+async def get_playlist_tracks(call: ServiceCall):
+    """Gets all tracks in a playlist."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    page = call.data.get(ATTR_PAGE)
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return {
+        "tracks": await actions.get_playlist_tracks(uri, page),
+    }
+
+
+async def get_podcast_episodes(call: ServiceCall):
+    """Gets all episodes for a podcast."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return {
+        "episodes": await actions.get_podcast_episodes(uri),
+    }
+
+
+async def get_album(call: ServiceCall):
+    """Returns the details about an album from the server."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return (await actions.get_album_details(uri)).to_dict()
+
+
+async def get_artist(call: ServiceCall):
+    """Returns the details about an artist from the server."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return (await actions.get_artist_details(uri)).to_dict()
+
+
+async def get_playlist(call: ServiceCall):
+    """Returns the details about a playlist from the server."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return (await actions.get_playlist_details(uri)).to_dict()
+
+
+async def get_podcast(call: ServiceCall):
+    """Returns the details about a podcast from the server."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    uri = call.data[ATTR_URI]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    return (await actions.get_podcast_details(uri)).to_dict()
+
+
+async def remove_playlist_tracks(call: ServiceCall):
+    """Removes one or more items from a playlist."""
+    config_entry = call.data[ATTR_CONFIG_ENTRY_ID]
+    playlist = call.data[ATTR_PLAYLIST_ID]
+    positions = call.data[ATTR_POSITIONS_TO_REMOVE]
+    if isinstance(positions, int):
+        positions = [positions]
+    positions = [int(position) for position in positions]
+    hass = call.hass
+    entry = hass.config_entries.async_get_entry(config_entry)
+    actions = entry.runtime_data.actions
+    await actions.remove_playlist_tracks(playlist, positions)

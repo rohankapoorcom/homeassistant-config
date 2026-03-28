@@ -36,8 +36,8 @@
                     "password": "Password"
                 },
                 "data_description": {
-                    "username": "Forgot username? https://midasweb.energy.ca.gov/Pages/AccountMaint/ForgotUsername",
-                    "password": "Forgot password? https://midasweb.energy.ca.gov/Pages/AccountMaint/ForgotPassword"
+                    "username": "Forgot username? {forgot_username_url}",
+                    "password": "Forgot password? {forgot_password_url}"
                 }
             },
             "options": {
@@ -67,6 +67,7 @@
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred. Check the logs for more details.",
             "rateid_invalid": "Rate ID not in valid format (XXXX-XXXX-XXXX-XXXX)",
+            "rateids_missing": "At least one RIN is required.",
             "registration_invalid": "All fields are required."
         },
         "abort": {

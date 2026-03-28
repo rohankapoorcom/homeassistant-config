@@ -15,6 +15,7 @@ import re
 from typing import Any, Final
 
 from awesomeversion import AwesomeVersion
+from titlecase import titlecase
 import voluptuous as vol
 
 from custom_components.frigate.config_flow import get_config_entry_title
@@ -42,7 +43,7 @@ from homeassistant.core import (
     valid_entity_id,
 )
 from homeassistant.exceptions import ConfigEntryNotReady, ServiceValidationError
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er, llm
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import ConfigType
@@ -56,8 +57,10 @@ from .const import (
     ATTR_CONFIG,
     ATTR_COORDINATOR,
     ATTR_END_TIME,
+    ATTR_LLM_UNREGISTER,
     ATTR_START_TIME,
     ATTR_WS_EVENT_PROXY,
+    ATTR_WS_REVIEW_PROXY,
     CONF_CAMERA_STATIC_IMAGE_HEIGHT,
     CONF_RTMP_URL_TEMPLATE,
     DOMAIN,
@@ -71,9 +74,10 @@ from .const import (
     STATUS_RUNNING,
     STATUS_STARTING,
 )
+from .llm_functions import FrigateServiceAPI
 from .views import async_setup as views_async_setup
 from .ws_api import async_setup as ws_api_async_setup
-from .ws_event_proxy import WSEventProxy
+from .ws_proxy import WSEventProxy, WSReviewProxy
 
 SCAN_INTERVAL = timedelta(seconds=5)
 
@@ -111,7 +115,8 @@ def get_frigate_entity_unique_id(
 
 def get_friendly_name(name: str) -> str:
     """Get a friendly version of a name."""
-    return name.replace("_", " ").title()
+    result: str = titlecase(name.replace("_", " "))
+    return result
 
 
 def get_cameras(config: dict[str, Any]) -> set[str]:
@@ -162,6 +167,63 @@ def get_cameras_and_audio(config: dict[str, Any]) -> set[tuple[str, str]]:
                 camera_audio.add((cam_name, audio))
 
     return camera_audio
+
+
+def get_classification_models_and_cameras(
+    config: dict[str, Any],
+) -> set[tuple[str, str]]:
+    """Get classification models and cameras tuples."""
+    model_cameras = set()
+    classification_config = config.get("classification", {}).get("custom", {})
+
+    for model_key, model_config in classification_config.items():
+        state_config = model_config.get("state_config")
+
+        if state_config:
+            cameras = state_config.get("cameras", {})
+
+            for camera_name in cameras.keys():
+                model_cameras.add((camera_name, model_key))
+
+    return model_cameras
+
+
+def get_object_classification_models_and_cameras(
+    config: dict[str, Any],
+) -> set[tuple[str, str]]:
+    """Get object classification models and cameras tuples."""
+    model_cameras = set()
+    classification_config = config.get("classification", {}).get("custom", {})
+
+    for model_key, model_config in classification_config.items():
+        object_config = model_config.get("object_config")
+
+        if object_config:
+            # Get the objects this model classifies
+            objects_to_classify = object_config.get("objects", [])
+
+            # Find cameras that track these objects
+            for cam_name, cam_config in config.get("cameras", {}).items():
+                tracked_objects = cam_config.get("objects", {}).get("track", [])
+
+                # If any of the objects to classify are tracked by this camera, add it
+                if any(obj in tracked_objects for obj in objects_to_classify):
+                    model_cameras.add((cam_name, model_key))
+
+    return model_cameras
+
+
+def get_known_plates(config: dict[str, Any]) -> set[str]:
+    """Get known license plates from configuration."""
+    known_plates: set[str] = set()
+    lpr_config = config.get("lpr", {})
+
+    known_plates_config = lpr_config.get("known_plates", {})
+
+    if isinstance(known_plates_config, dict):
+        known_plates.update(known_plates_config.keys())
+
+    return known_plates
 
 
 def get_cameras_zones_and_objects(config: dict[str, Any]) -> set[tuple[str, str]]:
@@ -259,12 +321,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ws_event_proxy = WSEventProxy(hass, config["mqtt"]["topic_prefix"])
     entry.async_on_unload(lambda: ws_event_proxy.unsubscribe_all(hass))
 
+    ws_review_proxy = WSReviewProxy(hass, config["mqtt"]["topic_prefix"])
+    entry.async_on_unload(lambda: ws_review_proxy.unsubscribe_all(hass))
+
     hass.data[DOMAIN][entry.entry_id] = {
         ATTR_COORDINATOR: coordinator,
         ATTR_CLIENT: client,
         ATTR_CONFIG: config,
         ATTR_MODEL: model,
         ATTR_WS_EVENT_PROXY: ws_event_proxy,
+        ATTR_WS_REVIEW_PROXY: ws_review_proxy,
     }
 
     # Remove old devices associated with cameras that have since been removed
@@ -360,6 +426,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_entry_updated))
 
+    # Register LLM API if Frigate 0.18+ and not already registered
+    if (
+        verify_frigate_version(config, "0.18")
+        and ATTR_LLM_UNREGISTER not in hass.data[DOMAIN]
+    ):
+        hass.data[DOMAIN][ATTR_LLM_UNREGISTER] = llm.async_register_api(
+            hass, FrigateServiceAPI(hass=hass)
+        )
+
     # Register review summarize service if Frigate version is 0.17+
     if verify_frigate_version(config, "0.17"):
         hass.services.async_register(
@@ -443,6 +518,15 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
             .async_shutdown()
         )
         hass.data[DOMAIN].pop(config_entry.entry_id)
+
+        # Unregister LLM API if no more Frigate entries remain
+        remaining = {
+            k
+            for k, v in hass.data[DOMAIN].items()
+            if isinstance(v, dict) and ATTR_CLIENT in v
+        }
+        if not remaining and ATTR_LLM_UNREGISTER in hass.data[DOMAIN]:
+            hass.data[DOMAIN].pop(ATTR_LLM_UNREGISTER)()
 
     return unload_ok
 

@@ -1,0 +1,12 @@
+{
+  "domain": "mqtt_discoverystream_alt",
+  "name": "MQTT Discoverystream Alt",
+  "codeowners": ["@rogerselwyn"],
+  "dependencies": ["mqtt"],
+  "documentation": "https://github.com/RogerSelwyn/mqtt_discoverystream_ha",
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/RogerSelwyn/mqtt_discoverystream_ha/issues",
+  "requirements": [],
+  "version": "v3.0.4"
+}

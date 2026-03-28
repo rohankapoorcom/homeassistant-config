@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing import Literal, NamedTuple
 
 import homeassistant.helpers.config_validation as cv
-import homeassistant.helpers.template as template_helper
 import voluptuous as vol
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA,
@@ -28,8 +27,8 @@ from homeassistant.const import (
     DEGREE,
     PERCENTAGE,
     UV_INDEX,
+    UnitOfIrradiance,
     UnitOfLength,
-    UnitOfPrecipitationDepth,
     UnitOfPressure,
     UnitOfSpeed,
     UnitOfTemperature,
@@ -38,6 +37,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import DiscoveryInfoType, StateType
+from homeassistant.util import dt as dt_util
 
 from .const import (
     ALL_CONDITIONS,
@@ -154,9 +154,10 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
     "precip_intensity": PirateWeatherSensorEntityDescription(
         key="precip_intensity",
         name="Precip Intensity",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         state_class=SensorStateClass.MEASUREMENT,
         si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
-        us_unit=UnitOfPrecipitationDepth.INCHES,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
         ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
@@ -606,9 +607,10 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
     "precip_intensity_max": PirateWeatherSensorEntityDescription(
         key="precip_intensity_max",
         name="Daily Max Precip Intensity",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         state_class=SensorStateClass.MEASUREMENT,
         si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
-        us_unit=UnitOfPrecipitationDepth.INCHES,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
         ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
         uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
@@ -628,6 +630,132 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         suggested_display_precision=2,
         icon="mdi:weather-sunny",
         forecast_mode=["currently", "hourly", "daily"],
+    ),
+    "cape": PirateWeatherSensorEntityDescription(
+        key="cape",
+        name="Convective Available Potential Energy",
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        icon="mdi:weather-lightning",
+        forecast_mode=["currently", "hourly"],
+    ),
+    "cape_max": PirateWeatherSensorEntityDescription(
+        key="cape_max",
+        name="Convective Available Potential Energy Max",
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        icon="mdi:weather-lightning",
+        forecast_mode=["daily"],
+    ),
+    "solar": PirateWeatherSensorEntityDescription(
+        key="solar",
+        name="Downward Short-Wave Radiation Flux",
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        us_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        ca_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        uk_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        uk2_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        suggested_display_precision=2,
+        icon="mdi:weather-sunny",
+        forecast_mode=["currently", "hourly"],
+    ),
+    "solar_max": PirateWeatherSensorEntityDescription(
+        key="solar_max",
+        name="Downward Short-Wave Radiation Flux Max",
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        us_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        ca_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        uk_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        uk2_unit=UnitOfIrradiance.WATTS_PER_SQUARE_METER,
+        suggested_display_precision=2,
+        icon="mdi:weather-sunny",
+        forecast_mode=["daily"],
+    ),
+    "rain_intensity": PirateWeatherSensorEntityDescription(
+        key="rain_intensity",
+        name="Rain Intensity",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-rainy",
+        forecast_mode=["currently", "hourly", "daily"],
+    ),
+    "rain_intensity_max": PirateWeatherSensorEntityDescription(
+        key="rain_intensity_max",
+        name="Rain Intensity Max",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-rainy",
+        forecast_mode=["daily"],
+    ),
+    "snow_intensity": PirateWeatherSensorEntityDescription(
+        key="snow_intensity",
+        name="Snow Intensity",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-snowy",
+        forecast_mode=["currently", "hourly", "daily"],
+    ),
+    "snow_intensity_max": PirateWeatherSensorEntityDescription(
+        key="snow_intensity_max",
+        name="Snow Intensity Max",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-snowy",
+        forecast_mode=["daily"],
+    ),
+    "ice_intensity": PirateWeatherSensorEntityDescription(
+        key="ice_intensity",
+        name="Ice Intensity",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-snowy-rainy",
+        forecast_mode=["currently", "hourly", "daily"],
+    ),
+    "ice_intensity_max": PirateWeatherSensorEntityDescription(
+        key="ice_intensity_max",
+        name="Ice Intensity Max",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        state_class=SensorStateClass.MEASUREMENT,
+        si_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        us_unit=UnitOfVolumetricFlux.INCHES_PER_HOUR,
+        ca_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        uk2_unit=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+        suggested_display_precision=4,
+        icon="mdi:weather-snowy-rainy",
+        forecast_mode=["daily"],
     ),
     "moon_phase": PirateWeatherSensorEntityDescription(
         key="moon_phase",
@@ -1108,9 +1236,11 @@ class PirateWeatherSensor(SensorEntity):
                         dkey = attr
                     alertsAttr = getattr(alert, attr)
 
-                    # Convert time to string
+                    # Convert time to string using dt_util
                     if isinstance(alertsAttr, int):
-                        alertsAttr = template_helper.timestamp_local(alertsAttr)
+                        alertsAttr = dt_util.as_local(
+                            dt_util.utc_from_timestamp(alertsAttr)
+                        ).isoformat()
 
                     alerts[dkey] = alertsAttr
 
@@ -1246,6 +1376,8 @@ class PirateWeatherSensor(SensorEntity):
             "nearest_storm_distance",
             "smoke",
             "smoke_max",
+            "solar",
+            "solar_max",
         ]:
             if roundingVal == 0:
                 outState = int(round(state, roundingVal))
@@ -1262,7 +1394,19 @@ class PirateWeatherSensor(SensorEntity):
             "current_day_liquid",
             "current_day_snow",
             "current_day_ice",
+            "rain_intensity",
+            "rain_intensity_max",
+            "snow_intensity",
+            "snow_intensity_max",
+            "ice_intensity",
+            "ice_intensity_max",
         ]:
+            # Convert snow intensity from cm/h to mm/h for non-US units
+            if (
+                self.type in ["snow_intensity", "snow_intensity_max"]
+                and self.unit_system != "us"
+            ):
+                state = state * 10
             outState = round(state, roundingPrecip)
 
         else:

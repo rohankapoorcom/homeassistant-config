@@ -1,5 +1,89 @@
 """Utilities."""
 
+from __future__ import annotations
+
+import base64
+import urllib.parse
+from typing import TYPE_CHECKING
+
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import callback
+from homeassistant.exceptions import ServiceValidationError
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from music_assistant_client import MusicAssistantClient
+
+    from . import MassQueueEntryData
+
+from .const import ATTR_QUEUE_ID, LOGGER
+
+
+@callback
+def _get_config_entry(
+    hass: HomeAssistant,
+    config_entry_id: str,
+) -> MusicAssistantClient:
+    """Get Music Assistant Client from config_entry_id."""
+    entry: MassQueueEntryData | None
+    if not (entry := hass.config_entries.async_get_entry(config_entry_id)):
+        exc = "Entry not found."
+        raise ServiceValidationError(exc)
+    if entry.state is not ConfigEntryState.LOADED:
+        exc = "Entry not loaded"
+        raise ServiceValidationError(exc)
+    return entry
+
+
+def get_mass_queue_entry(hass, entity_id):
+    """Gets the actions for the selected entity."""
+    mass_entry = get_mass_entry(hass, entity_id)
+    unique_id = mass_entry.unique_id
+    return find_mass_queue_entry_from_unique_id(hass, unique_id)
+
+
+def get_entity_actions_controller(hass, entity_id):
+    """Gets the actions for the selected entity."""
+    mass_queue_entry = get_mass_queue_entry(hass, entity_id)
+    return mass_queue_entry.runtime_data.actions
+
+
+def get_mass_client(hass, entity_id):
+    """Gets the actions for the selected entity."""
+    mass_queue_entry = get_mass_queue_entry(hass, entity_id)
+    return mass_queue_entry.runtime_data.mass
+
+
+def get_mass_entry(hass, entity_id):
+    """Helper function to pull MA Config Entry."""
+    config_id = _get_mass_entity_config_entry_id(hass, entity_id)
+    return _get_config_entry(hass, config_id)
+
+
+def _get_mass_entity_config_entry_id(hass, entity_id):
+    """Helper to grab config entry ID from entity ID."""
+    registry = er.async_get(hass)
+    return registry.async_get(entity_id).config_entry_id
+
+
+def find_mass_queue_entry_from_unique_id(hass: HomeAssistant, unique_id: str):
+    """Finds the mass_queue entry for the given MA URL."""
+    entries = _get_mass_queue_entries(hass)
+    for entry in entries:
+        if entry.unique_id == unique_id:
+            return entry
+    msg = f"Cannot find entry for Music Assistant with unique ID {unique_id}"
+    raise ServiceValidationError(msg)
+
+
+def _get_mass_queue_entries(hass):
+    """Gets all entries for mass_queue domain."""
+    entries = hass.config_entries.async_entries()
+    return [entry for entry in entries if entry.domain == "mass_queue"]
+
 
 def format_event_data_queue_item(queue_item):
     """Format event data results for usage by controller."""
@@ -32,3 +116,250 @@ def get_queue_id_from_player_data(player_data):
     if current_media is None:
         return None
     return current_media.get("queue_id")
+
+
+def return_image_or_none(img_data: dict, remotely_accessible: bool):
+    """Returns None if image is not present or not remotely accessible."""
+    if type(img_data) is dict:
+        img = img_data.get("path")
+        remote = img_data.get("remotely_accessible")
+        if remote or not remotely_accessible:
+            return img
+    return None
+
+
+def search_image_list(images: list, remotely_accessible: bool):
+    """Checks through a list of image data and attempts to find an image."""
+    result = None
+    for item in images:
+        image = return_image_or_none(item, remotely_accessible)
+        if image is not None:
+            result = image
+            break
+    return result
+
+
+def find_image_from_image(data: dict, remotely_accessible: bool):
+    """Attempts to find the image via the image key."""
+    img_data = data.get("image")
+    return return_image_or_none(img_data, remotely_accessible)
+
+
+def find_image_from_metadata(data: dict, remotely_accessible: bool):
+    """Attempts to find the image via the metadata key."""
+    metadata = data.get("metadata", {})
+    img_data = metadata.get("images")
+    if img_data is None:
+        return None
+    return search_image_list(img_data, remotely_accessible)
+
+
+def find_image_from_album(data: dict, remotely_accessible: bool):
+    """Attempts to find the image via the album key."""
+    album = data.get("album") or {}
+    metadata = album.get("metadata") or {}
+    img_data = metadata.get("images")
+    if img_data is None:
+        return None
+    return search_image_list(img_data, remotely_accessible)
+
+
+def find_image_from_artists(data: dict, remotely_accessible: bool):
+    """Attempts to find the image via the artists key."""
+    artist = data.get("artist", {})
+    img_data = artist.get("image") or []
+    img_data += artist.get("metadata") or []
+    if len(img_data):
+        return search_image_list(img_data, remotely_accessible)
+    return return_image_or_none(img_data, remotely_accessible)
+
+
+def find_image(data: dict, remotely_accessible: bool = True):
+    """Returns None if image is not present or not remotely accessible."""
+    media_item = data.get("media_item", data)
+
+    from_image = find_image_from_image(data, remotely_accessible)
+    from_metadata = find_image_from_metadata(media_item, remotely_accessible)
+    from_album = find_image_from_album(data, remotely_accessible)
+    from_artists = find_image_from_artists(data, remotely_accessible)
+    return from_image or from_metadata or from_album or from_artists
+
+
+def _get_recommendation_item_image_from_metadata(item: dict):
+    try:
+        images = item["metadata"]["images"]
+        accessible = [image for image in images if image["remotely_accessible"]]
+        if accessible:
+            return accessible[0]["path"]
+    except:  # noqa: E722 S110
+        pass
+    return ""
+
+
+def _get_recommendation_item_image_from_image(item: dict):
+    try:
+        image_data = item["image"]
+        accessible = image_data["remotely_accessible"]
+        if accessible:
+            return image_data["path"]
+    except:  # noqa: E722 S110
+        pass
+    return ""
+
+
+def _get_recommendation_item_image(item: dict):
+    meta_img = _get_recommendation_item_image_from_metadata(item)
+    img_img = _get_recommendation_item_image_from_image(item)
+    if len(meta_img):
+        return meta_img
+    return img_img
+
+
+def process_recommendation_section_item(item: dict):
+    """Process and reformat a single recommendation item."""
+    LOGGER.debug(f"Got section item: {item}")
+    return {
+        "item_id": item["item_id"],
+        "name": item["name"],
+        "sort_name": item["sort_name"],
+        "uri": item["uri"],
+        "media_type": item["media_type"],
+        "image": _get_recommendation_item_image(item),
+    }
+
+
+def process_recommendation_section_items(items: list):
+    """Process and reformat items for a single recommendation section."""
+    return [process_recommendation_section_item(item) for item in items]
+
+
+def process_recommendation_section(section: dict):
+    """Process and reformat a single recommendation section."""
+    LOGGER.debug(f"Got section: {section}")
+    section = section.to_dict()
+    return {
+        "item_id": section["item_id"],
+        "provider": section["provider"],
+        "sort_name": section["sort_name"],
+        "name": section["name"],
+        "uri": section["uri"],
+        "icon": section["icon"],
+        "image": section["image"],
+        "items": process_recommendation_section_items(section["items"]),
+    }
+
+
+def process_recommendations(recs: list):
+    """Process and reformat items all recommendation sections."""
+    result = []
+    for rec in recs:
+        processed = process_recommendation_section(rec)
+        if len(processed["items"]):
+            result.append(processed)
+    return result
+
+
+def generate_image_url_from_image_data(image_data: dict, client):
+    """Generates an image URL from `image_data`."""
+    img_path = image_data["path"]
+    provider = image_data["provider"]
+    base_url = "" if img_path.startswith("http") else client.server_url
+    img = urllib.parse.quote_plus(urllib.parse.quote_plus(img_path))
+    return f"{base_url}/imageproxy?provider={provider}&size=256&format=png&path={img}"
+
+
+async def download_single_image_from_image_data(
+    image_data: dict,
+    entity_id,
+    hass,
+    session,
+):
+    """Downloads a single image from Music Assistant and returns the base64 encoded string."""
+    entry = get_mass_entry(hass, entity_id)
+    client = entry.runtime_data.mass
+    url = generate_image_url_from_image_data(image_data, client)
+    try:
+        req = await session.get(url)
+        read = await req.content.read()
+        return f"data:image;base64,{base64.b64encode(read).decode('utf-8')}"
+    except:  # noqa: E722
+        LOGGER.error(f"Unable to get image with data {image_data}")
+        return None
+
+
+async def download_and_encode_image(url: str, hass: HomeAssistant):
+    """Downloads and encodes a single image from the given URL."""
+    session = aiohttp_client.async_get_clientsession(hass)
+    req = await session.get(url)
+    read = await req.content.read()
+    return f"data:image;base64,{base64.b64encode(read).decode('utf-8')}"
+
+
+def get_entity_info(hass: HomeAssistant, entity_id: str):
+    """Gets the server and client info for a given player."""
+    client = get_mass_client(hass, entity_id)
+    state = hass.states.get(entity_id)
+    device_registry = dr.async_get(hass)
+    entity_registry = er.async_get(hass)
+    dev_id = entity_registry.async_get(entity_id).device_id
+    dev = device_registry.async_get(dev_id)
+    identifiers = dev.identifiers
+
+    player_id = [_id[1] for _id in identifiers if _id[0] == "music_assistant"][0]
+    player = client.players.get(player_id)
+
+    mass_entry_id = _get_mass_entity_config_entry_id(hass, entity_id)
+    mass_queue_id = get_mass_queue_entry(hass, entity_id).entry_id
+
+    queue_id = state.attributes.get(ATTR_QUEUE_ID)
+
+    server_url = client.server_info.base_url
+    ws_url = client.connection.ws_server_url
+
+    config_url = dev.configuration_url
+    manufacturer = dev.manufacturer
+    model = dev.model
+
+    available = player.available
+    can_group_with = player.can_group_with
+    ip_address = player.device_info.ip_address
+    features = list(player.supported_features)
+    name = player.name
+    provider = player.provider
+    synced_to = player.synced_to
+    player_type = player.type
+
+    return {
+        "available": available,
+        "can_group_with": can_group_with,
+        "connection": {
+            "configuration_url": config_url,
+            "url": ip_address,
+        },
+        "entries": {
+            "music_assistant": mass_entry_id,
+            "mass_queue": mass_queue_id,
+        },
+        "features": features,
+        "manufacturer": manufacturer,
+        "model": model,
+        "name": name,
+        "player_id": player_id,
+        "provider": provider,
+        "queue_id": queue_id,
+        "server": {
+            "connection": {
+                "url": server_url,
+                "websocket": ws_url,
+            },
+        },
+        "synced_to": synced_to,
+        "type": player_type,
+    }
+
+
+def parse_uri(uri):
+    """Parse a URI and split to provider and item ID."""
+    provider = uri.split("://")[0]
+    item_id = uri.split("/")[-1]
+    return [provider, item_id]

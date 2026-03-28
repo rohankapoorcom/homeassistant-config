@@ -1,13 +1,11 @@
 """Collection of services for the vacuums and camera components.
-Version 2025.2.0
+Last Updated on version: 2025.3.0b1
 Autor: @sca075"""
 
 from functools import partial
-import logging
 
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
-
-# from homeassistant.exceptions import ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError, ServiceNotFound
 from homeassistant.helpers import config_validation as cv
 import voluptuous as vol
 
@@ -17,9 +15,8 @@ from ...common import (
     get_vacuum_mqtt_topic,
     is_rand256_vacuum,
 )
-from ...const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
+from ...const import DOMAIN, LOGGER
+from ...types import CleanSegmentsRequest, CleanZoneRequest, GoToRequest
 
 
 def validate_zone_or_zone_ids(data):
@@ -80,39 +77,58 @@ async def vacuum_clean_segments(call: ServiceCall, coordinator) -> None:
         entity_ids = call.data.get("entity_id")
         device_ids = call.data.get("device_id")
 
-        service_data = generate_service_data_clean_segments(
+        # Create request object
+        request = CleanSegmentsRequest(
+            hass=coordinator.hass,
             coordinator=coordinator,
+            segments=segments_lists,
             entity_id=entity_ids,
             device_id=device_ids,
-            segments=segments_lists,
             repeat=repeats,
-            hass=coordinator.hass,
         )
 
-        if not service_data:
-            _LOGGER.warning("No Service data generated. Aborting!")
-            return
-        else:
-            try:
-                await coordinator.connector.publish_to_broker(
-                    service_data["topic"],
-                    service_data["payload"],
-                )
-            except Exception as e:
-                _LOGGER.warning(f"Error sending command to vacuum: {e}")
-                return
+        service_data = generate_service_data_clean_segments(request)
 
+        if not service_data:
+            LOGGER.warning("No Service data generated. Aborting!")
+            return
+        try:
+            await coordinator.context.connector.publish_to_broker(
+                service_data["topic"],
+                service_data["payload"],
+            )
+        except ServiceNotFound as e:
+            LOGGER.warning(
+                "MQTT service not found. Ensure MQTT integration is configured: %s",
+                e,
+                exc_info=True,
+            )
             coordinator.hass.bus.async_fire(
-                f"event_{DOMAIN}.vacuum_clean_zone",
+                f"event_{DOMAIN}.vacuum_clean_segments_failed",
                 {
                     "topic": service_data["topic"],
-                    "zones": segments_lists,
+                    "segments": segments_lists,
                     "repeats": repeats,
+                    "error": "mqtt_service_not_found",
                 },
                 context=call.context,
             )
+            return
+        except (HomeAssistantError, ValueError, TypeError) as e:
+            LOGGER.warning("Error sending command to vacuum: %s", e, exc_info=True)
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_clean_segments_failed",
+                {
+                    "topic": service_data["topic"],
+                    "segments": segments_lists,
+                    "repeats": repeats,
+                    "error": "mqtt_publish_failed",
+                },
+                context=call.context,
+            )
+            return
     except KeyError as e:
-        _LOGGER.warning(f"Missing required parameter: {e}")
+        LOGGER.warning("Missing required parameter: %s", e, exc_info=True)
 
 
 async def vacuum_clean_zone(call: ServiceCall, coordinator) -> None:
@@ -124,7 +140,7 @@ async def vacuum_clean_zone(call: ServiceCall, coordinator) -> None:
     zone_lists = call.data.get("zone", None)
     zone_ids = call.data.get("zone_ids", None)
     repeats = call.data.get("repeats", 1)
-    _LOGGER.debug(
+    LOGGER.debug(
         "zone_ids: %s, zone_lists: %s, repeats: %d", zone_ids, zone_lists, repeats
     )
     # Attempt to get entity_id or device_id
@@ -146,26 +162,38 @@ async def vacuum_clean_zone(call: ServiceCall, coordinator) -> None:
     # Raise a ServiceValidationError if there are errors
     if got_error != "No Errors":
         # Raise a ServiceValidationError if there are errors generate WebApi errors.
-        _LOGGER.warning(f"Error sending command to vacuum: {got_error}")
+        LOGGER.warning("Error sending command to vacuum: %s", got_error, exc_info=True)
         return None
 
-    service_data = generate_service_data_clean_zone(
+    # Create request object
+    request = CleanZoneRequest(
+        hass=coordinator.hass,
+        zones=zone_lists,
         entity_id=entity_ids,
         device_id=device_ids,
-        zones=zone_lists,
         repeat=repeats,
-        hass=coordinator.hass,
     )
+
+    service_data = generate_service_data_clean_zone(request)
     if not service_data:
-        _LOGGER.warning("No Service data generated. Aborting!")
+        LOGGER.warning("No Service data generated. Aborting!")
         return
     try:
-        await coordinator.connector.publish_to_broker(
+        await coordinator.context.connector.publish_to_broker(
             service_data["topic"],
             service_data["payload"],
         )
-    except Exception as e:
-        _LOGGER.warning("Error sending command to vacuum: %s", str(e))
+    except ServiceNotFound as e:
+        LOGGER.warning(
+            "MQTT service not found. Ensure MQTT integration is configured: %s",
+            e,
+            exc_info=True,
+        )
+        got_error = "mqtt_service_not_found"
+    except (HomeAssistantError, ValueError, TypeError) as e:
+        LOGGER.warning("Error sending command to vacuum: %s", e, exc_info=True)
+        got_error = "mqtt_publish_failed"
+
     coordinator.hass.bus.async_fire(
         f"service.{DOMAIN}.vacuum_clean_zone",
         {
@@ -195,19 +223,54 @@ async def vacuum_goto(call: ServiceCall, coordinator) -> None:
         entity_ids = call.data.get("entity_id")
         device_ids = call.data.get("device_id")
 
-        service_data = generate_service_data_go_to(
-            entity_ids, device_ids, x_coord, y_coord, spot_id, coordinator.hass
+        # Create request object
+        request = GoToRequest(
+            hass=coordinator.hass,
+            entity_id=entity_ids,
+            device_id=device_ids,
+            x=x_coord,
+            y=y_coord,
+            spot_id=spot_id,
         )
+
+        service_data = generate_service_data_go_to(request)
         if not service_data:
-            _LOGGER.warning("No Service data generated. Aborting!")
+            LOGGER.warning("No Service data generated. Aborting!")
             return
         try:
-            await coordinator.connector.publish_to_broker(
+            await coordinator.context.connector.publish_to_broker(
                 service_data["topic"],
                 service_data["payload"],
             )
-        except Exception as e:
-            _LOGGER.warning(f"Error sending command to vacuum: {e}")
+        except ServiceNotFound as e:
+            LOGGER.warning(
+                "MQTT service not found. Ensure MQTT integration is configured: %s",
+                e,
+                exc_info=True,
+            )
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_go_to_failed",
+                {
+                    "topic": service_data["topic"],
+                    "x": x_coord,
+                    "y": y_coord,
+                    "error": "mqtt_service_not_found",
+                },
+                context=call.context,
+            )
+            return
+        except (HomeAssistantError, ValueError, TypeError) as e:
+            LOGGER.warning("Error sending command to vacuum: %s", e, exc_info=True)
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_go_to_failed",
+                {
+                    "topic": service_data["topic"],
+                    "x": x_coord,
+                    "y": y_coord,
+                    "error": "mqtt_publish_failed",
+                },
+                context=call.context,
+            )
             return
         coordinator.hass.bus.async_fire(
             f"event_{DOMAIN}.vacuum_go_to",
@@ -215,7 +278,7 @@ async def vacuum_goto(call: ServiceCall, coordinator) -> None:
             context=call.context,
         )
     except KeyError as e:
-        _LOGGER.warning(f"Missing required parameter: {e}")
+        LOGGER.warning("Missing required parameter: %s", e, exc_info=True)
 
 
 async def vacuum_map_save(call: ServiceCall, coordinator) -> None:
@@ -225,13 +288,13 @@ async def vacuum_map_save(call: ServiceCall, coordinator) -> None:
         entity_ids = call.data.get("entity_id")
         device_ids = call.data.get("device_id")
 
-        vacuum_entity_id, base_topic, is_a_rand256 = resolve_datas(
+        _, base_topic, is_a_rand256 = resolve_datas(
             entity_ids, device_ids, coordinator.hass
         )
 
         map_name = call.data.get("map_name")
         if not map_name:
-            _LOGGER.warning("A map name is required to save the map.")
+            LOGGER.warning("A map name is required to save the map.")
             return
         if is_a_rand256:
             service_data = {
@@ -242,15 +305,32 @@ async def vacuum_map_save(call: ServiceCall, coordinator) -> None:
                 },
             }
         else:
-            _LOGGER.warning("This feature is only available for rand256 vacuums.")
+            LOGGER.warning("This feature is only available for rand256 vacuums.")
             return
         try:
-            await coordinator.connector.publish_to_broker(
+            await coordinator.context.connector.publish_to_broker(
                 service_data["topic"],
                 service_data["payload"],
             )
-        except Exception as e:
-            _LOGGER.warning(f"Error sending command to vacuum: {e}")
+        except ServiceNotFound as e:
+            LOGGER.warning(
+                "MQTT service not found. Ensure MQTT integration is configured: %s",
+                e,
+                exc_info=True,
+            )
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_map_save_failed",
+                {"topic": service_data["topic"], "error": "mqtt_service_not_found"},
+                context=call.context,
+            )
+            return
+        except (HomeAssistantError, ValueError, TypeError) as e:
+            LOGGER.warning("Error sending command to vacuum: %s", e, exc_info=True)
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_map_save_failed",
+                {"topic": service_data["topic"], "error": "mqtt_publish_failed"},
+                context=call.context,
+            )
             return
 
         coordinator.hass.bus.async_fire(
@@ -259,7 +339,7 @@ async def vacuum_map_save(call: ServiceCall, coordinator) -> None:
             context=call.context,
         )
     except KeyError as e:
-        _LOGGER.warning(f"Missing required parameter: {e}")
+        LOGGER.warning("Missing required parameter: %s", e, exc_info=True)
 
 
 async def vacuum_map_load(call: ServiceCall, coordinator) -> None:
@@ -269,13 +349,13 @@ async def vacuum_map_load(call: ServiceCall, coordinator) -> None:
         entity_ids = call.data.get("entity_id")
         device_ids = call.data.get("device_id")
 
-        vacuum_entity_id, base_topic, is_a_rand256 = resolve_datas(
+        _, base_topic, is_a_rand256 = resolve_datas(
             entity_ids, device_ids, coordinator.hass
         )
 
         map_name = call.data.get("map_name")
         if not map_name:
-            _LOGGER.warning("A map name is required to load the map.")
+            LOGGER.warning("A map name is required to load the map.")
             return
         if is_a_rand256:
             service_data = {
@@ -286,15 +366,32 @@ async def vacuum_map_load(call: ServiceCall, coordinator) -> None:
                 },
             }
         else:
-            _LOGGER.warning("This feature is only available for rand256 vacuums.")
+            LOGGER.warning("This feature is only available for rand256 vacuums.")
             return
         try:
-            await coordinator.connector.publish_to_broker(
+            await coordinator.context.connector.publish_to_broker(
                 service_data["topic"],
                 service_data["payload"],
             )
-        except Exception as e:
-            _LOGGER.warning(f"Error sending command to vacuum: {e}")
+        except ServiceNotFound as e:
+            LOGGER.warning(
+                "MQTT service not found. Ensure MQTT integration is configured: %s",
+                e,
+                exc_info=True,
+            )
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_map_load_failed",
+                {"topic": service_data["topic"], "error": "mqtt_service_not_found"},
+                context=call.context,
+            )
+            return
+        except (HomeAssistantError, ValueError, TypeError) as e:
+            LOGGER.warning("Error sending command to vacuum: %s", e, exc_info=True)
+            coordinator.hass.bus.async_fire(
+                f"event_{DOMAIN}.vacuum_map_load_failed",
+                {"topic": service_data["topic"], "error": "mqtt_publish_failed"},
+                context=call.context,
+            )
             return
         coordinator.hass.bus.async_fire(
             f"event_{DOMAIN}.vacuum_map_load",
@@ -303,7 +400,7 @@ async def vacuum_map_load(call: ServiceCall, coordinator) -> None:
         )
         await coordinator.hass.services.async_call(DOMAIN, "reset_trims")
     except KeyError as e:
-        _LOGGER.warning(f"Missing required parameter: {e}")
+        LOGGER.warning("Missing required parameter: %s", e, exc_info=True)
 
 
 def resolve_datas(
@@ -344,85 +441,84 @@ def generate_zone_payload(zones, repeat, is_rand256, after_cleaning="Base"):
             "afterCleaning": after_cleaning,
         }
         return rand256_payload
-    else:
-        # Initialize the payload_zones
 
-        payload_zones = []
+    # Initialize the payload_zones
+    payload_zones = []
 
-        # Loop through each zone to determine its format
-        for zone in zones:
-            if len(zone) == 4:
-                # Rectangle format with x1, y1, x2, y2
-                x1, y1, x2, y2 = zone
-                if is_rand256:
-                    payload_zones.append(
-                        {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "repeats": repeat}
-                    )
-                else:
-                    payload_zones.append(
-                        {
-                            "points": {
-                                "pA": {"x": x1, "y": y1},
-                                "pB": {"x": x2, "y": y1},
-                                "pC": {"x": x2, "y": y2},
-                                "pD": {"x": x1, "y": y2},
-                            }
-                        }
-                    )
-
-            elif len(zone) == 8:
-                # Polygon format with x1, y1, x2, y2, x3, y3, x4, y4
-                x1, y1, x2, y2, x3, y3, x4, y4 = zone
-                if is_rand256:
-                    payload_zones.append(
-                        {
-                            "x1": x1,
-                            "y1": y1,
-                            "x2": x2,
-                            "y2": y2,
-                            "x3": x3,
-                            "y3": y3,
-                            "x4": x4,
-                            "y4": y4,
-                            "repeats": repeat,
-                        }
-                    )
-                else:
-                    payload_zones.append(
-                        {
-                            "points": {
-                                "pA": {"x": x1, "y": y1},
-                                "pB": {"x": x2, "y": y2},
-                                "pC": {"x": x3, "y": y3},
-                                "pD": {"x": x4, "y": y4},
-                            }
-                        }
-                    )
-            else:
-                raise ValueError(
-                    "Invalid zone format. Each zone should contain 4 or 8 coordinates."
+    # Loop through each zone to determine its format
+    for zone in zones:
+        if len(zone) == 4:
+            # Rectangle format with x1, y1, x2, y2
+            x1, y1, x2, y2 = zone
+            if is_rand256:
+                payload_zones.append(
+                    {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "repeats": repeat}
                 )
+            else:
+                payload_zones.append(
+                    {
+                        "points": {
+                            "pA": {"x": x1, "y": y1},
+                            "pB": {"x": x2, "y": y1},
+                            "pC": {"x": x2, "y": y2},
+                            "pD": {"x": x1, "y": y2},
+                        }
+                    }
+                )
+
+        elif len(zone) == 8:
+            # Polygon format with x1, y1, x2, y2, x3, y3, x4, y4
+            x1, y1, x2, y2, x3, y3, x4, y4 = zone
+            if is_rand256:
+                payload_zones.append(
+                    {
+                        "x1": x1,
+                        "y1": y1,
+                        "x2": x2,
+                        "y2": y2,
+                        "x3": x3,
+                        "y3": y3,
+                        "x4": x4,
+                        "y4": y4,
+                        "repeats": repeat,
+                    }
+                )
+            else:
+                payload_zones.append(
+                    {
+                        "points": {
+                            "pA": {"x": x1, "y": y1},
+                            "pB": {"x": x2, "y": y2},
+                            "pC": {"x": x3, "y": y3},
+                            "pD": {"x": x4, "y": y4},
+                        }
+                    }
+                )
+        else:
+            raise ValueError(
+                "Invalid zone format. Each zone should contain 4 or 8 coordinates."
+            )
 
         # Return the full payload for the specified firmware
         if is_rand256:
             return {"command": "zoned_cleanup", "zone_coordinates": payload_zones}
-        else:
-            return {"zones": payload_zones, "iterations": repeat}
+        return {"zones": payload_zones, "iterations": repeat}
 
 
-def generate_service_data_go_to(
-    entity_id: str | None,
-    device_id: str | None,
-    x: int = None,
-    y: int = None,
-    spot_id: str = None,
-    hass: HomeAssistant = None,
-) -> dict | None:
+def generate_service_data_go_to(request: GoToRequest) -> dict | None:
     """
     Generates the data necessary for sending the service go_to point to the vacuum.
+
+    Args:
+        request: GoToRequest containing all necessary parameters
+
+    Returns:
+        Dictionary with topic, payload, and firmware information
     """
     # Resolve entity ID if only device ID is given
-    vacuum_entity_id, base_topic, is_rand256 = resolve_datas(entity_id, device_id, hass)
+    _, base_topic, is_rand256 = resolve_datas(
+        request.entity_id, request.device_id, request.hass
+    )
 
     if not is_rand256:
         topic = f"{base_topic}/GoToLocationCapability/go/set"
@@ -431,37 +527,41 @@ def generate_service_data_go_to(
 
     # Construct payload based on coordinates and firmware
     rand256_payload = (
-        {"command": "go_to", "spot_coordinates": {"x": int(x), "y": int(y)}}
-        if not spot_id
-        else {"command": "go_to", "spot_id": spot_id}
+        {
+            "command": "go_to",
+            "spot_coordinates": {"x": int(request.x), "y": int(request.y)},
+        }
+        if not request.spot_id
+        else {"command": "go_to", "spot_id": request.spot_id}
     )
     payload = (
-        {"coordinates": {"x": int(x), "y": int(y)}}
+        {"coordinates": {"x": int(request.x), "y": int(request.y)}}
         if not is_rand256
         else rand256_payload
     )
 
     return {
-        "entity_id": entity_id,
+        "entity_id": request.entity_id,
         "topic": topic,
         "payload": payload,
         "firmware": "Rand256" if is_rand256 else "Valetudo",
     }
 
 
-def generate_service_data_clean_zone(
-    entity_id: str | None,
-    device_id: str | None,
-    zones: list = None,
-    repeat: int = 1,
-    after_cleaning: str = "Base",
-    hass: HomeAssistant = None,
-) -> dict | None:
+def generate_service_data_clean_zone(request: CleanZoneRequest) -> dict | None:
     """
     Generates the data necessary for sending the service zone clean to the vacuum.
+
+    Args:
+        request: CleanZoneRequest containing all necessary parameters
+
+    Returns:
+        Dictionary with topic, payload, and firmware information
     """
     # Resolve entity ID if only device ID is given
-    vacuum_entity_id, base_topic, is_rand256 = resolve_datas(entity_id, device_id, hass)
+    vacuum_entity_id, base_topic, is_rand256 = resolve_datas(
+        request.entity_id, request.device_id, request.hass
+    )
 
     # Check if zones contain strings, indicating zone IDs
     if not is_rand256:
@@ -469,7 +569,9 @@ def generate_service_data_clean_zone(
     else:
         topic = f"{base_topic}/custom_command"
 
-    payload = generate_zone_payload(zones, repeat, is_rand256, after_cleaning)
+    payload = generate_zone_payload(
+        request.zones, request.repeat, is_rand256, request.after_cleaning
+    )
 
     return {
         "entity_id": vacuum_entity_id,
@@ -479,28 +581,28 @@ def generate_service_data_clean_zone(
     }
 
 
-def generate_service_data_clean_segments(
-    coordinator=None,
-    entity_id: str | None = None,
-    device_id: str | None = None,
-    segments: list = None,
-    repeat: int | None = 1,
-    after_cleaning: str = "Base",
-    hass: HomeAssistant = None,
-) -> dict | None:
+def generate_service_data_clean_segments(request: CleanSegmentsRequest) -> dict | None:
     """
     Generates the data necessary for sending the service clean segments to the vacuum.
+
+    Args:
+        request: CleanSegmentsRequest containing all necessary parameters
+
+    Returns:
+        Dictionary with topic, payload, and firmware information
     """
-    if not repeat:
-        repeat = 1
+    repeat = request.repeat if request.repeat else 1
     # Resolve entity ID if only device ID is given
-    vacuum_entity_id, base_topic, is_rand256 = resolve_datas(entity_id, device_id, hass)
+    vacuum_entity_id, base_topic, is_rand256 = resolve_datas(
+        request.entity_id, request.device_id, request.hass
+    )
 
     # Get the vacuum topic and check firmware
-    have_rooms = coordinator.shared.map_rooms
+    have_rooms = request.coordinator.context.shared.map_rooms
 
     # Check if zones contain strings, indicating zone IDs
     if not is_rand256:
+        segments = request.segments
         if isinstance(segments, list):
             segments = [
                 str(segment) for segment in segments if not isinstance(segment, list)
@@ -518,12 +620,12 @@ def generate_service_data_clean_segments(
         payload = {
             "command": "segmented_cleanup",
             "segment_ids": (
-                convert_string_ids_to_integers(segments)
-                if isinstance(segments, list)
-                else [segments]
+                convert_string_ids_to_integers(request.segments)
+                if isinstance(request.segments, list)
+                else [request.segments]
             ),
             "repeats": int(repeat),
-            "afterCleaning": after_cleaning,
+            "afterCleaning": request.after_cleaning,
         }
 
     return {
@@ -554,7 +656,7 @@ def convert_string_ids_to_integers(ids_list):
             )
         except ValueError:
             # Log a warning if conversion fails, and keep the original item
-            _LOGGER.warning(f"Could not convert item '{item}' to an integer.")
+            LOGGER.warning("Could not convert item '%r' to an integer.", item)
             converted_list.append(item)
     return converted_list
 
@@ -584,5 +686,5 @@ async def async_register_vacuums_services(hass: HomeAssistant, coordinator) -> N
 async def async_remove_vacuums_services(hass: HomeAssistant) -> None:
     """Remove the Vacuums services."""
 
-    for service_name in SERVICES.keys():
+    for service_name in SERVICES:
         hass.services.async_remove(DOMAIN, service_name)

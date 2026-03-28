@@ -129,30 +129,45 @@ class MidasFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Collect username and password."""
         _errors = {}
         if user_input is not None:
-            try:
-                await self._test_credentials(
-                    hass=self.hass,
-                    username=user_input[CONF_USERNAME],
-                    password=user_input[CONF_PASSWORD],
-                )
-            except MidasAuthenticationException as exception:
-                LOGGER.warning(exception)
+            username = user_input[CONF_USERNAME]
+            password = user_input[CONF_PASSWORD]
+            if (
+                username is None
+                or len(username) == 0
+                or password is None
+                or len(password) == 0
+            ):
                 _errors["base"] = "auth"
-            except MidasCommunicationException as exception:
-                LOGGER.error(exception)
-                _errors["base"] = "connection"
-            except MidasException as exception:
-                LOGGER.exception(exception)
-                _errors["base"] = "unknown"
-            else:
-                # Move onto next step
-                self.credential_data = user_input  # Store info to use in next step
-                return await self.async_step_options()  # Start the next step
+
+            if _errors == {}:  # No errors
+                try:
+                    await self._test_credentials(
+                        hass=self.hass,
+                        username=username,
+                        password=password,
+                    )
+                except MidasAuthenticationException as exception:
+                    LOGGER.warning(exception)
+                    _errors["base"] = "auth"
+                except MidasCommunicationException as exception:
+                    LOGGER.error(exception)
+                    _errors["base"] = "connection"
+                except MidasException as exception:
+                    LOGGER.exception(exception)
+                    _errors["base"] = "unknown"
+                else:
+                    # Move onto next step
+                    self.credential_data = user_input  # Store info to use in next step
+                    return await self.async_step_options()  # Start the next step
 
         return self.async_show_form(
             step_id="auth",
             data_schema=CONFIG_SCHEMA_AUTH,
             errors=_errors,
+            description_placeholders={
+                "forgot_username_url": "https://midasweb.energy.ca.gov/Pages/AccountMaint/ForgotUsername",
+                "forgot_password_url": "https://midasweb.energy.ca.gov/Pages/AccountMaint/ForgotPassword",
+            },
         )
 
     async def async_step_options(
@@ -162,6 +177,9 @@ class MidasFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the second step of the flow."""
         _errors = {}
         if user_input is not None:
+            if len(user_input[CONF_RATEIDS]) == 0:
+                _errors["base"] = "rateids_missing"
+
             if self._test_rateids(user_input[CONF_RATEIDS]):
                 _errors["base"] = "rateid_invalid"
 
@@ -190,6 +208,9 @@ class MidasFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             assert entry is not None
 
         if user_input is not None:
+            if len(user_input[CONF_RATEIDS]) == 0:
+                _errors["base"] = "rateids_missing"
+
             if self._test_rateids(user_input[CONF_RATEIDS]):
                 _errors["base"] = "rateid_invalid"
 
@@ -228,7 +249,11 @@ class MidasFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         await client.async_test_credentials()
 
     def _test_rateids(self, rate_ids: list[str]) -> bool:
-        """Test a list of rate ids to ensure they are valid."""
+        """
+        Test a list of rate ids to ensure they are valid.
+
+        Returns True if invalid, False if all are valid.
+        """
         for rid in rate_ids:
             if (
                 re.match("^[A-Z]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{3,4}$", rid)

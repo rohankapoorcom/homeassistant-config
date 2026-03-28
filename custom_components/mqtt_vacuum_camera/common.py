@@ -1,23 +1,23 @@
 """
 Common functions for the MQTT Vacuum Camera integration.
-Version: 2024.12.2
+Version: 2025.10.0
 """
 
 from __future__ import annotations
 
-import logging
+import functools
 import re
+from typing import Any, Optional
 
 from homeassistant.components.mqtt import DOMAIN as MQTT_DOMAIN
 from homeassistant.components.vacuum import DOMAIN as VACUUM_DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntry
+from valetudo_map_parser import FloorData
 
-from .const import KEYS_TO_UPDATE
+from .const import DEFAULT_VALUES, KEYS_TO_UPDATE, LOGGER
 from .hass_types import GET_MQTT_DATA
-
-_LOGGER = logging.getLogger(__name__)
 
 
 def get_vacuum_device_info(
@@ -29,7 +29,7 @@ def get_vacuum_device_info(
     """
     vacuum_entity_id = er.async_resolve_entity_id(er.async_get(hass), config_entry_id)
     if not vacuum_entity_id:
-        _LOGGER.error("Unable to lookup vacuum's entity ID. Was it removed?")
+        LOGGER.error("Unable to lookup vacuum's entity ID. Was it removed?")
         return None
 
     device_registry = dr.async_get(hass)
@@ -38,7 +38,7 @@ def get_vacuum_device_info(
         entity_registry.async_get(vacuum_entity_id).device_id
     )
     if not vacuum_device:
-        _LOGGER.error("Unable to locate vacuum's device ID. Was it removed?")
+        LOGGER.error("Unable to locate vacuum's device ID. Was it removed?")
         return None
 
     return vacuum_entity_id, vacuum_device
@@ -51,6 +51,9 @@ def get_camera_device_info(hass, entry):
         hass.config_entries.async_get_entry(str(entry.entry_id)).options
     )
     camera_entry.update(camera_entry_options)
+    # Ensure def_context_type has a default value if missing
+    if "def_context_type" not in camera_entry:
+        camera_entry["def_context_type"] = "jpeg"
     return camera_entry
 
 
@@ -114,11 +117,15 @@ async def update_options(bk_options, new_options):
     keys_to_update = KEYS_TO_UPDATE
     try:
         updated_options = {
-            key: new_options[key] if key in new_options else bk_options[key]
+            key: new_options.get(key, bk_options.get(key, DEFAULT_VALUES.get(key)))
             for key in keys_to_update
         }
     except KeyError as e:
-        _LOGGER.warning(f"Error in migrating options, please re-setup the camera: {e}")
+        LOGGER.warning(
+            "Error in migrating options, please re-setup the camera: %s",
+            e,
+            exc_info=True,
+        )
         return bk_options
     # updated_options is a dictionary containing the merged options
     updated_bk_options = updated_options  # or backup_options, as needed
@@ -130,6 +137,17 @@ def extract_file_name(unique_id: str) -> str:
     file_name = re.sub(r"_camera$", "", unique_id)
     return file_name.lower()
 
+def is_congaduto_vacuum(vacuum_device: DeviceEntry) -> bool:
+    """
+    Check if the vacuum is running Congaduto firmware.
+    """
+    sof_version = str(vacuum_device.sw_version)
+    manufacturer = str(vacuum_device.manufacturer)
+    if (sof_version.lower()).startswith("congaduto") or (
+        manufacturer.lower()
+    ).startswith("cecotec"):
+        return True  # This is a Concaduto vacuum (Valetudo)
+    return False
 
 def is_rand256_vacuum(vacuum_device: DeviceEntry) -> bool:
     """
@@ -137,9 +155,15 @@ def is_rand256_vacuum(vacuum_device: DeviceEntry) -> bool:
     """
     # Check if the software version contains "valetudo" (for Hypfer) or something else for Rand256
     sof_version = str(vacuum_device.sw_version)
-    if (sof_version.lower()).startswith("valetudo"):
-        _LOGGER.debug("No Sensors to startup!")
+    manufacturer = str(vacuum_device.manufacturer)
+    if (sof_version.lower()).startswith("valetudo") or (
+        manufacturer.lower()
+    ).startswith("valetudo"):
         return False  # This is a Hypfer vacuum (Valetudo)
+    if (sof_version.lower()).startswith("congaduto") or (
+        manufacturer.lower()
+    ).startswith("cecotec"):
+        return False  # This is a Conga vacuum (Congaduto)
     return True
 
 
@@ -163,7 +187,7 @@ def build_full_topic_set(
 
 def from_device_ids_to_entity_ids(
     device_ids: str, hass: HomeAssistant, domain: str = "vacuum"
-) -> str:
+) -> list[Any] | None:
     """
     Convert a device_id to an entity_id.
     """
@@ -180,10 +204,11 @@ def from_device_ids_to_entity_ids(
             for entry in entity_reg.entities.values():
                 if entry.device_id == device_id and entry.domain == domain:
                     resolved_entity_ids.append(entry.entity_id)
-            return resolved_entity_ids
+
+    return resolved_entity_ids if resolved_entity_ids else None
 
 
-def get_device_info_from_entity_id(entity_id: str, hass) -> DeviceEntry:
+def get_device_info_from_entity_id(entity_id: str, hass) -> DeviceEntry | None:
     """
     Fetch the device info from the device registry based on entity_id.
     """
@@ -194,6 +219,7 @@ def get_device_info_from_entity_id(entity_id: str, hass) -> DeviceEntry:
             device_id = entry.device_id
             device = device_reg.async_get(device_id)
             return device
+    return None
 
 
 def get_entity_id(
@@ -208,60 +234,47 @@ def get_entity_id(
         resolved_entities = from_device_ids_to_entity_ids(device_id, hass, domain)
         vacuum_entity_id = resolved_entities
     elif not vacuum_entity_id:
-        _LOGGER.error(f"No vacuum entities found for device_id: {device_id}")
+        LOGGER.error(
+            "No vacuum entities found for device_id: %s", device_id, exc_info=True
+        )
         return None
     return vacuum_entity_id
 
 
-def compose_obstacle_links(vacuum_host_ip: str, obstacles: list) -> list:
-    """
-    Compose JSON with obstacle details including the image link.
-    """
-    obstacle_links = []
-    if not obstacles or not vacuum_host_ip:
-        _LOGGER.debug(
-            f"Obstacle links: no obstacles: "
-            f"{obstacles} and / or ip: {vacuum_host_ip} to link."
-        )
-        return None
+def redact_ip_filter(func):
+    """Decorator to remove IP addresses from function output"""
 
-    for obstacle in obstacles:
-        # Extract obstacle details
-        label = obstacle.get("label", "")
-        points = obstacle.get("points", {})
-        image_id = obstacle.get("id", "None")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        if isinstance(result, str):
+            ip_pattern = r"'?\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'?"
+            return re.sub(ip_pattern, "'[Redacted IP]'", result)
+        return result
 
-        if label and points and image_id and vacuum_host_ip:
-            # Append formatted obstacle data
-            if image_id != "None":
-                # Compose the link
-                image_link = f"http://{vacuum_host_ip}/api/v2/robot/capabilities/ObstacleImagesCapability/img/{image_id}"
-                obstacle_links.append(
-                    {
-                        "point": points,
-                        "label": label,
-                        "link": image_link,
-                    }
-                )
-            else:
-                obstacle_links.append(
-                    {
-                        "point": points,
-                        "label": label,
-                    }
-                )
-
-    _LOGGER.debug("Obstacle links: linked data complete.")
-
-    return obstacle_links
+    return wrapper
 
 
-class RedactIPFilter(logging.Filter):
-    """Remove from the logs IP address"""
-
-    def filter(self, record):
-        """Regex to match IP addresses"""
-        ip_pattern = r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b"
-        if record.msg:
-            record.msg = re.sub(ip_pattern, "[Redacted IP]", record.msg)
-        return True
+def create_floor_data(
+    floor_name: str,
+    trim_up: int,
+    trim_down: int,
+    trim_left: int,
+    trim_right: int,
+    map_name: str = "",
+    rotation: Optional[int] = None,
+) -> FloorData:
+    """Create FloorData object from trim values."""
+    floor_dict = {
+        "trims": {
+            "floor": floor_name,
+            "trim_up": trim_up,
+            "trim_left": trim_left,
+            "trim_down": trim_down,
+            "trim_right": trim_right,
+        },
+        "map_name": map_name,
+    }
+    if rotation is not None:
+        floor_dict["rotation"] = rotation
+    return FloorData.from_dict(floor_dict)

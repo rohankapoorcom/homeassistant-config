@@ -1,297 +1,489 @@
 {
-   "config": {
-      "step": {
-         "user": {
-            "data": {
-               "vacuum_entity": "Dammsugar-enhetens ID",
-               "vacuum_config_entry": "Konfigurationsdata för dammsugaren",
-               "vacuum_map": "Dammsugarens ämne",
-               "vacuum_identifiers": "Dammsugarens MQTT-id",
-               "unique_id": ""
-            },
-            "data_description": {
-               "vacuum_entity": "Dammsugar-enhetens ID"
-            },
-            "description": "Inställning av kamera.",
-            "title": "MQTT Kamerainställning"
-         }
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "vacuum_entity": "Vakuumrobotens enhets-ID",
+          "vacuum_config_entry": "Konfigurationsdata för dammsugarrobot",
+          "vacuum_map": "Vakuumrobot Ämne",
+          "vacuum_identifiers": "Dammsugarrobot MQTT-id",
+          "unique_id": ""
+        },
+        "data_description": {
+          "vacuum_entity": "Vakuumrobotens enhets-ID"
+        },
+        "description": "Kamerainställningar.",
+        "title": "MQTT-kamerainställningar"
       }
-   },
-   "options": {
-      "step": {
-         "init": {
-            "title": "MQTT Kameraalternativ",
-            "description": "### _Standardalternativ_:",
-            "data": {
-               "camera_config_action": "Åtgärd"
-            }
-         },
-         "advanced": {
-            "title": "MQTT Kameraalternativ",
-            "description": "### _Avancerade alternativ_:",
-            "data": {
-               "camera_config_action": "Åtgärd"
-            }
-         },
-         "download_logs": {
-            "title": "MQTT Kamerloggfil",
-            "description": "### _Kopiera loggfil_:",
-            "data": {
-               "camera_logs_progres": "Vad ska göras?"
-            }
-         },
-         "image_opt": {
-            "data": {
-               "rotate_image": "Rotera",
-               "margins": "Bildmarginaler",
-               "auto_zoom": "Aktivera automatisk zoom",
-               "zoom_lock_ratio": "Lås bildförhållande",
-               "aspect_ratio": "Bildförhållande",
-               "enable_www_snapshots": "Exportera PNG-ögonblicksbilder"
-            },
-            "data_description": {
-               "rotate_image": "Grader 0, 90, 180, 270",
-               "margins": "Automatiska marginaler i pixlar",
-               "aspect_ratio": "Bildförhållande"
-            },
-            "description": "Bildalternativ för kamera",
-            "title": "Bildalternativ"
-         },
-         "image_offset": {
-            "data": {
-               "offset_top": "Övre förskjutning",
-               "offset_bottom": "Nedre förskjutning",
-               "offset_left": "Vänster förskjutning",
-               "offset_right": "Höger förskjutning"
-            },
-            "data_description": {
-               "offset_top": "Övre förskjutning vid rotation 0 i pixlar",
-               "offset_bottom": "Nedre förskjutning vid rotation 0 i pixlar",
-               "offset_left": "Vänster förskjutning vid rotation 0 i pixlar",
-               "offset_right": "Höger förskjutning vid rotation 0 i pixlar"
-            },
-            "description": "Kamera bildförskjutning",
-            "title": "Bildförskjutning"
-         },
-         "status_text": {
-            "data": {
-               "show_vac_status": "Visa dammsugarens status",
-               "vac_status_font": "Fira Sans",
-               "vac_status_size": "Textstorlek",
-               "vac_status_position": "Textposition: Botten (AV)",
-               "color_text": "[255, 255, 255]"
-            },
-            "data_description": {
-               "vac_status_font": "Standardtexttypsnitt Fira Serif",
-               "vac_status_size": "Standardtextstorlek 50",
-               "color_text": "Färg på texten för dammsugarens status"
-            },
-            "description": "Status textalternativ för bild",
-            "title": "Status textalternativ"
-         },
-         "base_colours": {
-            "data": {
-               "color_charger": "[255, 128, 0]",
-               "color_move": "[238, 247, 255]",
-               "color_wall": "[255, 255, 0]",
-               "color_robot": "[255, 255, 204]",
-               "color_go_to": "[0, 255, 0]",
-               "color_no_go": "[255, 0, 0]",
-               "color_zone_clean": "[255, 255, 255]",
-               "color_background": "[0, 125, 255]",
-               "add_base_alpha": "Konfigurera transparens:"
-            },
-            "data_description": {
-               "color_charger": "Färg på laddare",
-               "color_move": "Färg på rörelse",
-               "color_wall": "Väggfärg",
-               "color_robot": "Robotfärg",
-               "color_go_to": "Färg för gå-till-zonen",
-               "color_no_go": "Färg för no-go zonen",
-               "color_zone_clean": "Färg för rengöringszonen",
-               "color_background": "Bakgrundsfärg"
-            },
-            "description": "Kamera färgalternativ",
-            "title": "Grundläggande färginställningar"
-         },
-         "alpha_1": {
-            "data": {
-               "alpha_charger": "Transparens för laddare",
-               "alpha_move": "Transparens för rörelse",
-               "alpha_wall": "Transparens för väggar",
-               "alpha_robot": "Transparens för robot",
-               "alpha_go_to": "Transparens för gå-till-område",
-               "alpha_no_go": "Transparens för no-go-område",
-               "alpha_zone_clean": "Transparens för rengöringszonen",
-               "alpha_background": "Transparens för bakgrund",
-               "alpha_text": "Transparens för text"
-            },
-            "description": "Kameraalternativ. Alfa 1",
-            "title": "Alfa-kanal för grundfärger"
-         },
-         "floor_only": {
-            "data": {
-               "color_room_0": "[135, 206, 250]",
-               "add_room_1_alpha": "Konfigurera transparens:"
-            },
-            "data_description": {
-               "color_room_0": "### **Golvfärg**"
-            }
-         },
-         "rooms_colours_1": {
-            "data": {
-               "color_room_0": "[135, 206, 250]",
-               "color_room_1": "[176, 226, 255]",
-               "color_room_2": "[165, 105, 18]",
-               "color_room_3": "[164, 211, 238]",
-               "color_room_4": "[141, 182, 205]",
-               "color_room_5": "[96, 123, 139]",
-               "color_room_6": "[224, 255, 255]",
-               "color_room_7": "[209, 238, 238]",
-               "add_room_1_alpha": "Konfigurera transparens:"
-            },
-            "data_description": {
-               "color_room_0": "Rum 1",
-               "color_room_1": "Rum 2",
-               "color_room_2": "Rum 3",
-               "color_room_3": "Rum 4",
-               "color_room_4": "Rum 5",
-               "color_room_5": "Rum 6",
-               "color_room_6": "Rum 7",
-               "color_room_7": "Rum 8"
-            },
-            "description": "Kamerafärgalternativ.",
-            "title": "Färger för rum 1 till 8"
-         },
-         "rooms_colours_2": {
-            "data": {
-               "color_room_8": "[180, 205, 205]",
-               "color_room_9": "[122, 139, 139]",
-               "color_room_10": "[175, 238, 238]",
-               "color_room_11": "[84, 153, 199]",
-               "color_room_12": "[133, 193, 233]",
-               "color_room_13": "[245, 176, 65]",
-               "color_room_14": "[82, 190, 128]",
-               "color_room_15": "[72, 201, 176]",
-               "add_room_2_alpha": "Konfigurera transparens:"
-            },
-            "data_description": {
-               "color_room_8": "Rum 9",
-               "color_room_9": "Rum 10",
-               "color_room_10": "Rum 11",
-               "color_room_11": "Rum 12",
-               "color_room_12": "Rum 13",
-               "color_room_13": "Rum 14",
-               "color_room_14": "Rum 15",
-               "color_room_15": "Rum 16"
-            },
-            "description": "Kamerafärgalternativ.",
-            "title": "Färger för rum 9 till 15"
-         },
-         "alpha_floor": {
-            "data": {
-               "alpha_room_0": "Golvfärg"
-            }
-         },
-         "alpha_2": {
-            "data": {
-               "alpha_room_0": "Transparens för Rum 1",
-               "alpha_room_1": "Transparens för Rum 2",
-               "alpha_room_2": "Transparens för Rum 3",
-               "alpha_room_3": "Transparens för Rum 4",
-               "alpha_room_4": "Transparens för Rum 5",
-               "alpha_room_5": "Transparens för Rum 6",
-               "alpha_room_6": "Transparens för Rum 7",
-               "alpha_room_7": "Transparens för Rum 8"
-            },
-            "description": "Kameraalternativ. Alfa 2",
-            "title": "Alfa-kanal för rumfärger"
-         },
-         "alpha_3": {
-            "data": {
-               "alpha_room_8": "Transparens för Rum 9",
-               "alpha_room_9": "Transparens för Rum 10",
-               "alpha_room_10": "Transparens för Rum 11",
-               "alpha_room_11": "Transparens för Rum 12",
-               "alpha_room_12": "Transparens för Rum 13",
-               "alpha_room_13": "Transparens för Rum 14",
-               "alpha_room_14": "Transparens för Rum 15",
-               "alpha_room_15": "Transparens för Rum 16"
-            },
-            "description": "Kameraalternativ. Alfa 3",
-            "title": "Alfa-kanal för rumfärger"
-         }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "MQTT-kameraalternativ",
+        "description": "Konfigurera kameraalternativ",
+        "menu_options": {
+          "image_opt": "Bildinställningar",
+          "colours": "Färgkonfiguration",
+          "materials": "Materialåtergivning",
+          "save_options": "Spara alternativ"
+        }
+      },
+      "main_menu": {
+        "title": "Huvudmeny",
+        "description": "Återgå till huvudmenyn"
+      },
+      "image_opt": {
+        "title": "Bildinställningar",
+        "description": "Konfigurera inställningar för bildvisning",
+        "menu_options": {
+          "image_basic_opt": "Grundläggande inställningar",
+          "status_text": "Statustext",
+          "draw_elements": "Kartelementens synlighet",
+          "floor_management": "Golvhantering",
+          "obstacle_link_config": "Inställningar för hinderbildslänk",
+          "main_menu": "Tillbaka till huvudmenyn"
+        }
+      },
+      "colours": {
+        "title": "Färgkonfiguration",
+        "description": "Konfigurera kartfärger",
+        "menu_options": {
+          "base_colours": "Basfärger",
+          "rooms_colours_1": "Rum 1–8",
+          "rooms_colours_2": "Rum 9–16",
+          "floor_only": "Endast golv",
+          "transparency": "Inställningar för transparens",
+          "main_menu": "Tillbaka till huvudmenyn"
+        }
+      },
+      "draw_elements": {
+        "title": "Kartelementens synlighet",
+        "description": "Konfigurera vilka element som ska visas på kartan",
+        "menu_options": {
+          "map_elements": "Kartelement",
+          "segments_visibility": "Segmentens synlighet",
+          "main_menu": "Tillbaka till huvudmenyn"
+        }
+      },
+      "map_elements": {
+        "title": "Kartelement",
+        "description": "Konfigurera vilka element som ska visas på kartan",
+        "data": {
+          "disable_floor": "Dölj golv",
+          "disable_wall": "Dölj väggar",
+          "disable_robot": "Dölj robot",
+          "disable_charger": "Dölj Ladda",
+          "disable_virtual_walls": "Dölj virtuella väggar",
+          "disable_restricted_areas": "Dölj begränsade områden",
+          "disable_no_mop_areas": "Dölj områden som inte ska moppas",
+          "disable_obstacles": "Dölj hinder",
+          "disable_path": "Dölj sökväg",
+          "disable_predicted_path": "Dölj förutsedd väg",
+          "disable_go_to_target": "Dölj mål för Gå till"
+        },
+        "data_description": {
+          "disable_floor": "När denna funktion är aktiverad visas inte våningen på kartan.",
+          "disable_wall": "När denna funktion är aktiverad visas inte väggar på kartan.",
+          "disable_robot": "När denna funktion är aktiverad visas inte roboten på kartan.",
+          "disable_charger": "När funktionen är aktiverad visas inte laddaren på kartan.",
+          "disable_virtual_walls": "När funktionen är aktiverad visas inte virtuella väggar på kartan.",
+          "disable_restricted_areas": "När funktionen är aktiverad visas inte begränsade områden på kartan.",
+          "disable_no_mop_areas": "När funktionen är aktiverad visas inga områden där moppning är förbjuden på kartan.",
+          "disable_obstacles": "När denna funktion är aktiverad visas inte hinder på kartan.",
+          "disable_path": "När funktionen är aktiverad visas inte rengöringsvägen på kartan.",
+          "disable_predicted_path": "När funktionen är aktiverad visas inte den beräknade rutten på kartan.",
+          "disable_go_to_target": "När funktionen är aktiverad visas inte målen på kartan."
+        }
+      },
+      "segments_visibility": {
+        "title": "Segmentens synlighet",
+        "description": "Konfigurera vilka rumsegment som ska visas på kartan",
+        "data": {
+          "disable_room_1": "Dölj rum 1",
+          "disable_room_2": "Dölj rum 2",
+          "disable_room_3": "Dölj rum 3",
+          "disable_room_4": "Dölj rum 4",
+          "disable_room_5": "Dölj rum 5",
+          "disable_room_6": "Dölj rum 6",
+          "disable_room_7": "Dölj rum 7",
+          "disable_room_8": "Dölj rum 8",
+          "disable_room_9": "Dölj rum 9",
+          "disable_room_10": "Dölj rum 10",
+          "disable_room_11": "Dölj rum 11",
+          "disable_room_12": "Dölj rum 12",
+          "disable_room_13": "Dölj rum 13",
+          "disable_room_14": "Dölj rum 14",
+          "disable_room_15": "Dölj rum 15"
+        },
+        "data_description": {
+          "disable_room_1": "När denna funktion är aktiverad visas inte rum 1 {room_0_name} på kartan.",
+          "disable_room_2": "När denna funktion är aktiverad visas inte rum 2 {room_1_name} på kartan.",
+          "disable_room_3": "När denna funktion är aktiverad visas inte rum 3 {room_2_name} på kartan.",
+          "disable_room_4": "När denna funktion är aktiverad visas inte rum 4 {room_3_name} på kartan.",
+          "disable_room_5": "När funktionen är aktiverad visas inte rum 5 {room_4_name} på kartan.",
+          "disable_room_6": "När denna funktion är aktiverad visas inte rum 6 {room_5_name} på kartan.",
+          "disable_room_7": "När denna funktion är aktiverad visas inte rum 7 {room_6_name} på kartan.",
+          "disable_room_8": "När denna funktion är aktiverad visas inte rum 8 {room_7_name} på kartan.",
+          "disable_room_9": "När denna funktion är aktiverad visas inte rum 9 {room_8_name} på kartan.",
+          "disable_room_10": "När denna funktion är aktiverad visas inte rum 10 {room_9_name} på kartan.",
+          "disable_room_11": "När denna funktion är aktiverad visas inte rum 11 {room_10_name} på kartan.",
+          "disable_room_12": "När denna funktion är aktiverad visas inte rum 12 {room_11_name} på kartan.",
+          "disable_room_13": "När denna funktion är aktiverad visas inte rum 13 {room_12_name} på kartan.",
+          "disable_room_14": "När denna funktion är aktiverad visas inte rum 14 {room_13_name} på kartan.",
+          "disable_room_15": "När denna funktion är aktiverad visas inte rum 15 {room_14_name} på kartan."
+        }
+      },
+      "transparency": {
+        "title": "Inställningar för transparens",
+        "description": "Konfigurera inställningar för transparens (alfa) för kartelement",
+        "menu_options": {
+          "alpha_1": "Basens transparens",
+          "alpha_floor": "Golvsynlighet",
+          "alpha_2": "Rum 1–8 Transparens",
+          "alpha_3": "Rum 9–16 Transparens",
+          "main_menu": "Tillbaka till huvudmenyn"
+        }
+      },
+      "materials": {
+        "title": "Materialåtergivning",
+        "description": "Konfigurera materialigenkänning och rendering (träplankor, kakel, mattor)",
+        "data": {
+          "disable_material_overlay": "Inaktivera materialöverlägg (trä och kakel)",
+          "disable_carpets": "Dölj mattor",
+          "color_carpet": "Mattans färg",
+          "color_material_wood": "Träplankans färg",
+          "color_material_tile": "Kakel färg",
+          "alpha_carpet": "Mattans transparens",
+          "alpha_material_wood": "Träets transparens",
+          "alpha_material_tile": "Kakeltransparens"
+        },
+        "data_description": {
+          "disable_material_overlay": "Stäng av materialöverläggsrendering för trä och kakel på kartan",
+          "disable_carpets": "När denna funktion är aktiverad visas inte mattor på kartan.",
+          "color_carpet": "Färg för mattmaterial (RGB)",
+          "color_material_wood": "Färg för träplankmaterial (RGB)",
+          "color_material_tile": "Färg för kakelmaterial (RGB)",
+          "alpha_carpet": "Transparensnivå för mattor (0-255)",
+          "alpha_material_wood": "Transparensnivå för träplankor (0-255)",
+          "alpha_material_tile": "Transparensnivå för kakel (0-255)"
+        }
+      },
+      "floor_management": {
+        "title": "Golvhantering",
+        "description": "Hantera flera våningar och deras trimningsinställningar",
+        "menu_options": {
+          "select_floor": "Välj aktiv våning",
+          "add_floor": "Lägg till nytt golv",
+          "edit_floor": "Redigera golvinställningar",
+          "delete_floor": "Ta bort våning",
+          "update_floor_data": "Uppdatera golvdata",
+          "main_menu": "Tillbaka till huvudmenyn"
+        }
+      },
+      "image_basic_opt": {
+        "data": {
+          "rotate_image": "Rotera",
+          "margins": "Bildmarginaler.",
+          "auto_zoom": "Aktivera automatisk zoomning",
+          "zoom_lock_ratio": "Lås bildförhållande.",
+          "aspect_ratio": "Bildformat.",
+          "robot_size": "Robotens storlek.",
+          "mop_path_width": "Moppens bredd",
+          "def_context_type": "Bildformat"
+        },
+        "data_description": {
+          "rotate_image": "Grad 0, 90, 180, 270",
+          "margins": "Automatisk beskärning Marginaler i pixlar.",
+          "aspect_ratio": "Bildformat.",
+          "robot_size": "Robotens storlek i pixlar 8-25.",
+          "mop_path_width": "Vakuumbanans bredd i moppningsläge (1–50 pixlar, måste vara mindre än robotens storlek).",
+          "def_context_type": "Välj bildformat för kameran (JPEG, PNG eller PIL). JPEG rekommenderas för bästa kompatibilitet."
+        },
+        "description": "Kamerabildalternativ",
+        "title": "Bildalternativ"
+      },
+      "status_text": {
+        "data": {
+          "show_vac_status": "Visa vakuumstatus.",
+          "vac_status_font": "Fira Sans",
+          "vac_status_size": "Textstorlek",
+          "vac_status_position": "Textposition: Nedre (AV)",
+          "color_text": "[255, 255, 255]"
+        },
+        "data_description": {
+          "vac_status_font": "Textfont standard Fira Serif.",
+          "vac_status_size": "Standardtextstorlek 50.",
+          "color_text": "Vakuumstatus Textfärg."
+        },
+        "description": "Bildalternativ",
+        "title": "Statustextalternativ"
+      },
+      "base_colours": {
+        "data": {
+          "color_charger": "[255, 128, 0]",
+          "color_move": "[238, 247, 255]",
+          "color_mop_move": "[238, 247, 255]",
+          "color_wall": "[255, 255, 0]",
+          "color_robot": "[255, 255, 204]",
+          "color_go_to": "[0, 255, 0]",
+          "color_no_go": "[255, 0, 0]",
+          "color_zone_clean": "[255, 255, 255]",
+          "color_background": "[0, 125, 255]",
+          "add_base_alpha": "Konfigurera transparens:"
+        },
+        "data_description": {
+          "color_charger": "Ladda färg.",
+          "color_move": "Flytta färg.",
+          "color_mop_move": "Moppens färg (endast Hypfer-dammsugare).",
+          "color_wall": "Väggfärg.",
+          "color_robot": "Robotfärg.",
+          "color_go_to": "Favoritfärg.",
+          "color_no_go": "Färg som inte går bra.",
+          "color_zone_clean": "Zonren färg.",
+          "color_background": "Bakgrundsfärg."
+        },
+        "description": "Alternativ för kamerafärger.",
+        "title": "Inställning av basfärger"
+      },
+      "alpha_1": {
+        "data": {
+          "alpha_charger": "Ladda Alpha",
+          "alpha_move": "Flyttar Alpha",
+          "alpha_mop_move": "Moppens bana Alfa",
+          "alpha_wall": "Väggar Alpha",
+          "alpha_robot": "Alfa Robot",
+          "alpha_go_to": "Gå till område Alpha",
+          "alpha_no_go": "Förbjudet område Alfa",
+          "alpha_zone_clean": "Zonrengöring Alfa",
+          "alpha_background": "Bakgrund Alpha",
+          "alpha_text": "Text Alpha"
+        },
+        "description": "Kameraalternativ. Alpha 1",
+        "title": "Alfakanalens basfärger"
+      },
+      "floor_only": {
+        "data": {
+          "color_room_0": "[135, 206, 250]",
+          "add_room_1_alpha": "Konfigurera transparens:"
+        },
+        "data_description": {
+          "color_room_0": "**Golvfärg**"
+        }
+      },
+      "rooms_colours_1": {
+        "data": {
+          "color_room_0": "[135, 206, 250]",
+          "color_room_1": "[176, 226, 255]",
+          "color_room_2": "[165, 105, 18]",
+          "color_room_3": "[164, 211, 238]",
+          "color_room_4": "[141, 182, 205]",
+          "color_room_5": "[96, 123, 139]",
+          "color_room_6": "[224, 255, 255]",
+          "color_room_7": "[209, 238, 238]",
+          "add_room_1_alpha": "Konfigurera transparens:"
+        },
+        "data_description": {
+          "color_room_0": "**{room_0_name} Färg**",
+          "color_room_1": "**{room_1_name} Färg**",
+          "color_room_2": "**{room_2_name} Färg**",
+          "color_room_3": "**{room_3_name} Färg**",
+          "color_room_4": "**{room_4_name} Färg**",
+          "color_room_5": "**{room_5_name} Färg**",
+          "color_room_6": "**{room_6_name} Färg**",
+          "color_room_7": "**{room_7_name} Färg**"
+        },
+        "description": "Alternativ för kamerafärger.",
+        "title": "Rum 1 till 8 Färger"
+      },
+      "rooms_colours_2": {
+        "data": {
+          "color_room_8": "[180, 205, 205]",
+          "color_room_9": "[122, 139, 139]",
+          "color_room_10": "[175, 238, 238]",
+          "color_room_11": "[84, 153, 199]",
+          "color_room_12": "[133, 193, 233]",
+          "color_room_13": "[245, 176, 65]",
+          "color_room_14": "[82, 190, 128]",
+          "color_room_15": "[72, 201, 176]",
+          "add_room_2_alpha": "Konfigurera transparens:"
+        },
+        "data_description": {
+          "color_room_8": "**{room_8_name} Färg**",
+          "color_room_9": "**{room_9_name} Färg**",
+          "color_room_10": "**{room_10_name} Färg**",
+          "color_room_11": "**{room_11_name} Färg**",
+          "color_room_12": "**{room_12_name} Färg**",
+          "color_room_13": "**{room_13_name} Färg**",
+          "color_room_14": "**{room_14_name} Färg**",
+          "color_room_15": "**{room_15_name} Färg**"
+        },
+        "description": "Alternativ för kamerafärger.",
+        "title": "Rum 9 till 15 Färger"
+      },
+      "alpha_floor": {
+        "data": {
+          "alpha_room_0": "Golvfärg"
+        }
+      },
+      "alpha_2": {
+        "data": {
+          "alpha_room_0": "{room_0_name} Alfa",
+          "alpha_room_1": "{room_1_name} Alfa",
+          "alpha_room_2": "{room_2_name} Alfa",
+          "alpha_room_3": "{room_3_name} Alfa",
+          "alpha_room_4": "{room_4_name} Alfa",
+          "alpha_room_5": "{room_5_name} Alfa",
+          "alpha_room_6": "{room_6_name} Alfa",
+          "alpha_room_7": "{room_7_name} Alfa"
+        },
+        "description": "Kameraalternativ. Alpha 2",
+        "title": "Alfakanalrum Färger"
+      },
+      "alpha_3": {
+        "data": {
+          "alpha_room_8": "{room_8_name} Alfa",
+          "alpha_room_9": "{room_9_name} Alfa",
+          "alpha_room_10": "{room_10_name} Alfa",
+          "alpha_room_11": "{room_11_name} Alfa",
+          "alpha_room_12": "{room_12_name} Alfa",
+          "alpha_room_13": "{room_13_name} Alfa",
+          "alpha_room_14": "{room_14_name} Alfa",
+          "alpha_room_15": "{room_15_name} Alfa"
+        },
+        "description": "Kameraalternativ. Alpha 3",
+        "title": "Alfakanalrum Färger"
+      },
+      "select_floor": {
+        "title": "Välj aktiv våning",
+        "description": "Välj vilken våning som för närvarande är aktiv. Kameran kommer att använda trimningsinställningarna för den valda våningen.",
+        "data": {
+          "current_floor": "Aktiv golv"
+        },
+        "data_description": {
+          "current_floor": "Välj det golv som för närvarande är aktivt. Aktuellt: {current_floor}"
+        }
+      },
+      "add_floor": {
+        "title": "Lägg till nytt golv",
+        "description": "{info}",
+        "data": {
+          "floor_name": "Golvnamn",
+          "map_name": "Kartnamn (valfritt)"
+        },
+        "data_description": {
+          "floor_name": "Välj bland Home Assistant-våningar eller ange ett eget namn",
+          "map_name": "Valfritt namn för denna våning"
+        }
+      },
+      "edit_floor": {
+        "title": "Redigera golvinställningar",
+        "description": "Redigera kartnamn för våning: {floor_name}. {trim_info}. Trimvärden beräknas automatiskt – använd 'Update Floor Data' för att uppdatera dem.",
+        "data": {
+          "floor_name": "Välj våning att redigera",
+          "map_name": "Kartnamn (valfritt)"
+        },
+        "data_description": {
+          "floor_name": "Välj vilken våning du vill redigera",
+          "map_name": "Valfritt namn för denna våning"
+        }
+      },
+      "delete_floor": {
+        "title": "Ta bort våning",
+        "description": "Ta bort en våning från konfigurationen. Om du tar bort den aktuella aktiva våningen återställs den till 'floor_0'.",
+        "data": {
+          "floor_name": "Golv att ta bort"
+        },
+        "data_description": {
+          "floor_name": "Välj vilken våning som ska raderas"
+        }
+      },
+      "obstacle_link_config": {
+        "title": "Inställningar för hinderbildslänk",
+        "description": "Konfigurera URL-inställningarna för nedladdning av hinderbilder. Dessa inställningar styr hur kameran hämtar hinderbilder från dammsugarens API-slutpunkt.",
+        "data": {
+          "obstacle_link_protocol": "Protokoll",
+          "obstacle_link_port": "Portnummer",
+          "obstacle_link_ip": "Vakuum IP-adress"
+        },
+        "data_description": {
+          "obstacle_link_protocol": "Välj vilket protokoll som ska användas (HTTP eller HTTPS)",
+          "obstacle_link_port": "Portnummer för vakuumets API-slutpunkt (standard: 80 för HTTP, 443 för HTTPS)",
+          "obstacle_link_ip": "IP-adress för din dammsugare (detekteras automatiskt från MQTT om tillgängligt)"
+        }
       }
-   },
-   "selector": {
-      "camera_config_action": {
-         "options": {
-            "opt_1": "Konfigurera bild",
-            "opt_2": "Konfigurera allmänna färger",
-            "opt_3": "Färger för rum 1 till 8",
-            "opt_4": "Färger för rum 9 till 16",
-            "opt_5": "Avancerade alternativ"
-         }
-      },
-      "camera_config_advanced": {
-         "options": {
-            "opt_1": "Konfigurera bildoffset",
-            "opt_2": "Konfigurera statustext",
-            "opt_3": "Kopiera kamerajournaler till www",
-            "opt_4": "Döp om färgalternativ",
-            "opt_5": "Återställ karttrimningar"
-         }
-      },
-      "camera_logs_progres": {
-         "options": {
-            "opt_1": "Kopiera journaler till www",
-            "opt_2": "Ta bort journaler från www"
-         }
-      },
-      "vacuum_status": {
-         "options": {
-            "connected": "Ansluten",
-            "disconnected": "Frånkopplad",
-            "charging": "Laddar",
-            "cleaning": "Städar",
-            "docked": "Dockad",
-            "idle": "Viloläge",
-            "paused": "Pausad",
-            "returning": "Återvänder"
-         }
+    }
+  },
+  "selector": {
+    "trim_actions": {
+      "options": {
+        "save": "Spara ändringar",
+        "reset": "Återställ till upptäckta värden",
+        "delete": "Ta bort alla trimningar"
       }
-   },
-   "services": {
-      "reload": {
-         "name": "Ladda om",
-         "description": "Ladda om MQTT Vacuum Camera-plattformen."
-      },
-      "turn_off": {
-         "name": "[%key:common::action::turn_off%]",
-         "description": "Stänger av kameran."
-      },
-      "turn_on": {
-         "name": "[%key:common::action::turn_on%]",
-         "description": "Slår på kameran."
-      },
-      "reset_trims": {
-         "name": "Återställ bildbeskärningar",
-         "description": "Återställer beskärningarna av kartorna."
-      },
-      "snapshot": {
-         "name": "Ta en ögonblicksbild",
-         "description": "Tar en ögonblicksbild från en kamera.",
-         "fields": {
-            "filename": {
-               "name": "Filnamn",
-               "description": "Mall för ett filnamn. Tillgänglig variabel är `entity_id`."
-            }
-         }
+    },
+    "vacuum_status": {
+      "options": {
+        "connected": "Ansluten",
+        "disconnected": "Frånkopplad",
+        "charging": "Laddning",
+        "cleaning": "Rengöring",
+        "docked": "Dockad",
+        "idle": "Tomgång",
+        "paused": "Pausad",
+        "returning": "Återvändande"
       }
-   },
-   "exceptions": {
-      "no_entity_id_provided": {
-         "message": "entity_id saknas i tjänstekonfigurationen."
+    }
+  },
+  "services": {
+    "reload": {
+      "name": "Ladda om",
+      "description": "Ladda om MQTT Vacuum Camera Platform."
+    },
+    "turn_off": {
+      "name": "[%key:common::action::turn_off%]",
+      "description": "Stänger av kameran."
+    },
+    "turn_on": {
+      "name": "[%key:common::action::turn_on%]",
+      "description": "Slår på kameran."
+    },
+    "reset_trims": {
+      "name": "Återställ bilder Trims",
+      "description": "Återställer kartornas trimning."
+    },
+    "snapshot": {
+      "name": "Ta en ögonblicksbild",
+      "description": "Tar en stillbild från en kamera.",
+      "fields": {
+        "filename": {
+          "name": "Filnamn",
+          "description": "Mall för ett filnamn. Tillgänglig variabel är `entity_id`."
+        }
       }
-   }
+    }
+  },
+  "exceptions": {
+    "no_entity_id_provided": {
+      "message": "Entity_id saknas i konfigurationen."
+    },
+    "missing_zone_or_zone_ids": {
+      "message": "Antingen 'zone' eller 'zone_ids' måste anges."
+    },
+    "zone_must_be_list": {
+      "message": "Parametern 'Zone' måste vara en lista."
+    },
+    "zoneid_must_be_list": {
+      "message": "Parametern 'Zone_Ids' måste vara en lista."
+    },
+    "zone_list_length": {
+      "message": "'Zone' måste innehålla minst 1 objekt som innehåller en lista med 4 heltal."
+    },
+    "mqtt_service_not_found": {
+      "message": "MQTT-integration är inte tillgänglig. Se till att MQTT är konfigurerat."
+    },
+    "mqtt_publish_failed": {
+      "message": "Det gick inte att publicera kommandot till vacuum via MQTT."
+    }
+  }
 }

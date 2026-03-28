@@ -1,0 +1,22 @@
+extract_map_data:
+  name: Extract Map Data
+  description: Extract the ValetudoMap from the map data camera entity.
+  fields:
+    device_id:
+      name: Device
+      description: Select the ValetudoRobot device.
+      required: false
+      selector:
+        device:
+          filter:
+            - manufacturer: Valetudo
+          entity:
+            domain: camera
+    entity_id:
+      name: Entity
+      description: Select the camera entity containing embedded ValetudoMap data.
+      required: false
+      selector:
+        entity:
+          domain: camera
+          integration: mqtt
