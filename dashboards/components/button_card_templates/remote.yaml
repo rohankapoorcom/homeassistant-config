@@ -13,8 +13,12 @@ remote:
       - color: var(--paper-item-icon-color)
       - padding-left: 1ex
     card:
+      - border-radius: var(--ha-card-border-radius, 10px)
+      - padding: 8px 6px
+      - margin: 0
       - font-size: 12px
       - '--ha-card-background': rgba(0, 0, 0, 0)
+      - '--ha-card-glass-tint': unset
     icon:
       - color: |
           [[[
