@@ -33,7 +33,7 @@ hue_sync_button_card:
                 linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
                 var(--slider-color, var(--primary-color)) 100%)
           icon:
-            - color: var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+            - color: var(--state-icon-active-color, rgb(255, 214, 10))
           label:
             - color: var(--primary-text-color, #fff)
       - operator: default
