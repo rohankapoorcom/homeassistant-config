@@ -1,17 +1,12 @@
 hue_sync_button_card:
   card:
     type: custom:button-card
-    layout: icon_label
-    show_label: true
-    show_name: true
-    color_type: icon
-    size: 50%
+    template: light_button
+    # Match slider_button_card row height (its layout uses ~1:1 and min-height ~7rem).
+    aspect_ratio: 1/1
     entity: media_player.living_room_sync_box
     icon: mdi:led-strip-variant
     name: Backlight
-    hold_action:
-      action: more-info
-      haptic: selection
     triggers_update:
       - switch.living_room_sync_box_light_sync
       - select.living_room_sync_box_entertainment_area
@@ -19,17 +14,6 @@ hue_sync_button_card:
       action: call-service
       service: '[[script]]'
       haptic: success
-    card_mod:
-      style: |
-        ha-card {
-          background: transparent !important;
-          --ha-card-background: transparent;
-          border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12));
-          border-radius: var(--ha-card-border-radius, 10px);
-          font-size: 12px;
-          min-height: 7rem;
-          box-sizing: border-box;
-        }
     state:
       - operator: template
         value: >
@@ -40,45 +24,33 @@ hue_sync_button_card:
         label: 'On'
         styles:
           card:
-            - border: solid 2px var(--state-icon-active-color, rgb(255, 214, 10))
-            - box-shadow: 0px 0px 12px 4px var(--state-icon-active-color, rgb(255, 214, 10))
-            - '--ha-card-background': transparent
+            - border: solid 2px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+            - box-shadow: 0px 0px 12px 4px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+            - '--ha-card-background': >-
+                linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+                var(--slider-color, var(--primary-color)) 100%)
+            - '--ha-card-glass-tint': >-
+                linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+                var(--slider-color, var(--primary-color)) 100%)
           icon:
-            - color: var(--state-icon-active-color, rgb(255, 214, 10))
-          name:
-            - color: var(--state-icon-active-color, rgb(255, 214, 10))
+            - color: var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
           label:
-            - padding-left: 1ex
             - color: var(--primary-text-color, #fff)
       - operator: default
         label: 'Off'
+        styles:
+          card:
+            - border-radius: 10px
+            - padding: 6px 6px 6px 6px
+            - margin: 0% 0% 0% 0%
+            - '--ha-card-background': rgba(0, 0, 0, 0)
+            - '--ha-card-glass-tint': unset
+            - border: solid 1px var(--primary-color)
+            - box-shadow: none
     styles:
       card:
-        - border-radius: var(--ha-card-border-radius, 10px)
-        - padding: 8px 6px
-        - margin: 0
-        - font-size: 12px
         - min-height: 7rem
-        - '--ha-card-background': transparent
-        - border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12))
-      grid:
-        - grid-template-areas: '"i l l" "n n n"'
-        - grid-template-rows: 33% auto
-        - grid-template-columns: 33% auto
-      icon:
-        - width: 28px
-        - padding: 0px
-        - color: var(--paper-item-icon-color)
-      label:
-        - font-size: 12px
-        - justify-self: right
-        - padding: 0px
-        - padding-left: 1ex
-        - color: var(--primary-text-color)
-      name:
-        - justify-self: middle
-        - align-self: end
-        - font-size: 12px
-        - padding: 0px
-        - color: var(--primary-text-color)
-        - white-space: normal
+        - border-radius: 10px
+        - padding: 6px 6px 6px 6px
+        - margin: 0% 0% 0% 0%
+        - '--ha-card-background': rgba(0, 0, 0, 0)

@@ -86,7 +86,6 @@ cards:
               - volume_mute_command: /goform/formiPhoneAppDirect.xml?RCKSK0410370
       - type: grid
         columns: 5
-        square: false
         cards:
           - type: custom:decluttering-card
             template: hue_sync_button_card
@@ -94,22 +93,22 @@ cards:
               - script: script.turn_on_the_living_room_tv_light_sync
               - entertainment_area: Living Room
           - type: custom:decluttering-card
-            template: remote_row_slider_button_card
+            template: slider_button_card
             variables:
               - entity: light.living_room_lights
               - name: Ceiling
           - type: custom:decluttering-card
-            template: remote_row_slider_button_card
+            template: slider_button_card
             variables:
               - entity: fan.living_room_fan
               - name: Fan
           - type: custom:decluttering-card
-            template: remote_row_slider_button_card
+            template: slider_button_card
             variables:
               - entity: light.hallway_lights
               - name: Hallway
           - type: custom:decluttering-card
-            template: remote_row_slider_button_card
+            template: slider_button_card
             variables:
               - entity: light.kitchen_lights
               - name: Kitchen
