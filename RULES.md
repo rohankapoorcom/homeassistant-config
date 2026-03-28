@@ -50,7 +50,7 @@
 4. **Test automations**: Verify automations work in safe environment
 5. **Update documentation**: Follow `.ai/prompts/homeassistant-documentation.md` standards
 6. **Use automation prompt**: Follow `.ai/prompts/homeassistant-automation-creation.md` for new automations
-7. **Use blueprint prompt**: Follow `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable blueprints
+7. **Use blueprint skill**: Follow `.cursor/skills/generate-homeassistant-blueprint/SKILL.md` for creating reusable blueprints
 
 ## 🏠 HOUSE STRUCTURE (AI MUST FOLLOW)
 
@@ -184,7 +184,7 @@ automation:
 ### Documentation Requirements
 - **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.md`
 - **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.md` for creating new automations
-- **ALWAYS use** the blueprint generation prompt in `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable automation blueprints
+- **ALWAYS use** the blueprint skill at `.cursor/skills/generate-homeassistant-blueprint/SKILL.md` for creating reusable automation blueprints
 - **ALWAYS document custom integrations** and their purposes with proper attribution
 - **ALWAYS explain complex automations** with comments and use cases
 - **ALWAYS keep README.md updated** with current custom components and their purposes
@@ -300,7 +300,7 @@ automation:
 ### Documentation Standards
 - **ALWAYS follow** the comprehensive documentation prompt in `.ai/prompts/homeassistant-documentation.md`
 - **ALWAYS use** the automation creation prompt in `.ai/prompts/homeassistant-automation-creation.md` for creating new automations
-- **ALWAYS use** the blueprint generation prompt in `.ai/prompts/generate-homeassistant-blueprint.md` for creating reusable automation blueprints
+- **ALWAYS use** the blueprint skill at `.cursor/skills/generate-homeassistant-blueprint/SKILL.md` for creating reusable automation blueprints
 - **ALWAYS keep README.md updated** with current custom components and their purposes
 - **ALWAYS provide clear setup instructions** and troubleshooting guides
 - **ALWAYS maintain change logs** for major updates
