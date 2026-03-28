@@ -1,7 +1,8 @@
-# TV-remote-only slider tiles. Match `button_card_templates/remote.yaml` frosted
-# chips; see https://github.com/custom-cards/slider-button-card — :host overrides.
-# Off state: same surface as ha-card (not transparent) so tiles read like top source
-# buttons; on state: .button is not .off so fill stays clear for the gradient.
+# TV-remote-only slider tiles. Frosted Glass (and similar) build the chip from a
+# transparent ha-card plus ::before glass tint; painting --ha-card-background or
+# --btn-bg-color-off with clear-background stacks an extra opaque layer and reads
+# solid black when the slider shows nothing. Keep inner fills transparent so the
+# theme glass shows through when off; see themes "card-mod-card" ha-card::before.
 remote_row_slider_button_card:
   card:
     type: custom:slider-button-card
@@ -11,7 +12,7 @@ remote_row_slider_button_card:
     card_mod:
       style: |
         :host {
-          --btn-bg-color-off: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
+          --btn-bg-color-off: transparent;
           --btn-bg-color-on: transparent;
           --label-color-on: var(--primary-text-color);
           --label-color-off: var(--primary-text-color);
@@ -21,7 +22,8 @@ remote_row_slider_button_card:
           --action-icon-color-off: var(--paper-item-icon-color);
         }
         ha-card {
-          --ha-card-background: var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)));
+          background: transparent !important;
+          --ha-card-background: transparent;
           border: var(--ha-card-border, 1px solid rgba(255, 255, 255, 0.12));
           border-radius: var(--ha-card-border-radius, 10px);
           font-size: 12px;
