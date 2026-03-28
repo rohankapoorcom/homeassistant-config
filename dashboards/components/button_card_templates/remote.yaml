@@ -14,30 +14,7 @@ remote:
       - padding-left: 1ex
     card:
       - font-size: 12px
-      - '--ha-card-background': |
-          [[[
-            const ent = variables.media_player_entity;
-            const attrs = states[ent]?.attributes ?? {};
-            const active = attrs.source === variables.source
-              && (!variables.require_sound_mode
-                || attrs.sound_mode === variables.require_sound_mode);
-            if (active) {
-              return 'linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color, var(--primary-color)) 100%)';
-            }
-            return 'rgba(0, 0, 0, 0)';
-          ]]]
-      - '--ha-card-glass-tint': |
-          [[[
-            const ent = variables.media_player_entity;
-            const attrs = states[ent]?.attributes ?? {};
-            const active = attrs.source === variables.source
-              && (!variables.require_sound_mode
-                || attrs.sound_mode === variables.require_sound_mode);
-            if (active) {
-              return 'linear-gradient(to right, rgba(0, 0, 0, 0) -10%, var(--slider-color, var(--primary-color)) 100%)';
-            }
-            return 'unset';
-          ]]]
+      - '--ha-card-background': rgba(0, 0, 0, 0)
     icon:
       - color: |
           [[[
@@ -47,9 +24,21 @@ remote:
               && (!variables.require_sound_mode
                 || attrs.sound_mode === variables.require_sound_mode);
             if (active) {
-              return 'var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))';
+              return 'var(--state-icon-active-color, rgb(255, 214, 10))';
             }
             return 'var(--paper-item-icon-color)';
+          ]]]
+      - filter: |
+          [[[
+            const ent = variables.media_player_entity;
+            const attrs = states[ent]?.attributes ?? {};
+            const active = attrs.source === variables.source
+              && (!variables.require_sound_mode
+                || attrs.sound_mode === variables.require_sound_mode);
+            if (active) {
+              return 'drop-shadow(0 0 3px rgb(255, 214, 10)) drop-shadow(0 0 10px rgba(255, 214, 10, 0.5))';
+            }
+            return 'none';
           ]]]
   tap_action:
     action: call-service
