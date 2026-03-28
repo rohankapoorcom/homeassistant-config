@@ -8,14 +8,6 @@ remote:
   color_type: icon
   styles:
     name:
-      - color: var(--paper-item-icon-color)
-    label:
-      - color: var(--paper-item-icon-color)
-      - padding-left: 1ex
-    card:
-      - font-size: 12px
-      - '--ha-card-background': rgba(0, 0, 0, 0)
-    icon:
       - color: |
           [[[
             const ent = variables.media_player_entity;
@@ -28,7 +20,8 @@ remote:
             }
             return 'var(--paper-item-icon-color)';
           ]]]
-      - filter: |
+    label:
+      - color: |
           [[[
             const ent = variables.media_player_entity;
             const attrs = states[ent]?.attributes ?? {};
@@ -36,9 +29,30 @@ remote:
               && (!variables.require_sound_mode
                 || attrs.sound_mode === variables.require_sound_mode);
             if (active) {
-              return 'drop-shadow(0 0 3px rgb(255, 214, 10)) drop-shadow(0 0 10px rgba(255, 214, 10, 0.5))';
+              return 'var(--state-icon-active-color, rgb(255, 214, 10))';
             }
-            return 'none';
+            return 'var(--paper-item-icon-color)';
+          ]]]
+      - padding-left: 1ex
+    card:
+      - border-radius: var(--ha-card-border-radius, 10px)
+      - padding: 8px 6px
+      - margin: 0
+      - font-size: 12px
+      - '--ha-card-background': var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)))
+      - border: var(--ha-card-border, none)
+    icon:
+      - color: |
+          [[[
+            const ent = variables.media_player_entity;
+            const attrs = states[ent]?.attributes ?? {};
+            const active = attrs.source === variables.source
+              && (!variables.require_sound_mode
+                || attrs.sound_mode === variables.require_sound_mode);
+            if (active) {
+              return 'var(--state-icon-active-color, rgb(255, 214, 10))';
+            }
+            return 'var(--paper-item-icon-color)';
           ]]]
   tap_action:
     action: call-service

@@ -2,9 +2,14 @@ hue_sync_button_card:
   card:
     type: custom:button-card
     template: light_button
+    # Match slider_button_card row height (its layout uses ~1:1 and min-height ~7rem).
+    aspect_ratio: 1/1
     entity: media_player.living_room_sync_box
     icon: mdi:led-strip-variant
     name: Backlight
+    triggers_update:
+      - switch.living_room_sync_box_light_sync
+      - select.living_room_sync_box_entertainment_area
     tap_action:
       action: call-service
       service: '[[script]]'
@@ -19,20 +24,33 @@ hue_sync_button_card:
         label: 'On'
         styles:
           card:
-            - border: >-
-                solid 1px
-                var(--paper-item-icon-active-color)
-            - box-shadow: >-
-                0px 0px 10px 3px
-                var(--paper-item-icon-active-color)
+            - border: solid 2px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+            - box-shadow: 0px 0px 12px 4px var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
+            - '--ha-card-background': >-
+                linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+                var(--slider-color, var(--primary-color)) 100%)
+            - '--ha-card-glass-tint': >-
+                linear-gradient(to right, rgba(0, 0, 0, 0) -10%,
+                var(--slider-color, var(--primary-color)) 100%)
+          icon:
+            - color: var(--state-icon-active-color, var(--paper-item-icon-active-color, var(--primary-color)))
           label:
-            - color: var(--paper-item-icon-active-color)
+            - color: var(--primary-text-color, #fff)
       - operator: default
         label: 'Off'
         styles:
           card:
+            - border-radius: 10px
+            - padding: 6px 6px 6px 6px
+            - margin: 0% 0% 0% 0%
+            - '--ha-card-background': rgba(0, 0, 0, 0)
+            - '--ha-card-glass-tint': unset
             - border: solid 1px var(--primary-color)
             - box-shadow: none
     styles:
       card:
-        - height: 100px
+        - min-height: 7rem
+        - border-radius: 10px
+        - padding: 6px 6px 6px 6px
+        - margin: 0% 0% 0% 0%
+        - '--ha-card-background': rgba(0, 0, 0, 0)
