@@ -71,17 +71,17 @@ cards:
               - script: script.turn_on_the_master_bedroom_tv_light_sync
               - entertainment_area: Master Bedroom
           - type: custom:decluttering-card
-            template: slider_button_card
+            template: remote_row_slider_button_card
             variables:
               - entity: light.master_bedroom_lights
               - name: Lights
           - type: custom:decluttering-card
-            template: slider_button_card
+            template: remote_row_slider_button_card
             variables:
               - entity: fan.master_bedroom_fan
               - name: Fan
           - type: custom:decluttering-card
-            template: slider_button_card
+            template: remote_row_slider_button_card
             variables:
               - entity: cover.master_bedroom_sheers
               - name: Sheers
@@ -93,7 +93,7 @@ cards:
                     action: toggle
                   icon: mdi:swap-horizontal
           - type: custom:decluttering-card
-            template: slider_button_card
+            template: remote_row_slider_button_card
             variables:
               - entity: cover.master_bedroom_curtains
               - name: Blackouts

@@ -1,0 +1,50 @@
+# Slider tiles styled like `button_card_templates/remote.yaml` (frosted chip + theme
+# border). Used on TV remote bottom rows only; keep `slider_button_card` unchanged for
+# other dashboards.
+remote_row_slider_button_card:
+  card:
+    type: custom:slider-button-card
+    entity: '[[entity]]'
+    name: '[[name]]'
+    action_button: '[[action_button]]'
+    styles:
+      card:
+        - border-radius: var(--ha-card-border-radius, 10px)
+        - padding: 8px 6px
+        - margin: 0
+        - font-size: 12px
+        - '--ha-card-background': var(--clear-background-color, var(--card-background-color, rgba(10, 10, 10, 0.4)))
+        - border: var(--ha-card-border, none)
+      grid:
+        - grid-template-areas: '"i l l" "n n n"'
+        - grid-template-rows: 33% auto
+        - grid-template-columns: 33% auto
+      icon:
+        - width: 28px
+        - padding: 0px 0px 0px 0px
+        - color: var(--button-card-light-color-no-temperature)
+      label:
+        - font-size: 12px
+        - justify-self: right
+        - padding: 0px 0px 0px 0px
+        - padding-left: 1ex
+        - color: var(--secondary-text-color)
+      name:
+        - justify-self: middle
+        - align-self: end
+        - font-size: 12px
+        - padding: 0px 0px 0px 0px
+        - color: var(--primary-text-color)
+        - white-space: normal
+    slider:
+      direction: '[[direction]]'
+      background: triangle
+      toggle_on_click: '[[toggle_on_click]]'
+  default:
+    - direction: left-right
+    - toggle_on_click: false
+    - action_button:
+        mode: custom
+        show: true
+        tap_action:
+          action: toggle
