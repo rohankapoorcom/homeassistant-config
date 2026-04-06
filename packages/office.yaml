@@ -158,19 +158,19 @@ template:
             target:
               entity_id: light.center_key_light
             data:
-              color_temp: 143
+              color_temp_kelvin: 6993
               brightness: 51
           - action: light.turn_on
             target:
               entity_id: light.left_key_light
             data:
-              color_temp: 143
+              color_temp_kelvin: 6993
               brightness: 38
           - action: light.turn_on
             target:
               entity_id: light.office_backlighting
             data:
-              color_temp: 156
+              color_temp_kelvin: 6410
               brightness: 255
           - action: light.turn_off
             target:
