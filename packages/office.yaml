@@ -146,11 +146,11 @@ template:
         default_entity_id: light.office_video_lights
         state: >-
           {{ is_state_attr('light.center_key_light', 'brightness', 51)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.center_key_light', 'color_temp_kelvin', 6993)
             and is_state_attr('light.left_key_light', 'brightness', 38)
-            and is_state_attr('light.center_key_light', 'color_temp', 143)
+            and is_state_attr('light.center_key_light', 'color_temp_kelvin', 6993)
             and is_state_attr('light.office_backlighting', 'brightness', 255)
-            and is_state_attr('light.office_backlighting', 'color_temp', 156)
+            and is_state_attr('light.office_backlighting', 'color_temp_kelvin', 6410)
             and is_state('light.office_lights', 'off')
           }}
         turn_on:
