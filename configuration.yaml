@@ -26,6 +26,7 @@ frontend:
   extra_module_url:
     - /hacsfiles/lovelace-card-mod/card-mod.js
     - /hacsfiles/custom-brand-icons/custom-brand-icons.js
+    - /hacsfiles/custom-sidebar/custom-sidebar-plugin.js
 
 lovelace:
   mode: storage
