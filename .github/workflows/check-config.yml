@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out configuration from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Run yamllint
         uses: frenck/action-yamllint@v1
 
@@ -27,7 +27,7 @@ jobs:
       matrix: ${{ steps.determine_version.outputs.matrix }}
     steps:
       - name: Check out configuration from Github
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Determine currently running Home Assistant Core version
         shell: bash
         id: determine_version
@@ -52,7 +52,7 @@ jobs:
         version: ${{ fromJSON(needs.prepare-versions.outputs.matrix) }}
     steps:
       - name: Check out configuration from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Run Home Assistant Core Configuration Check
         uses: frenck/action-home-assistant@v1
         with:
