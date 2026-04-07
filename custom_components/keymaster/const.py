@@ -5,7 +5,7 @@ from enum import StrEnum
 from homeassistant.const import Platform
 
 DOMAIN = "keymaster"
-VERSION = "v0.2.1"
+VERSION = "v0.3.0"
 ISSUE_URL = "https://github.com/FutureTense/keymaster"
 
 # Strategy module constants
@@ -16,6 +16,7 @@ PLATFORMS: list = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
     Platform.DATETIME,
+    Platform.EVENT,
     Platform.NUMBER,
     Platform.SENSOR,
     Platform.SWITCH,
@@ -37,6 +38,7 @@ UNSUB_LISTENERS = "unsub_listeners"
 
 # Events
 EVENT_KEYMASTER_LOCK_STATE_CHANGED = "keymaster_lock_state_changed"
+EVENT_KEYMASTER_CODE_SLOT_RESET = "keymaster_code_slot_reset"
 
 # Event data constants
 ATTR_ACTION_CODE = "action_code"

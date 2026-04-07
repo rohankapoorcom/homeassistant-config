@@ -146,6 +146,14 @@
               action: none
             double_tap_action:
               action: none
+          - entity: event.garage_door_lock_code_slot_1_last_used
+            name: Last Used
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
           - entity: sensor.garage_door_lock_code_slot_1_sync_status
             name: Sync Status
             tap_action:
@@ -232,6 +240,14 @@
               action: none
           - entity: binary_sensor.garage_door_lock_code_slot_2_active
             name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: event.garage_door_lock_code_slot_2_last_used
+            name: Last Used
             tap_action:
               action: none
             hold_action:
@@ -330,6 +346,14 @@
               action: none
             double_tap_action:
               action: none
+          - entity: event.garage_door_lock_code_slot_3_last_used
+            name: Last Used
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
           - entity: sensor.garage_door_lock_code_slot_3_sync_status
             name: Sync Status
             tap_action:
@@ -422,6 +446,14 @@
               action: none
             double_tap_action:
               action: none
+          - entity: event.garage_door_lock_code_slot_4_last_used
+            name: Last Used
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
           - entity: sensor.garage_door_lock_code_slot_4_sync_status
             name: Sync Status
             tap_action:
@@ -508,6 +540,14 @@
               action: none
           - entity: binary_sensor.garage_door_lock_code_slot_5_active
             name: Active
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+          - entity: event.garage_door_lock_code_slot_5_last_used
+            name: Last Used
             tap_action:
               action: none
             hold_action:

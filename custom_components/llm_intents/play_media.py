@@ -3,6 +3,12 @@
 import logging
 
 import voluptuous as vol
+from homeassistant.components.media_player import (
+    MediaPlayerEntityFeature,
+)
+from homeassistant.const import (
+    ATTR_SUPPORTED_FEATURES,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
@@ -113,6 +119,14 @@ def get_video_capable_media_players(
         if not device_class:
             _LOGGER.debug(
                 "Entity %s has no device_class set, skipping",
+                entity.entity_id,
+            )
+            continue
+
+        features = state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+        if not (features & MediaPlayerEntityFeature.PLAY_MEDIA):
+            _LOGGER.debug(
+                "Entity %s does not support MediaPlayerEntityFeature.PLAY_MEDIA, skipping",
                 entity.entity_id,
             )
             continue
@@ -265,11 +279,26 @@ class PlayVideoTool(BaseTool):
             target["device_id"] = device_id
 
         if not target:
-            _LOGGER.warning("play_video called without any target specified")
-            return {
-                "success": False,
-                "error": "Must specify at least one of: entity_id, area, or device_id",
-            }
+            # If there is only a single capable media player, just use it
+            video_players = get_video_capable_media_players(hass, None)
+
+            if not video_players:
+                _LOGGER.warning("No video-capable media players found")
+                return {
+                    "success": False,
+                    "error": "No video-capable media players found in.",
+                }
+
+            if len(video_players) == 1:
+                target["entity_id"] = video_players
+                _LOGGER.debug("Targeting video-capable player: %s", video_players)
+            else:
+                # No player specified and we dont have exactly 1 player result
+                _LOGGER.warning("play_video called without any target specified")
+                return {
+                    "success": False,
+                    "error": "Must specify at least one of: entity_id, area, or device_id",
+                }
 
         # Build a description of the target for messages
         target_desc = entity_id or area_input or device_id
