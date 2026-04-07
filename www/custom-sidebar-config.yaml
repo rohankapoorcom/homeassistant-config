@@ -1,0 +1,28 @@
+---
+# Custom Sidebar — https://elchininet.github.io/custom-sidebar/
+# Loaded from www/ as /local/custom-sidebar-config.yaml
+order:
+  - new_item: true
+    item: Automations
+    href: /config/automation
+    icon: mdi:robot
+    bottom: true
+    order: 1
+  - new_item: true
+    item: Integrations
+    href: /config/integrations
+    icon: mdi:puzzle
+    bottom: true
+    order: 2
+  - new_item: true
+    item: Logs
+    href: /config/logs
+    icon: mdi:text-box-outline
+    bottom: true
+    order: 3
+  - new_item: true
+    item: Dev tools
+    href: /developer-tools
+    icon: mdi:hammer-wrench
+    bottom: true
+    order: 4
