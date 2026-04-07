@@ -76,7 +76,7 @@ automation:
                   entity_id: light.kitchen_cabinet_lights
                 data:
                   brightness_pct: 100
-                  kelvin: 3000
+                  color_temp_kelvin: 3000
                   transition: 2
         scene_5:
           - action: light.toggle
