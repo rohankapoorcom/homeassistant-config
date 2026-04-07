@@ -46,6 +46,7 @@ jobs:
     name: Home Assistant Core ${{ matrix.version }} Config Check
     needs: [yamllint, prepare-versions]
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.version == 'beta' || matrix.version == 'dev' }}
     strategy:
       matrix:
         version: ${{ fromJSON(needs.prepare-versions.outputs.matrix) }}
