@@ -77,6 +77,10 @@ mqtt_discoverystream_alt:
         - switch.office_speakers_mac_mute
         - switch.office_speakers_pc_mute
         - switch.office_webcam_monitor
+        - switch.bt_aux_in_kitchen_mute
+        - switch.bt_aux_in_living_room_mute
+        - switch.bt_aux_in_master_suite_mute
+        - switch.bt_aux_in_office_mute
         - switch.unused_plug
     local_status:
       topic: "homeassistant/status"
