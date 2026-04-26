@@ -5,10 +5,6 @@ cards:
       style: |
         :host {
           height: auto !important;
-          max-width: 480px;
-          margin-left: auto;
-          margin-right: auto;
-          display: block;
         }
         #root {
           gap: 8px;
@@ -117,6 +113,8 @@ cards:
                   icon: mdi:swap-horizontal
     view_layout:
       grid_area: left
+      width: 480px
+      justify-self: center
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr
