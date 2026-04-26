@@ -102,7 +102,7 @@ automation:
     use_blueprint:
       path: rohankapoorcom/motion_light.yaml
       input:
-        motion_entity: binary_sensor.upstairs_hallway_closet_door_window_door_is_open
+        motion_entity: binary_sensor.upstairs_hallway_closet_door_open
         light_target: light.upstairs_hallway_closet_lights
         no_motion_wait: 0
 
