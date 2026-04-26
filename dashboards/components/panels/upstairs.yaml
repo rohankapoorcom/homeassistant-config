@@ -185,8 +185,19 @@ cards:
     square: false
     view_layout:
       grid-area: left-bottom
-  - type: grid
-    cards:
+  - type: custom:mod-card
+    card_mod:
+      style:
+        hui-vertical-stack-card$: |
+          :host {
+            height: auto !important;
+          }
+          #root {
+            gap: 8px;
+          }
+    card:
+      type: vertical-stack
+      cards:
       - type: grid
         cards:
           - type: heading
@@ -344,10 +355,9 @@ cards:
             square: false
         columns: 1
         square: false
-    columns: 1
-    square: false
     view_layout:
       grid-area: right
+      align-self: start
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr

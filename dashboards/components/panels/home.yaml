@@ -1,102 +1,123 @@
 type: custom:layout-card
 cards:
-  - type: custom:layout-card
-    layout_type: vertical
-    cards:
-      - type: grid
-        cards:
-          - type: custom:button-card
-            template: lock_button
-            entity: lock.front_door_lock
-            name: Front Door
-          - type: custom:button-card
-            template: lock_button
-            entity: lock.garage_door_lock
-            name: Garage Door
-          - type: custom:button-card
-            template: lock_button
-            entity: lock.side_door_lock
-            name: Side Door
-          - type: custom:button-card
-            template: lock_button
-            entity: cover.garage_door
-            name: Garage
-        columns: 4
-        square: false
-      - show_name: true
-        show_icon: true
-        show_state: true
-        type: glance
-        entities:
-          - entity: sensor.living_room_temperature
-            name: Living Rm
-          - entity: sensor.master_bedroom_temperature
-            name: Master Bed
-          - entity: sensor.office_temperature
-            name: Office
-          - entity: sensor.garage_temperature
-            name: Garage
-          - entity: sensor.server_rack_exhaust_fan_temperature_1
-            name: Server Rack
-        state_color: false
-      - type: alarm-panel
-        entity: alarm_control_panel.alarmo
-        name: Alarm
-        states:
-          - arm_home
-          - arm_away
+  - type: custom:mod-card
+    card_mod:
+      style:
+        hui-vertical-stack-card$: |
+          :host {
+            height: auto !important;
+          }
+          #root {
+            gap: 8px;
+          }
+    card:
+      type: vertical-stack
+      cards:
+        - type: grid
+          cards:
+            - type: custom:button-card
+              template: lock_button
+              entity: lock.front_door_lock
+              name: Front Door
+            - type: custom:button-card
+              template: lock_button
+              entity: lock.garage_door_lock
+              name: Garage Door
+            - type: custom:button-card
+              template: lock_button
+              entity: lock.side_door_lock
+              name: Side Door
+            - type: custom:button-card
+              template: lock_button
+              entity: cover.garage_door
+              name: Garage
+          columns: 4
+          square: false
+        - show_name: true
+          show_icon: true
+          show_state: true
+          type: glance
+          entities:
+            - entity: sensor.living_room_temperature
+              name: Living Rm
+            - entity: sensor.master_bedroom_temperature
+              name: Master Bed
+            - entity: sensor.office_temperature
+              name: Office
+            - entity: sensor.garage_temperature
+              name: Garage
+            - entity: sensor.server_rack_exhaust_fan_temperature_1
+              name: Server Rack
+          state_color: false
+        - type: alarm-panel
+          entity: alarm_control_panel.alarmo
+          name: Alarm
+          states:
+            - arm_home
+            - arm_away
     view_layout:
       grid-area: left
-  - type: custom:layout-card
-    layout_type: vertical
-    cards:
-      - type: custom:weather-card
-        current: true
-        details: true
-        entity: weather.local_weather
-        forecast: true
-        icons: /hacsfiles/weather-card/icons/
-        number_of_forecasts: '5'
-        card_mod:
-          style: |
-            .temp {
-              margin-top: -25px;
-            }
-
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: U.S. Air Quality Index
-          show_states: true
-          colorize_states: true
-        series:
-          - entity: sensor.u_s_air_quality_index
-            name: Exterior
-          - entity: sensor.living_room_us_air_quality_index
-            name: Living Room
-            group_by:
-              func: avg
-              duration: 30min
-          - entity: sensor.master_bedroom_us_air_quality_index
-            name: Master Bedroom
-            group_by:
-              func: avg
-              duration: 30min
-          - entity: sensor.guest_room_us_air_quality_index
-            name: Guest Room
-            group_by:
-              func: avg
-              duration: 30min
-          - entity: sensor.downstairs_hallway_us_air_quality_index
-            name: Downstairs
-            group_by:
-              func: avg
-              duration: 30min
-        apex_config:
-          legend:
-            show: false
+      align-self: start
+  - type: custom:mod-card
+    card_mod:
+      style:
+        hui-vertical-stack-card$: |
+          :host {
+            height: auto !important;
+          }
+          #root {
+            gap: 8px;
+          }
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:weather-card
+          current: true
+          details: true
+          entity: weather.local_weather
+          forecast: true
+          icons: /hacsfiles/weather-card/icons/
+          number_of_forecasts: '5'
+          card_mod:
+            style: |
+              .temp {
+                margin-top: -25px;
+              }
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: U.S. Air Quality Index
+            show_states: true
+            colorize_states: true
+          series:
+            - entity: sensor.u_s_air_quality_index
+              name: Exterior
+            - entity: sensor.living_room_us_air_quality_index
+              name: Living Room
+              group_by:
+                func: avg
+                duration: 30min
+            - entity: sensor.master_bedroom_us_air_quality_index
+              name: Master Bedroom
+              group_by:
+                func: avg
+                duration: 30min
+            - entity: sensor.guest_room_us_air_quality_index
+              name: Guest Room
+              group_by:
+                func: avg
+                duration: 30min
+            - entity: sensor.downstairs_hallway_us_air_quality_index
+              name: Downstairs
+              group_by:
+                func: avg
+                duration: 30min
+          apex_config:
+            legend:
+              show: false
     view_layout:
       grid-area: right
+      align-self: start
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr

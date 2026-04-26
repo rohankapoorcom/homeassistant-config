@@ -1,8 +1,22 @@
 type: custom:layout-card
 cards:
-  - type: custom:layout-card
-    layout_type: vertical
-    cards:
+  - type: custom:mod-card
+    card_mod:
+      style:
+        hui-vertical-stack-card$: |
+          :host {
+            height: auto !important;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+          }
+          #root {
+            gap: 8px;
+          }
+    card:
+      type: vertical-stack
+      cards:
       - type: grid
         columns: 6
         square: false
