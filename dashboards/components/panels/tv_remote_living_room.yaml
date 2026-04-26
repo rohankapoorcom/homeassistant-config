@@ -119,18 +119,8 @@ cards:
             variables:
               - entity: light.kitchen_lights
               - name: Kitchen
-    view_layout:
-      grid_area: left
-layout_type: custom:grid-layout
+layout_type: vertical
 layout:
-  grid-template-columns: 1fr 480px 1fr
-  grid-template-rows: auto
-  grid-template-areas: |
-    ". left ."
-  mediaquery:
-    '(max-width: 800px)':
-      grid-template-columns: 1fr
-      grid-template-areas: |
-        "left"
+  width: 480
 view_layout:
   grid-area: main
