@@ -14,7 +14,7 @@ cards:
               - type: entity
                 entity: sensor.weather_station_indoor_humidity
               - type: entity
-                entity: binary_sensor.kitchen_window_window_door_is_open
+                entity: binary_sensor.kitchen_window_open
           - type: grid
             cards:
               - type: custom:decluttering-card
@@ -117,7 +117,7 @@ cards:
               - type: entity
                 entity: sensor.master_bedroom_air_quality_score
               - type: entity
-                entity: binary_sensor.master_bedroom_sliding_door_window_door_is_open
+                entity: binary_sensor.master_bedroom_sliding_door_open
           - type: grid
             cards:
               - type: custom:decluttering-card
@@ -209,7 +209,7 @@ cards:
               - type: entity
                 entity: binary_sensor.upstairs_hallway_motion
               - type: entity
-                entity: binary_sensor.front_door_window_door_is_open
+                entity: binary_sensor.front_door_open
           - type: grid
             cards:
               - type: custom:decluttering-card
@@ -240,7 +240,7 @@ cards:
               - type: entity
                 entity: binary_sensor.office_lights_occupancy
               - type: entity
-                entity: binary_sensor.office_sliding_door_window_door_is_open
+                entity: binary_sensor.office_sliding_door_open
           - type: grid
             cards:
               - type: custom:decluttering-card

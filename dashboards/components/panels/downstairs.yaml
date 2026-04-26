@@ -57,7 +57,7 @@ cards:
               - type: entity
                 entity: sensor.guest_room_air_quality_score
               - type: entity
-                entity: binary_sensor.guest_room_sliding_door_window_door_is_open
+                entity: binary_sensor.guest_room_sliding_door_open
           - type: grid
             cards:
               - type: custom:decluttering-card
@@ -169,7 +169,7 @@ cards:
               - type: entity
                 entity: sensor.gym_sensor_humidity
               - type: entity
-                entity: binary_sensor.gym_sliding_door_window_door_is_open
+                entity: binary_sensor.gym_sliding_door_open
           - type: grid
             cards:
               - type: custom:decluttering-card
