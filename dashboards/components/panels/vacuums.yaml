@@ -3,6 +3,12 @@ cards:
   - type: custom:mod-card
     card_mod:
       style:
+        ha-card$: |
+          :host {
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
         hui-vertical-stack-card$: |
           :host {
             height: auto !important;
@@ -349,6 +355,12 @@ cards:
   - type: custom:mod-card
     card_mod:
       style:
+        ha-card$: |
+          :host {
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
         hui-vertical-stack-card$: |
           :host {
             height: auto !important;
