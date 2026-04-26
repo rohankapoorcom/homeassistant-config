@@ -121,14 +121,12 @@ cards:
               - name: Kitchen
     view_layout:
       grid_area: left
-      width: 480px
-      justify-self: center
 layout_type: custom:grid-layout
 layout:
-  grid-template-columns: 1fr
+  grid-template-columns: 1fr 480px 1fr
   grid-template-rows: auto
   grid-template-areas: |
-    "left"
+    ". left ."
   mediaquery:
     '(max-width: 800px)':
       grid-template-columns: 1fr
