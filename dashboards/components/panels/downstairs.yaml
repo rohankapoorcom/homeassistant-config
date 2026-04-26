@@ -147,25 +147,16 @@ cards:
     square: false
     view_layout:
       grid-area: left-bottom
-  - type: custom:mod-card
+  - type: vertical-stack
     card_mod:
-      style:
-        ha-card$: |
-          :host {
-            background: none !important;
-            box-shadow: none !important;
-            border: none !important;
-          }
-        hui-vertical-stack-card$: |
-          :host {
-            height: auto !important;
-          }
-          #root {
-            gap: 8px;
-          }
-    card:
-      type: vertical-stack
-      cards:
+      style: |
+        :host {
+          height: auto !important;
+        }
+        #root {
+          gap: 8px;
+        }
+    cards:
       - type: grid
         cards:
           - type: heading
