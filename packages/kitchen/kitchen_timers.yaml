@@ -116,8 +116,9 @@ automation:
             data:
               title: "⏱️ Timer Expired"
               message: "{{ timer_label | default('Timer') }} has completed!"
-              channel: Timers
-              importance: high
-              notification_icon: mdi:timer-outline
+              data:
+                channel: Timers
+                importance: high
+                notification_icon: mdi:timer-outline
 
     mode: single
