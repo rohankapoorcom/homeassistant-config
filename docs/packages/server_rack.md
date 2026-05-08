@@ -134,8 +134,10 @@ The server rack package provides:
 - **Conditions**:
   - Safety check: Verify at least one sensor is on battery power to prevent false notifications
 - **Actions**:
+  - Plays a brief audible attention prompt via `tts.speak` (using `tts.speaches` with the `af_heart` voice) on `media_player.announcements` to alert that the server rack has been running on battery power
   - Sends notification via `notify.rohan_kapoor` service
   - Dynamic alert message with comprehensive battery information
+  - Tapping the mobile notification opens the Power dashboard view (`/my-home/power`) directly in the Home Assistant companion app via `url` (iOS) and `clickAction` (Android)
 - **Mode**: Single
 
 ### Server Rack Exhaust Fan Max Speed Control

@@ -394,9 +394,25 @@ automation:
           {% set ups_battery = is_state('sensor.ups_source', 'Battery') %}
           {{ server_rack_battery or ups_battery }}
     actions:
+      - alias: "Audible announcement of the battery power alert"
+        action: tts.speak
+        target:
+          entity_id: tts.speaches
+        data:
+          cache: true
+          language: en
+          options:
+            voice: af_heart
+          media_player_entity_id:
+            - media_player.announcements
+          message: "Heads up. The server rack has been on battery power for ten minutes."
+
       - action: notify.rohan_kapoor
         data:
           title: 'Server Rack Battery Power Alert'
+          data:
+            url: "/my-home/power"
+            clickAction: "/my-home/power"
           message: |-
             {% set server_rack_battery = is_state('sensor.server_rack_backup_power_source', 'Battery') %}
             {% set ups_battery = is_state('sensor.ups_source', 'Battery') %}
