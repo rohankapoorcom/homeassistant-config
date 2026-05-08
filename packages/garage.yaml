@@ -320,5 +320,6 @@ automation:
           message: >-
             The mailbox was opened at {{ now().strftime('%I:%M %p on %m/%d/%Y') }}.
             Your mail has been delivered.
-          channel: Mailbox
-          notification_icon: mdi:mailbox-open
+          data:
+            channel: Mailbox
+            notification_icon: mdi:mailbox-open
