@@ -1,7 +1,7 @@
 # Garage Package Documentation
 
 ## Overview
-The garage package manages comprehensive garage automation including lighting control, motion detection, garage door control, and tablet management. This package provides intelligent garage lighting, motion-activated controls, garage door integration, and automated tablet screen management for enhanced garage functionality and security.
+The garage package manages comprehensive garage automation including lighting control, motion detection, garage door control, tablet management, and mail delivery notifications. This package provides intelligent garage lighting, motion-activated controls, garage door integration, automated tablet screen management, and mailbox monitoring for enhanced garage functionality and security.
 
 ## Configuration Files
 - `packages/garage.yaml`: Main garage configuration
@@ -14,6 +14,7 @@ The garage package provides:
 - **Tablet Management**: Automated tablet screen control
 - **Multi-Trigger Automation**: Multiple trigger conditions for comprehensive control
 - **Timed Shutdown**: Automatic shutdown with extended delay periods
+- **Mail Delivery Notification**: Push notification to mobile apps when the garage mailbox is opened
 
 ## Key Components
 
@@ -78,6 +79,12 @@ The garage package provides:
   - **Function**: Door area specific lighting
   - **Integration**: Door state-based control
 
+### Contact Sensors
+- `binary_sensor.mailbox`: Garage mailbox open/closed contact sensor
+  - **Function**: Detects when the garage mailbox door is opened (state `on` = open)
+  - **Triggers**: Mail delivery notification when transitioning from `off` to `on`
+  - **Use Case**: Alerts when mail has been delivered (mail retrieval does not open the mailbox door)
+
 ## Automations
 
 ### Control the Garage Lights
@@ -133,6 +140,26 @@ The automation includes sophisticated logic:
   2. Set the garage vacuum fan speed to max
   3. Start the garage cleaning run
 
+### Mail Delivery Notification
+- **ID**: `4fb7f87f-ca32-42a2-9ab5-b34be314de5d`
+- **Description**: Notifies when the garage mailbox is opened, indicating mail has been delivered
+- **Mode**: Single (prevents duplicate notifications during a single delivery event)
+- **Triggers**:
+  - `binary_sensor.mailbox` state change from `off` to `on`
+- **Actions**:
+  - Send mobile push notification via `notify.rohan_kapoor_mobile_apps`
+  - Title: `📬 Mail Delivered`
+  - Message includes timestamp of the mailbox opening
+  - Channel: `Mailbox` (allows independent notification preferences on Android)
+  - Icon: `mdi:mailbox-open`
+
+### Mail Delivery Logic
+- **Reactive Only**: No startup triggers - this is a purely reactive automation
+- **Explicit Transition**: Uses explicit `from: 'off'` and `to: 'on'` to avoid false alerts when the sensor recovers from `unavailable`
+- **Single Mode**: Prevents stacked notifications if the sensor briefly bounces during a delivery event
+- **Mobile-Only Target**: Uses `notify.rohan_kapoor_mobile_apps` rather than the full `notify.rohan_kapoor` group, since mail delivery does not warrant an email
+- **No Retrieval False-Positives**: Mail retrieval does not open the mailbox door, so every `off` → `on` transition reliably indicates a delivery
+
 ## Dependencies
 - **Motion Sensors**: Multiple motion sensor integration
 - **Garage Door**: Garage door control and monitoring
@@ -178,6 +205,7 @@ The garage package provides several interaction methods:
 
 ## Related Files
 - `packages/garage.yaml`: Main garage package configuration
+- `packages/notifications.yaml`: Defines the `notify.rohan_kapoor_mobile_apps` group used for mail delivery alerts
 - `packages/security.yaml`: Security system integration
 - `dashboards/home.yaml`: Garage dashboard display
 
@@ -189,3 +217,5 @@ The garage package provides several interaction methods:
 - Restart mode with silent error handling ensures reliable operation
 - The package integrates with security system for enhanced security
 - Custom attributes store package information for consistent operation
+- The mailbox sensor lives in the garage, not at the front door, since mail
+  is delivered through a slot in the garage

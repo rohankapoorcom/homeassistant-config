@@ -300,3 +300,25 @@ automation:
       - action: vacuum.start
         target:
           entity_id: vacuum.valetudo_garage_vacuum
+
+  - id: 4fb7f87f-ca32-42a2-9ab5-b34be314de5d
+    alias: Mail Delivery Notification
+    description: >-
+      Notifies when the garage mailbox is opened, indicating mail has been
+      delivered. Triggered by binary_sensor.mailbox transitioning from
+      closed to open.
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.mailbox
+        from: 'off'
+        to: 'on'
+    actions:
+      - action: notify.rohan_kapoor_mobile_apps
+        data:
+          title: '📬 Mail Delivered'
+          message: >-
+            The mailbox was opened at {{ now().strftime('%I:%M %p on %m/%d/%Y') }}.
+            Your mail has been delivered.
+          channel: Mailbox
+          notification_icon: mdi:mailbox-open
