@@ -23,156 +23,180 @@ cards:
             predefined_selections:
               - id: '1'
                 icon:
-                  name: mdi:shower
-                  x: 2462
-                  'y': 3340
-                label:
-                  text: Master Bathroom
-                  x: 2462
-                  'y': 3340
-                  offset_y: 35
-                outline:
-                  - - 2345
-                    - 3250
-                  - - 2580
-                    - 3250
-                  - - 2580
-                    - 3430
-                  - - 2345
-                    - 3430
-              - id: '2'
-                icon:
-                  name: mdi:toilet
-                  x: 2687
-                  'y': 3332
-                label:
-                  text: Hallway Bathroom
-                  x: 2687
-                  'y': 3332
-                  offset_y: 35
-                outline:
-                  - - 2605
-                    - 3235
-                  - - 2770
-                    - 3235
-                  - - 2770
-                    - 3430
-                  - - 2605
-                    - 3430
-              - id: '3'
-                icon:
-                  name: mdi:floor-plan
-                  x: 2767
-                  'y': 3475
-                label:
-                  text: Hallway
-                  x: 2767
-                  'y': 3475
-                  offset_y: 35
-                outline:
-                  - - 2390
-                    - 3410
-                  - - 3145
-                    - 3410
-                  - - 3145
-                    - 3560
-                  - - 2390
-                    - 3560
-              - id: '4'
-                icon:
-                  name: mdi:bed-king
-                  x: 2202
-                  'y': 3392
-                label:
-                  text: Master Bedroom
-                  x: 2202
-                  'y': 3392
-                  offset_y: 35
-                outline:
-                  - - 2005
-                    - 3210
-                  - - 2400
-                    - 3210
-                  - - 2400
-                    - 3575
-                  - - 2005
-                    - 3575
-              - id: '6'
-                icon:
                   name: mdi:sofa
-                  x: 3235
-                  'y': 3507
+                  x: 3502
+                  'y': 3312
                 label:
                   text: Living Room
-                  x: 3235
-                  'y': 3507
+                  x: 3502
+                  'y': 3312
                   offset_y: 35
                 outline:
-                  - - 2965
-                    - 3200
-                  - - 3505
-                    - 3200
-                  - - 3505
-                    - 3815
-                  - - 2965
-                    - 3815
-              - id: '7'
+                  - - 3215
+                    - 3075
+                  - - 3215
+                    - 3400
+                  - - 3530
+                    - 3400
+                  - - 3530
+                    - 3550
+                  - - 3790
+                    - 3550
+                  - - 3790
+                    - 3075
+                  - - 3215
+                    - 3075
+              - id: '2'
                 icon:
                   name: mdi:stove
-                  x: 2820
+                  x: 3705
                   'y': 3707
                 label:
                   text: Kitchen
-                  x: 2820
+                  x: 3705
                   'y': 3707
                   offset_y: 35
                 outline:
-                  - - 2675
-                    - 3520
-                  - - 2965
-                    - 3520
-                  - - 2965
-                    - 3895
-                  - - 2675
-                    - 3895
-              - id: '9'
+                  - - 3565
+                    - 3860
+                  - - 3565
+                    - 3555
+                  - - 3690
+                    - 3555
+                  - - 3690
+                    - 3635
+                  - - 3870
+                    - 3635
+                  - - 3870
+                    - 3860
+                  - - 3565
+                    - 3860
+              - id: '3'
                 icon:
-                  name: mdi:monitor
-                  x: 2197
-                  'y': 3742
+                  name: mdi:toilet
+                  x: 3332
+                  'y': 3857
                 label:
-                  text: Office
-                  x: 2197
-                  'y': 3742
+                  text: Hallway Bathroom
+                  x: 3332
+                  'y': 3857
                   offset_y: 35
                 outline:
-                  - - 1985
-                    - 3540
-                  - - 2410
-                    - 3540
-                  - - 2410
-                    - 3945
-                  - - 1985
-                    - 3945
-              - id: '10'
+                  - - 3245
+                    - 3780
+                  - - 3420
+                    - 3780
+                  - - 3420
+                    - 3935
+                  - - 3245
+                    - 3935
+              - id: '4'
                 icon:
                   name: mdi:table-chair
-                  x: 2970
-                  'y': 3322
+                  x: 3322
+                  'y': 3572
                 label:
                   text: Dining Room
-                  x: 2970
-                  'y': 3322
+                  x: 3322
+                  'y': 3572
                   offset_y: 35
                 outline:
-                  - - 2795
-                    - 3200
-                  - - 3145
-                    - 3200
-                  - - 3145
-                    - 3445
-                  - - 2795
-                    - 3445
+                  - - 3215
+                    - 3400
+                  - - 3430
+                    - 3400
+                  - - 3430
+                    - 3745
+                  - - 3215
+                    - 3745
+              - id: '5'
+                icon:
+                  name: mdi:floor-plan
+                  x: 3475
+                  'y': 3757
+                label:
+                  text: Hallway
+                  x: 3475
+                  'y': 3757
+                  offset_y: 35
+                outline:
+                  - - 3425
+                    - 3400
+                  - - 3425
+                    - 4115
+                  - - 3680
+                    - 4115
+                  - - 3680
+                    - 4035
+                  - - 3530
+                    - 4035
+                  - - 3530
+                    - 3400
+                  - - 3425
+                    - 3400
+              - id: '6'
+                icon:
+                  name: mdi:shower
+                  x: 3312
+                  'y': 4077
+                label:
+                  text: Master Bathroom
+                  x: 3312
+                  'y': 4077
+                  offset_y: 35
+                outline:
+                  - - 3210
+                    - 3965
+                  - - 3415
+                    - 3965
+                  - - 3415
+                    - 4190
+                  - - 3210
+                    - 4190
+              - id: '7'
+                icon:
+                  name: mdi:monitor
+                  x: 3752
+                  'y': 4335
+                label:
+                  text: Office
+                  x: 3752
+                  'y': 4335
+                  offset_y: 35
+                outline:
+                  - - 3580
+                    - 4115
+                  - - 3925
+                    - 4115
+                  - - 3925
+                    - 4555
+                  - - 3580
+                    - 4555
+              - id: '8'
+                icon:
+                  name: mdi:bed-king
+                  x: 3357
+                  'y': 4337
+                label:
+                  text: Master Bedroom
+                  x: 3357
+                  'y': 4337
+                  offset_y: 35
+                outline:
+                  - - 3240
+                    - 4555
+                  - - 3240
+                    - 4190
+                  - - 3415
+                    - 4190
+                  - - 3415
+                    - 4120
+                  - - 3575
+                    - 4120
+                  - - 3575
+                    - 4555
+                  - - 3240
+                    - 4555
           - template: vacuum_clean_zone
           - template: vacuum_goto
         map_locked: true
