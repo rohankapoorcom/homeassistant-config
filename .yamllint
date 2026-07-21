@@ -5,6 +5,7 @@ ignore: |
   !blueprints/*/rohankapoorcom/*.yaml
   custom_components/
   dashboards/
+  esphome/
   ip_bans.yaml
   packages/weatherman.yaml
   scenes.yaml
