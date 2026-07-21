@@ -1,0 +1,206 @@
+---
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+
+external_components:
+  - source: github://emporia-vue-local/esphome@dev
+    components:
+      - emporia_vue
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+    version: recommended
+
+preferences:
+  # the default of 1min is far too short--flash chip is rated
+  # for approx 100k writes.
+  flash_write_interval: "48h"
+
+output:
+  - platform: ledc
+    pin: GPIO12
+    id: buzzer
+  - platform: gpio
+    pin: GPIO27
+    id: buzzer_gnd
+
+rtttl:
+  output: buzzer
+  on_finished_playback:
+    - logger.log: 'Song ended!'
+
+button:
+  - platform: template
+    name: "Two Beeps"
+    on_press:
+      - rtttl.play: "two short:d=4,o=5,b=100:16e6,16e6"
+
+light:
+  - platform: status_led
+    name: "D3_LED"
+    pin: 23
+    restore_mode: ALWAYS_ON
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: false
+  frequency: 200kHz  # recommended range is 50-200kHz
+  id: i2c_a
+
+# these are called references in YAML. They allow you to reuse
+# this configuration in each sensor, while only defining it once
+.defaultfilters:
+  - &moving_avg
+    # we capture a new sample every 0.24 seconds, so the time can
+    # be calculated from the number of samples as n * 0.24.
+    sliding_window_moving_average:
+      # we average over the past 2.88 seconds
+      window_size: 12
+      # we push a new value every 1.44 seconds
+      send_every: 6
+  - &invert
+    # invert and filter out any values below 0.
+    lambda: 'return max(-x, 0.0f);'
+  - &pos
+    # filter out any values below 0.
+    lambda: 'return max(x, 0.0f);'
+  - &abs
+    # take the absolute value of the value
+    lambda: 'return abs(x);'
+  # Reduce noise in the power class
+  - &power_max
+    or:
+      - delta: 5
+      - throttle: 60s
+  - &power_min
+    throttle: 3s
+  - &throttle_energy
+    or:
+      - delta: 10
+      - throttle: 60s
+
+sensor:
+  - platform: emporia_vue
+    id: energy_monitor
+    i2c_id: i2c_a
+    phases:
+      - id: phase_a  # Verify that this specific phase/leg is connected to correct input wire color on device listed below
+        input: RED  # Vue device wire color
+        calibration: $phasea_calibration  # 0.022 is used as the default as starting point but may need adjusted to ensure accuracy
+        # To calculate new calibration value use the formula  *  /
+        voltage:
+          name: "Phase A Voltage"
+          filters: [*moving_avg, *pos]
+      - id: phase_b  # Verify that this specific phase/leg is connected to correct input wire color on device listed below
+        input: BLACK  # Vue device wire color
+        calibration: $phaseb_calibration  # 0.022 is used as the default as starting point but may need adjusted to ensure accuracy
+        # To calculate new calibration value use the formula <in-use calibration value> * <accurate voltage> / <reporting voltage>
+        voltage:
+          name: "Phase B Voltage"
+          filters: [*moving_avg, *pos]
+    ct_clamps:
+      - phase_id: phase_a
+        input: "A"  # Verify the CT going to this device input also matches the phase/leg
+        power:
+          name: "Phase A Power"
+          id: phase_a_power
+          device_class: power
+          filters: [*moving_avg, *pos]
+      - phase_id: phase_b
+        input: "B"  # Verify the CT going to this device input also matches the phase/leg
+        power:
+          name: "Phase B Power"
+          id: phase_b_power
+          device_class: power
+          filters: [*moving_avg, *pos]
+      # Pay close attention to set the phase_id for each breaker by matching it to the phase/leg it connects to in the panel
+      - { phase_id: $cir1_phase, input:  "1", power: { name:  "$cir1_name Power", id:  cir1_internal_unmodified, internal: true } }
+      - { phase_id: $cir2_phase, input:  "2", power: { name:  "$cir2_name Power", id:  cir2_internal_unmodified, internal: true } }
+      - { phase_id: $cir3_phase, input:  "3", power: { name:  "$cir3_name Power", id:  cir3_internal_unmodified, internal: true } }
+      - { phase_id: $cir4_phase, input:  "4", power: { name:  "$cir4_name Power", id:  cir4_internal_unmodified, internal: true } }
+      - { phase_id: $cir5_phase, input:  "5", power: { name:  "$cir5_name Power", id:  cir5_internal_unmodified, internal: true } }
+      - { phase_id: $cir6_phase, input:  "6", power: { name:  "$cir6_name Power", id:  cir6_internal_unmodified, internal: true } }
+      - { phase_id: $cir7_phase, input:  "7", power: { name:  "$cir7_name Power", id:  cir7_internal_unmodified, internal: true } }
+      - { phase_id: $cir8_phase, input:  "8", power: { name:  "$cir8_name Power", id:  cir8_internal_unmodified, internal: true } }
+      - { phase_id: $cir9_phase, input:  "9", power: { name:  "$cir9_name Power", id:  cir9_internal_unmodified, internal: true } }
+      - { phase_id: $cir10_phase, input: "10", power: { name: "$cir10_name Power", id: cir10_internal_unmodified, internal: true } }
+      - { phase_id: $cir11_phase, input: "11", power: { name: "$cir11_name Power", id: cir11_internal_unmodified, internal: true } }
+      - { phase_id: $cir12_phase, input: "12", power: { name: "$cir12_name Power", id: cir12_internal_unmodified, internal: true } }
+      - { phase_id: $cir13_phase, input: "13", power: { name: "$cir13_name Power", id: cir13_internal_unmodified, internal: true } }
+      - { phase_id: $cir14_phase, input: "14", power: { name: "$cir14_name Power", id: cir14_internal_unmodified, internal: true } }
+      - { phase_id: $cir15_phase, input: "15", power: { name: "$cir15_name Power", id: cir15_internal_unmodified, internal: true } }
+      - { phase_id: $cir16_phase, input: "16", power: { name: "$cir16_name Power", id: cir16_internal_unmodified, internal: true } }
+
+  - { platform: copy, name:  "$cir1_name Power", id:  cir1_internal, source_id: cir1_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir2_name Power", id:  cir2_internal, source_id: cir2_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir3_name Power", id:  cir3_internal, source_id: cir3_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir4_name Power", id:  cir4_internal, source_id: cir4_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir5_name Power", id:  cir5_internal, source_id: cir5_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir6_name Power", id:  cir6_internal, source_id: cir6_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir7_name Power", id:  cir7_internal, source_id: cir7_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir8_name Power", id:  cir8_internal, source_id: cir8_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name:  "$cir9_name Power", id:  cir9_internal, source_id: cir9_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir10_name Power", id: cir10_internal, source_id: cir10_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir11_name Power", id: cir11_internal, source_id: cir11_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir12_name Power", id: cir12_internal, source_id: cir12_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir13_name Power", id: cir13_internal, source_id: cir13_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir14_name Power", id: cir14_internal, source_id: cir14_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir15_name Power", id: cir15_internal, source_id: cir15_internal_unmodified, filters: [ *pos ], internal: true }
+  - { platform: copy, name: "$cir16_name Power", id: cir16_internal, source_id: cir16_internal_unmodified, filters: [ *pos ], internal: true }
+
+  - { platform: copy, name:  "$cir1_name Power", id:  cir1, source_id: cir1_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir2_name Power", id:  cir2, source_id: cir2_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir3_name Power", id:  cir3, source_id: cir3_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir4_name Power", id:  cir4, source_id: cir4_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir5_name Power", id:  cir5, source_id: cir5_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir6_name Power", id:  cir6, source_id: cir6_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir7_name Power", id:  cir7, source_id: cir7_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir8_name Power", id:  cir8, source_id: cir8_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name:  "$cir9_name Power", id:  cir9, source_id: cir9_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir10_name Power", id: cir10, source_id: cir10_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir11_name Power", id: cir11, source_id: cir11_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir12_name Power", id: cir12, source_id: cir12_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir13_name Power", id: cir13, source_id: cir13_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir14_name Power", id: cir14, source_id: cir14_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir15_name Power", id: cir15, source_id: cir15_internal, filters: [ *power_min, *power_max ] }
+  - { platform: copy, name: "$cir16_name Power", id: cir16, source_id: cir16_internal, filters: [ *power_min, *power_max ] }
+
+  - platform: template
+    name: "Total Power"
+    lambda: return id(phase_a_power).state + id(phase_b_power).state;
+    update_interval: 1s
+    id: total_power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: "W"
+
+  - name: "Total Daily Energy"
+    power_id: total_power
+    platform: total_daily_energy
+    accuracy_decimals: 0
+    restore: false
+    unit_of_measurement: Wh
+    state_class: total_increasing
+    device_class: energy
+    filters: [ *throttle_energy ]
+
+  - { power_id:  cir1_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir1_name Daily Energy", id: cir1_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir2_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir2_name Daily Energy", id: cir2_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir3_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir3_name Daily Energy", id: cir3_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir4_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir4_name Daily Energy", id: cir4_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir5_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir5_name Daily Energy", id: cir5_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir6_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir6_name Daily Energy", id: cir6_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir7_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir7_name Daily Energy", id: cir7_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir8_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir8_name Daily Energy", id: cir8_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id:  cir9_internal, platform: total_daily_energy, accuracy_decimals: 0, name:  "$cir9_name Daily Energy", id: cir9_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir10_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir10_name Daily Energy", id: cir10_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir11_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir11_name Daily Energy", id: cir11_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir12_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir12_name Daily Energy", id: cir12_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir13_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir13_name Daily Energy", id: cir13_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir14_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir14_name Daily Energy", id: cir14_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir15_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir15_name Daily Energy", id: cir15_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }
+  - { power_id: cir16_internal, platform: total_daily_energy, accuracy_decimals: 0, name: "$cir16_name Daily Energy", id: cir16_daily_energy, restore: false, unit_of_measurement: Wh, state_class: total_increasing, device_class: energy, filters: [ *throttle_energy ] }

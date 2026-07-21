@@ -1,0 +1,16 @@
+---
+esp32_ble_tracker:
+  scan_parameters:
+    interval: 1000ms
+    window: 900ms
+    active: true
+# Bluetooth LED blinks when receiving Bluetooth advertising
+  on_ble_advertise:
+    then:
+      - output.turn_on: bluetooth_led
+      - delay: 0.5s
+      - output.turn_off: bluetooth_led
+
+bluetooth_proxy:
+  active: true
+

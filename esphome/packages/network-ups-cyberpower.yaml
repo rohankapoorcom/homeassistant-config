@@ -1,0 +1,53 @@
+packages:
+  remote_package:
+    url: https://github.com/bullshit/esphome-components
+    ref: main
+    files: ['configs/extended_sensors.yaml', 'configs/ups_controls.yaml']
+    refresh: 1s
+  
+sensor:
+  - id: !remove input_frequency
+  - id: !extend ups_delay_shutdown
+    entity_category: diagnostic
+  - id: !extend ups_delay_start
+    entity_category: diagnostic
+  - id: !extend ups_delay_reboot
+    entity_category: diagnostic
+
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Battery Charge Low Threshold"
+    id: battery_charge_low
+    type: battery_charge_low
+    unit_of_measurement: "%"
+    device_class: battery
+    state_class: measurement
+    accuracy_decimals: 0
+
+  - id: !extend ups_load_power
+    lambda: |-
+      if (!std::isnan(id(load_percentage).state)) {
+        float cp_max_power = 1000.0; // CP1500 default: 900W
+
+        // Use HID nominal power if available (from extended sensors)
+        if (!std::isnan(id(ups_realpower_nominal).state)) {
+          cp_max_power = id(ups_realpower_nominal).state;
+        }
+
+        return (cp_max_power * id(load_percentage).state) / 100.0;
+      }
+      return NAN;
+    update_interval: 30s
+
+
+text_sensor:
+  - id: !remove firmware_aux
+  - id: !remove ups_manufacture_date
+  - id: !extend ups_serial_number
+    entity_category: diagnostic
+  - id: !extend ups_firmware_version
+    entity_category: diagnostic
+  - id: !extend ups_beeper_status
+    entity_category: diagnostic
+  - id: !extend input_sensitivity
+    entity_category: diagnostic

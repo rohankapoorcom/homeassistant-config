@@ -1,0 +1,28 @@
+esphome:
+  name: "${device_name}"
+  friendly_name: "${friendly_name}"
+  platformio_options:
+    build_flags: -DBOARD_HAS_PSRAM
+    board_build.arduino.memory_type: qio_opi
+    board_build.f_flash: 80000000L
+    board_build.flash_mode: qio 
+
+esp32:
+  board: esp32-s3-devkitc-1
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+ethernet:
+  type: W5500
+  cs_pin: GPIO2
+  clk_pin: GPIO7
+  miso_pin: GPIO8
+  mosi_pin: GPIO9
+  domain: "${ethernet_domain}"
+  id: network_ethernet
+
+output:
+  - platform: gpio
+    pin: GPIO1
+    id: user_led

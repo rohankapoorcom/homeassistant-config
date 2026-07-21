@@ -1,0 +1,67 @@
+---
+substitutions:
+  device_name: garage-door-keypad
+  friendly_name: Garage Door Keypad
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  ethernet_domain: !secret wifi_domain
+
+logger:
+  level: DEBUG
+
+packages:
+  base: !include packages/base.yaml
+  wesp32: !include packages/wesp32.yaml
+
+wiegand:
+  - id: weigand_reader
+    d0: GPIO15
+    d1: GPIO4
+    on_tag:
+      - lambda: ESP_LOGD("TEST", "xreceived tag %s", x.c_str());
+      # - lambda: id(handle_input).execute(("CARD:" + x).c_str());
+
+key_collector:
+  - id: pin_reader
+    source_id: weigand_reader
+    min_length: 4
+    max_length: 8
+    end_keys: "*"
+    end_key_required: true
+    timeout: 5s
+    allowed_keys: "0123456789"
+    on_result:
+      - logger.log: 
+          format: "input result: '%s', started by '%c', ended by '%c'"
+          args: [ 'x.c_str()', 'start', 'end' ]
+      - lambda: |-
+          for (auto item: id(approved_pins)) {
+            if (item == x.c_str()) {
+              id(toggle_garage_door).execute();
+              break;
+            }
+          }
+
+script:
+  - id: toggle_garage_door
+    mode: restart
+    then:
+      - homeassistant.service:
+          service: button.press
+          data:
+            entity_id: button.garage_door_toggle_door
+
+globals:
+  - id: approved_pins
+    type: std::vector<std::string>
+    restore_value: False
+    initial_value: !secret garage_door_keypad.approved_pins
+
+  # - id: approved_pins
+  #   type: std::map<std::string, std::string>
+  #   restore_value: False
+  #   initial_value: |-
+  #     {
+  #       {"1234", "Rohan"}
+  #     }

@@ -1,0 +1,81 @@
+---
+substitutions:
+  device_name: standing-desk
+  friendly_name: Standing Desk
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  wifi_domain: !secret wifi_domain
+  
+  desk_height_name: "Desk Height"
+  target_desk_height_name: "Target Desk Height"
+
+  # Standing Desk Component Config
+  standing_desk_uart_rx_pin: "17"
+  standing_desk_up_pin: "21"
+  standing_desk_down_pin: "22"
+  standing_desk_min_height: "29.1"
+  standing_desk_max_height: "54.0"
+
+  # Presets Addon Config
+  button_bit1_pin: "21"
+  button_bit2_pin: "22"
+  button_bit4_pin: "19"
+  button_m_pin: "18"
+
+  # Runtime Config Defaults
+  default_height_units: "in" # Must be "in" or "cm"
+
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+  min_version: "2023.5.1"
+  on_boot:
+    then:
+      # Wakes up the desk and reports height
+      - uart.write:
+          id: handset_tx
+          data: [ 0x0 ]
+  project:
+    name: tj_horner.upsy_desky
+    version: "1.1.1"
+
+uart:
+  id: handset_tx
+  tx_pin: 16
+  baud_rate: 9600
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+packages:
+  base: !include packages/base.yaml
+  wifi: !include packages/wifi.yaml
+  standing_desk: github://tjhorner/esphome-standing-desk/configs/template.yaml
+  addon_presets: github://tjhorner/upsy-desky/firmware/addons/presets.yaml
+  addon_stable_ids: github://tjhorner/upsy-desky/firmware/addons/stable-ids.yaml
+  addon_runtime_config: github://tjhorner/upsy-desky/firmware/addons/runtime-config.yaml
+
+light:
+  - platform: status_led
+    id: upsy_desky_status_led
+    name: "Status LED"
+    pin: GPIO23
+    restore_mode: RESTORE_DEFAULT_ON
+
+external_components:
+  - source: github://tjhorner/esphome-custom-components
+    components: [ project_version ]
+
+text_sensor:
+  - platform: project_version
+    name: "Upsy Desky Firmware Version"
+    internal: true
+
+web_server:
+  port: 80
+  js_url: "https://upsy-desky.tjhorner.dev/esphome-webserver/www.js"

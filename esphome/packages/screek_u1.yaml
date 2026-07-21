@@ -1,0 +1,123 @@
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+  platformio_options:
+    board_build.flash_mode: dio
+    board_build.f_cpu: 80000000L
+  project: 
+    name: Screek.Human_Presence_Sensor
+    version: 1U
+
+  on_boot:
+    priority: -100.0
+    then:
+      - lambda: |-
+          id(ld2410_radar) -> ble_control(id(ld2410_ble_on));
+          id(cpu_speed) = ESP.getCpuFreqMHz();
+
+esp32:
+  board: lolin_s2_mini
+  framework:
+    type: arduino
+
+external_components:
+  - source: github://screek-workshop/custom_components_support_for_screek_1u
+    components: [ ld2410, uart ]
+
+light:
+  - platform: status_led
+    name: sys_status
+    pin: GPIO15
+    internal: True
+    restore_mode: ALWAYS_OFF
+
+uart:
+  id: uart_ld2410
+  tx_pin: GPIO18
+  rx_pin: GPIO33
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+
+ld2410:
+  timeout: 150s
+  id: ld2410_radar
+
+globals:
+  - id: ld2410_ble_on
+    type: bool
+    restore_value: true
+    initial_value: "false"
+
+  - id: cpu_speed
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+switch:
+  - platform: template
+    name: LD2410 BLE
+    entity_category: config
+    icon: mdi:bluetooth
+    lambda: |-
+      return id(ld2410_ble_on);
+    turn_on_action:
+      lambda: |-
+        id(ld2410_ble_on) = true;
+        id(ld2410_radar) -> ble_control(id(ld2410_ble_on));
+    turn_off_action:
+      lambda: |-
+        id(ld2410_ble_on) = false;
+        id(ld2410_radar) -> ble_control(id(ld2410_ble_on));
+
+button:
+  - platform: template
+    name: "LD2410 Reboot"
+    icon: mdi:radar
+    entity_category: "config"
+    on_press:
+      lambda: |-
+        id(ld2410_radar) -> reboot();
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: Presence
+    has_moving_target:
+      name: Moving Target
+    has_still_target:
+      name: Still Target
+
+sensor:
+  - platform: ld2410
+    moving_distance:
+      name : Moving Distance
+      id: moving_distance
+    still_distance:
+      name: Still Distance
+      id: still_distance
+    moving_energy:
+      name: Move Energy
+    still_energy:
+      name: Still Energy
+    detection_distance:
+      name: Detection Distance
+    light:
+      name: Light Level
+
+  - platform: template
+    id: sys_esp_temperature
+    name: ESP Temperature
+    lambda: return temperatureRead();
+    unit_of_measurement: °C
+    device_class: TEMPERATURE
+    update_interval: 5s
+    entity_category: "diagnostic"
+
+  - platform: template
+    name: "ESP CPU Speed"
+    accuracy_decimals: 0
+    unit_of_measurement: Mhz
+    lambda: |-
+      return (id(cpu_speed));
+    entity_category: "diagnostic"

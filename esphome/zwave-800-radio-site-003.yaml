@@ -1,0 +1,47 @@
+---
+substitutions:
+  device_name: zwave-800-radio-shrewsbury
+  friendly_name: Z-Wave 800 Series Radio (Shrewsbury)
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  ethernet_domain: !secret wifi_domain_site_003
+
+packages:
+  base: !include packages/base.yaml
+  seedstudio-xiao-w5500: !include packages/seedstudio-xiao-w5500.yaml
+
+time:
+  - id: !extend my_time
+    timezone: America/New_York
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+
+api:
+  reboot_timeout: 0s
+  encryption:
+    !remove key
+
+usb_host:
+  devices:
+    - id: device_0
+      vid: 0x303A 
+      pid: 0x4001
+
+usb_uart:
+  # - type: esp_jtag
+  - type: CDC_ACM
+    vid: 0x303A 
+    pid: 0x4001
+    channels:
+      - id: uch_1
+        baud_rate: 115200
+        buffer_size: 1024
+
+zwave_proxy:
+  id: zwave
+  uart_id: uch_1

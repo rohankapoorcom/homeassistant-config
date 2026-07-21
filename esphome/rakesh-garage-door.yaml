@@ -1,0 +1,39 @@
+---
+substitutions:
+  id_prefix: ratgdov2
+  device_name: rakesh-garage-door
+  friendly_name: Rakesh's Garage Door
+  
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  wifi_ssid: !secret wifi_ssid_site_003
+  wifi_password: !secret wifi_password_site_003
+  wifi_domain: !secret wifi_domain_site_003
+
+  uart_tx_pin: D1
+  uart_rx_pin: D2
+  input_obst_pin: D7
+  status_door_pin: D0
+  status_obstruction_pin: D8
+  dry_contact_open_pin: D5
+  dry_contact_close_pin: D6
+  dry_contact_light_pin: D3
+
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+  project:
+    name: ratgdo.esphome
+    version: "2.0"
+
+esp8266:
+  board: d1_mini
+  restore_from_flash: true
+
+packages:
+  esphome-ratgdo: github://ratgdo/esphome-ratgdo/base.yaml
+  base: !include packages/base.yaml
+  wifi: !include packages/wifi.yaml
+
+button:
+  - id: !remove ${id_prefix}_restart

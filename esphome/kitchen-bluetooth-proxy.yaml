@@ -1,0 +1,76 @@
+---
+substitutions:
+  device_name: kitchen-bluetooth-proxy
+  friendly_name: Kitchen Bluetooth Proxy
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  ethernet_domain: !secret wifi_domain
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+  project:
+    name: esphome.bluetooth-proxy
+    version: "1.0"
+  on_boot:
+    then:
+      # turn on Power LED when esphome boots
+      - output.turn_on: power_led
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+
+packages:
+  base: !include packages/base.yaml
+  bluetooth_proxy: !include packages/bluetooth_proxy.yaml
+
+ethernet:
+  type: IP101
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO0_IN
+  phy_addr: 1
+  power_pin: GPIO5
+  domain: ${ethernet_domain}
+
+button:
+  - platform: safe_mode
+    name: Safe Mode Boot
+    entity_category: diagnostic
+
+## DEVICE SPECIFIC CONFIGURATION
+# network LED (white one) configured as status led
+status_led:
+  pin:
+    number: GPIO32
+    inverted: true
+
+# button on the side labeled RESET
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO33
+      inverted: true
+    name: "Reset Button"
+
+# output settings for LED's marked Power and Bluetooth
+# power LED use: see code line 12
+# bluetooth LED use: see code line 41
+output:
+  - platform: gpio
+    pin: GPIO14
+    inverted: true
+    id: power_led
+  - platform: gpio
+    pin: GPIO12
+    inverted: true
+    id: bluetooth_led
+
+# since these pins are broken out inside and labeled as I2C pins they're configured here
+i2c:
+  sda: 15
+  scl: 13
+  scan: true

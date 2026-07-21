@@ -1,0 +1,9 @@
+# ESPHome runtime / secrets — never commit
+/.esphome/
+/secrets.yaml
+/.cache/
+/.local/
+/.bash_history
+/.device-builder*
+/archive/
+/test.yaml

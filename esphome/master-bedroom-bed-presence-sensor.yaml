@@ -1,0 +1,70 @@
+substitutions:
+  name: master-bedroom-bed-presence
+  friendly_name: Master Bedroom Bed Presence
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  wifi_domain: !secret wifi_domain
+
+  # Calibrate Trigger Percentile
+  # This controls how the trigger threshold is set during calibration. During calibration, the unoccupied and occupied
+  # pressure values are determined. This is the percentage of the difference between those values required to trigger
+  # the "occupied" state.
+  #     - 0.75   Less sensitive, requires 75% of the occupied pressure to trigger
+  #     - 0.50   Set trigger exactly in the middle of unoccupied and occupied pressures (Default)
+  #     - 0.25   More sensitive, likely to be triggered by partner
+  trigger_percentile: '0.75'
+
+  # Fast Sensor Delay
+  # This controls how long the "Fast" sensor must register its value before updating. Without any delay, the sensor
+  # will register frequent fall negatives as you shift in bed.
+  #     - 2s    Same response as standard sensor
+  #     - 500ms Good starting point for getting speed without too many false negatives (Default)
+  #     - 0ms   No delay, expect frequent false negatives
+  fast_delayed_off: '500ms'
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  project:
+    name: ElevatedSensors.BedPresence
+    version: Mk1
+  platformio_options:
+    board_build.flash_mode: dio # dio flash_mode fixes issue where board bootloops using esp-idf
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+################################################################################
+
+packages:
+  remote_package:
+    url: https://github.com/ElevatedSensors/sensor-configs
+    ref: main
+    files: ['bed-presence-mk1/base.yaml']
+    refresh: 1s
+  base: !include packages/base.yaml
+  wifi: !include packages/wifi.yaml
+
+binary_sensor:
+  - id: !remove bed_presence_status
+
+button:
+  - id: !remove btn_restart
+
+sensor:
+  - id: !remove wifi_signal_db
+  - id: !remove wifi_signal_percent
+  - id: !remove bed_presence_uptime
+
+  - platform: template
+    name: Average Pressure (Current)
+    id: bed_sensor_average
+    update_interval: 0.5s
+    unit_of_measurement: '%'
+    icon: mdi:gauge
+    lambda: return (id(bed_sensor_left).state + id(bed_sensor_right).state) / 2.0;

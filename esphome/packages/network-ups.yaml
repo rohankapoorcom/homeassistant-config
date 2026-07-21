@@ -1,0 +1,100 @@
+external_components:
+  - source: github://psarossy/esphome-components@fix/static-init-crash
+    components: [ ups_hid ]
+
+number:
+
+ups_hid:
+  id: ups_monitor
+  update_interval: 30s
+  protocol_timeout: 15s
+  protocol: auto
+  fallback_nominal_voltage: 120v
+  simulation_mode: false
+
+sensor:
+  # === BATTERY MONITORING GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Battery Level"
+    id: battery_level
+    type: battery_level
+    unit_of_measurement: "%"
+    device_class: battery
+    state_class: measurement
+    accuracy_decimals: 0
+
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Runtime Remaining"
+    id: runtime_remaining
+    type: runtime
+    unit_of_measurement: "min"
+    device_class: duration
+    state_class: measurement
+    accuracy_decimals: 0
+
+  # === VOLTAGE MONITORING GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Input Voltage"
+    id: input_voltage
+    type: input_voltage
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 1
+
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Output Voltage"
+    id: output_voltage
+    type: output_voltage
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 1
+
+  # === LOAD MONITORING GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Load Percentage"
+    id: load_percentage
+    type: load_percent
+    unit_of_measurement: "%"
+    device_class: power_factor
+    state_class: measurement
+    accuracy_decimals: 0
+
+text_sensor:
+  # === DEVICE INFORMATION GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "UPS Manufacturer"
+    id: ups_manufacturer
+    type: manufacturer
+    entity_category: diagnostic
+
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "UPS Model"
+    id: ups_model
+    type: model
+    entity_category: diagnostic
+
+binary_sensor:
+  # === BATTERY MONITORING GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Battery Charging"
+    id: battery_charging
+    type: charging
+    device_class: battery
+    
+  # === POWER STATUS GROUP ===
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Overload Warning"
+    id: overload_warning
+    type: overload
+    device_class: power

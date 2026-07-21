@@ -1,0 +1,214 @@
+output:
+  - platform: ledc
+    pin: ${fan_gpio}
+    id: ${fan_id}_out_hardware
+    inverted: True
+    frequency: 1000
+
+  - platform: template
+    id: ${fan_id}_out
+    type: float
+    write_action:
+      - logger.log:
+          format: "Received ${fan_id} output value %.1f. Setting output value %.1f"
+          args: ['state', '1.0 - std::min(id(${fan_id}_max_fan_speed).state / 100.0f, state)']
+      - sensor.template.publish:
+          id: ${fan_id}_speed
+          state: !lambda return std::min(id(${fan_id}_max_fan_speed).state / 100.0f, state) * 100.0;
+      - if:
+          condition:
+            lambda: return (std::min(id(${fan_id}_max_fan_speed).state / 100.0f, state) > 0);
+          then:
+            - if:
+                condition:
+                  light.is_off: ${fan_id}_status_led
+                then:
+                  - light.turn_on:
+                      id: ${fan_id}_status_led
+                      brightness: 100%
+                      red: 0%
+                      green: 100%
+                      blue: 0%
+                      effect: pulse
+          else:
+            - light.turn_off:
+                id: ${fan_id}_status_led
+      - output.set_level:
+          id: ${fan_id}_out_hardware
+          level: !lambda return 1.0 - std::min(id(${fan_id}_max_fan_speed).state / 100.0f, state);
+
+sensor:
+  - platform: template
+    name: ${fan_name} Speed
+    unit_of_measurement: "%"
+    id: ${fan_id}_speed
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} p term
+    id: ${fan_id}_p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} i term
+    id: ${fan_id}_i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} d term
+    id: ${fan_id}_d_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} Output Value
+    unit_of_measurement: "%"
+    id: ${fan_id}_o_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} Error Value
+    id: ${fan_id}_e_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: ${fan_name} Is in Deadband
+    id: ${fan_id}_in_deadband_term
+    accuracy_decimals: 0
+
+number:
+  # KP
+  - platform: template
+    name: ${fan_name} kp
+    id: ${fan_id}_kp
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: 0.3
+    min_value: 0
+    max_value: 50
+    step: 0.001
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_kp(x);
+
+  # KI
+  - platform: template
+    name: ${fan_name} ki
+    id: ${fan_id}_ki
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: 0.0015
+    min_value: 0
+    max_value: 50
+    step: 0.0001
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_ki(x);
+
+  # KD
+  - platform: template
+    name: ${fan_name} kd
+    id: ${fan_id}_kd
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: 0.0
+    min_value: -50
+    max_value: 50
+    step: 0.001
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_kd(x);
+
+  # Set threshold low
+  - platform: template
+    name: ${fan_name} Deadband Threshold Low
+    id: ${fan_id}_deadband_threshold_low
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: -1.0
+    min_value: -20
+    max_value: 0
+    step: 0.1
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_threshold_low(x);
+
+  # Set threshold high
+  - platform: template
+    name: ${fan_name} Deadband Threshold High
+    id: ${fan_id}_deadband_threshold_high
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: 0.4
+    min_value: 0
+    max_value: 20
+    step: 0.1
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_threshold_high(x);
+
+  # Set ki multiplier
+  - platform: template
+    name: ${fan_name} Deadband ki Multiplier
+    id: ${fan_id}_deadband_ki_multiplier
+    icon: mdi:chart-bell-curve
+    restore_value: True
+    initial_value: 0.04
+    min_value: 0
+    max_value: .2
+    step: 0.01
+    set_action: 
+      lambda: id(${fan_id}_thermostat).set_ki_multiplier(x);
+
+  - platform: template
+    name: ${fan_name} Max Fan Speed
+    id: ${fan_id}_max_fan_speed
+    icon: mdi:fan-auto
+    restore_value: True
+    initial_value: 100
+    min_value: 0
+    max_value: 100
+    step: 1
+    unit_of_measurement: "%"
+    optimistic: True
+
+climate:
+  - platform: pid
+    name: ${fan_name} Thermostat
+    id: ${fan_id}_thermostat
+    sensor: ${fan_temperature_sensor}
+    default_target_temperature: 78 °F
+    cool_output: ${fan_id}_out
+    visual:
+      min_temperature: 70 °F
+      max_temperature: 90 °F
+    control_parameters:
+      kp: 0.3
+      ki: 0.0015
+      kd: 0
+      max_integral: 0.0
+      output_averaging_samples: 1
+      derivative_averaging_samples: 5
+    deadband_parameters:
+      threshold_high: 0.4°C
+      threshold_low: -1.0°C
+      kp_multiplier: 0.0
+      ki_multiplier: 0.04
+      kd_multiplier: 0.0
+      deadband_output_averaging_samples: 15
+    on_state:
+      - sensor.template.publish:
+          id: ${fan_id}_p_term
+          state: !lambda 'return -id(${fan_id}_thermostat).get_proportional_term() * 100.0;'
+      - sensor.template.publish:
+          id: ${fan_id}_i_term
+          state: !lambda 'return -id(${fan_id}_thermostat).get_integral_term()* 100.0;'
+      - sensor.template.publish:
+          id: ${fan_id}_d_term
+          state: !lambda 'return -id(${fan_id}_thermostat).get_derivative_term()* 100.0;'
+      - sensor.template.publish:
+          id: ${fan_id}_o_term
+          state: !lambda 'return -id(${fan_id}_thermostat).get_output_value()* 100.0;'
+      - sensor.template.publish:
+          id: ${fan_id}_in_deadband_term
+          state: !lambda 'return id(${fan_id}_thermostat).in_deadband();'
+      - sensor.template.publish:
+          id: ${fan_id}_e_term
+          state: !lambda 'return -id(${fan_id}_thermostat).get_error_value();'

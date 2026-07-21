@@ -1,0 +1,38 @@
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  id: api_server
+  encryption:
+    key: "${api_encryption_key}"
+
+ota:
+  id: my_ota
+  platform: esphome
+  password: "${ota_password}"
+
+time:
+  - platform: sntp
+    id: my_time
+    timezone: America/Los_Angeles
+
+debug:
+  update_interval: 120s
+
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: "Reset Reason"
+
+binary_sensor:
+  - name: "Status"
+    platform: status
+
+sensor:
+  - platform: uptime
+    name: "Uptime"
+
+button:
+  - platform: restart
+    name: "Restart"

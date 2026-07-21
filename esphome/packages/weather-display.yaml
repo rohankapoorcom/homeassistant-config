@@ -1,0 +1,572 @@
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+  on_boot:
+      priority: 200.0
+      then:
+        - component.update: eink_display
+        - wait_until:
+            condition:
+              lambda: 'return id(data_updated) == true;'
+              # Wait a bit longer so all the items are received
+        - delay: 5s
+        - logger.log: "Initial sensor data received: Refreshing display..."
+        - lambda: 'id(initial_data_received) = true;'
+        - script.execute: update_screen
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      # Bump task watchdog timeout to accommodate slow Waveshare 7.5" v2p
+      # display refreshes (>5s). Without this, ESPHome 2026.2+ boot-loops on
+      # this display model. See https://github.com/esphome/esphome/issues/14772
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30"
+
+button:
+  - platform: shutdown
+    name: "Shutdown"
+  - platform: template
+    name: "Refresh Screen"
+    entity_category: config
+    on_press:
+      - script.execute: update_screen
+      
+globals:
+  - id: data_updated
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: initial_data_received
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: recorded_display_refresh
+    type: int
+    restore_value: yes
+    initial_value: '0'
+  - id: instant_update_completed
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+script:
+  - id: update_screen
+    then:
+      - lambda: 'id(data_updated) = false;'
+      - component.update: eink_display
+      - lambda: 'id(recorded_display_refresh) += 1;'
+      - lambda: 'id(display_last_update).publish_state(id(my_time).now().timestamp);'
+      
+interval:
+  - interval: 60s
+    then:
+      - if:
+          condition:
+            lambda: 'return id(data_updated) == true;'
+          then:
+            - if:
+                condition:
+                  binary_sensor.is_on: motion_detected
+                then:
+                  - logger.log: "Sensor data updated and activity in home detected: Refreshing display..."
+                  - script.execute: update_screen
+                else:
+                  - logger.log: "Sensor data updated but no activity in home - skipping display refresh."
+          else:
+            - logger.log: "No sensors updated - skipping display refresh."
+
+
+# Include custom fonts
+font:
+  - file: 'packages/waveshare_epaper/fonts/Gotham-Medium.ttf'
+    id: font_small_book
+    size: 20
+  - file: 'packages/waveshare_epaper/fonts/GothamRnd-Bold.ttf'
+    id: font_large_bold
+    size: 108
+    glyphs: [' ', '-', '°', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'F']
+  - file: 'packages/waveshare_epaper/fonts/GothamRnd-Bold.ttf'
+    id: font_title
+    size: 54
+    glyphs: ['W', 'E', 'A', 'T', 'H', 'R', 'L', 'I', 'N', ' ']
+  - file: 'packages/waveshare_epaper/fonts/GothamRnd-Bold.ttf'
+    id: font_medium_bold
+    size: 28
+  - file: 'packages/waveshare_epaper/fonts/GothamRnd-Bold.ttf'
+    id: font_small_medium_bold
+    size: 22
+  - file: 'packages/waveshare_epaper/fonts/GothamRnd-Bold.ttf'
+    id: font_small_bold
+    size: 18
+
+  # Include Material Design Icons font
+  # Thanks to https://community.home-assistant.io/t/display-materialdesign-icons-on-esphome-attached-to-screen/199790/16
+  - file: 'packages/waveshare_epaper/fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_large
+    size: 96
+    glyphs: &mdi-weather-glyphs
+      - "\U000F0590" # mdi-weather-cloudy
+      - "\U000F0F2F" # mdi-weather-cloudy-alert
+      - "\U000F0E6E" # mdi-weather-cloudy-arrow-right
+      - "\U000F0591" # mdi-weather-fog
+      - "\U000F0592" # mdi-weather-hail
+      - "\U000F0F30" # mdi-weather-hazy
+      - "\U000F0898" # mdi-weather-hurricane
+      - "\U000F0593" # mdi-weather-lightning
+      - "\U000F067E" # mdi-weather-lightning-rainy
+      - "\U000F0594" # mdi-weather-night
+      - "\U000F0F31" # mdi-weather-night-partly-cloudy
+      - "\U000F0595" # mdi-weather-partly-cloudy
+      - "\U000F0F32" # mdi-weather-partly-lightning
+      - "\U000F0F33" # mdi-weather-partly-rainy
+      - "\U000F0F34" # mdi-weather-partly-snowy
+      - "\U000F0F35" # mdi-weather-partly-snowy-rainy
+      - "\U000F0596" # mdi-weather-pouring
+      - "\U000F0597" # mdi-weather-rainy
+      - "\U000F0598" # mdi-weather-snowy
+      - "\U000F0F36" # mdi-weather-snowy-heavy
+      - "\U000F067F" # mdi-weather-snowy-rainy
+      - "\U000F0599" # mdi-weather-sunny
+      - "\U000F0F37" # mdi-weather-sunny-alert
+      - "\U000F14E4" # mdi-weather-sunny-off
+      - "\U000F059A" # mdi-weather-sunset
+      - "\U000F059B" # mdi-weather-sunset-down
+      - "\U000F059C" # mdi-weather-sunset-up
+      - "\U000F0F38" # mdi-weather-tornado
+      - "\U000F059D" # mdi-weather-windy
+      - "\U000F059E" # mdi-weather-windy-variant
+      - "\U000F0D43" # mdi-air-filter
+      - "\U000F029A" # mdi-gauge
+      - "\U000F050F" # mdi-thermometer
+      - "\U000F058E" # mdi-water-percent
+      - "\U000F0E0A" # mdi-water-outline
+  - file: 'packages/waveshare_epaper/fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_medium_large
+    size: 54
+    glyphs: *mdi-weather-glyphs
+  - file: 'packages/waveshare_epaper/fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_medium
+    size: 36
+    glyphs: *mdi-weather-glyphs
+  - file: 'packages/waveshare_epaper/fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_small
+    size: 18
+    glyphs: *mdi-weather-glyphs
+
+
+binary_sensor:
+  - platform: template
+    name: "Motion Detected"
+    id: motion_detected
+    lambda: 'return true;'
+    internal: True
+    on_state:
+      - then:
+        - if:
+            condition:
+              binary_sensor.is_on: motion_detected
+            then:
+              - if:
+                  condition:
+                    and:
+                      - lambda: 'return id(instant_update_completed) == false;'
+                      - lambda: 'return id(data_updated) == true;'
+                  then:
+                    - logger.log: "Motion Sensor activated and new data is present: Refreshing display..."
+                    - script.execute: update_screen
+            else:
+              - lambda: 'id(instant_update_completed) = false;'  
+
+
+sensor:
+  # Create sensors for monitoring Weatherman remotely.
+  - platform: template
+    name: "Display Last Update"
+    device_class: timestamp
+    entity_category: "diagnostic"
+    id: display_last_update
+    
+  - platform: template
+    name: "Recorded Display Refresh"
+    accuracy_decimals: 0
+    unit_of_measurement: "Refreshes"
+    state_class: "total_increasing"
+    entity_category: "diagnostic"
+    lambda: 'return id(recorded_display_refresh);'
+
+  - platform: homeassistant
+    entity_id: sensor.weather_station_outdoor_temperature
+    id: weather_temperature
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weather_station_feels_like_temperature
+    id: weather_feels_like_temperature
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weather_station_uv_index
+    id: exterior_uv_index
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weather_station_relative_pressure
+    id: exterior_relative_pressure
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weather_station_humidity
+    id: exterior_humidity
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_0
+    id: weather_temperature_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_humidity_0
+    id: weather_humidity_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_precipitation_0
+    id: weather_precipitation_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_1
+    id: weather_temperature_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_humidity_1
+    id: weather_humidity_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_precipitation_1
+    id: weather_precipitation_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_2
+    id: weather_temperature_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_humidity_2
+    id: weather_humidity_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_precipitation_2
+    id: weather_precipitation_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_temperature_3
+    id: weather_temperature_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_humidity_3
+    id: weather_humidity_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_precipitation_3
+    id: weather_precipitation_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+  
+  - platform: homeassistant
+    entity_id: sensor.u_s_air_quality_index
+    id: exterior_aqi
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+text_sensor:
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_now
+    id: weather_condition_now
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_0
+    id: weather_condition_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_0
+    id: weather_timestamp_0
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_1
+    id: weather_condition_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_1
+    id: weather_timestamp_1
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_2
+    id: weather_condition_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_2
+    id: weather_timestamp_2
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_condition_3
+    id: weather_condition_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: weather_timestamp_3
+    id: weather_timestamp_3
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.u_s_air_pollution_level
+    id: exterior_air_quality_level
+    filters:
+    - lambda: |-
+        x[0] = toupper(x[0]);
+        return x;
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: sunrise_timestamp
+    id: sunrise_timestamp
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.weatherman_data
+    attribute: sunset_timestamp
+    id: sunset_timestamp
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+# Pins for Waveshare ePaper ESP Board
+spi:
+  clk_pin: GPIO13
+  mosi_pin: GPIO14
+
+# Now render everything on the ePaper screen.
+display:
+  - platform: waveshare_epaper
+    id: eink_display
+    cs_pin: GPIO15
+    dc_pin: GPIO27
+    busy_pin:
+      number: GPIO25
+      inverted: true
+    reset_pin: GPIO26
+    reset_duration: 2ms
+    model: 7.50inv2p
+    update_interval: never
+    rotation: 90°
+    lambda: |-
+      // Map weather states to MDI characters.
+      std::map<std::string, std::string> weather_icon_map
+        {
+          {"cloudy", "\U000F0590"},
+          {"cloudy-alert", "\U000F0F2F"},
+          {"cloudy-arrow-right", "\U000F0E6E"},
+          {"clear-night", "\U000F0594"},
+          {"fog", "\U000F0591"},
+          {"hail", "\U000F0592"},
+          {"hazy", "\U000F0F30"},
+          {"hurricane", "\U000F0898"},
+          {"lightning", "\U000F0593"},
+          {"lightning-rainy", "\U000F067E"},
+          {"night", "\U000F0594"},
+          {"night-partly-cloudy", "\U000F0F31"},
+          {"partlycloudy", "\U000F0595"},
+          {"partly-lightning", "\U000F0F32"},
+          {"partly-rainy", "\U000F0F33"},
+          {"partly-snowy", "\U000F0F34"},
+          {"partly-snowy-rainy", "\U000F0F35"},
+          {"pouring", "\U000F0596"},
+          {"rainy", "\U000F0597"},
+          {"snowy", "\U000F0598"},
+          {"snowy-heavy", "\U000F0F36"},
+          {"snowy-rainy", "\U000F067F"},
+          {"sunny", "\U000F0599"},
+          {"sunny-alert", "\U000F0F37"},
+          {"sunny-off", "\U000F14E4"},
+          {"sunset", "\U000F059A"},
+          {"sunset-down", "\U000F059B"},
+          {"sunset-up", "\U000F059C"},
+          {"tornado", "\U000F0F38"},
+          {"windy", "\U000F059D"},
+          {"windy-variant", "\U000F059E"},
+          {"thermometer", "\U000F050F"},
+          {"humidity", "\U000F058E"},
+          {"precipitation", "\U000F0E0A"},
+          {"air-filter", "\U000F0D43"},
+          {"gauge", "\U000F029A"},
+        };
+
+      // Show loading screen before data is received.
+      if (id(initial_data_received) == false) {
+        it.printf(240, 390, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "WAITING FOR DATA...");
+      } else {
+
+        // Weather Section
+        it.printf(240, 84, id(font_title), COLOR_ON, TextAlign::TOP_CENTER, "WEATHER");
+
+        it.printf(100, 158, id(font_mdi_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_now).state.c_str()].c_str());
+        it.printf(300, 158, id(font_large_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f°F", id(weather_temperature).state);
+
+        it.printf(240, 272, id(font_medium_bold), COLOR_ON, TextAlign::TOP_CENTER, "Feels Like: %2.0f°F", id(weather_feels_like_temperature).state);
+
+        it.printf(70, 320, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["sunset-up"].c_str());
+        it.printf(105, 320, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "Sunrise");
+        it.printf(105, 345, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%s", id(sunrise_timestamp).state.c_str());
+
+        it.printf(70, 375, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["humidity"].c_str());
+        it.printf(105, 375, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "Humidity");
+        it.printf(105, 400, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%2.0f%%", id(exterior_humidity).state);
+
+        it.printf(70, 430, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["sunny"].c_str());
+        it.printf(105, 430, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "UV Index");
+        it.printf(105, 455, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%1.0f UVI", id(exterior_uv_index).state);
+
+        it.printf(300, 320, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["sunset-down"].c_str());
+        it.printf(335, 320, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "Sunset");
+        it.printf(335, 345, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%s", id(sunset_timestamp).state.c_str());
+
+        it.printf(300, 375, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["gauge"].c_str());
+        it.printf(335, 375, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "Pressure");
+        it.printf(335, 400, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%2.2f inHg", id(exterior_relative_pressure).state);
+
+        it.printf(300, 430, id(font_mdi_medium_large), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["air-filter"].c_str());
+        it.printf(335, 430, id(font_small_book), COLOR_ON, TextAlign::TOP_LEFT, "Air Quality");
+        it.printf(335, 455, id(font_small_medium_bold), COLOR_ON, TextAlign::TOP_LEFT, "%.0f AQI", id(exterior_aqi).state);        
+
+        it.printf(105, 522, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_0).state.c_str());
+        it.printf(105, 546, id(font_mdi_medium), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_0).state.c_str()].c_str());
+        it.printf(85, 594, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["thermometer"].c_str());
+        it.printf(115, 594, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f°F", id(weather_temperature_0).state);
+        it.printf(84, 618, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["humidity"].c_str());
+        it.printf(114, 618, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f%%", id(weather_humidity_0).state);
+        it.printf(85, 642, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["precipitation"].c_str());
+        it.printf(120, 642, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%1.1f in", id(weather_precipitation_0).state);
+
+        it.printf(195, 522, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_1).state.c_str());
+        it.printf(195, 546, id(font_mdi_medium), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_1).state.c_str()].c_str());
+        it.printf(175, 594, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["thermometer"].c_str());
+        it.printf(205, 594, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f°F", id(weather_temperature_1).state);
+        it.printf(174, 618, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["humidity"].c_str());
+        it.printf(204, 618, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f%%", id(weather_humidity_1).state);
+        it.printf(175, 642, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["precipitation"].c_str());
+        it.printf(210, 642, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%1.1f in", id(weather_precipitation_1).state);
+
+        it.printf(285, 522, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_2).state.c_str());
+        it.printf(285, 546, id(font_mdi_medium), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_2).state.c_str()].c_str());
+        it.printf(265, 594, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["thermometer"].c_str());
+        it.printf(295, 594, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f°F", id(weather_temperature_2).state);
+        it.printf(264, 618, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["humidity"].c_str());
+        it.printf(294, 618, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f%%", id(weather_humidity_2).state);
+        it.printf(265, 642, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["precipitation"].c_str());
+        it.printf(300, 642, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%1.1f in", id(weather_precipitation_2).state);
+
+        it.printf(375, 522, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%s", id(weather_timestamp_3).state.c_str());
+        it.printf(375, 546, id(font_mdi_medium), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map[id(weather_condition_3).state.c_str()].c_str());
+        it.printf(355, 594, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["thermometer"].c_str());
+        it.printf(385, 594, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f°F", id(weather_temperature_3).state);
+        it.printf(354, 618, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["humidity"].c_str());
+        it.printf(384, 618, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%2.0f%%", id(weather_humidity_3).state);
+        it.printf(355, 642, id(font_mdi_small), COLOR_ON, TextAlign::TOP_CENTER, "%s", weather_icon_map["precipitation"].c_str());
+        it.printf(390, 642, id(font_small_bold), COLOR_ON, TextAlign::TOP_CENTER, "%1.1f in", id(weather_precipitation_3).state);
+
+        it.strftime(240, 710, id(font_small_book), COLOR_ON, TextAlign::TOP_CENTER, "Refreshed at %I:%M %p", id(my_time).now());
+      }

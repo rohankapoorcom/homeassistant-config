@@ -1,0 +1,196 @@
+---
+substitutions:
+  device_name: server-rack-exhaust-fan
+  friendly_name: Server Rack Exhaust Fan
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  wifi_domain: !secret wifi_domain
+
+esphome:
+  name: $device_name
+  friendly_name: $friendly_name
+
+  on_boot:
+    priority: 200
+    then:
+      - lambda: |-        
+          delay(500);
+
+esp32:
+  board: esp32dev
+  framework:
+      type: esp-idf
+
+packages:
+  base: !include packages/base.yaml
+  wifi: !include packages/wifi.yaml
+  fan1: !include
+    file: packages/fan_controller/fan.yaml
+    vars:
+      fan_id: fan1
+      fan_name: Fan 1
+      fan_gpio: GPIO19
+      fan_temperature_sensor: temperature_1
+  fan2: !include
+    file: packages/fan_controller/fan.yaml
+    vars:
+      fan_id: fan2
+      fan_name: Fan 2
+      fan_gpio: GPIO20
+      fan_temperature_sensor: temperature_2
+
+i2c:
+  - id: i2c_bus_1
+    sda: GPIO21
+    scl: GPIO22
+    scan: True
+
+  - id: i2c_bus_2
+    sda: GPIO32
+    scl: GPIO33
+    scan: True
+
+sensor:
+  - platform: template
+    name: Temperature 1
+    id: temperature_1
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
+    lambda: |-
+      if (isnan(id(temperature_1_internal).raw_state)) {
+        return id(temperature_1_external).state;  
+      }
+      return id(temperature_1_internal).state;
+  
+  - platform: template
+    name: Humidity 1
+    id: humidity_1
+    unit_of_measurement: "%"
+    device_class: "humidity"
+    state_class: "measurement"
+    lambda: |-
+      if (isnan(id(humidity_1_internal).raw_state)) {
+        return id(humidity_1_external).state;  
+      }
+      return id(humidity_1_internal).state;
+
+  - platform: homeassistant
+    name: Temperature 1
+    id: temperature_1_external
+    entity_id: sensor.ups_envirosense_temperature
+    filters: 
+      - lambda: return (x - 32) * (5.0 / 9.0);
+
+  - platform: homeassistant
+    name: Humidity 1
+    id: humidity_1_external
+    entity_id: sensor.ups_envirosense_humidity
+
+  - platform: sht3xd
+    temperature:
+      name: Temperature 1
+      id: temperature_1_internal
+      internal: True
+      filters:
+      unit_of_measurement: "°C"
+    humidity:
+      name: Humidity 1
+      id: humidity_1_internal
+      internal: True
+    address: 0x44
+    update_interval: 1s
+    i2c_id: i2c_bus_1
+
+  - platform: sht3xd
+    temperature:
+      name: Temperature 2
+      id: temperature_2
+      unit_of_measurement: "°C"
+    humidity:
+      name: Humidity 2
+      id: humidity_2
+    address: 0x44
+    update_interval: 1s
+    i2c_id: i2c_bus_2
+
+light:
+  - platform: esp32_rmt_led_strip
+    chipset: SK6812
+    pin: GPIO27
+    id: status_leds
+    num_leds: 2
+    rgb_order: GRB
+    name: Status LEDs
+    internal: True
+
+  - platform: partition
+    name: Fan 1 Status
+    id: fan1_status_led
+    segments:
+      - id: status_leds
+        from: 0
+        to: 0
+    effects:
+      - pulse:
+          transition_length: 1s
+          update_interval: 1s
+    internal: True
+
+  - platform: partition
+    name: Fan 2 Status
+    id: fan2_status_led
+    segments:
+      - id: status_leds
+        from: 1
+        to: 1
+    effects:
+      - pulse:
+          transition_length: 1s
+          update_interval: 1s
+    internal: True
+
+uart:
+  id: lcd_uart
+  tx_pin: GPIO25
+  rx_pin: GPIO26
+  baud_rate: 115200
+
+display:
+  - platform: nextion
+    id: lcd
+    uart_id: lcd_uart
+    update_interval: 5s
+    lambda: |-
+      float temp_1 = -1.0;
+      if (!isnan(id(temperature_1).state)) {
+        temp_1 = (id(temperature_1).state) * (9.0/5.0) + 32.0;
+      }
+
+      float hum_1 = -1.0;
+      if (!isnan(id(humidity_1).state)) {
+        hum_1 = id(humidity_1).state;
+      }
+
+      float target_temp_1 = id(fan1_thermostat).target_temperature * (9.0/5.0) + 32.0;
+
+      float temp_2 = -1.0;
+      if (!isnan(id(temperature_2).state)) {
+        temp_2 = (id(temperature_2).state) * (9.0/5.0) + 32.0;
+      }
+
+      float hum_2 = -1.0;
+      if (!isnan(id(humidity_2).state)) {
+        hum_2 = id(humidity_2).state;
+      }
+
+      ESP_LOGD("Nextion Screen", "The current temperature sensor is: %.0f", temp_1);
+      ESP_LOGD("Nextion Screen", "The value of humidity sensor is: %.02f", hum_1);
+      ESP_LOGD("Nextion Screen", "The value of fan1_speed is: %.02f", id(fan1_speed).state);
+      it.set_component_text_printf("page0.curr_temp", "%.0f", temp_1);
+      it.set_component_text_printf("page0.curr_humidity", "%.0f", hum_1);
+      it.set_component_text_printf("page0.tgt_temp", "%.0f", target_temp_1);
+      it.set_component_text_printf("page0.fan1_speed", "%.0f", id(fan1_speed).state);

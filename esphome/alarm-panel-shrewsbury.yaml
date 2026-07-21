@@ -1,0 +1,83 @@
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+##
+## Hornet Nest Alarm Panel v1.2 (wESP32)
+## Firmware configuration for ESPHome
+##
+## filename: hornet-nest-alarm-panel.lan.yaml
+## GitHub: https://github.com/taconsultingllc/hornet-nest-alarm-panel
+## Buy TAC hardware: http://www.taconsulting.llc/
+## Help & Support: 
+##
+## Copyright© 2025 Technology Automation Consulting LLC
+##
+## Permission is hereby granted, free of charge, to any person obtaining a copy
+## of this software and associated documentation files (the "Software"), to deal
+## in the Software without restriction, including without limitation the rights
+## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+## copies of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+## 
+## The above copyright notice and this permission notice shall be included in all
+## copies or substantial portions of the Software.
+## 
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+## IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+## AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+## SOFTWARE.
+##
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+substitutions:
+  device_name: alarm-panel-shrewsbury
+  friendly_name: "Alarm Panel"
+  
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  ethernet_domain: !secret wifi_domain_site_003
+  
+  sensor_debounce_time: 500ms
+  #sensor_inverted: "true"  #For NO (Normally Open) Sensors
+  sensor_inverted: "false"  #For NC (Normally Closed) Senors
+
+packages:
+  base: !include packages/base.yaml
+  wesp32: !include packages/wesp32.yaml
+  
+  remote_package:
+    url: https://github.com/taconsultingllc/hornet-nest-alarm-panel
+    ref: main
+    refresh: 5min
+    files:
+      - packages/hnap-rev1.2-mcp23017-config.yaml
+      - packages/hnap-rev1.2-diagnostics.yaml
+      - packages/hnap-rev1.2-inputs-1-14.yaml
+      - packages/hnap-rev1.2-inputs-15-28.yaml
+      - packages/hnap-rev1.2-inputs-29-42.yaml
+      - packages/hnap-rev1.2-outputs.yaml
+      - packages/hnap-rev1.2-misc-io.yaml
+      - packages/hnap-rev1.2-weigand.yaml
+
+esp32:
+  framework:
+    type: arduino
+
+sensor:
+  - id: !remove uptime_sensor
+
+api:
+  services:
+    - service: play_rtttl
+      variables:
+        song_str: string
+      then:
+        - rtttl.play: !lambda 'return song_str;'
+
+# web_server:
+#   port: 80
+#   version: 3
+
+time:
+  - id: !extend my_time
+    timezone: America/New_York

@@ -1,0 +1,27 @@
+---
+substitutions:
+  device_name: server-room-aux-ups
+  friendly_name: Server Room Aux UPS
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+  ethernet_domain: !secret wifi_domain
+
+packages:
+  base: !include packages/base.yaml
+  seedstudio-xiao-w5500: !include packages/seedstudio-xiao-w5500.yaml
+  network-ups: !include packages/network-ups.yaml
+  # network-ups-cyberpower: !include packages/network-ups-cyberpower.yaml
+  bluetooth_proxy: !include packages/bluetooth_proxy.yaml
+
+output:
+  - platform: template
+    id: bluetooth_led
+    type: binary
+    write_action:
+      - lambda: |-
+          if (state) {
+            id(user_led).turn_on();
+          } else {
+            id(user_led).turn_off();
+          }
