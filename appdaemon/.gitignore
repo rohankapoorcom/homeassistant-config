@@ -1,0 +1,4 @@
+secrets.yaml
+compiled/
+__pycache__/
+*.pyc

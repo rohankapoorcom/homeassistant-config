@@ -1,0 +1,33 @@
+# AppDaemon — ControllerX remotes (talos-01 / homeassistant-main).
+# Secrets via ESO-mounted /conf/secrets.yaml (same !secret style as configuration.yaml).
+# Do not commit live tokens or coordinates.
+appdaemon:
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: 349
+  time_zone: America/Los_Angeles
+  exclude_dirs:
+    - cx_core
+  plugins:
+    HASS:
+      type: hass
+      ha_url: http://homeassistant-main.homeassistant-main.svc.cluster.local:8123
+      token: !secret token
+      cert_verify: false
+      ws_timeout: 120
+      ws_max_msg_size: 0
+    MQTT:
+      type: mqtt
+      namespace: mqtt
+      client_host: emqx-mqtt.emqx.svc.cluster.local
+      client_user: !secret mqtt_user
+      client_password: !secret mqtt_password
+      client_port: 1883
+      client_topics: zigbee2mqtt/#
+  production_mode: true
+
+http:
+  url: http://0.0.0.0:5050
+admin:
+api:
+hadashboard:

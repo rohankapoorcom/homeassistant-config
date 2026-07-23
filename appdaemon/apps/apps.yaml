@@ -1,0 +1,77 @@
+guest_room_remote_1:
+  module: controllerx
+  class: Philips929002398602Z2MLightController
+  controller: "Guest Room Remote 1"
+  integration:
+    name: z2m
+    listen_to: mqtt
+  light:
+    name: Guest Room Lights
+    mode: mqtt
+  merge_mapping:
+    "on_press_release":
+      action: "toggle"
+    "on_hold":
+      action: "toggle"
+    "off_press_release":
+      action: "release"
+    "off_hold":
+      action: "release"
+
+guest_room_remote_2:
+  module: controllerx
+  class: Philips929002398602Z2MLightController
+  controller: "Guest Room Remote 2"
+  integration:
+    name: z2m
+    listen_to: mqtt
+  light:
+    name: Guest Room Lights
+    mode: mqtt
+  merge_mapping:
+    "on_press_release":
+      action: "toggle"
+    "on_hold":
+      action: "toggle"
+    "off_press_release":
+      action: "release"
+    "off_hold":
+      action: "release"
+
+master_bedroom_remote:
+  module: controllerx
+  class: Philips929002398602LightController
+  controller: "Master Bedroom Remote"
+  integration:
+    name: z2m
+    listen_to: mqtt
+  light: light.master_bedroom_lights
+  merge_mapping:
+    "on_press_release":
+      action: "on"
+    "on_hold":
+      service: cover.open_cover
+      entity_id: cover.master_bedroom_curtains
+    "off_press_release":
+      action: "off"
+    "off_hold":
+      service: cover.close_cover
+      entity_id: cover.master_bedroom_curtains
+
+master_bedroom_fan_remote:
+  module: controllerx
+  class: E1810Z2MLightController
+  controller: "Master Bedroom Fan Remote"
+  integration:
+    name: z2m
+    listen_to: mqtt
+  light:
+    name: Master Bedroom Fan
+    mode: mqtt
+  click_steps: 80
+  transition: 0
+  merge_mapping:
+    "brightness_up_hold":
+      action: "release"
+    "brightness_down_hold":
+      action: "release"
