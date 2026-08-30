@@ -15,6 +15,10 @@ homeassistant:
       customize: &customize
         package: 'living_room_media_tv'
 
+# Enables wake_on_lan.send_magic_packet for the Samsung TV turn-on automation
+# https://www.home-assistant.io/integrations/wake_on_lan/
+wake_on_lan:
+
 rest_command:
   set_philips_hue_syncbox_input_living_room:
     url: !secret hdmi_matrix_address
@@ -124,6 +128,21 @@ automation:
             duration: 25
             position: top-right
             transparency: 50%
+
+  - id: 42a9ab3b-eabf-4cef-873b-c3cb40944143
+    alias: Turn On Living Room TV with WakeOnLan
+    description: >
+      Send a Wake-on-LAN magic packet when Home Assistant requests the Living
+      Room Samsung TV to turn on. Replaces implicit WoL deprecated by the
+      Samsung TV integration.
+    triggers:
+      - trigger: samsungtv.turn_on
+        entity_id: media_player.living_room_tv
+    actions:
+      - action: wake_on_lan.send_magic_packet
+        data:
+          mac: 'b0:99:d7:4b:20:38'
+    mode: single
 
 ################################################
 ## Script
