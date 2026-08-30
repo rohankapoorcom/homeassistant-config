@@ -99,6 +99,7 @@ This package provides comprehensive living room automation with:
 | `c8ff656a-e0d6-4b26-9840-0da9863b1867` | Living Room Shield TV Notify Washer | Washer completion notification | Washer completion | TV notification |
 | `e2f38056-ce90-46ca-8138-51a9637e3e50` | Living Room Shield TV Notify Dryer | Dryer completion notification | Dryer completion | TV notification |
 | `c34228e0-c6c9-431f-ad73-cef94537ca2c` | Living Room TV Notify Phone Call | Phone call notification | Incoming call | TV notification with caller info |
+| `42a9ab3b-eabf-4cef-873b-c3cb40944143` | Turn On Living Room TV with WakeOnLan | Samsung TV Wake-on-LAN | `samsungtv.turn_on` | Send magic packet to the TV |
 
 ### Automation Details
 
@@ -145,6 +146,12 @@ This package provides comprehensive living room automation with:
 - **Duration**: 25 seconds
 - **Position**: Top-right with 50% transparency
 
+#### Turn On Living Room TV with WakeOnLan
+- **Trigger**: `samsungtv.turn_on` for `media_player.living_room_tv`
+- **Action**: `wake_on_lan.send_magic_packet` to the TV MAC address
+- **Purpose**: Replaces implicit Wake-on-LAN deprecated by the Samsung TV integration
+- **Used by**: Any `media_player.turn_on` call targeting the Living Room TV (scripts, UI, voice)
+
 ## Scripts
 
 ### turn_on_watch_living_room_tv
@@ -186,6 +193,8 @@ This package provides comprehensive living room automation with:
 - `sensor` - Phone system monitoring
 - `switch` - Device control
 - `select` - Sync box area selection
+- `samsungtv` - Living Room Samsung TV
+- `wake_on_lan` - Magic packet to power on the Samsung TV
 
 ### Custom Integrations
 - `denonavr` - Denon AVR control
