@@ -40,7 +40,6 @@ This package provides comprehensive living room automation with:
 - Sun-based curtain control
 - Appliance notifications
 - Phone call notifications
-- Remote charging management
 - HDMI matrix switching
 
 ## Entities
@@ -55,7 +54,6 @@ This package provides comprehensive living room automation with:
 - `binary_sensor.living_room_fan_high` - Fan high speed state
 - `binary_sensor.living_room_fan_off` - Fan off state
 - `binary_sensor.living_room_windows` - Window state
-- `binary_sensor.living_room_tv_remote_plugged_in` - Remote charging state
 - `binary_sensor.washer_wash_completed` - Washer completion
 - `binary_sensor.dryer_dry_completed` - Dryer completion
 
@@ -72,8 +70,6 @@ This package provides comprehensive living room automation with:
 
 ### Switches
 - `switch.living_room_conference_camera` - Conference camera
-- `switch.living_room_tv_remote_motion_detection` - Remote motion detection
-- `switch.living_room_tv_remote_screen` - Remote screen
 - `switch.living_room_sync_box_light_sync` - Sync box light sync
 
 ### Sensors
@@ -103,7 +99,6 @@ This package provides comprehensive living room automation with:
 | `c8ff656a-e0d6-4b26-9840-0da9863b1867` | Living Room Shield TV Notify Washer | Washer completion notification | Washer completion | TV notification |
 | `e2f38056-ce90-46ca-8138-51a9637e3e50` | Living Room Shield TV Notify Dryer | Dryer completion notification | Dryer completion | TV notification |
 | `c34228e0-c6c9-431f-ad73-cef94537ca2c` | Living Room TV Notify Phone Call | Phone call notification | Incoming call | TV notification with caller info |
-| `6ed8bef7-8ed6-4278-b79f-fefa9bf2ab8b` | Control the Living Room TV Remote when Charging | Remote charging management | Remote charging state | Motion detection and screen control |
 
 ### Automation Details
 
@@ -149,11 +144,6 @@ This package provides comprehensive living room automation with:
 - **Notification**: Shows caller name and number
 - **Duration**: 25 seconds
 - **Position**: Top-right with 50% transparency
-
-#### Control the Living Room TV Remote when Charging
-- **Trigger**: Remote charging state changes
-- **Charging**: Turns off motion detection and screen
-- **Not Charging**: Turns on motion detection and screen
 
 ## Scripts
 
@@ -277,5 +267,4 @@ rest_command:
 - Media system automation provides complete entertainment setup
 - Philips Hue Sync Box integration enables ambient lighting sync
 - All notifications include configurable duration and positioning
-- Remote charging management optimizes battery life and user experience
 - HDMI matrix switching enables multi-room video distribution
