@@ -1,6 +1,6 @@
 packages:
   remote_package:
-    url: https://github.com/bullshit/esphome-components
+    url: https://github.com/rwalker777/esphome-components
     ref: main
     files: ['configs/extended_sensors.yaml', 'configs/ups_controls.yaml']
     refresh: 1s
