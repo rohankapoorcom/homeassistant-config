@@ -1,7 +1,14 @@
 type: custom:layout-card
 cards:
-  - type: custom:layout-card
-    layout_type: vertical
+  - type: vertical-stack
+    card_mod:
+      style: |
+        :host {
+          height: auto !important;
+        }
+        #root {
+          gap: 8px;
+        }
     cards:
       - type: custom:xiaomi-vacuum-map-card
         title: Upstairs
@@ -359,8 +366,16 @@ cards:
             }
     view_layout:
       grid_area: left
-  - type: custom:layout-card
-    layout_type: vertical
+      align-self: start
+  - type: vertical-stack
+    card_mod:
+      style: |
+        :host {
+          height: auto !important;
+        }
+        #root {
+          gap: 8px;
+        }
     cards:
       - type: custom:xiaomi-vacuum-map-card
         title: Downstairs
@@ -829,6 +844,7 @@ cards:
             }
     view_layout:
       grid_area: right
+      align-self: start
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr

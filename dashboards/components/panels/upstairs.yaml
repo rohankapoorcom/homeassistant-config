@@ -185,7 +185,15 @@ cards:
     square: false
     view_layout:
       grid-area: left-bottom
-  - type: grid
+  - type: vertical-stack
+    card_mod:
+      style: |
+        :host {
+          height: auto !important;
+        }
+        #root {
+          gap: 8px;
+        }
     cards:
       - type: grid
         cards:
@@ -344,10 +352,9 @@ cards:
             square: false
         columns: 1
         square: false
-    columns: 1
-    square: false
     view_layout:
       grid-area: right
+      align-self: start
 layout_type: custom:grid-layout
 layout:
   grid-template-columns: 1fr 1fr
