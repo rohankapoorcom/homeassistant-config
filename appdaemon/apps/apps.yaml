@@ -1,3 +1,4 @@
+---
 guest_room_remote_1:
   module: controllerx
   class: Philips929002398602Z2MLightController

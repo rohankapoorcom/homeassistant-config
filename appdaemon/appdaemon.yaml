@@ -1,3 +1,4 @@
+---
 # AppDaemon — ControllerX remotes (talos-01 / homeassistant-main).
 # Secrets via ESO-mounted /conf/secrets.yaml (same !secret style as configuration.yaml).
 # Do not commit live tokens or coordinates.
