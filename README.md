@@ -91,7 +91,7 @@ My comprehensive Home Assistant configuration for a smart home with extensive au
 ### Layout & Navigation
 - **[hass-swipe-navigation](https://github.com/zanna-37/hass-swipe-navigation)**: Swipe-based navigation for mobile interfaces
 - **[kiosk-mode](https://github.com/NemesisRE/kiosk-mode)**: Kiosk interface mode for wall-mounted tablets
-- **[lovelace-layout-card](https://github.com/thomasloven/lovelace-layout-card)**: Advanced layout management with conditional displays
+- **[lovelace-layout-card](https://github.com/adamscybot/lovelace-layout-card)**: Advanced layout management (HACS custom repo; 2.4.8 fork that fixes HA 2026.4 column height gaps)
 - **[stack-in-card](https://github.com/custom-cards/stack-in-card)**: Nested card layouts for complex interfaces
 - **[vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card)**: Vertical stacking for organized layouts
 
