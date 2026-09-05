@@ -260,8 +260,8 @@ automation:
     description: >-
       Cleans the garage every night at 11:00 PM using the garage vacuum
       if the garage door has opened at least once in the last 24 hours.
-      Ensures both the garage door cover and binary sensor are closed before
-      starting the cleaning run.
+      Waits up to 30 minutes for both the garage door (for cars) and garage door
+      (for humans) to be closed, then cleans the garage segment only.
     mode: single
     triggers:
       - trigger: time
@@ -277,16 +277,14 @@ automation:
             {% set last_change = changes['cover.garage_door'].datetime | as_datetime %}
             {{ (as_timestamp(now()) - as_timestamp(last_change)) < 86400 }}
           {% endif %}
-      - alias: "Verify garage door (for cars) and garage door (for humans) are both closed before cleaning"
-        condition: and
-        conditions:
-          - condition: state
-            entity_id: cover.garage_door
-            state: 'closed'
-          - condition: state
-            entity_id: binary_sensor.garage_door_open
-            state: 'off'
     actions:
+      - alias: "Wait up to 30 minutes for garage door (for cars) and garage door (for humans) to both be closed before cleaning"
+        wait_template: >-
+          {{ is_state('cover.garage_door', 'closed')
+          and is_state('binary_sensor.garage_door_open', 'off') }}
+        timeout:
+          minutes: 30
+        continue_on_timeout: false
       - action: select.select_option
         target:
           entity_id: select.valetudo_garage_vacuum_mode
@@ -297,9 +295,13 @@ automation:
           entity_id: select.valetudo_garage_vacuum_fan
         data:
           option: max
-      - action: vacuum.start
+      - action: mqtt_vacuum_camera.vacuum_clean_segments
         target:
           entity_id: vacuum.valetudo_garage_vacuum
+        data:
+          segments:
+            - 1
+          repeats: 1
 
   - id: 4fb7f87f-ca32-42a2-9ab5-b34be314de5d
     alias: Mail Delivery Notification
