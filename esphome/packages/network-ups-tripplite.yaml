@@ -1,0 +1,24 @@
+external_components:
+  - source: github://rohankapoorcom/esphome-components@feat/ups-hid-tripplite
+    components: [ ups_hid ]
+
+sensor:
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Battery Voltage"
+    id: battery_voltage
+    type: battery_voltage
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 1
+
+  - platform: ups_hid
+    ups_hid_id: ups_monitor
+    name: "Input Frequency"
+    id: input_frequency
+    type: frequency
+    unit_of_measurement: "Hz"
+    device_class: frequency
+    state_class: measurement
+    accuracy_decimals: 1

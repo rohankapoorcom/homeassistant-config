@@ -11,7 +11,7 @@ packages:
   base: !include packages/base.yaml
   seedstudio-xiao-w5500: !include packages/seedstudio-xiao-w5500.yaml
   network-ups: !include packages/network-ups.yaml
-  # network-ups-cyberpower: !include packages/network-ups-cyberpower.yaml
+  network-ups-tripplite: !include packages/network-ups-tripplite.yaml
   bluetooth_proxy: !include packages/bluetooth_proxy.yaml
 
 output:

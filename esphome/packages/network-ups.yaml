@@ -1,7 +1,3 @@
-external_components:
-  - source: github://rwalker777/esphome-components@main
-    components: [ ups_hid ]
-
 number:
 
 ups_hid:
