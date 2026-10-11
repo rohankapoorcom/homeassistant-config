@@ -14,6 +14,11 @@ packages:
   network-ups-tripplite: !include packages/network-ups-tripplite.yaml
   bluetooth_proxy: !include packages/bluetooth_proxy.yaml
 
+sensor:
+  # This SMART1500LCD (09AE:2009) does not report these. Other Tripp Lite models do.
+  - id: !remove output_voltage
+  - id: !remove load_percentage
+
 output:
   - platform: template
     id: bluetooth_led

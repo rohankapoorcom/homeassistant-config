@@ -1,8 +1,4 @@
 sensor:
-  # 09AE:2009 does not report output voltage or load percentage.
-  - id: !remove output_voltage
-  - id: !remove load_percentage
-
   - platform: ups_hid
     ups_hid_id: ups_monitor
     name: "Battery Voltage"
