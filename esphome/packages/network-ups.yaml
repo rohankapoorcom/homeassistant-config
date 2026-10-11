@@ -1,3 +1,7 @@
+external_components:
+  - source: github://rohankapoorcom/esphome-components@feat/ups-hid-tripplite
+    components: [ ups_hid ]
+
 number:
 
 ups_hid:
