@@ -47,8 +47,8 @@ script:
   - id: toggle_garage_door
     mode: restart
     then:
-      - homeassistant.service:
-          service: button.press
+      - homeassistant.action:
+          action: button.press
           data:
             entity_id: button.garage_door_toggle_door
 
