@@ -123,7 +123,7 @@ light:
     pin: GPIO27
     id: status_leds
     num_leds: 2
-    rgb_order: GRB
+    channel_colors: GRB
     name: Status LEDs
     internal: True
 
