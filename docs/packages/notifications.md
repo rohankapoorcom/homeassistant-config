@@ -12,16 +12,16 @@ The notifications package provides:
 - **Unified Notification Service**: Group notification service for multiple delivery methods
 - **Automated Alerts**: Battery warnings and leak detection notifications
 - **Text-to-Speech**: Google Translate TTS integration for voice notifications
-- **Email Integration**: Mailgun email service for reliable email delivery
+- **Email Integration**: Cluster SMTP relay (UI SMTP integration → SES)
 - **Mobile App Support**: Multiple mobile device notification support
 
 ## Key Components
 
 ### Notification Services
-- **Email Service**: Mailgun integration for reliable email delivery
+- **Email Service**: Home Assistant SMTP integration (UI) via cluster smtp-relay
 - **Mobile App Notifications**: Multiple mobile device support
 - **Voice Notifications**: Text-to-speech for audio alerts
-- **Group Notifications**: Unified service for multiple delivery methods
+- **Group Notifications**: Unified service for mobile delivery methods
 
 ### Automated Alert System
 - **Battery Monitoring**: Low battery detection and notifications
@@ -30,7 +30,7 @@ The notifications package provides:
 - **Template-Based Messages**: Dynamic notification content
 
 ### Delivery Methods
-- **Email**: Professional email notifications via Mailgun
+- **Email**: SMTP via cluster smtp-relay → Amazon SES
 - **Mobile Apps**: Direct notifications to multiple mobile devices
 - **Voice**: Text-to-speech audio notifications
 - **Multi-Device**: Simultaneous delivery to all registered devices
@@ -38,13 +38,12 @@ The notifications package provides:
 ## Entities
 
 ### Notification Services
-- `notify.rohan_email`: Email notification service via Mailgun
-  - **Platform**: Mailgun
-  - **Recipient**: Configured email recipient
-  - **Sender**: Configured email sender
+- `notify.rohan_email`: Email notify entity (SMTP UI integration)
+  - **Host**: `smtp-relay.smtp-relay.svc.cluster.local:25` (encryption none, no auth)
+  - **Sender**: `hass@homeassistant.rohankapoor.dev`
 
 - `notify.rohan_kapoor`: Group notification service
-  - **Services**: Email, mobile apps, voice
+  - **Services**: Email (`rohan_email`) + mobile apps
   - **Devices**: Multiple mobile devices and email
   - **Delivery**: Simultaneous delivery to all services
 
@@ -82,11 +81,10 @@ The notifications package provides:
   - **Critical Priority**: High-priority notification delivery
 
 ## Dependencies
-- **Mailgun**: Email service integration
+- **SMTP integration (UI)**: Cluster smtp-relay → Amazon SES
 - **Google Translate TTS**: Text-to-speech functionality
 - **Mobile App Integration**: Mobile device notification support
 - **Custom Blueprints**: Battery monitoring and leak detection blueprints
-- **Secrets Management**: Secure API key and credential storage
 
 ## Usage
 The notifications package provides several interaction methods:
@@ -98,11 +96,10 @@ The notifications package provides several interaction methods:
 
 ## Configuration
 
-### Mailgun Setup
-- **Domain**: Configured Mailgun domain
-- **API Key**: Secure API key storage
-- **Recipient**: Email recipient configuration
-- **Sender**: Email sender configuration
+### Email (SMTP UI)
+- Configured under **Settings → Devices & services → SMTP** (not YAML)
+- Relay: `smtp-relay.smtp-relay.svc.cluster.local:25`, encryption `none`
+- From address must be on a verified SES domain (`@rohankapoor.dev`, etc.)
 
 ### Mobile App Configuration
 - **Device Registration**: Multiple mobile device support
@@ -121,10 +118,9 @@ The notifications package provides several interaction methods:
 - `secrets.yaml`: Secure credential storage
 
 ## Notes
-- Notifications use secure credential storage via secrets.yaml
 - Battery monitoring excludes specific devices to reduce notification noise
 - Leak detection provides immediate emergency notifications
 - Multi-device delivery ensures notifications reach all registered devices
 - Voice notifications support multiple languages via Google Translate
-- Email notifications use professional Mailgun service for reliability
+- Email is UI SMTP only (YAML smtp deprecated in 2026.7 / removed in 2027.1)
 - Custom blueprints provide sophisticated notification logic and filtering

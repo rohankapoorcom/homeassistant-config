@@ -18,16 +18,11 @@ homeassistant:
 tts:
   platform: google_translate
 
-mailgun:
-  domain: !secret mailgun.domain
-  api_key: !secret mailgun.api_key
+# Email: SMTP integration via UI → smtp-relay.smtp-relay.svc.cluster.local:25
+# (notify.rohan_email). Do not re-add Mailgun or YAML smtp
+# (YAML smtp is deprecated in 2026.7, removed in 2027.1).
 
 notify:
-  - name: rohan_email
-    platform: mailgun
-    recipient: !secret notify.rohan_email.recipient
-    sender: !secret notify.rohan_email.sender
-
   - platform: group
     name: Rohan Kapoor
     services:
