@@ -19,24 +19,48 @@ tts:
   platform: google_translate
 
 # Email: SMTP integration via UI → smtp-relay.smtp-relay.svc.cluster.local:25
-# (notify.rohan_email). Do not re-add Mailgun or YAML smtp
+# Entity: notify.home_rohan_email. YAML notify groups cannot target notify
+# entities (they call legacy notify.* services only) — use script.notify_rohan_kapoor
+# to fan out to mobile apps + SMTP. Do not re-add Mailgun or YAML smtp
 # (YAML smtp is deprecated in 2026.7, removed in 2027.1).
 
 notify:
-  - platform: group
-    name: Rohan Kapoor
-    services:
-      - action: rohan_email
-      - action: mobile_app_rohans_ipad_pro_5th_generation
-      - action: mobile_app_rohans_ipad_pro_6th_gen
-      - action: mobile_app_samsung_z_fold_6
-
   - platform: group
     name: Rohan Kapoor Mobile Apps
     services:
       - action: mobile_app_rohans_ipad_pro_5th_generation
       - action: mobile_app_rohans_ipad_pro_6th_gen
       - action: mobile_app_samsung_z_fold_6
+
+script:
+  notify_rohan_kapoor:
+    alias: Notify Rohan Kapoor
+    description: Mobile apps + cluster SMTP email (notify.home_rohan_email)
+    mode: parallel
+    fields:
+      message:
+        required: true
+        selector:
+          text:
+            multiline: true
+      title:
+        selector:
+          text:
+      data:
+        selector:
+          object:
+    sequence:
+      - action: notify.rohan_kapoor_mobile_apps
+        data:
+          title: "{{ title | default('') }}"
+          message: "{{ message }}"
+          data: "{{ data | default({}) }}"
+      - action: notify.send_message
+        target:
+          entity_id: notify.home_rohan_email
+        data:
+          title: "{{ title | default('Home Assistant') }}"
+          message: "{{ message }}"
 
 automation:
   - id: '1665347764581'
@@ -50,8 +74,8 @@ automation:
               - condition: template
                 value_template: '{{ sensors | length > 0 }}'
             then:
-              - action: notify.rohan_kapoor
-                data_template:
+              - action: script.notify_rohan_kapoor
+                data:
                   title: "Low Battery Notification"
                   message: |
                     The battery of the sensor(s) is low:
@@ -70,7 +94,7 @@ automation:
       path: TurtleFX/leak-detector-notifier.yaml
       input:
         actions:
-          - action: notify.rohan_kapoor
+          - action: script.notify_rohan_kapoor
             data:
               title: Water Leak Detected
               message: "{{trigger.event.data.new_state.attributes.friendly_name}} has detected a leak."

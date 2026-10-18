@@ -139,7 +139,7 @@ automation:
               - condition: trigger
                 id: smoke_detected
             sequence:
-              - action: notify.rohan_kapoor
+              - action: script.notify_rohan_kapoor
                 data:
                   title: Smoke Alarm Triggered
                   data:
@@ -151,7 +151,7 @@ automation:
               - condition: trigger
                 id: co_detected
             sequence:
-              - action: notify.rohan_kapoor
+              - action: script.notify_rohan_kapoor
                 data:
                   title: Carbon Monoxide Alarm Triggered
                   data:

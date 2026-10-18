@@ -38,14 +38,16 @@ The notifications package provides:
 ## Entities
 
 ### Notification Services
-- `notify.rohan_email`: Email notify entity (SMTP UI integration)
+- `notify.home_rohan_email`: Email notify entity (SMTP UI integration)
   - **Host**: `smtp-relay.smtp-relay.svc.cluster.local:25` (encryption none, no auth)
   - **Sender**: `hass@homeassistant.rohankapoor.dev`
 
-- `notify.rohan_kapoor`: Group notification service
-  - **Services**: Email (`rohan_email`) + mobile apps
-  - **Devices**: Multiple mobile devices and email
-  - **Delivery**: Simultaneous delivery to all services
+- `script.notify_rohan_kapoor`: Fan-out to mobile apps + SMTP email
+  - YAML notify groups cannot target SMTP notify entities (legacy services only)
+  - Prefer this over the old `notify.rohan_kapoor` group action
+
+- `notify.rohan_kapoor_mobile_apps`: Mobile-only group
+  - **Devices**: Multiple mobile devices
 
 ### Text-to-Speech
 - **Platform**: Google Translate TTS

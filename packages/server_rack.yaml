@@ -407,7 +407,7 @@ automation:
             - media_player.announcements
           message: "Heads up. The server rack has been on battery power for ten minutes."
 
-      - action: notify.rohan_kapoor
+      - action: script.notify_rohan_kapoor
         data:
           title: 'Server Rack Battery Power Alert'
           data:
