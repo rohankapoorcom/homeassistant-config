@@ -34,3 +34,10 @@ template:
         reference_entity: sensor.downstairs_hallway_air_quality_pm2_5
     name: downstairs_hallway_us_air_quality_index
     unique_id: f9695676-bdbf-48e7-ba93-feadf9ec54eb
+
+  - use_blueprint:
+      path: rohankapoorcom/us_aqi.yaml
+      input:
+        reference_entity: sensor.office_air_filter_air_quality_pm2_5
+    name: office_us_air_quality_index
+    unique_id: 812df63a-c97e-40bd-bb8e-e7370cd2d972

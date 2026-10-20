@@ -106,6 +106,11 @@ cards:
               group_by:
                 func: avg
                 duration: 30min
+            - entity: sensor.office_us_air_quality_index
+              name: Office
+              group_by:
+                func: avg
+                duration: 30min
           apex_config:
             legend:
               show: false

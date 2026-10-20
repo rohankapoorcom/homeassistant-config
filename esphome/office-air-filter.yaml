@@ -90,10 +90,28 @@ sensor:
     levoit: levoitcore300
     name: "Air Quality PM2.5"
     type: pm25
+  # MCU level 1-4. Not a US AQI; clear device_class so Home Assistant
+  # does not color it with the EPA scale. Words are published below.
   - platform: levoit
     levoit: levoitcore300
-    name: "AQI"
+    name: "Air Quality Level"
+    id: office_air_quality_level
     type: aqi
+    device_class: ""
+    icon: mdi:gauge
+    accuracy_decimals: 0
+    on_value:
+      then:
+        - text_sensor.template.publish:
+            id: office_air_quality
+            state: !lambda |-
+              switch (static_cast<int>(x)) {
+                case 1: return std::string("excellent");
+                case 2: return std::string("good");
+                case 3: return std::string("moderate");
+                case 4: return std::string("poor");
+                default: return std::string("unknown");
+              }
   - platform: levoit
     levoit: levoitcore300
     name: "Current CADR"
@@ -114,6 +132,13 @@ select:
     type: auto_mode
 
 text_sensor:
+  # VeSync AirQualityLevel names: excellent, good, moderate, poor.
+  # "bad" is an alias of poor in pyvesync, so the state is "poor".
+  - platform: template
+    name: "Air Quality"
+    id: office_air_quality
+    icon: mdi:air-filter
+    update_interval: never
   - platform: levoit
     levoit: levoitcore300
     name: "MCU Version"

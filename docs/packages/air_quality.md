@@ -28,6 +28,7 @@ The air quality package provides:
 - **Living Room**: Living room air quality monitoring
 - **Guest Room**: Guest room air quality monitoring
 - **Downstairs Hallway**: Downstairs hallway air quality monitoring
+- **Office**: Office air quality monitoring from the Core 300S PM2.5 sensor
 - **Comprehensive Coverage**: Full home air quality coverage
 
 ### AQI Calculation Algorithm
@@ -59,11 +60,17 @@ The air quality package provides:
   - **Device Class**: aqi
   - **Source**: `sensor.downstairs_hallway_air_quality_pm2_5`
 
+- `sensor.office_us_air_quality_index`: Office US AQI
+  - **Unique ID**: `812df63a-c97e-40bd-bb8e-e7370cd2d972`
+  - **Device Class**: aqi
+  - **Source**: `sensor.office_air_filter_air_quality_pm2_5`
+
 ### Source PM2.5 Sensors
 - `sensor.master_bedroom_air_quality_pm2_5`: Master bedroom PM2.5
 - `sensor.living_room_air_quality_pm2_5`: Living room PM2.5
 - `sensor.guest_room_air_quality_pm2_5`: Guest room PM2.5
 - `sensor.downstairs_hallway_air_quality_pm2_5`: Downstairs hallway PM2.5
+- `sensor.office_air_filter_air_quality_pm2_5`: Office Core 300S PM2.5
 
 ## AQI Calculation Algorithm
 

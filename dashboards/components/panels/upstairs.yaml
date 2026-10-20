@@ -238,6 +238,8 @@ cards:
               - type: entity
                 entity: sensor.office_humidity
               - type: entity
+                entity: sensor.office_us_air_quality_index
+              - type: entity
                 entity: binary_sensor.office_lights_occupancy
               - type: entity
                 entity: binary_sensor.office_sliding_door_open
