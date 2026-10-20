@@ -1,6 +1,6 @@
 substitutions:
   device_name: office-air-filter
-  wifi_ap_ssid: Office Air Filter
+  friendly_name: Office Air Filter
   rx_pin: GPIO16
   tx_pin: GPIO17
 
