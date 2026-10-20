@@ -134,10 +134,6 @@ text_sensor:
     levoit: levoitcore300
     name: "Error"
     type: error_message
-  - platform: debug
-    device:
-      name: "Device Info"
-      entity_category: diagnostic
 
 button:
   - platform: levoit
