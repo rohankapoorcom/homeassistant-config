@@ -58,11 +58,11 @@ mqtt_discoverystream_alt:
         - script.set_office_lights_25_percent
         - script.set_office_lights_50_percent
         - script.set_office_lights_75_percent
-        - sensor.living_room_air_quality_score
         - sensor.office_humidity
         - sensor.office_illuminance
         - sensor.office_speakers_volume
         - sensor.office_temperature
+        - sensor.office_us_air_quality_index
         - sensor.standing_desk_desk_height
         - switch.office_ceiling_mics_mute
         - switch.office_computers_in_kitchen_mute
