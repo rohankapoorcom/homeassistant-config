@@ -395,11 +395,21 @@ script:
     sequence:
       - condition: template
         value_template: "{{ has_value('fan.office_air_filter_fan') }}"
-      - action: fan.turn_on
+      # ESPHome's fan.turn_on ignores preset_mode and only sends a speed.
+      # A speed command leaves Auto, so the preset has to be set on its own.
+      - action: fan.set_preset_mode
         target:
           entity_id: fan.office_air_filter_fan
         data:
           preset_mode: Auto
+      - if:
+          - condition: state
+            entity_id: fan.office_air_filter_fan
+            state: "off"
+        then:
+          - action: fan.turn_on
+            target:
+              entity_id: fan.office_air_filter_fan
 
 ################################################
 ## Automation
