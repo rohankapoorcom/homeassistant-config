@@ -343,7 +343,6 @@ script:
   # set_office_air_filter_fan_auto.
   cycle_office_air_filter_fan:
     alias: Cycle Office Air Filter Fan
-    unique_id: 82b20a49-12bd-41cc-9525-40907af745a1
     description: >-
       Moves the Core 300S from Auto, Sleep, or Off to Low, Low to
       Medium, Medium to High, and High back to Low.
@@ -391,7 +390,6 @@ script:
 
   set_office_air_filter_fan_auto:
     alias: Set Office Air Filter Fan Auto
-    unique_id: 31482231-e88d-45db-9bcd-0fb78c2a6a28
     description: Returns the Core 300S fan to Auto, turning it on if needed.
     mode: single
     sequence:
