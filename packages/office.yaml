@@ -50,6 +50,8 @@ mqtt_discoverystream_alt:
         - number.office_speakers_hyperdeck_level
         - number.office_speakers_mac_level
         - number.office_speakers_pc_level
+        - script.cycle_office_air_filter_fan
+        - script.set_office_air_filter_fan_auto
         - script.set_office_fan_high
         - script.set_office_fan_medium
         - script.set_office_fan_off
@@ -58,6 +60,7 @@ mqtt_discoverystream_alt:
         - script.set_office_lights_25_percent
         - script.set_office_lights_50_percent
         - script.set_office_lights_75_percent
+        - sensor.office_air_filter_fan_speed
         - sensor.office_humidity
         - sensor.office_illuminance
         - sensor.office_speakers_volume
@@ -189,6 +192,33 @@ template:
           - action: light.turn_off
             target:
               entity_id: light.office_backlighting
+  # Core 300S keeps the last manual percentage while Auto or Sleep is
+  # active, so the label has to follow preset_mode before percentage.
+  # Speeds publish as 33, 66, and 100.
+  - sensor:
+      - unique_id: 311cabf9-656b-4be1-894b-7265bce5a9a7
+        name: Office Air Filter Fan Speed
+        default_entity_id: sensor.office_air_filter_fan_speed
+        icon: mdi:fan
+        state: >
+          {% set entity = 'fan.office_air_filter_fan' %}
+          {% set preset = state_attr(entity, 'preset_mode') %}
+          {% set percentage = state_attr(entity, 'percentage') | float(0) %}
+          {% if is_state(entity, 'off') %}
+            Off
+          {% elif preset == 'Auto' %}
+            Auto
+          {% elif preset == 'Sleep' %}
+            Sleep
+          {% elif preset == 'Manual' and percentage <= 33 %}
+            Low
+          {% elif preset == 'Manual' and percentage <= 66 %}
+            Medium
+          {% elif preset == 'Manual' %}
+            High
+          {% else %}
+            Unknown
+          {% endif %}
 
 ################################################
 ## Input Boolean
@@ -307,6 +337,71 @@ script:
           entity_id: fan.office_fan
         data:
           percentage: 99
+
+  # Tap cycle: Auto, Sleep, and Off go to Low. Low, Medium, and High
+  # then advance, with High returning to Low. Auto is only restored by
+  # set_office_air_filter_fan_auto.
+  cycle_office_air_filter_fan:
+    alias: Cycle Office Air Filter Fan
+    unique_id: 82b20a49-12bd-41cc-9525-40907af745a1
+    description: >-
+      Moves the Core 300S from Auto, Sleep, or Off to Low, Low to
+      Medium, Medium to High, and High back to Low.
+    mode: single
+    sequence:
+      - condition: template
+        value_template: "{{ has_value('fan.office_air_filter_fan') }}"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ is_state('fan.office_air_filter_fan', 'on')
+                    and is_state_attr(
+                      'fan.office_air_filter_fan', 'preset_mode', 'Manual')
+                    and state_attr(
+                      'fan.office_air_filter_fan', 'percentage') | float(0)
+                      <= 33 }}
+            sequence:
+              - action: fan.turn_on
+                target:
+                  entity_id: fan.office_air_filter_fan
+                data:
+                  percentage: 66
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ is_state('fan.office_air_filter_fan', 'on')
+                    and is_state_attr(
+                      'fan.office_air_filter_fan', 'preset_mode', 'Manual')
+                    and state_attr(
+                      'fan.office_air_filter_fan', 'percentage') | float(0)
+                      <= 66 }}
+            sequence:
+              - action: fan.turn_on
+                target:
+                  entity_id: fan.office_air_filter_fan
+                data:
+                  percentage: 100
+        default:
+          - action: fan.turn_on
+            target:
+              entity_id: fan.office_air_filter_fan
+            data:
+              percentage: 33
+
+  set_office_air_filter_fan_auto:
+    alias: Set Office Air Filter Fan Auto
+    unique_id: 31482231-e88d-45db-9bcd-0fb78c2a6a28
+    description: Returns the Core 300S fan to Auto, turning it on if needed.
+    mode: single
+    sequence:
+      - condition: template
+        value_template: "{{ has_value('fan.office_air_filter_fan') }}"
+      - action: fan.turn_on
+        target:
+          entity_id: fan.office_air_filter_fan
+        data:
+          preset_mode: Auto
 
 ################################################
 ## Automation

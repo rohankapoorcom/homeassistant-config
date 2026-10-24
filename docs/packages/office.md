@@ -9,7 +9,8 @@ The office package manages all automation and configuration for the office space
 ## Functionality
 The office package provides:
 - **Automated Lighting**: Multi-zone lighting with brightness presets (25%, 50%, 75%, 100%)
-- **Climate Control**: Fan with multiple speed settings (slow, medium, high) and percentage-based control
+- **Climate Control**: Ceiling fan with multiple speed settings (slow, medium, high) and percentage-based control
+- **Air Filter**: Core 300S fan label and Companion speed cycle (Low, Medium, High, Auto)
 - **Standing Desk Control**: 4 preset positions for ergonomic workspace adjustment
 - **Video Lighting**: Specialized lighting setup for video conferencing and meetings
 - **Audio/Video Controls**: Meeting room equipment management including webcam, microphones, and speakers
@@ -28,6 +29,7 @@ The office package provides:
 
 ### Climate Control
 - **Ceiling Fan**: Multi-speed fan with percentage-based control (33%, 66%, 99%)
+- **Air Filter Fan**: Core 300S speed label derived from preset and percentage, plus scripts that cycle manual speeds or return the fan to Auto
 - **Temperature Monitoring**: Real-time temperature and humidity tracking
 - **Illuminance Sensing**: Natural light detection for adaptive lighting
 
@@ -73,6 +75,7 @@ The office package provides:
 - `switch.office_speakers_pc_mute`: PC speakers mute control
 
 ### Sensors
+- `sensor.office_air_filter_fan_speed`: Core 300S speed label (`Off`, `Auto`, `Sleep`, `Low`, `Medium`, `High`)
 - `sensor.office_temperature`: Office temperature monitoring
 - `sensor.office_humidity`: Office humidity monitoring
 - `sensor.office_illuminance`: Natural light level detection
@@ -89,6 +92,8 @@ The office package provides:
 - `script.set_office_lights_50_percent`: Set main lights to 50% brightness
 - `script.set_office_lights_75_percent`: Set main lights to 75% brightness
 - `script.set_office_lights_100_percent`: Set main lights to 100% brightness
+- `script.cycle_office_air_filter_fan`: Cycle the Core 300S from Auto, Sleep, or Off to Low, then Medium, High, and back to Low
+- `script.set_office_air_filter_fan_auto`: Return the Core 300S fan to Auto, turning it on if needed
 - `script.set_office_fan_off`: Turn off office fan
 - `script.set_office_fan_slow`: Set fan to slow speed (33%)
 - `script.set_office_fan_medium`: Set fan to medium speed (66%)
@@ -146,4 +151,5 @@ The office package provides several interaction methods:
 - Occupancy-based automation includes a 2-minute delay to prevent rapid on/off cycling
 - Video lighting uses specific color temperatures (143K) for optimal video quality
 - Fan control uses percentage-based speeds for precise control
+- The Core 300S reports speeds as 33, 66, and 100. Auto and Sleep keep the last manual percentage, so `sensor.office_air_filter_fan_speed` reads `preset_mode` first
 - The package integrates with the broader home automation system through MQTT discovery
