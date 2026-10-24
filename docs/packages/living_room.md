@@ -148,7 +148,7 @@ This package provides comprehensive living room automation with:
 
 #### Turn On Living Room TV with WakeOnLan
 - **Trigger**: `samsungtv.turn_on` for `media_player.living_room_tv`
-- **Action**: `wake_on_lan.send_magic_packet` to the TV MAC address
+- **Action**: `wake_on_lan.send_magic_packet` to the TV (`192.168.94.60`) and the IoT subnet broadcast (`192.168.94.255`)
 - **Purpose**: Replaces implicit Wake-on-LAN deprecated by the Samsung TV integration
 - **Used by**: Any `media_player.turn_on` call targeting the Living Room TV (scripts, UI, voice)
 
