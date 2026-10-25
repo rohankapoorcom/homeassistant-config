@@ -1,17 +1,28 @@
 """Utilities for MQTT Discovery Stream."""
 
 from dataclasses import dataclass, field
+import logging
 from typing import Any
 
-from homeassistant.components.mqtt.abbreviations import (
+from homeassistant.components.mqtt.abbreviations import (  # pylint: disable=home-assistant-component-root-import
     ABBREVIATIONS,
     DEVICE_ABBREVIATIONS,
     ORIGIN_ABBREVIATIONS,
 )
-from homeassistant.components.mqtt.const import CONF_AVAILABILITY, CONF_ORIGIN
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_AVAILABILITY,
+    CONF_ORIGIN,
+)
 from homeassistant.const import CONF_DEVICE
 
-from .const import CONF_BASE_TOPIC
+from .const import (
+    CONF_BASE_TOPIC,
+    CONF_PUBLISH_RETAIN,
+    CONF_RETAIN_DISCOVERY,
+    CONF_RETAIN_STATE,
+)
+
+_LOGGER = logging.getLogger(__name__)
 
 ABBREVIATIONS_KEYS = list(ABBREVIATIONS.keys())
 ABBREVIATIONS_VALUES = list(ABBREVIATIONS.values())
@@ -101,3 +112,24 @@ def _translate_to_abbreviations(
         return_payload[keyvalue] = payload[key]
 
     return return_payload
+
+
+def retain_setup(conf):
+    """Create retain config."""
+    publish_retain = conf.get(CONF_PUBLISH_RETAIN)
+
+    if publish_retain is not None:
+        _LOGGER.warning(
+            "'publish_retain' is deprecated for removal in 2027/03. Use 'retain_discovery' and 'retain_state' instead"
+        )
+        return RetainConfig(publish_retain, publish_retain)
+
+    return RetainConfig(conf.get(CONF_RETAIN_DISCOVERY), conf.get(CONF_RETAIN_STATE))
+
+
+@dataclass
+class RetainConfig:
+    """Store the retain config."""
+
+    retain_discovery: bool
+    retain_state: bool

@@ -3,6 +3,7 @@
 import logging
 import re
 import urllib.parse
+from http import HTTPStatus
 
 import voluptuous as vol
 from homeassistant.core import HomeAssistant
@@ -11,13 +12,20 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util.json import JsonObjectType
 
 from .base_tool import BaseTool
-from .cache import SQLiteCache
+from .cache import InMemoryCache
 from .const import (
     CONF_WIKIPEDIA_NUM_RESULTS,
-    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+# Wikimedia rejects/throttles requests with generic client signatures
+# (e.g. a bare aiohttp default User-Agent) per its API etiquette policy:
+# https://meta.wikimedia.org/wiki/User-Agent_policy - without this,
+# both calls below can 403/429 even under normal, light usage.
+WIKIPEDIA_HEADERS = {
+    "User-Agent": "HomeAssistant-llm_intents/1.0 (https://github.com/skye-harris/llm_intents)"
+}
 
 
 class SearchWikipediaTool(BaseTool):
@@ -30,9 +38,10 @@ class SearchWikipediaTool(BaseTool):
     parameters = vol.Schema(
         {
             vol.Required(
-                "query", description="The subject matter to search Wikipedia for"
+                "query",
+                description="The subject matter to search Wikipedia for",
             ): str,
-        }
+        },
     )
 
     async def async_call(
@@ -42,9 +51,7 @@ class SearchWikipediaTool(BaseTool):
         llm_context: llm.LLMContext,
     ) -> JsonObjectType:
         """Call the tool."""
-        config_data = hass.data[DOMAIN].get("config", {})
-        entry = next(iter(hass.config_entries.async_entries(DOMAIN)))
-        config_data = {**config_data, **entry.options}
+        config_data = self.config
 
         query = tool_input.tool_args["query"]
         _LOGGER.info("Wikipedia search requested for: %s", query)
@@ -63,7 +70,7 @@ class SearchWikipediaTool(BaseTool):
                 "srlimit": num_results,
             }
 
-            cache = SQLiteCache()
+            cache = InMemoryCache()
             cached_response = cache.get(__name__, search_params)
             if cached_response:
                 return cached_response
@@ -71,10 +78,12 @@ class SearchWikipediaTool(BaseTool):
             async with session.get(
                 "https://en.wikipedia.org/w/api.php",
                 params=search_params,
+                headers=WIKIPEDIA_HEADERS,
             ) as resp:
-                if resp.status != 200:
+                if resp.status != HTTPStatus.OK:
                     _LOGGER.error(
-                        f"Wikipedia search received a HTTP {resp.status} error from Wikipedia"
+                        "Wikipedia search received a HTTP %s error from Wikipedia",
+                        resp.status,
                     )
                     return {"error": f"Wikipedia search error: {resp.status}"}
 
@@ -96,8 +105,10 @@ class SearchWikipediaTool(BaseTool):
                     # Try to get full summary
                     summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(title)}"
                     try:
-                        async with session.get(summary_url) as summary_resp:
-                            if summary_resp.status == 200:
+                        async with session.get(
+                            summary_url, headers=WIKIPEDIA_HEADERS
+                        ) as summary_resp:
+                            if summary_resp.status == HTTPStatus.OK:
                                 summary_data = await summary_resp.json()
                                 extract = summary_data.get("extract", snippet)
                             else:
@@ -113,5 +124,5 @@ class SearchWikipediaTool(BaseTool):
                 return {"results": results}
 
         except Exception as e:
-            _LOGGER.error("Wikipedia search error: %s", e)
+            _LOGGER.exception(msg="Wikipedia search encountered an error")
             return {"error": f"Error searching Wikipedia: {e!s}"}

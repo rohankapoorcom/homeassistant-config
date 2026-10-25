@@ -20,7 +20,7 @@ from .common import composite_device_issue_id
 from .const import DOMAIN
 from .store import async_get_registry
 
-REQUIRED_KEYS = ("entry_id", "device_id", "source_entity_id")
+REQUIRED_KEYS = ("entry_id", "subentry_id", "device_id", "source_entity_id")
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -122,7 +122,7 @@ class CompositeDeviceIdRepairFlow(RepairsFlow):
                     DOMAIN,
                     composite_device_issue_id(self._subentry.subentry_id),
                 )
-                await self.hass.config_entries.async_reload(self._entry.entry_id)
+                # Updating the subentry reloads the entry through its update listener
                 return self.async_create_entry(data={})
 
         old_device_id = self._subentry.data[CONF_DEVICE_ID]

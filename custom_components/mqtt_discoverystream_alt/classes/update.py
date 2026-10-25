@@ -1,7 +1,9 @@
 """Update methods for MQTT Discovery Statestream."""
 
-from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC
-from homeassistant.components.mqtt.update import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_COMMAND_TOPIC,
+)
+from homeassistant.components.mqtt.update import (  # pylint: disable=home-assistant-component-root-import
     CONF_DISPLAY_PRECISION,
     CONF_LATEST_VERSION_TEMPLATE,
     CONF_LATEST_VERSION_TOPIC,

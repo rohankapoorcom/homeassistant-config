@@ -3,8 +3,10 @@
 import json
 import logging
 
-from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC
-from homeassistant.components.mqtt.siren import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_COMMAND_TOPIC,
+)
+from homeassistant.components.mqtt.siren import (  # pylint: disable=home-assistant-component-root-import
     CONF_AVAILABLE_TONES,
     CONF_SUPPORT_DURATION,
     CONF_SUPPORT_VOLUME_SET,

@@ -2,8 +2,10 @@
 
 import logging
 
-from homeassistant.components.mqtt.const import CONF_STATE_TOPIC
-from homeassistant.components.mqtt.water_heater import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_STATE_TOPIC,
+)
+from homeassistant.components.mqtt.water_heater import (  # pylint: disable=home-assistant-component-root-import
     CONF_CURRENT_TEMP_TOPIC,
     CONF_MODE_COMMAND_TOPIC,
     CONF_MODE_LIST,

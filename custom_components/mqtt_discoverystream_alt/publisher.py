@@ -5,7 +5,7 @@ import logging
 
 from homeassistant.components import mqtt
 from homeassistant.components.mqtt import DOMAIN as MQTT_DOMAIN
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     CONF_AVAILABILITY,
     CONF_TOPIC,
     DEFAULT_PAYLOAD_AVAILABLE,
@@ -38,15 +38,15 @@ _LOGGER = logging.getLogger(__name__)
 class Publisher:
     """Manage publication for MQTT Discovery Statestream."""
 
-    def __init__(self, hass: HomeAssistant, conf, base_topic, publish_retain) -> None:
+    def __init__(self, hass: HomeAssistant, conf, base_topic, retain_config) -> None:
         """Initiate publishing."""
         self._hass = hass
         self._base_topic = base_topic
-        self._publish_retain = publish_retain
+        self._retain_config = retain_config
         self._conf = conf
         self._remote_status, self._remote_status_topic = self._set_remote_status()
         self._stale_after = self._conf.get(CONF_STALE_AFTER)
-        self.discovery = Discovery(self._hass, self._conf)
+        self.discovery = Discovery(self._hass, self._conf, retain_config)
         self._entity_states = {}
         self._publish_filter = convert_include_exclude_filter(self._conf)
         if self._remote_status:
@@ -67,7 +67,9 @@ class Publisher:
         if not valid:
             return
 
-        if new_state.state in (STATE_UNAVAILABLE, None) or self._state_is_stale(new_state):
+        if new_state.state in (STATE_UNAVAILABLE, None) or self._state_is_stale(
+            new_state
+        ):
             await self._async_mqtt_publish(
                 mybase, CONF_AVAILABILITY, DEFAULT_PAYLOAD_NOT_AVAILABLE
             )
@@ -188,5 +190,5 @@ class Publisher:
 
     async def _async_mqtt_publish(self, mybase, topic, value, qos=1):
         await mqtt.async_publish(
-            self._hass, f"{mybase}{topic}", value, qos, self._publish_retain
+            self._hass, f"{mybase}{topic}", value, qos, self._retain_config.retain_state
         )

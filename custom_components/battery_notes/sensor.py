@@ -3,15 +3,12 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
-import voluptuous as vol
-
 from homeassistant.components.sensor import (
-    PLATFORM_SCHEMA,
     RestoreSensor,
     SensorDeviceClass,
     SensorEntity,
@@ -20,8 +17,6 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigSubentry
 from homeassistant.const import (
-    CONF_DEVICE_ID,
-    CONF_NAME,
     PERCENTAGE,
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
@@ -29,7 +24,6 @@ from homeassistant.const import (
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import (
-    config_validation as cv,
     entity_registry as er,
 )
 from homeassistant.helpers.entity import EntityCategory
@@ -40,17 +34,8 @@ from homeassistant.helpers.entity_registry import (
 from homeassistant.helpers.event import (
     EventStateChangedData,
     EventStateReportedData,
-    TrackTemplate,
-    TrackTemplateResult,
-    TrackTemplateResultInfo,
     async_track_state_change_event,
     async_track_state_report_event,
-    async_track_template_result,
-)
-from homeassistant.helpers.start import async_at_start
-from homeassistant.helpers.template import (
-    Template,
-    TemplateStateFromEntityId,
 )
 from homeassistant.helpers.typing import StateType
 from homeassistant.util import dt as dt_util
@@ -70,23 +55,16 @@ from .const import (
     ATTR_DEVICE_NAME,
     ATTR_NOTE,
     ATTR_SOURCE_ENTITY_ID,
-    CONF_ADVANCED_SETTINGS,
-    CONF_BATTERY_QUANTITY,
-    CONF_BATTERY_TYPE,
-    CONF_ENABLE_REPLACED,
-    CONF_ROUND_BATTERY,
-    CONF_SOURCE_ENTITY_ID,
     DOMAIN,
     STATE_WRITE_INTERVAL_SECONDS,
     SUBENTRY_BATTERY_NOTE,
 )
 from .coordinator import (
-    MY_KEY,
     BatteryNotesConfigEntry,
     BatteryNotesSubentryCoordinator,
 )
 from .entity import BatteryNotesEntity, BatteryNotesEntityDescription
-from .template_helpers import _TemplateAttribute
+from .template_helpers import TemplateTrackingMixin
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -99,16 +77,6 @@ class BatteryNotesSensorEntityDescription(
     unique_id_suffix: str
 
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_DEVICE_ID): cv.string,
-        vol.Optional(CONF_SOURCE_ENTITY_ID): cv.string,
-        vol.Required(CONF_BATTERY_TYPE): cv.string,
-        vol.Required(CONF_BATTERY_QUANTITY): cv.positive_int,
-    }
-)
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -119,10 +87,9 @@ async def async_setup_entry(
 ) -> None:
     """Initialize Battery Type config entry."""
 
-    for subentry in config_entry.subentries.values():
-        if subentry.subentry_type != SUBENTRY_BATTERY_NOTE:
-            continue
+    domain_config = config_entry.runtime_data.domain_config
 
+    for subentry in config_entry.get_subentries_of_type(SUBENTRY_BATTERY_NOTE):
         assert config_entry.runtime_data.subentry_coordinators
         coordinator = config_entry.runtime_data.subentry_coordinators.get(
             subentry.subentry_id
@@ -150,9 +117,7 @@ async def async_setup_entry(
             translation_key="battery_last_replaced",
             entity_category=EntityCategory.DIAGNOSTIC,
             device_class=SensorDeviceClass.TIMESTAMP,
-            entity_registry_enabled_default=config_entry.options[
-                CONF_ADVANCED_SETTINGS
-            ].get(CONF_ENABLE_REPLACED, True),
+            entity_registry_enabled_default=domain_config.enable_replaced,
             entity_type="sensor",
         )
 
@@ -161,11 +126,7 @@ async def async_setup_entry(
             key="battery_plus",
             translation_key="battery_plus",
             device_class=SensorDeviceClass.BATTERY,
-            suggested_display_precision=0
-            if config_entry.options[CONF_ADVANCED_SETTINGS].get(
-                CONF_ROUND_BATTERY, True
-            )
-            else 1,
+            suggested_display_precision=0 if domain_config.round_battery else 1,
             entity_type="sensor",
             require_device=True,
         )
@@ -199,12 +160,8 @@ async def async_setup_entry(
                     battery_plus_sensor_entity_description,
                     coordinator,
                     f"{subentry.unique_id}{battery_plus_sensor_entity_description.unique_id_suffix}",
-                    config_entry.options[CONF_ADVANCED_SETTINGS].get(
-                        CONF_ENABLE_REPLACED, True
-                    ),
-                    config_entry.options[CONF_ADVANCED_SETTINGS].get(
-                        CONF_ROUND_BATTERY, False
-                    ),
+                    domain_config.enable_replaced,
+                    domain_config.round_battery,
                     coordinator.battery_percentage_template,
                 )
             )
@@ -217,12 +174,8 @@ async def async_setup_entry(
                     battery_plus_sensor_entity_description,
                     coordinator,
                     f"{subentry.unique_id}{battery_plus_sensor_entity_description.unique_id_suffix}",
-                    config_entry.options[CONF_ADVANCED_SETTINGS].get(
-                        CONF_ENABLE_REPLACED, True
-                    ),
-                    config_entry.options[CONF_ADVANCED_SETTINGS].get(
-                        CONF_ROUND_BATTERY, False
-                    ),
+                    domain_config.enable_replaced,
+                    domain_config.round_battery,
                 )
             )
 
@@ -425,6 +378,7 @@ class BatteryNotesBatteryPlusBaseSensor(BatteryNotesEntity, RestoreSensor):
         self._last_ha_state_write: datetime | None = None
         self._last_written_battery_level: float | None = None
         self._last_written_last_replaced: datetime | None = None
+        self._last_written_available: bool | None = None
 
     @callback
     def _write_tracked_ha_state(self) -> None:
@@ -446,6 +400,7 @@ class BatteryNotesBatteryPlusBaseSensor(BatteryNotesEntity, RestoreSensor):
             if (
                 current_battery_level == self._last_written_battery_level
                 and current_last_replaced == self._last_written_last_replaced
+                and self.available == self._last_written_available
                 and (dt_util.utcnow() - self._last_ha_state_write).total_seconds()
                 < STATE_WRITE_INTERVAL_SECONDS
             ):
@@ -454,6 +409,7 @@ class BatteryNotesBatteryPlusBaseSensor(BatteryNotesEntity, RestoreSensor):
         self._last_ha_state_write = dt_util.utcnow()
         self._last_written_battery_level = current_battery_level
         self._last_written_last_replaced = current_last_replaced
+        self._last_written_available = self.available
         self.async_write_ha_state()
 
     @property
@@ -516,7 +472,6 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
             round_battery=round_battery,
         )
 
-    @callback
     async def async_state_changed_listener(
         self,
         event: Event[EventStateChangedData] | None = None,  # noqa: ARG002
@@ -571,7 +526,6 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
 
         self._write_tracked_ha_state()
 
-    @callback
     async def async_state_reported_listener(
         self,
         event: Event[EventStateReportedData] | None = None,  # noqa: ARG002
@@ -602,11 +556,16 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
             self._write_tracked_ha_state()
             return
 
-        # Don't update if battery level same and it's been < 1 hour
-        delta = dt_util.utcnow() - self.coordinator.last_wrapped_battery_state_write
+        # Don't update if battery level same and it's been < 1 hour, compare the raw
+        # level as last_reported_level is rounded
+        last_write = self.coordinator.last_wrapped_battery_state_write
+        current_level = self.coordinator.current_battery_level
         if (
-            self.coordinator.last_reported_level == float(wrapped_battery_state.state)
-            and delta.total_seconds() < STATE_WRITE_INTERVAL_SECONDS
+            last_write is not None
+            and validate_is_float(current_level)
+            and float(current_level) == float(wrapped_battery_state.state)
+            and (dt_util.utcnow() - last_write).total_seconds()
+            < STATE_WRITE_INTERVAL_SECONDS
         ):
             self._attr_available = True
             return
@@ -636,7 +595,6 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
     ) -> None:
         """Listen for battery entity_id changes and update battery_plus."""
 
-        @callback
         async def _entity_rename_listener(
             event: Event[er.EventEntityRegistryUpdatedData],
         ) -> None:
@@ -689,23 +647,25 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
                 and event_data["old_entity_id"] == source_entity_id
             )
 
-        self.hass.bus.async_listen(
-            EVENT_ENTITY_REGISTRY_UPDATED,
-            _entity_rename_listener,
-            event_filter=_filter_entity_id,
+        self.async_on_remove(
+            self.hass.bus.async_listen(
+                EVENT_ENTITY_REGISTRY_UPDATED,
+                _entity_rename_listener,
+                event_filter=_filter_entity_id,
+            )
         )
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
 
-        @callback
+        await super().async_added_to_hass()
+
         async def _async_state_changed_listener(
             event: Event[EventStateChangedData] | None = None,
         ) -> None:
             """Handle child updates."""
             await self.async_state_changed_listener(event)
 
-        @callback
         async def _async_state_reported_listener(
             event: Event[EventStateReportedData] | None = None,
         ) -> None:
@@ -752,7 +712,7 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
         if not self.coordinator.wrapped_battery:
             return
 
-        domain_config = self.hass.data[MY_KEY]
+        domain_config = self.domain_config
 
         if domain_config.hide_battery:
             if (
@@ -771,10 +731,6 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
             registry.async_update_entity(
                 self.coordinator.wrapped_battery.entity_id, hidden_by=None
             )
-
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self._handle_coordinator_update)
-        )
 
         await self.coordinator.async_refresh()
 
@@ -809,10 +765,11 @@ class BatteryNotesBatteryPlusSensor(BatteryNotesBatteryPlusBaseSensor):
         return self._attr_native_value
 
 
-class BatteryNotesBatteryPlusTemplateSensor(BatteryNotesBatteryPlusBaseSensor):
+class BatteryNotesBatteryPlusTemplateSensor(
+    TemplateTrackingMixin, BatteryNotesBatteryPlusBaseSensor
+):
     """Represents a battery plus from template type sensor."""
 
-    _self_ref_update_count = 0
     _state: float | None = None
 
     def __init__(  # noqa: PLR0913
@@ -839,144 +796,33 @@ class BatteryNotesBatteryPlusTemplateSensor(BatteryNotesBatteryPlusBaseSensor):
             enable_replaced=enable_replaced,
             round_battery=round_battery,
         )
-        self._template = battery_percentage_template
-        self._template_attrs: dict[Template, list[_TemplateAttribute]] = {}
-        self._template_result_info: TrackTemplateResultInfo | None = None
+        self._init_template_tracking(battery_percentage_template)
 
     async def async_added_to_hass(self) -> None:
         """Handle added to Hass."""
 
         await super().async_added_to_hass()
 
-        self._async_setup_templates()
-
-        async_at_start(self.hass, self._async_template_startup)
-
-    def add_template_attribute(
-        self,
-        attribute: str,
-        tmpl: Template,
-        validator: Callable[[Any], Any] | None = None,
-        on_update: Callable[[Any], None] | None = None,
-        none_on_template_error: bool = False,
-    ) -> None:
-        """Call in the constructor to add a template linked to a attribute.
-
-        Parameters
-        ----------
-        attribute
-            The name of the attribute to link to. This attribute must exist
-            unless a custom on_update method is supplied.
-        tmpl
-            The template to calculate.
-        validator
-            Validator function to parse the result and ensure it's valid.
-        on_update
-            Called to store the template result rather than storing it
-            the supplied attribute. Passed the result of the validator, or None
-            if the template or validator resulted in an error.
-        none_on_template_error
-            If True, the attribute will be set to None if the template errors.
-
-        """
-        assert self.hass is not None, "hass cannot be None"
-        tmpl.hass = self.hass
-        template_attribute = _TemplateAttribute(
-            self, attribute, tmpl, validator, on_update, none_on_template_error
-        )
-        self._template_attrs.setdefault(tmpl, [])
-        self._template_attrs[tmpl].append(template_attribute)
+        self._async_start_template_tracking()
 
     @callback
-    def _async_setup_templates(self) -> None:
-        """Set up templates."""
-        self.add_template_attribute(
-            "_state", Template(self._template, self.hass), None, self._update_state
-        )
-
-    @callback
-    def _async_template_startup(
-        self,
-        _hass: HomeAssistant | None,
-        log_fn: Callable[[int, str], None] | None = None,
-    ) -> None:
-        template_var_tups: list[TrackTemplate] = []
-        has_availability_template = False
-
-        variables = {"this": TemplateStateFromEntityId(self.hass, self.entity_id)}
-
-        for loop_template, attributes in self._template_attrs.items():
-            template_var_tup = TrackTemplate(loop_template, variables)
-            is_availability_template = False
-            for attribute in attributes:
-                # pylint: disable-next=protected-access
-                if attribute._attribute == "_attr_available":  # noqa: SLF001
-                    has_availability_template = True
-                    is_availability_template = True
-                attribute.async_setup()
-            # Insert the availability template first in the list
-            if is_availability_template:
-                template_var_tups.insert(0, template_var_tup)
-            else:
-                template_var_tups.append(template_var_tup)
-
-        result_info = async_track_template_result(
-            self.hass,
-            template_var_tups,
-            self._handle_results,
-            log_fn=log_fn,
-            has_super_template=has_availability_template,
-        )
-        self.async_on_remove(result_info.async_remove)
-        self._template_result_info = result_info
-        result_info.async_refresh()
-
-    @callback
-    def _handle_results(
-        self,
-        event: Event[EventStateChangedData] | None,
-        updates: list[TrackTemplateResult],
-    ) -> None:
-        """Call back the results to the attributes."""
-        if event:
-            self.async_set_context(event.context)
-
-        entity_id = event and event.data["entity_id"]
-
-        if entity_id and entity_id == self.entity_id:
-            self._self_ref_update_count += 1
-        else:
-            self._self_ref_update_count = 0
-
-        if self._self_ref_update_count > len(self._template_attrs):
-            for update in updates:
-                _LOGGER.warning(
-                    (
-                        "Template loop detected while processing event: %s, skipping"
-                        " template render for Template[%s]"
-                    ),
-                    event,
-                    update.template.template,
-                )
-            return
-
-        for update in updates:
-            for template_attr in self._template_attrs[update.template]:
-                template_attr.handle_result(
-                    event, update.template, update.last_result, update.result
-                )
-
+    def _async_write_template_state(self) -> None:
+        """Write the state through the battery plus write throttle."""
         self._write_tracked_ha_state()
 
     @callback
     def _update_state(self, result):
         try:
-            self._attr_available = not isinstance(result, TemplateError)
             state = None if isinstance(result, TemplateError) else float(result)
         except (ValueError, TypeError):
-            self._attr_available = False
             state = None
 
+        if state is None and self.coordinator.retain_state:
+            # Reprocess recovery even if the valid percentage is unchanged
+            self._state = None
+            return
+
+        self._attr_available = state is not None
         clamped_state = max(0, min(100, state)) if state is not None else state
 
         if clamped_state == self._state:
@@ -985,7 +831,7 @@ class BatteryNotesBatteryPlusTemplateSensor(BatteryNotesBatteryPlusBaseSensor):
         self._state = clamped_state
         self.coordinator.current_battery_level = clamped_state
 
-        self._attr_available = True
+        self._attr_available = clamped_state is not None
         self._attr_native_value = self.coordinator.rounded_battery_level
 
         _LOGGER.debug(

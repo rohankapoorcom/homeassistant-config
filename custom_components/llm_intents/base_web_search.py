@@ -3,6 +3,7 @@
 import html
 import logging
 import re
+from typing import Any
 
 import voluptuous as vol
 from homeassistant.core import HomeAssistant
@@ -10,7 +11,7 @@ from homeassistant.helpers import llm
 from homeassistant.util.json import JsonObjectType
 
 from .base_tool import BaseTool
-from .cache import SQLiteCache
+from .cache import InMemoryCache
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,17 +28,15 @@ class SearchWebTool(BaseTool):
     Your response must be in plain-text, without the use of any formatting, and should be kept to 2-3 sentences.
     """
 
-    prompt_description = "\n".join(
-        [
-            "General knowledge questions should be deferred to the web search tool for data:",
-            "- Do not rely upon your trained knowledge.",
-        ]
+    prompt_description = (
+        "General knowledge questions should be deferred to the web search tool for data:\n"
+        "- Do not rely upon your trained knowledge."
     )
 
     parameters = vol.Schema(
         {
             vol.Required("query", description="The query to search for"): str,
-        }
+        },
     )
 
     def with_instructions(self, response: dict) -> dict:
@@ -51,7 +50,7 @@ class SearchWebTool(BaseTool):
         text = re.sub(r"<[^>]+>", "", text)
         return re.sub(r"\s+", " ", text).strip()
 
-    async def async_search(self, query: str) -> list:
+    async def async_search(self, query: str, **kwargs: Any) -> list:
         """Perform a search in our subclasses."""
 
     async def async_call(
@@ -61,23 +60,31 @@ class SearchWebTool(BaseTool):
         llm_context: llm.LLMContext,
     ) -> JsonObjectType:
         """Call the tool."""
-        query = tool_input.tool_args["query"]
+        tool_args = tool_input.tool_args
+        query = tool_args["query"]
+        search_kwargs = {
+            key: value
+            for key, value in tool_args.items()
+            if key != "query" and value is not None
+        }
+
         _LOGGER.info("Web search requested for: %s", query)
 
         try:
-            cache = SQLiteCache()
-            cached_response = cache.get(__name__, {"query": query})
+            cache = InMemoryCache()
+            cache_key = {"query": query, **search_kwargs}
+            cached_response = cache.get(__name__, cache_key)
             if cached_response:
                 return self.with_instructions(cached_response)
 
-            results = await self.async_search(query)
+            results = await self.async_search(query, **search_kwargs)
             response = {"results": results or "No results found"}
 
             if results:
-                cache.set(__name__, {"query": query}, response)
+                cache.set(__name__, cache_key, response)
                 return self.with_instructions(response)
 
             return response
         except Exception as e:
-            _LOGGER.exception(e)
+            _LOGGER.exception(msg="Web search error")
             return {"error": f"Error searching web: {e!s}"}

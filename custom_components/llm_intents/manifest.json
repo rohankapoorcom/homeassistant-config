@@ -1,12 +1,20 @@
 {
   "domain": "llm_intents",
   "name": "Tools for Assist",
-  "after_dependencies": [],
+  "after_dependencies": [
+    "intent",
+    "llm",
+    "recorder"
+  ],
   "codeowners": [
     "@skye-harris"
   ],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": [
+    "intent",
+    "llm",
+    "recorder"
+  ],
   "documentation": "https://github.com/skye-harris/llm_intents",
   "integration_type": "service",
   "iot_class": "cloud_polling",
@@ -15,7 +23,7 @@
     "custom_components.llm_intents"
   ],
   "requirements": [
-    "sympy>=1.14.0"
+    "wikipedia-api>=0.16.0"
   ],
-  "version": "1.7.1"
+  "version": "1.11.1"
 }

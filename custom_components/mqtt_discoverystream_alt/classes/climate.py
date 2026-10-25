@@ -14,7 +14,7 @@ from homeassistant.components.climate import (
     ClimateEntityFeature,
     ClimateEntityStateAttribute,
 )
-from homeassistant.components.mqtt.climate import (
+from homeassistant.components.mqtt.climate import (  # pylint: disable=home-assistant-component-root-import
     ATTR_HVAC_MODE,
     CONF_ACTION_TOPIC,
     CONF_CURRENT_HUMIDITY_TOPIC,
@@ -44,7 +44,9 @@ from homeassistant.components.mqtt.climate import (
     CONF_TEMP_STATE_TOPIC,
     CONF_TEMP_STEP,
 )
-from homeassistant.components.mqtt.const import CONF_STATE_TOPIC
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_STATE_TOPIC,
+)
 from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_SUPPORTED_FEATURES,

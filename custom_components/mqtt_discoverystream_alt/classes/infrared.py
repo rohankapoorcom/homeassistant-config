@@ -9,7 +9,7 @@ from homeassistant.components.infrared import (
     InfraredReceivedSignal,
     async_subscribe_receiver,
 )
-from homeassistant.components.mqtt.infrared import CONF_SCHEMA
+from homeassistant.components.mqtt.const import CONF_SCHEMA
 from homeassistant.const import ATTR_STATE, EntityStateAttribute, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.json import JSONEncoder
@@ -37,7 +37,7 @@ class DiscoveryItem(DiscoveryEntity):
             )
             return False
         config[CONF_SCHEMA] = schema
-        SignalConsumer(self._hass, self._publish_retain, self._base_topic, entity_info)
+        SignalConsumer(self._hass, self._retain_state, self._base_topic, entity_info)
         return True
 
 
@@ -45,11 +45,11 @@ class SignalConsumer:
     """Class to handle infrared receiver signals."""
 
     def __init__(
-        self, hass: HomeAssistant, publish_retain, base_topic, entity_info: EntityInfo
+        self, hass: HomeAssistant, retain_state, base_topic, entity_info: EntityInfo
     ) -> None:
         """Class to manage signal receiver subscription."""
         self._hass = hass
-        self._publish_retain = publish_retain
+        self._retain_state = retain_state
         self._mybase = f"{base_topic}/{entity_info.entity_id.replace('.', '/')}/"
         async_subscribe_receiver(hass, entity_info.entity_id, self._handle_signal)
 
@@ -68,5 +68,5 @@ class SignalConsumer:
             f"{mybase}{topic}",
             value,
             1,
-            self._publish_retain,
+            self._retain_state,
         )

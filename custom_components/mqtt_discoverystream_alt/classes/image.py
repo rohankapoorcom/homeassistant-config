@@ -2,8 +2,12 @@
 
 import logging
 
-from homeassistant.components.mqtt.const import CONF_ENTITY_PICTURE
-from homeassistant.components.mqtt.image import CONF_URL_TOPIC
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_ENTITY_PICTURE,
+)
+from homeassistant.components.mqtt.image import (  # pylint: disable=home-assistant-component-root-import
+    CONF_URL_TOPIC,
+)
 from homeassistant.const import ATTR_ENTITY_PICTURE, ATTR_STATE, Platform
 from homeassistant.helpers.network import get_url
 

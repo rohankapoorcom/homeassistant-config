@@ -45,11 +45,12 @@ INIT_HEADERS_FILTER = {
 RESPONSE_HEADERS_FILTER = {
     hdrs.TRANSFER_ENCODING,
     hdrs.CONTENT_LENGTH,
-    hdrs.CONTENT_TYPE,
     hdrs.CONTENT_ENCODING,
 }
 
 MAX_SIMPLE_REQUEST_SIZE = 4194000
+MAX_SIMPLE_RESPONSE_SIZE = 4194000
+MIN_COMPRESSED_SIZE = 128
 
 DISABLED_TIMEOUT = aiohttp.ClientTimeout(total=None)
 
@@ -80,7 +81,7 @@ class IngressView(http.HomeAssistantView):  # type: ignore
         cookie_name = self._config.cookie_name(name)
         if cookie_name in url.query:
             cfg, token = self._config.check_token(self._hass, url.query[cookie_name])
-            if cfg:
+            if cfg and cfg.mode == WorkMode.AUTH:
                 # valid, remove ingressToken if has X-Hass-Origin else return 200
                 hass_origin = request.headers.get(X_HASS_ORIGIN)
                 if hass_origin and request.method in METH_ALLOW_REDIRECT:
@@ -94,7 +95,9 @@ class IngressView(http.HomeAssistantView):  # type: ignore
 
         # check ingress_token from cookie
         token = request.cookies.get(cookie_name, "")
-        if cfg := self._config.check_token(self._hass, token, False)[0]:
+        if (
+            cfg := self._config.check_token(self._hass, token, False)[0]
+        ) and cfg.mode == WorkMode.AUTH:
             # valid, return 200
             return web.Response(headers=cfg.headers)
 
@@ -245,6 +248,7 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         # Start proxy
         async with self._websession.ws_connect(
             url,
+            ssl=cfg.ssl,
             headers=_init_header(request, cfg, user),
             protocols=req_protocols,
             autoclose=False,
@@ -275,12 +279,13 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         async with self._websession.request(
             request.method,
             url,
+            ssl=cfg.ssl,
             headers=_init_header(request, cfg, user),
             params=request.query,
             allow_redirects=False,
             data=data,
             timeout=DISABLED_TIMEOUT,
-            skip_auto_headers={hdrs.CONTENT_TYPE},
+            skip_auto_headers=_skip_auto_headers(cfg),
         ) as result:
             headers = _response_header(result)
             if ctype := result.headers.get(hdrs.CONTENT_TYPE):
@@ -306,25 +311,57 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
                         rewrite_body = _make_rewrite(rule, rewrite_body)
 
             headers = CIMultiDict((k, v) for k, vs in headers.items() for v in vs if v)
-            # Simple request
-            if rewrite_body or must_be_empty_body(request.method, result.status):
-                # Return Response
+
+            use_buffered = rewrite_body or must_be_empty_body(request.method, result.status)
+            if not use_buffered and cfg.enable_compress:
+                # Simple request: buffer small bodies so they can be compressed in one pass.
+                # NOTE: with auto_decompress the upstream Content-Length is the compressed size,
+                # so this may still expand; the size floor below applies to the real body length.
+                if content_length := result.headers.get(hdrs.CONTENT_LENGTH):
+                    use_buffered = int(content_length) <= MAX_SIMPLE_RESPONSE_SIZE
+
+            if use_buffered:
                 body = await result.read()
                 if rewrite_body:
                     body = rewrite_body(body)
-                return web.Response(
-                    headers=headers, status=result.status, content_type=ctype, body=body
+                # 206 carries Content-Range offsets into the identity representation;
+                # re-encoding the body would corrupt range assembly.
+                compress = (
+                    cfg.enable_compress
+                    and len(body) > MIN_COMPRESSED_SIZE
+                    and result.status != 206
+                    and _should_compress(ctype)
                 )
+                if compress:
+                    _ensure_vary(headers)
+                simple_response = web.Response(
+                    headers=headers,
+                    status=result.status,
+                    body=body,
+                    zlib_executor_size=32768,
+                )
+                if compress:
+                    simple_response.enable_compression()
+                return simple_response
 
             # Stream response
+            compress = cfg.enable_compress and result.status != 206 and _should_compress(ctype)
+            if compress:
+                _ensure_vary(headers)
             response = web.StreamResponse(status=result.status, headers=headers)
-            response.content_type = ctype
+            if compress:
+                response.enable_compression()
 
             try:
                 await response.prepare(request)
                 async for data, _ in result.content.iter_chunks():
                     await response.write(data)
-            except (aiohttp.ClientError, aiohttp.ClientPayloadError, ConnectionResetError) as err:
+            except (
+                aiohttp.ClientError,
+                aiohttp.ClientPayloadError,
+                ConnectionResetError,
+                ConnectionError,
+            ) as err:
                 _LOGGER.debug("Stream error with %s / %s: %s", cfg.name, url, err)
             return response
 
@@ -365,6 +402,8 @@ def _init_header(
     for name, value in request.headers.items():
         name = std_header_name(name)
         if name in INIT_HEADERS_FILTER:
+            continue
+        if name == hdrs.ACCEPT_ENCODING and cfg.enable_compress:
             continue
         if name == hdrs.COOKIE:
             if not (value := cfg.remove_token_from_cookie(value)):
@@ -413,6 +452,12 @@ def _init_header(
     return headers
 
 
+def _skip_auto_headers(cfg: "IngressCfg"):
+    if cfg.enable_compress:
+        return {hdrs.CONTENT_TYPE, hdrs.ACCEPT_ENCODING}
+    return {hdrs.CONTENT_TYPE}
+
+
 def _response_header(response: aiohttp.ClientResponse) -> dict[str, list[str]]:
     """Create response header."""
     headers: dict[str, list[str]] = {}
@@ -422,6 +467,25 @@ def _response_header(response: aiohttp.ClientResponse) -> dict[str, list[str]]:
             continue
         headers.setdefault(name, []).append(value)
     return headers
+
+
+def _ensure_vary(headers: "CIMultiDict[str]") -> None:
+    """Advertise Accept-Encoding in Vary without emitting a duplicate header."""
+    values = headers.getall(hdrs.VARY, [])
+    if any("accept-encoding" in value.lower() for value in values):
+        return
+    headers[hdrs.VARY] = ", ".join([*values, hdrs.ACCEPT_ENCODING])
+
+
+def _should_compress(content_type: str) -> bool:
+    """Return if we should compress a response."""
+    if content_type.startswith("text/event-stream"):
+        return False
+    if content_type.startswith("image/"):
+        return "svg" in content_type
+    if content_type.startswith("application/"):
+        return "json" in content_type or "xml" in content_type or "javascript" in content_type
+    return not content_type.startswith(("video/", "audio/", "font/"))
 
 
 def _is_websocket(request: web.Request) -> bool:

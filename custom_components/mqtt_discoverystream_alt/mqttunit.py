@@ -1,7 +1,6 @@
 """Publish simple item state changes via MQTT."""
 
 import json
-import logging
 
 from homeassistant.components import mqtt
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP, EVENT_STATE_CHANGED
@@ -14,12 +13,10 @@ from .const import (
     CONF_BASE_TOPIC,
     CONF_PUBLISH_ATTRIBUTES,
     CONF_PUBLISH_DISCOVERY,
-    CONF_PUBLISH_RETAIN,
     CONF_PUBLISH_TIMESTAMPS,
 )
 from .publisher import Publisher
-
-_LOGGER = logging.getLogger(__name__)
+from .utils import retain_setup
 
 
 class MQTTUnit:
@@ -36,13 +33,13 @@ class MQTTUnit:
         base_topic: str | None = self._conf.get(CONF_BASE_TOPIC)
         publish_attributes: bool | None = self._conf.get(CONF_PUBLISH_ATTRIBUTES)
         publish_timestamps: bool | None = self._conf.get(CONF_PUBLISH_TIMESTAMPS)
-        publish_retain: bool | None = self._conf.get(CONF_PUBLISH_RETAIN)
+        retain_config = retain_setup(self._conf)
         if not base_topic.endswith("/"):
             base_topic = f"{base_topic}/"
 
         publish_discovery = self._conf.get(CONF_PUBLISH_DISCOVERY)
         if publish_discovery:
-            self.publisher = Publisher(hass, self._conf, base_topic, publish_retain)
+            self.publisher = Publisher(hass, self._conf, base_topic, retain_config)
 
         async def _state_publisher(evt: Event[EventStateChangedData]) -> None:
             entity_id = evt.data["entity_id"]
@@ -90,7 +87,7 @@ class MQTTUnit:
         async def _async_mqtt_publish(mybase, value, encoded=False):
             if encoded:
                 value = json.dumps(value, cls=JSONEncoder)
-            await mqtt.async_publish(hass, mybase, value, 1, publish_retain)
+            await mqtt.async_publish(hass, mybase, value, 1, retain_config.retain_state)
 
         async_at_start(hass, _ha_started)
 

@@ -63,6 +63,8 @@ class ValetudoSensorManager:
         self._listeners = []
 
     async def async_setup(self):
+        self._cleanup_migration_leftover_devices()
+
         self._scan_existing_devices()
 
         self._listeners.append(self.hass.bus.async_listen(
@@ -81,6 +83,13 @@ class ValetudoSensorManager:
             unsub()
         self._listeners.clear()
         self._sensors.clear()
+
+    def _cleanup_migration_leftover_devices(self):
+        dev_reg = dr.async_get(self.hass)
+
+        for device in dr.async_entries_for_config_entry(dev_reg, self.config_entry_id):
+            _LOGGER.debug(f"Removing orphaned migration device {device.id}")
+            dev_reg.async_remove_device(device.id)
 
     def _scan_existing_devices(self):
         dev_reg = dr.async_get(self.hass)
@@ -110,7 +119,7 @@ class ValetudoSensorManager:
 
     @callback
     def _handle_entity_registry_update(self, event: Event):
-        """Handle entity removal (e.g. MQTT device deletion) to clean up orphaned augmentation devices."""
+        """React to entities being added so we can pick up newly-discovered devices."""
         action = event.data.get("action")
         entity_id = event.data.get("entity_id")
         ent_reg = er.async_get(self.hass)
@@ -119,35 +128,6 @@ class ValetudoSensorManager:
             entry = ent_reg.async_get(entity_id)
             if entry and entry.device_id:
                 self._try_add_sensors(entry.device_id)
-            return
-
-        if action == "remove":
-            # Check for orphaned devices (Last Man Standing logic)
-            # We must check all managed devices as we don't know which device the removed entity belonged to.
-            for device_id, sensors in list(self._sensors.items()):
-                device_entities = er.async_entries_for_device(ent_reg, device_id)
-
-                # Check if there are any entities belonging to OTHER config entries (e.g. MQTT)
-                other_config_entries = False
-                for entry in device_entities:
-                    if entry.config_entry_id != self.config_entry_id:
-                        other_config_entries = True
-                        break
-
-                # If NO other config entries exist for this device, it means the
-                # original integration (MQTT) is gone.
-                if not other_config_entries:
-                    # 1. Remove our Sensor Entities
-                    for sensor in sensors:
-                        if sensor.hass:
-                            self.hass.async_create_task(sensor.async_remove())
-
-                    del self._sensors[device_id]
-
-                    # 2. Delete the Device Entry from the Registry
-                    # We must perform this cleanup, otherwise the device remains as an empty shell.
-                    dev_reg = dr.async_get(self.hass)
-                    dev_reg.async_remove_device(device_id)
 
     def _try_add_sensors(self, device_id: str):
         dev_reg = dr.async_get(self.hass)
@@ -201,12 +181,8 @@ class ValetudoEstimatedSegmentSensor(SensorEntity):
         self.hass = hass
         self._map_entity_id = map_entity_id
         self._vacuum_entity_id = vacuum_entity_id
-        self._device_info = device
         self._attr_unique_id = f"{device.id}_estimated_segment"
-        self._attr_device_info = {
-            "connections": device.connections,
-            "identifiers": device.identifiers,
-        }
+        self.device_entry = device
         self._attr_native_value = None
         self._attr_extra_state_attributes = {}
 

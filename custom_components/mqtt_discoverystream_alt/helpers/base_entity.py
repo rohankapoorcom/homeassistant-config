@@ -25,7 +25,7 @@ class DiscoveryEntity:
         hass: HomeAssistant,
         base_topic,
         command_topic,
-        publish_retain,
+        retain_state,
         discovered_entities,
         platform,
         publish_state,
@@ -34,7 +34,7 @@ class DiscoveryEntity:
         self._hass = hass
         self._base_topic = base_topic
         self._command_topic = command_topic
-        self._publish_retain = publish_retain
+        self._retain_state = retain_state
         self._discovered_entities = discovered_entities
         self._publish_state = publish_state
         self._platform = platform
@@ -88,7 +88,7 @@ class DiscoveryEntity:
             f"{mybase}{topic}",
             value,
             1,
-            self._publish_retain,
+            self._retain_state,
         )
 
     async def async_publish_attribute_if_exists(

@@ -12,10 +12,7 @@ SEARCH_API_NAME = "Search Services"
 WEATHER_API_NAME = "Weather Forecast"
 MEDIA_API_NAME = "Media Services"
 BASIC_UTILITIES_API_NAME = "Basic Utilities"
-
-# SQLite Cache
-
-CONF_CACHE_MAX_AGE = "cache_max_age"
+HOME_CONTROL_API_NAME = "Home Control"
 
 SEARCH_SERVICES_PROMPT = "You may utilise the Search Services tools to lookup up-to-date information from the internet."
 
@@ -42,11 +39,13 @@ CONF_DATE_INFO_ENABLED = "date_info_enabled"
 CONF_SEARCH_PROVIDER = "search_provider"
 CONF_SEARCH_PROVIDER_BRAVE = "Brave"
 CONF_SEARCH_PROVIDER_BRAVE_LLM = "Brave LLM Context"
+CONF_SEARCH_PROVIDER_TAVILY = "Tavily"
 CONF_SEARCH_PROVIDER_SEARXNG = "SearXNG"
 
 CONF_SEARCH_PROVIDERS = {
     "Brave": CONF_SEARCH_PROVIDER_BRAVE,
     "Brave LLM Context": CONF_SEARCH_PROVIDER_BRAVE_LLM,
+    "Tavily": CONF_SEARCH_PROVIDER_TAVILY,
     "SearXNG": CONF_SEARCH_PROVIDER_SEARXNG,
 }
 
@@ -55,17 +54,216 @@ CONF_SEARCH_PROVIDERS = {
 CONF_SEARXNG_URL = "searxng_server_url"
 CONF_SEARXNG_NUM_RESULTS = "searxng_num_results"
 
+# Tavily-specific constants
+
+CONF_TAVILY_NUM_RESULTS = "tavily_num_results"
+CONF_TAVILY_CHUNKS_PER_SOURCE = "tavily_chunks_per_source"
+CONF_TAVILY_SEARCH_DEPTH = "tavily_search_depth"
+CONF_TAVILY_INCLUDE_ANSWER = "tavily_include_answer"
+CONF_TAVILY_INCLUDE_RAW_CONTENT = "tavily_include_raw_content"
+CONF_TAVILY_COUNTRY = "tavily_country"
+# Optional cap on the content forwarded per result. Tavily has no such
+# parameter on the Search endpoint, so the integration applies it.
+CONF_TAVILY_MAX_CHARS_PER_RESULT = "tavily_max_chars_per_result"
+
+# Tavily expects a country NAME from this list, not an ISO code. An ISO code such as
+# "US" is rejected with a HTTP 400. The tool lowercases the value before sending it.
+# Source: the country enum in https://docs.tavily.com/documentation/api-reference/endpoint/search
+CONF_TAVILY_COUNTRIES = [
+    "Afghanistan",
+    "Albania",
+    "Algeria",
+    "Andorra",
+    "Angola",
+    "Argentina",
+    "Armenia",
+    "Australia",
+    "Austria",
+    "Azerbaijan",
+    "Bahamas",
+    "Bahrain",
+    "Bangladesh",
+    "Barbados",
+    "Belarus",
+    "Belgium",
+    "Belize",
+    "Benin",
+    "Bhutan",
+    "Bolivia",
+    "Bosnia and Herzegovina",
+    "Botswana",
+    "Brazil",
+    "Brunei",
+    "Bulgaria",
+    "Burkina Faso",
+    "Burundi",
+    "Cambodia",
+    "Cameroon",
+    "Canada",
+    "Cape Verde",
+    "Central African Republic",
+    "Chad",
+    "Chile",
+    "China",
+    "Colombia",
+    "Comoros",
+    "Congo",
+    "Costa Rica",
+    "Croatia",
+    "Cuba",
+    "Cyprus",
+    "Czech Republic",
+    "Denmark",
+    "Djibouti",
+    "Dominican Republic",
+    "Ecuador",
+    "Egypt",
+    "El Salvador",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Estonia",
+    "Ethiopia",
+    "Fiji",
+    "Finland",
+    "France",
+    "Gabon",
+    "Gambia",
+    "Georgia",
+    "Germany",
+    "Ghana",
+    "Greece",
+    "Guatemala",
+    "Guinea",
+    "Haiti",
+    "Honduras",
+    "Hungary",
+    "Iceland",
+    "India",
+    "Indonesia",
+    "Iran",
+    "Iraq",
+    "Ireland",
+    "Israel",
+    "Italy",
+    "Jamaica",
+    "Japan",
+    "Jordan",
+    "Kazakhstan",
+    "Kenya",
+    "Kuwait",
+    "Kyrgyzstan",
+    "Latvia",
+    "Lebanon",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Liechtenstein",
+    "Lithuania",
+    "Luxembourg",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Maldives",
+    "Mali",
+    "Malta",
+    "Mauritania",
+    "Mauritius",
+    "Mexico",
+    "Moldova",
+    "Monaco",
+    "Mongolia",
+    "Montenegro",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "North Korea",
+    "North Macedonia",
+    "Norway",
+    "Oman",
+    "Pakistan",
+    "Panama",
+    "Papua New Guinea",
+    "Paraguay",
+    "Peru",
+    "Philippines",
+    "Poland",
+    "Portugal",
+    "Qatar",
+    "Romania",
+    "Russia",
+    "Rwanda",
+    "Saudi Arabia",
+    "Senegal",
+    "Serbia",
+    "Singapore",
+    "Slovakia",
+    "Slovenia",
+    "Somalia",
+    "South Africa",
+    "South Korea",
+    "South Sudan",
+    "Spain",
+    "Sri Lanka",
+    "Sudan",
+    "Sweden",
+    "Switzerland",
+    "Syria",
+    "Taiwan",
+    "Tajikistan",
+    "Tanzania",
+    "Thailand",
+    "Togo",
+    "Trinidad and Tobago",
+    "Tunisia",
+    "Turkey",
+    "Turkmenistan",
+    "Uganda",
+    "Ukraine",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "Uruguay",
+    "Uzbekistan",
+    "Venezuela",
+    "Vietnam",
+    "Yemen",
+    "Zambia",
+    "Zimbabwe",
+]
+
+# Tavily rejects the country boost on these search depths with a HTTP 400.
+CONF_TAVILY_COUNTRY_EXCLUDED_DEPTHS = ("fast", "ultra-fast")
+# ultra-fast returns a single NLP summary per result, so chunks_per_source has
+# no effect there and is not sent.
+CONF_TAVILY_CHUNKS_EXCLUDED_DEPTHS = ("ultra-fast",)
+
+CONF_TAVILY_SEARCH_DEPTHS = {
+    "basic": "Basic (1 credit)",
+    "advanced": "Advanced (2 credits)",
+    "fast": "Fast (1 credit)",
+    "ultra-fast": "Ultra-fast (1 credit)",
+}
+
 # Provider API keys - shared across tools using the same backend
 
 CONF_PROVIDER_API_KEYS = "provider_api_keys"
 PROVIDER_GOOGLE = "google"
 PROVIDER_BRAVE = "brave"
 PROVIDER_BRAVE_LLM = "brave_llm"
+PROVIDER_TAVILY = "tavily"
 
 # Form field keys for provider API keys
 
 CONF_GOOGLE_API_KEY = "google_api_key"
 CONF_BRAVE_API_KEY = "brave_api_key"
+CONF_TAVILY_API_KEY = "tavily_api_key"
 
 # Brave-specific constants
 
@@ -136,6 +334,20 @@ CONF_GOOGLE_PLACES_LONGITUDE = "google_places_longitude"
 CONF_GOOGLE_PLACES_RADIUS = "google_places_radius"
 CONF_GOOGLE_PLACES_RANKING = "google_places_rank_preference"
 
+# Google Routes-specific constants
+
+CONF_GOOGLE_ROUTES_ENABLED = "google_routes_enabled"
+CONF_GOOGLE_ROUTES_HOME_ADDRESS = "google_routes_home_address"
+CONF_GOOGLE_ROUTES_DEFAULT_TRAVEL_MODE = "google_routes_default_travel_mode"
+
+CONF_GOOGLE_ROUTES_TRAVEL_MODES = {
+    "DRIVE": "Driving",
+    "WALK": "Walking",
+    "BICYCLE": "Bicycle",
+    "TRANSIT": "Public Transit",
+    "TWO_WHEELER": "Motorcycle / Scooter",
+}
+
 # YouTube-specific constants
 
 CONF_YOUTUBE_ENABLED = "youtube_enabled"
@@ -155,12 +367,58 @@ CONF_WEATHER_DATA_PRECIPITATION = "weather_data_precipitation"
 CONF_WEATHER_DATA_WIND_SPEED = "weather_data_wind_speed"
 CONF_WEATHER_TEMPERATURE_SENSOR = "current_temperature_entity"
 
+# Home Control constants
+CONF_HOME_CONTROL_ENABLED = "home_control_enabled"
+CONF_HOME_CONTROL_PROMPT_TEMPLATE = "home_control_prompt"
+CONF_HOME_CONTROL_DISABLED_TOOLS = "home_control_disabled_tools"
+CONF_ENTITY_HISTORY_ENABLED = "entity_history_enabled"
+CONF_HOME_CONTROL_DEFAULT_PROMPT_TEMPLATE = """
+{%- if not exposed_entities %}
+Only if the user wants to control a device, tell them to expose entities to their voice assistant in Home Assistant.
+{%- else %}
+When controlling Home Assistant always call the intent tools.
+Use HassTurnOn to lock and HassTurnOff to unlock a lock.
+When controlling a device, prefer passing just name and domain.
+When controlling an area, prefer passing just area name and domain.
+
+You ARE equipped to answer questions about the current state of the home using the `GetLiveContext` tool.
+This is a primary function. Do not state you lack the functionality if the question requires live data.
+If the user asks about device existence/type (e.g., "Do I have lights in the bedroom?"): Answer from the static context below.
+If the user asks about the CURRENT state, value, or mode (e.g., "Is the lock locked?", "Is the fan on?", "What mode is the thermostat in?", "What is the temperature outside?"):
+    1.  Recognize this requires live data.
+    2.  You MUST call `GetLiveContext`. This tool will provide the needed real-time information (like temperature from the local weather, lock status, etc.).
+    3.  Use the tool's response** to answer the user accurately (e.g., "The temperature outside is [value from tool].").
+For general knowledge questions not about the home: Answer truthfully from internal knowledge.
+
+{% if exposed_entities -%}
+Static Context: An overview of the areas and the devices in this smart home:
+{%- for entity in exposed_entities %}
+  {{- "\n- names: " + '`' + entity.names.split(',') | map('trim') | join('`, `') + '`' }}
+  {%- for key, value in entity.items() %}
+    {%- if key != 'names' %}
+      {{- "\n  " + key + ": " + value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+{% endif %}
+
+{%- set area_extra = "and all generic commands like 'turn on the lights' should target this area." %}
+{%- if floor and area %}
+    {{- "\nYou are in area " ~ area.name ~ " (floor " ~ floor.name ~ ") " ~ area_extra }}
+{%- elif area %}
+    {{- "\nYou are in area " ~ area.name ~ " " ~ area_extra }}
+{%- else %}
+    {{- "\nWhen a user asks to turn on all devices of a specific type, ask user to specify an area, unless there is only one device of that type." }}
+{%- endif %}
+{%- if not supports_timers %}
+    {{- "\nThis device is not able to start timers." }}
+{%- endif %}
+{%- endif %}
+""".strip()
 
 # Service defaults
 
 SERVICE_DEFAULTS = {
-    CONF_GOOGLE_API_KEY: "",
-    CONF_BRAVE_API_KEY: "",
     CONF_BRAVE_NUM_RESULTS: 2,
     CONF_BRAVE_LATITUDE: "",
     CONF_BRAVE_LONGITUDE: "",
@@ -172,11 +430,20 @@ SERVICE_DEFAULTS = {
     CONF_BRAVE_CONTEXT_THRESHOLD_MODE: "balanced",
     CONF_SEARXNG_URL: "",
     CONF_SEARXNG_NUM_RESULTS: 2,
+    CONF_TAVILY_NUM_RESULTS: 2,
+    CONF_TAVILY_CHUNKS_PER_SOURCE: 1,
+    CONF_TAVILY_SEARCH_DEPTH: "basic",
+    CONF_TAVILY_INCLUDE_ANSWER: False,
+    CONF_TAVILY_INCLUDE_RAW_CONTENT: False,
+    CONF_TAVILY_COUNTRY: "",
+    CONF_TAVILY_MAX_CHARS_PER_RESULT: 0,
     CONF_GOOGLE_PLACES_NUM_RESULTS: 2,
     CONF_GOOGLE_PLACES_LATITUDE: "",
     CONF_GOOGLE_PLACES_LONGITUDE: "",
     CONF_GOOGLE_PLACES_RADIUS: 5,
     CONF_GOOGLE_PLACES_RANKING: "Distance",
+    CONF_GOOGLE_ROUTES_HOME_ADDRESS: "",
+    CONF_GOOGLE_ROUTES_DEFAULT_TRAVEL_MODE: "DRIVE",
     CONF_WIKIPEDIA_NUM_RESULTS: 1,
     CONF_DAILY_WEATHER_ENTITY: None,
     CONF_HOURLY_WEATHER_ENTITY: None,
@@ -184,4 +451,9 @@ SERVICE_DEFAULTS = {
     CONF_CALCULATOR_ENABLED: True,
     CONF_UNIT_CONVERTER_ENABLED: True,
     CONF_DATE_INFO_ENABLED: True,
+    CONF_ENTITY_HISTORY_ENABLED: True,
 }
+
+# To satisfy ruff
+CONFIG_VERSION_1 = 1
+CONFIG_VERSION_2 = 2

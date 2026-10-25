@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import re
+from copy import copy
 from datetime import datetime
 from types import MappingProxyType
 
@@ -19,7 +20,7 @@ from homeassistant.const import (
     CONF_DEVICE_ID,
     __version__ as HA_VERSION,  # noqa: N812
 )
-from homeassistant.core import HassJob, HomeAssistant, callback
+from homeassistant.core import HassJob, HomeAssistant
 from homeassistant.helpers import (
     config_validation as cv,
     device_registry as dr,
@@ -33,6 +34,7 @@ from homeassistant.helpers.issue_registry import IssueSeverity, async_create_iss
 from homeassistant.helpers.typing import ConfigType
 
 from .common import (
+    async_unhide_source_batteries,
     composite_device_issue_id,
     is_composite_device_id,
     missing_device_issue_id,
@@ -56,6 +58,7 @@ from .const import (
     CONF_MODEL_ID,
     CONF_ROUND_BATTERY,
     CONF_SHOW_ALL_DEVICES,
+    CONF_SOURCE_ENTITY_ID,
     CONF_USER_LIBRARY,
     DEFAULT_BATTERY_INCREASE_THRESHOLD,
     DEFAULT_BATTERY_LOW_THRESHOLD,
@@ -146,6 +149,7 @@ async def async_setup_entry(
 
     domain_config = hass.data[MY_KEY]
     assert domain_config.store
+    download_library = not domain_config.skip_library_download
 
     domain_config.show_all_devices = config_entry.options[CONF_SHOW_ALL_DEVICES]
     domain_config.hide_battery = config_entry.options[CONF_HIDE_BATTERY]
@@ -153,7 +157,7 @@ async def async_setup_entry(
     domain_config.default_battery_low_threshold = config_entry.options[
         CONF_DEFAULT_BATTERY_LOW_THRESHOLD
     ]
-    domain_config.battery_increased_threshod = config_entry.options[
+    domain_config.default_battery_increased_threshold = config_entry.options[
         CONF_DEFAULT_BATTERY_INCREASE_THRESHOLD
     ]
 
@@ -166,53 +170,61 @@ async def async_setup_entry(
     domain_config.hide_battery_low = config_entry.options[CONF_ADVANCED_SETTINGS].get(
         CONF_HIDE_BATTERY_LOW, False
     )
-    domain_config.user_library = config_entry.options[CONF_ADVANCED_SETTINGS][
-        CONF_USER_LIBRARY
-    ]
+    # The options form omits the optional user library when it is cleared
+    domain_config.user_library = config_entry.options[CONF_ADVANCED_SETTINGS].get(
+        CONF_USER_LIBRARY, ""
+    )
 
     config_entry.runtime_data = BatteryNotesData(
         domain_config=domain_config,
         store=domain_config.store,
-        loaded_subentries=config_entry.subentries.copy(),
+        loaded_subentries={
+            subentry_id: copy(subentry)
+            for subentry_id, subentry in config_entry.subentries.items()
+        },
     )
 
     discovery_manager = DiscoveryManager(hass, domain_config)
 
     config_entry.runtime_data.subentry_coordinators = {}
-    for subentry in config_entry.subentries.values():
-        if subentry.subentry_type == SUBENTRY_BATTERY_NOTE:
-            device_id = subentry.data.get(CONF_DEVICE_ID, None)
+    for subentry in config_entry.get_subentries_of_type(SUBENTRY_BATTERY_NOTE):
+        device_id = subentry.data.get(CONF_DEVICE_ID, None)
 
-            # HACK: HA 2026.8 splits composite devices into multiple devices, so we need to check if the device_id is a composite device
-            if device_id is not None and is_composite_device_id(hass, device_id):
-                # The device was split into one device per config entry; ask the user to
-                # select a device again
-                ir.async_create_issue(
-                    hass,
-                    DOMAIN,
-                    composite_device_issue_id(subentry.subentry_id),
-                    data={
-                        "entry_id": config_entry.entry_id,
-                        "subentry_id": subentry.subentry_id,
-                    },
-                    is_fixable=True,
-                    severity=ir.IssueSeverity.WARNING,
-                    translation_key="composite_device_id",
-                    translation_placeholders={"name": subentry.title},
-                )
-            else:
-                ir.async_delete_issue(
-                    hass,
-                    DOMAIN,
-                    composite_device_issue_id(subentry.subentry_id),
-                )
-
-            coordinator = BatteryNotesSubentryCoordinator(hass, config_entry, subentry)
-            config_entry.runtime_data.subentry_coordinators[subentry.subentry_id] = (
-                coordinator
+        # HACK: HA 2026.8 splits composite devices into multiple devices, so we need to check if the device_id is a composite device
+        # Entity notes link through their entity and use its current device instead
+        if (
+            device_id is not None
+            and not subentry.data.get(CONF_SOURCE_ENTITY_ID)
+            and is_composite_device_id(hass, device_id)
+        ):
+            # The device was split into one device per config entry; ask the user to
+            # select a device again
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                composite_device_issue_id(subentry.subentry_id),
+                data={
+                    "entry_id": config_entry.entry_id,
+                    "subentry_id": subentry.subentry_id,
+                },
+                is_fixable=True,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key="composite_device_id",
+                translation_placeholders={"name": subentry.title},
+            )
+        else:
+            ir.async_delete_issue(
+                hass,
+                DOMAIN,
+                composite_device_issue_id(subentry.subentry_id),
             )
 
-            assert subentry.unique_id
+        coordinator = BatteryNotesSubentryCoordinator(hass, config_entry, subentry)
+        config_entry.runtime_data.subentry_coordinators[subentry.subentry_id] = (
+            coordinator
+        )
+
+        assert subentry.unique_id
 
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
@@ -220,13 +232,18 @@ async def async_setup_entry(
         config_entry.add_update_listener(_async_update_listener)
     )
 
-    @callback
+    library_updater = LibraryUpdater(hass)
+    config_entry.async_on_unload(library_updater.async_start_daily_update())
+
     async def _async_delayed_discovery(now: datetime) -> None:  # noqa: ARG001
         """Update the library and do discovery."""
-        library_updater = LibraryUpdater(hass)
+        if download_library:
+            await library_updater.copy_schema()
+            await library_updater.get_library_updates(startup=True)
+        else:
+            _LOGGER.debug("Subentries changed, skipping library download")
 
-        await library_updater.copy_schema()
-        await library_updater.get_library_updates(startup=True)
+        # Always reload from disk, the user library option may have changed
         await hass.data[DATA_LIBRARY].load_libraries()
 
         if domain_config.enable_autodiscovery:
@@ -235,12 +252,16 @@ async def async_setup_entry(
             _LOGGER.debug("Auto discovery disabled")
 
     # Let the system settle a bit before starting discovery
-    async_call_later(
-        hass,
-        DISCOVERY_DELAY,
-        HassJob(
-            _async_delayed_discovery, "battery notes discovery", cancel_on_shutdown=True
-        ),
+    config_entry.async_on_unload(
+        async_call_later(
+            hass,
+            DISCOVERY_DELAY,
+            HassJob(
+                _async_delayed_discovery,
+                "battery notes discovery",
+                cancel_on_shutdown=True,
+            ),
+        )
     )
 
     return True
@@ -259,19 +280,19 @@ async def async_remove_entry(
 ) -> None:
     """Battery Notes integration removed."""
 
+    hide_battery = config_entry.options.get(CONF_HIDE_BATTERY, False)
+
     for subentry in config_entry.subentries.values():
-        if subentry.subentry_id not in config_entry.subentries:
-            await _async_remove_subentry(
-                hass, config_entry, subentry, remove_store_entries=False
-            )
-            ir.async_delete_issue(
-                hass, DOMAIN, missing_device_issue_id(subentry.subentry_id)
-            )
-            ir.async_delete_issue(
-                hass,
-                DOMAIN,
-                composite_device_issue_id(subentry.subentry_id),
-            )
+        ir.async_delete_issue(
+            hass, DOMAIN, missing_device_issue_id(subentry.subentry_id)
+        )
+        ir.async_delete_issue(
+            hass, DOMAIN, composite_device_issue_id(subentry.subentry_id)
+        )
+
+        # The source batteries were hidden in favour of battery plus, show them again
+        if hide_battery and subentry.subentry_type == SUBENTRY_BATTERY_NOTE:
+            async_unhide_source_batteries(hass, subentry.data)
 
 
 async def async_migrate_integration(hass: HomeAssistant, config: ConfigType) -> None:  # noqa: PLR0912, PLR0915
@@ -330,6 +351,13 @@ async def async_migrate_integration(hass: HomeAssistant, config: ConfigType) -> 
         entry_data_dict.pop(CONF_MODEL, None)
         entry_data_dict.pop(CONF_MODEL_ID, None)
         entry_data_dict.pop(CONF_HW_VERSION, None)
+
+        if entry.version == 1 and CONF_BATTERY_TYPE in entry_data_dict:
+            # Version 1 had a single config for qty & type, split them
+            (
+                entry_data_dict[CONF_BATTERY_TYPE],
+                entry_data_dict[CONF_BATTERY_QUANTITY],
+            ) = _split_battery_type(entry_data_dict[CONF_BATTERY_TYPE])
 
         subentry = ConfigSubentry(
             data=MappingProxyType(entry_data_dict),
@@ -472,6 +500,16 @@ async def async_migrate_integration(hass: HomeAssistant, config: ConfigType) -> 
         )
 
 
+def _split_battery_type(battery_type: str) -> tuple[str, int]:
+    """Split a version 1 battery type like "2x AA" into type and quantity."""
+    matches = re.search(r"^(\d+)(?=x)(?:x\s)(\w+$)|([\s\S]+)", battery_type)
+    if not matches:
+        return battery_type, 1
+    if matches.group(1) is not None:
+        return matches.group(2), int(matches.group(1))
+    return matches.group(3), 1
+
+
 async def async_migrate_entry(
     hass: HomeAssistant, config_entry: BatteryNotesConfigEntry
 ) -> bool:
@@ -491,34 +529,6 @@ async def async_migrate_entry(
             config_entry, version=4, title=config_entry.title
         )
         return True
-
-    if config_entry.version == 1:
-        # Version 1 had a single config for qty & type, split them
-        matches = re.search(
-            r"^(\d+)(?=x)(?:x\s)(\w+$)|([\s\S]+)", config_entry.data[CONF_BATTERY_TYPE]
-        )
-        if matches:
-            battery_qty = matches.group(1) if matches.group(1) is not None else "1"
-            battery_type = (
-                matches.group(2) if matches.group(2) is not None else matches.group(3)
-            )
-        else:
-            battery_qty = 1
-            battery_type = config_entry.data[CONF_BATTERY_TYPE]
-
-        new_data = {**config_entry.data}
-        new_data[CONF_BATTERY_TYPE] = battery_type
-        new_data[CONF_BATTERY_QUANTITY] = battery_qty
-
-        hass.config_entries.async_update_entry(
-            config_entry, version=2, title=config_entry.title, data=new_data
-        )
-
-        _LOGGER.info(
-            "Entry %s successfully migrated to version %s.",
-            config_entry.entry_id,
-            2,
-        )
 
     if config_entry.version == 3:
         for subentry in config_entry.subentries.values():
@@ -565,10 +575,14 @@ async def _async_update_listener(
                 hass, config_entry, subentry, remove_store_entries=False
             )
 
-    # Update the config entry with the new sub entries
-    config_entry.runtime_data.loaded_subentries = config_entry.subentries.copy()
-
-    await hass.config_entries.async_reload(config_entry.entry_id)
+    domain_config = config_entry.runtime_data.domain_config
+    domain_config.skip_library_download = (
+        config_entry.runtime_data.loaded_subentries != config_entry.subentries
+    )
+    try:
+        await hass.config_entries.async_reload(config_entry.entry_id)
+    finally:
+        domain_config.skip_library_download = False
 
 
 async def _async_remove_subentry(
@@ -607,26 +621,22 @@ async def _async_remove_subentry(
         elif coordinator.device_id:
             store.async_delete_device(coordinator.device_id)
 
-    # Unhide the battery
-    if coordinator.wrapped_battery:
-        entity_registry = er.async_get(hass)
-        if wrapped_battery_entity_entry := entity_registry.async_get(
-            coordinator.wrapped_battery.entity_id
+    # Unhide the source battery and battery low entities hidden by the hide battery option
+    entity_registry = er.async_get(hass)
+    for wrapped_entity in (
+        coordinator.wrapped_battery,
+        coordinator.wrapped_battery_low,
+    ):
+        if (
+            wrapped_entity
+            and (entity_entry := entity_registry.async_get(wrapped_entity.entity_id))
+            and entity_entry.hidden_by == er.RegistryEntryHider.INTEGRATION
         ):
-            if (
-                wrapped_battery_entity_entry.hidden_by
-                == er.RegistryEntryHider.INTEGRATION
-            ):
-                entity_registry.async_update_entity(
-                    coordinator.wrapped_battery.entity_id, hidden_by=None
-                )
-                _LOGGER.debug(
-                    "Unhidden Original Battery for device%s", coordinator.device_id
-                )
+            entity_registry.async_update_entity(entity_entry.entity_id, hidden_by=None)
+            _LOGGER.debug("Unhidden source battery %s", entity_entry.entity_id)
 
     config_entry.runtime_data.subentry_coordinators.pop(subentry.subentry_id)
 
-    entity_registry = er.async_get(hass)
     entities_to_remove = [
         entity_entry.entity_id
         for entity_entry in entity_registry.entities.values()

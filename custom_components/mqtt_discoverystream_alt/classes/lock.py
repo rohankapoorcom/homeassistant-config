@@ -8,7 +8,7 @@ from homeassistant.components.lock import (
     LockEntityStateAttribute,
     LockState,
 )
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     CONF_CODE_FORMAT,
     CONF_COMMAND_TEMPLATE,
     CONF_COMMAND_TOPIC,

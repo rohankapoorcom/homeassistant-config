@@ -2,8 +2,11 @@
 
 import logging
 
-from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC, DEFAULT_PAYLOAD_STOP
-from homeassistant.components.mqtt.valve import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_COMMAND_TOPIC,
+    DEFAULT_PAYLOAD_STOP,
+)
+from homeassistant.components.mqtt.valve import (  # pylint: disable=home-assistant-component-root-import
     CONF_PAYLOAD_CLOSE,
     CONF_PAYLOAD_OPEN,
     CONF_PAYLOAD_STOP,

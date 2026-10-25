@@ -5,7 +5,7 @@ import json
 import logging
 
 from homeassistant.components import mqtt
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     CONF_AVAILABILITY,
     CONF_AVAILABILITY_MODE,
     CONF_CONNECTIONS,
@@ -51,7 +51,6 @@ from .const import (
     CONF_LOCAL_STATUS,
     CONF_OFFLINE_STATUS,
     CONF_ONLINE_STATUS,
-    CONF_PUBLISH_RETAIN,
     CONF_TILDA,
     CONF_UNIQUE_ENTITY_PREFIX,
     CONF_UNIQUE_PREFIX,
@@ -73,14 +72,14 @@ _LOGGER = logging.getLogger(__name__)
 class Discovery:
     """Manage discovery publication for MQTT Discovery Statestream."""
 
-    def __init__(self, hass: HomeAssistant, conf) -> None:
+    def __init__(self, hass: HomeAssistant, conf, retain_config) -> None:
         """Initiate discovery."""
         self._hass = hass
         self._conf = conf
         self.discovery_classes = {}
         self.discovered_entities = []
         self._subscribed = []
-        self._publish_retain: bool = conf.get(CONF_PUBLISH_RETAIN)
+        self._retain_config: bool = retain_config
         self._command_topic = set_topic(conf, CONF_COMMAND_TOPIC)
         (
             self._local_status,
@@ -152,7 +151,11 @@ class Discovery:
             f"{self._discovery_topic}{entity_id.replace('.', '/')}/{ATTR_CONFIG}"
         )
         await mqtt.async_publish(
-            self._hass, entity_disc_topic, encoded, 1, self._publish_retain
+            self._hass,
+            entity_disc_topic,
+            encoded,
+            1,
+            self._retain_config.retain_discovery,
         )
 
         return True
@@ -284,7 +287,7 @@ class Discovery:
             self._hass,
             self._conf.get(CONF_BASE_TOPIC),
             self._command_topic,
-            self._publish_retain,
+            self._retain_config.retain_state,
             self.discovered_entities,
             module.DiscoveryItem.PLATFORM,
             publish_state,

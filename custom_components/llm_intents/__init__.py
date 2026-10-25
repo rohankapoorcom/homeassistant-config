@@ -7,6 +7,8 @@ from .const import (
     CONF_PROVIDER_API_KEYS,
     CONF_SEARCH_PROVIDER,
     CONF_SEARCH_PROVIDER_BRAVE,
+    CONFIG_VERSION_1,
+    CONFIG_VERSION_2,
     DOMAIN,
     PROVIDER_GOOGLE,
 )
@@ -37,8 +39,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Tools for Assist from a config entry."""
     _LOGGER.info("Setting up %s for entry: %s", ADDON_NAME, entry.entry_id)
-    config = {**entry.data, **(entry.options or {})}
-    await setup_llm_functions(hass, config)
+    await setup_llm_functions(hass, entry)
     _LOGGER.info("%s functions successfully set up", ADDON_NAME)
     return True
 
@@ -46,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     _LOGGER.info("Unloading %s for entry: %s", ADDON_NAME, entry.entry_id)
-    await cleanup_llm_functions(hass)
+    await cleanup_llm_functions(entry)
     _LOGGER.info("%s functions successfully unloaded", ADDON_NAME)
     return True
 
@@ -58,7 +59,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry_options = (entry.options or {}).copy()
     current_version = entry.version
 
-    if current_version == 1:
+    if current_version == CONFIG_VERSION_1:
         entry_data[CONF_SEARCH_PROVIDER] = (
             CONF_SEARCH_PROVIDER_BRAVE
             if entry_data.get(CONF_BRAVE_ENABLED, False)
@@ -75,7 +76,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry_data = entry.data.copy()
         entry_options = (entry.options or {}).copy()
 
-    if current_version == 2:
+    if current_version == CONFIG_VERSION_2:
         # Migrate CONF_GOOGLE_PLACES_API_KEY to CONF_PROVIDER_API_KEYS
         provider_keys = entry_data.get(CONF_PROVIDER_API_KEYS, {})
         if not isinstance(provider_keys, dict):
@@ -87,7 +88,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if places_key and PROVIDER_GOOGLE not in provider_keys:
                 provider_keys[PROVIDER_GOOGLE] = places_key
                 _LOGGER.info(
-                    "Migrating google_places_api_key from data to provider_api_keys"
+                    "Migrating google_places_api_key from data to provider_api_keys",
                 )
             entry_data.pop(CONF_GOOGLE_PLACES_API_KEY, None)
 
@@ -97,7 +98,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if places_key and PROVIDER_GOOGLE not in provider_keys:
                 provider_keys[PROVIDER_GOOGLE] = places_key
                 _LOGGER.info(
-                    "Migrating google_places_api_key from options to provider_api_keys"
+                    "Migrating google_places_api_key from options to provider_api_keys",
                 )
             entry_options.pop(CONF_GOOGLE_PLACES_API_KEY, None)
 
@@ -106,7 +107,10 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             entry_data[CONF_PROVIDER_API_KEYS] = provider_keys
 
         hass.config_entries.async_update_entry(
-            entry, version=3, data=entry_data, options=entry_options
+            entry,
+            version=3,
+            data=entry_data,
+            options=entry_options,
         )
 
     return True

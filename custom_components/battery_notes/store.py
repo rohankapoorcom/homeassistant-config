@@ -27,6 +27,8 @@ STORAGE_KEY = f"{DOMAIN}.storage"
 STORAGE_VERSION_MAJOR = 1
 STORAGE_VERSION_MINOR = 2
 SAVE_DELAY = 10
+# Last reported data changes with every battery report, batch it into fewer writes
+REPORTED_SAVE_DELAY = 15 * 60
 
 
 @attr.s(slots=True, frozen=True)
@@ -49,6 +51,15 @@ class EntityEntry:
     battery_last_replaced = attr.ib(type=datetime, default=None)
     battery_last_reported = attr.ib(type=datetime, default=None)
     battery_last_reported_level = attr.ib(type=float, default=None)
+
+
+def _known_fields(entry_class: type, data: dict[str, Any]) -> dict[str, Any]:
+    """Return the stored fields the entry class knows, ignoring unknown ones.
+
+    Storage written by a newer version may contain fields this version doesn't have.
+    """
+    fields = attr.fields_dict(entry_class)
+    return {key: value for key, value in data.items() if key in fields}
 
 
 def _fix_datetime_string(datetime_str: str) -> str:
@@ -84,20 +95,20 @@ class MigratableStore(Store):
     ):
         if old_major_version == 1:
             if old_minor_version < 2:
-                for device in data["devices"]:
-                    last_replaced = device[LAST_REPLACED]
+                for device in data.get("devices", []):
+                    last_replaced = device.get(LAST_REPLACED)
                     if last_replaced:
                         device[LAST_REPLACED] = _fix_datetime_string(last_replaced)
 
-                    last_reported = device[LAST_REPORTED]
+                    last_reported = device.get(LAST_REPORTED)
                     if last_reported:
                         device[LAST_REPORTED] = _fix_datetime_string(last_reported)
-                for entity in data["entities"]:
-                    last_replaced = entity[LAST_REPLACED]
+                for entity in data.get("entities", []):
+                    last_replaced = entity.get(LAST_REPLACED)
                     if last_replaced:
                         entity[LAST_REPLACED] = _fix_datetime_string(last_replaced)
 
-                    last_reported = entity[LAST_REPORTED]
+                    last_reported = entity.get(LAST_REPORTED)
                     if last_reported:
                         entity[LAST_REPORTED] = _fix_datetime_string(last_reported)
         return data
@@ -111,6 +122,7 @@ class BatteryNotesStorage:
         self.hass = hass
         self.devices: MutableMapping[str, DeviceEntry] = {}
         self.entities: MutableMapping[str, EntityEntry] = {}
+        self._save_due: float | None = None
         self._store = MigratableStore(
             hass,
             STORAGE_VERSION_MAJOR,
@@ -126,20 +138,34 @@ class BatteryNotesStorage:
 
         if data is not None and "devices" in data:
             for device in data["devices"]:
-                devices[device["device_id"]] = DeviceEntry(**device)
+                devices[device["device_id"]] = DeviceEntry(
+                    **_known_fields(DeviceEntry, device)
+                )
 
         self.devices = devices
 
         if data is not None and "entities" in data:
             for entity in data["entities"]:
-                entities[entity["entity_id"]] = EntityEntry(**entity)
+                entities[entity["entity_id"]] = EntityEntry(
+                    **_known_fields(EntityEntry, entity)
+                )
 
         self.entities = entities
 
     @callback
-    def async_schedule_save(self) -> None:
-        """Schedule saving the registry."""
-        self._store.async_delay_save(self._data_to_save, SAVE_DELAY)
+    def async_schedule_save(self, save_delay: float = SAVE_DELAY) -> None:
+        """Schedule saving the registry.
+
+        Store.async_delay_save pushes a pending write back on every call, so only
+        schedule when this save is due earlier than the pending one. Frequent updates
+        are then batched into a single write rather than postponing it.
+        """
+        save_due = self.hass.loop.time() + save_delay
+        if self._save_due is not None and self._save_due <= save_due:
+            return
+
+        self._save_due = save_due
+        self._store.async_delay_save(self._data_to_save, save_delay)
 
     async def async_save(self) -> None:
         """Save the registry."""
@@ -148,6 +174,9 @@ class BatteryNotesStorage:
     @callback
     def _data_to_save(self) -> dict:
         """Return data for the registry to store in a file."""
+        # Called when the data is written, any later change needs a new save
+        self._save_due = None
+
         store_data = {}
 
         store_data["devices"] = [attr.asdict(entry) for entry in self.devices.values()]
@@ -162,6 +191,7 @@ class BatteryNotesStorage:
         _LOGGER.warning("Removing battery notes data!")
         await self._store.async_remove()
         self.devices = {}
+        self.entities = {}
 
     @callback
     def async_get_device(self, device_id) -> dict[str, Any] | None:
@@ -178,13 +208,15 @@ class BatteryNotesStorage:
         return res
 
     @callback
-    def async_create_device(self, device_id: str, data: dict) -> DeviceEntry | None:
+    def async_create_device(
+        self, device_id: str, data: dict, save_delay: float = SAVE_DELAY
+    ) -> DeviceEntry | None:
         """Create a new DeviceEntry."""
         if device_id in self.devices:
             return None
         new_device = DeviceEntry(**data, device_id=device_id)
         self.devices[device_id] = new_device
-        self.async_schedule_save()
+        self.async_schedule_save(save_delay)
         return new_device
 
     @callback
@@ -197,11 +229,13 @@ class BatteryNotesStorage:
         return False
 
     @callback
-    def async_update_device(self, device_id: str, changes: dict) -> DeviceEntry:
+    def async_update_device(
+        self, device_id: str, changes: dict, save_delay: float = SAVE_DELAY
+    ) -> DeviceEntry:
         """Update existing DeviceEntry."""
         old = self.devices[device_id]
         new = self.devices[device_id] = attr.evolve(old, **changes)
-        self.async_schedule_save()
+        self.async_schedule_save(save_delay)
         return new
 
     @callback
@@ -230,13 +264,15 @@ class BatteryNotesStorage:
         return res
 
     @callback
-    def async_create_entity(self, entity_id: str, data: dict) -> EntityEntry | None:
+    def async_create_entity(
+        self, entity_id: str, data: dict, save_delay: float = SAVE_DELAY
+    ) -> EntityEntry | None:
         """Create a new EntityEntry."""
         if entity_id in self.entities:
             return None
         new_entity = EntityEntry(**data, entity_id=entity_id)
         self.entities[entity_id] = new_entity
-        self.async_schedule_save()
+        self.async_schedule_save(save_delay)
         return new_entity
 
     @callback
@@ -249,11 +285,13 @@ class BatteryNotesStorage:
         return False
 
     @callback
-    def async_update_entity(self, entity_id: str, changes: dict) -> EntityEntry:
+    def async_update_entity(
+        self, entity_id: str, changes: dict, save_delay: float = SAVE_DELAY
+    ) -> EntityEntry:
         """Update existing EntityEntry."""
         old = self.entities[entity_id]
         new = self.entities[entity_id] = attr.evolve(old, **changes)
-        self.async_schedule_save()
+        self.async_schedule_save(save_delay)
         return new
 
 

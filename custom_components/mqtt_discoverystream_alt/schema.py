@@ -3,7 +3,7 @@
 import voluptuous as vol
 
 from homeassistant.components.mqtt import valid_publish_topic
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     AVAILABILITY_LATEST,
     AVAILABILITY_MODES,
     CONF_AVAILABILITY_MODE,
@@ -27,6 +27,8 @@ from .const import (
     CONF_PUBLISH_TIMESTAMPS,
     CONF_REMOTE_STATUS,
     CONF_REPUBLISH_TIME,
+    CONF_RETAIN_DISCOVERY,
+    CONF_RETAIN_STATE,
     CONF_STALE_AFTER,
     CONF_UNIQUE_ENTITY_PREFIX,
     CONF_UNIQUE_PREFIX,
@@ -61,7 +63,9 @@ BASE_SCHEMA = {
     vol.Optional(CONF_PUBLISH_ATTRIBUTES, default=False): cv.boolean,
     vol.Optional(CONF_PUBLISH_TIMESTAMPS, default=False): cv.boolean,
     vol.Optional(CONF_PUBLISH_DISCOVERY, default=False): cv.boolean,
-    vol.Optional(CONF_PUBLISH_RETAIN, default=DEFAULT_RETAIN): cv.boolean,
+    vol.Optional(CONF_PUBLISH_RETAIN): cv.boolean,
+    vol.Optional(CONF_RETAIN_DISCOVERY, default=DEFAULT_RETAIN): cv.boolean,
+    vol.Optional(CONF_RETAIN_STATE, default=DEFAULT_RETAIN): cv.boolean,
     vol.Optional(CONF_UNIQUE_PREFIX, default="mqtt"): cv.string,
     vol.Optional(CONF_UNIQUE_ENTITY_PREFIX): cv.string,
     vol.Optional(CONF_REPUBLISH_TIME, default=DEFAULT_REFRESH_TIME): cv.time_period,
@@ -82,9 +86,3 @@ CONFIG_SCHEMA = vol.Schema(
     },
     extra=vol.ALLOW_EXTRA,
 )
-# CONFIG_SCHEMA = vol.Schema(
-#     {
-#         DOMAIN: [INCLUDE_EXCLUDE_BASE_FILTER_SCHEMA.extend(BASE_SCHEMA)],
-#     },
-#     extra=vol.ALLOW_EXTRA,
-# )

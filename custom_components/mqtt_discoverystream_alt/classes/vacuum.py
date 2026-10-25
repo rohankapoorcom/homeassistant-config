@@ -3,8 +3,10 @@
 import json
 import logging
 
-from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC
-from homeassistant.components.mqtt.vacuum import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_COMMAND_TOPIC,
+)
+from homeassistant.components.mqtt.vacuum import (  # pylint: disable=home-assistant-component-root-import
     CONF_FAN_SPEED_LIST,
     CONF_SEND_COMMAND_TOPIC,
     CONF_SET_FAN_SPEED_TOPIC,

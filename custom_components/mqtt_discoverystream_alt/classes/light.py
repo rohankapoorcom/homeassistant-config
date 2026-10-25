@@ -10,7 +10,7 @@ from homeassistant.components.light import (
     LightEntityFeature,
     LightEntityStateAttribute,
 )
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     CONF_COMMAND_TOPIC,
     CONF_JSON_ATTRS_TOPIC,
     CONF_SCHEMA,

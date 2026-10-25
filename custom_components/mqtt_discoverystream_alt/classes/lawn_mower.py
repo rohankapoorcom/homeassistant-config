@@ -8,8 +8,10 @@ from homeassistant.components.lawn_mower import (
     SERVICE_START_MOWING,
     LawnMowerEntityFeature,
 )
-from homeassistant.components.mqtt.const import CONF_STATE_TOPIC
-from homeassistant.components.mqtt.lawn_mower import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
+    CONF_STATE_TOPIC,
+)
+from homeassistant.components.mqtt.lawn_mower import (  # pylint: disable=home-assistant-component-root-import
     CONF_ACTIVITY_STATE_TOPIC,
     CONF_DOCK_COMMAND_TOPIC,
     CONF_PAUSE_COMMAND_TOPIC,

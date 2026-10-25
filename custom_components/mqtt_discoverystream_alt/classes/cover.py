@@ -8,12 +8,12 @@ from homeassistant.components.cover import (
     CoverEntityFeature,
     CoverEntityStateAttribute,
 )
-from homeassistant.components.mqtt.const import (
+from homeassistant.components.mqtt.const import (  # pylint: disable=home-assistant-component-root-import
     CONF_COMMAND_TOPIC,
     CONF_SET_POSITION_TOPIC,
     CONF_TILT_COMMAND_TOPIC,
 )
-from homeassistant.components.mqtt.cover import (
+from homeassistant.components.mqtt.cover import (  # pylint: disable=home-assistant-component-root-import
     CONF_GET_POSITION_TEMPLATE,
     CONF_GET_POSITION_TOPIC,
     CONF_TILT_STATUS_TEMPLATE,

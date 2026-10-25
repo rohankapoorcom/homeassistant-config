@@ -2,14 +2,32 @@
   "domain": "spook",
   "name": "Spook",
   "after_dependencies": [
+    "assist_pipeline",
     "automation",
     "blueprint",
+    "calendar",
+    "climate",
     "cloud",
     "counter",
+    "cover",
     "energy",
     "group",
+    "humidifier",
+    "input_boolean",
+    "input_button",
+    "input_datetime",
+    "input_text",
+    "light",
+    "media_player",
     "proximity",
-    "timer"
+    "schedule",
+    "script",
+    "sensor",
+    "template",
+    "timer",
+    "todo",
+    "valve",
+    "water_heater"
   ],
   "codeowners": [
     "@frenck"
@@ -31,8 +49,6 @@
   "integration_type": "hub",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/frenck/spook/issues",
-  "requirements": [
-    "cronsim==2.7"
-  ],
-  "version": "5.1.0"
+  "requirements": [],
+  "version": "5.11.1"
 }
