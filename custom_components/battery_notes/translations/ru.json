@@ -11,23 +11,27 @@
                     "battery_type": "Тип батареи",
                     "battery_quantity": "Количество батарей",
                     "note": "Note",
-                    "battery_low_threshold": "Порог низкого заряда батареи"
+                    "battery_low_threshold": "Порог низкого заряда батареи",
+                    "battery_increase_threshold": "Battery increase threshold"
                 },
                 "data_description": {
-                    "battery_low_threshold": "0 будет использовать общий порог по умолчанию"
+                    "battery_low_threshold": "0 будет использовать общий порог по умолчанию.",
+                    "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Advanced settings",
+                        "name": "Additional settings",
                         "data": {
                             "battery_percentage_template": "Battery percentage template",
                             "battery_low_template": "Шаблон низкого заряда батареи",
+                            "retain_state": "Retain state",
                             "filter_outliers": "Фильтр скачков заряда"
                         },
                         "data_description": {
-                            "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
+                            "battery_percentage_template": "Template to create a battery percentage.\nOnly needed for devices that do not have a standard battery percentage.",
                             "battery_low_template": "Шаблон низкого заряда батареи. В случае низкого заряда должен возвращать true.\nТребуется только для нестандартных уровней заряда батареи.",
-                            "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками"
+                            "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
+                            "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками."
                         }
                     }
                 }
@@ -66,7 +70,7 @@
                         "name": "Название"
                     },
                     "data_description": {
-                        "name": "Если оставить пустым, то название будет взято с исходного устройства"
+                        "name": "Если оставить пустым, то название будет взято с исходного устройства."
                     }
                 },
                 "entity": {
@@ -75,7 +79,7 @@
                         "name": "Название"
                     },
                     "data_description": {
-                        "name": "Если оставить пустым, то название будет взято с исходного устройства"
+                        "name": "Если оставить пустым, то название будет взято с исходного устройства."
                     }
                 },
                 "battery": {
@@ -84,23 +88,27 @@
                         "battery_type": "Тип батареи",
                         "battery_quantity": "Количество батарей",
                         "note": "Note",
-                        "battery_low_threshold": "Порог низкого заряда батареи"
+                        "battery_low_threshold": "Порог низкого заряда батареи",
+                        "battery_increase_threshold": "Battery increase threshold"
                     },
                     "data_description": {
-                        "battery_low_threshold": "0 будет использовать общий порог по умолчанию"
+                        "battery_low_threshold": "0 будет использовать общий порог по умолчанию.",
+                        "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Advanced settings",
+                            "name": "Additional settings",
                             "data": {
                                 "battery_percentage_template": "Battery percentage template",
                                 "battery_low_template": "Шаблон низкого заряда батареи",
+                                "retain_state": "Retain state",
                                 "filter_outliers": "Фильтр скачков заряда"
                             },
                             "data_description": {
-                                "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
+                                "battery_percentage_template": "Template to create a battery percentage.\nOnly needed for devices that do not have a standard battery percentage.",
                                 "battery_low_template": "Шаблон низкого заряда батареи. В случае низкого заряда должен возвращать true.\nТребуется только для нестандартных уровней заряда батареи.",
-                                "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками"
+                                "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
+                                "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками."
                             }
                         }
                     }
@@ -116,24 +124,28 @@
                         "battery_type": "Тип батареи",
                         "battery_quantity": "Количество батарей",
                         "note": "Note",
-                        "battery_low_threshold": "Порог низкого заряда батареи"
+                        "battery_low_threshold": "Порог низкого заряда батареи",
+                        "battery_increase_threshold": "Battery increase threshold"
                     },
                     "data_description": {
-                        "name": "Если оставить пустым, то название будет взято с исходного устройства",
-                        "battery_low_threshold": "0 будет использовать общий порог по умолчанию"
+                        "name": "Если оставить пустым, то название будет взято с исходного устройства.",
+                        "battery_low_threshold": "0 будет использовать общий порог по умолчанию.",
+                        "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Advanced settings",
+                            "name": "Additional settings",
                             "data": {
                                 "battery_percentage_template": "Battery percentage template",
                                 "battery_low_template": "Шаблон низкого заряда батареи",
+                                "retain_state": "Retain state",
                                 "filter_outliers": "Фильтр скачков заряда"
                             },
                             "data_description": {
-                                "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
+                                "battery_percentage_template": "Template to create a battery percentage.\nOnly needed for devices that do not have a standard battery percentage.",
                                 "battery_low_template": "Шаблон низкого заряда батареи. В случае низкого заряда должен возвращать true.\nТребуется только для нестандартных уровней заряда батареи.",
-                                "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками"
+                                "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
+                                "filter_outliers": "Отфильтровать скачки заряда, уменьшая ложные срабатывания событий для устройств, которые иногда сообщают заряд батареи с ошибками."
                             }
                         }
                     }
@@ -165,19 +177,21 @@
                     "hide_battery": "Hide the standard battery when adding Battery+.",
                     "round_battery": "Round Battery+ to whole percentages.",
                     "default_battery_low_threshold": "The default threshold where a devices battery_low entity is set to true and the battery_notes_battery_threshold event is fired if the battery is below this threshold, can be overriden per device in device configuration.",
-                    "battery_increase_threshold": "The threshold where the battery_notes_battery_increased event is fired, use this event for battery replaced automations. The threshold is the difference in increase between previous and current battery level."
+                    "battery_increase_threshold": "The default threshold where the battery_notes_battery_increased event is fired, use this event for battery replaced automations. The threshold is the difference in increase between previous and current battery level, can be overriden per device in device configuration."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Advanced settings",
+                        "name": "Additional settings",
                         "data": {
                             "enable_autodiscovery": "Auto discovery",
                             "enable_replaced": "Enable battery replaced",
+                            "hide_battery_low": "Hide battery low",
                             "user_library": "User library"
                         },
                         "data_description": {
                             "enable_autodiscovery": "Auto discovery of devices that are in the library.",
                             "enable_replaced": "Enable the battery replaced button on each battery note.",
+                            "hide_battery_low": "Hide the battery low binary sensor when a battery percentage is available, avoiding duplication on generated dashboards.",
                             "user_library": "If specified then a user library file will be searched prior to the main library, the user library must be in the same format as the library and placed in `config/.storage/battery_notes`."
                         }
                     }
@@ -193,6 +207,9 @@
             "battery_low": {
                 "name": "{device_name}Низкий заряд батареи",
                 "state_attributes": {
+                    "battery_increase_threshold": {
+                        "name": "Battery increase threshold"
+                    },
                     "battery_low_threshold": {
                         "name": "Порог низкого заряда батареи"
                     }
@@ -222,6 +239,9 @@
                     },
                     "battery_last_replaced": {
                         "name": "Последняя замена батареи"
+                    },
+                    "battery_increase_threshold": {
+                        "name": "Battery increase threshold"
                     },
                     "battery_low": {
                         "name": "Низкий заряд батареи"
@@ -334,6 +354,29 @@
                     }
                 }
             }
+        },
+        "composite_device_id": {
+            "fix_flow": {
+                "abort": {
+                    "entry_removed": "The Battery Note configuration entry has been removed"
+                },
+                "error": {
+                    "invalid_device": "Select an existing device or leave the field empty"
+                },
+                "step": {
+                    "select_device": {
+                        "data": {
+                            "device_id": "Device"
+                        },
+                        "data_description": {
+                            "device_id": "The device this battery note should be linked to."
+                        },
+                        "description": "The battery note {name} was linked to a device which has been split into multiple devices.\n\nSelect the device this battery note should be linked to, or leave empty to remove the battery note.",
+                        "title": "Select device for {name}"
+                    }
+                }
+            },
+            "title": "Device for battery note {name} needs to be selected again"
         },
         "deprecated_yaml": {
             "title": "The {integration_title} YAML configuration is being removed",

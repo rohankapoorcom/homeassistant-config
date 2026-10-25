@@ -1,0 +1,2301 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "auto_clean_running": {
+        "name": "자동 청소 작동 중"
+      },
+      "after_run_active": {
+        "name": "후속 운전 작동 중"
+      },
+      "any_burner_active": {
+        "name": "화구 작동 중"
+      },
+      "automatic_operation": {
+        "name": "자동 운전"
+      },
+      "battery_charging": {
+        "name": "충전 중"
+      },
+      "burner_hot_surface": {
+        "name": "{number}번 화구 표면 고온"
+      },
+      "burner_pan_detected": {
+        "name": "{number}번 화구 용기 감지"
+      },
+      "child_lock": {
+        "name": "어린이 보호 잠금"
+      },
+      "cloud_connected": {
+        "name": "클라우드 연결됨"
+      },
+      "dustbag_full": {
+        "name": "먼지 봉투 가득 참"
+      },
+      "cooktop_power": {
+        "name": "쿡탑 전원"
+      },
+      "cooktop_safety_shutoff_enabled": {
+        "name": "고온 표면 자동 차단 활성화"
+      },
+      "current_limit_enabled": {
+        "name": "전류 제한 활성화"
+      },
+      "overload_protection_active": {
+        "name": "과부하 보호 작동 중"
+      },
+      "odor_controller_active": {
+        "name": "탈취 기능 작동 중"
+      },
+      "cycle_active": {
+        "name": "작동 중"
+      },
+      "defrost_active": {
+        "name": "제상 작동 중"
+      },
+      "detergent_low": {
+        "name": "세제 부족"
+      },
+      "device_active": {
+        "name": "기기 작동 중"
+      },
+      "door_open": {
+        "name": "문"
+      },
+      "filter_blockage": {
+        "name": "필터 막힘"
+      },
+      "filter_door_status": {
+        "name": "필터 도어"
+      },
+      "firmware_update": {
+        "name": "펌웨어 업데이트 가능"
+      },
+      "instance_open": {
+        "name": "{instance_name} 열림"
+      },
+      "paired_hood_connected": {
+        "name": "연동 후드 연결됨"
+      },
+      "paired_hood_light": {
+        "name": "연동 후드 조명"
+      },
+      "paired_hood_power": {
+        "name": "연동 후드 전원"
+      },
+      "periodic_air_sensing": {
+        "name": "주기적 공기 감지"
+      },
+      "pouring": {
+        "name": "출수 중"
+      },
+      "alarm_in_mute": {
+        "name": "알림 음소거 중"
+      },
+      "power_state": {
+        "name": "전원 상태"
+      },
+      "probe_connected": {
+        "name": "탐침 온도계 연결됨"
+      },
+      "power_switch": {
+        "name": "전원"
+      },
+      "rapid_freezing": {
+        "name": "급속 냉동"
+      },
+      "rapid_fridge": {
+        "name": "급속 냉장"
+      },
+      "remote_control": {
+        "name": "스마트 컨트롤"
+      },
+      "softener_low": {
+        "name": "섬유유연제 부족"
+      },
+      "add_wash_available": {
+        "name": "애드워시 허용"
+      },
+      "add_wash_indicator": {
+        "name": "애드워시 가능"
+      },
+      "pre_wash_selected": {
+        "name": "애벌빨래 선택됨"
+      },
+      "delay_wash_set": {
+        "name": "예약 시작 설정됨"
+      },
+      "stick_ble_connected": {
+        "name": "스틱 BLE 연결됨"
+      },
+      "cooktop_burner": {
+        "name": "버너 {number}"
+      },
+      "beep": {
+        "name": "비프음"
+      },
+      "remind_beep": {
+        "name": "종료 알림음"
+      },
+      "display_time_auto_sync": {
+        "name": "시간 자동 동기화"
+      },
+      "grease_filter_alarm": {
+        "name": "기름 필터 알림"
+      },
+      "front_vent_open": {
+        "name": "전면 배기구"
+      },
+      "dual_setpoint_enabled": {
+        "name": "이중 설정 온도 사용"
+      },
+      "divider": {
+        "name": "칸막이"
+      },
+      "wrinkle_prevent_active": {
+        "name": "구김 방지 작동 중"
+      }
+    },
+    "button": {
+      "after_run_cancel": {
+        "name": "후속 운전 취소"
+      },
+      "diagnosis_start": {
+        "name": "진단 시작"
+      },
+      "auto_clean_stop": {
+        "name": "자동 청소 정지"
+      },
+      "air_filter_reset": {
+        "name": "공기 필터 초기화"
+      },
+      "air_filter_pm1_reset": {
+        "name": "PM1.0 필터 초기화"
+      },
+      "hepa_filter_reset": {
+        "name": "헤파 필터 초기화"
+      },
+      "deodor_filter_reset": {
+        "name": "탈취 필터 초기화"
+      },
+      "hood_filter_reset": {
+        "name": "후드 필터 초기화"
+      },
+      "filter_reset": {
+        "name": "정수 필터 초기화"
+      },
+      "filter_time_reset": {
+        "name": "필터 사용 시간 초기화"
+      },
+      "pause": {
+        "name": "일시정지"
+      },
+      "selfcheck_start": {
+        "name": "자가 점검 시작"
+      },
+      "start": {
+        "name": "시작"
+      },
+      "sync_clock": {
+        "name": "시계 동기화"
+      },
+      "stop": {
+        "name": "정지"
+      },
+      "start_cooking": {
+        "name": "조리 시작"
+      }
+    },
+    "climate": {
+      "airconditioner": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "turbo": "터보",
+              "max": "최대"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "ai_comfort": "AI 쾌적",
+              "quiet": "저소음",
+              "smart": "스마트",
+              "speed": "스피드",
+              "nano": "무풍",
+              "sleep": "숙면",
+              "nanosleep": "무풍 수면",
+              "longwind": "롱바람",
+              "motionindirect": "간접풍",
+              "motiondirect": "직접풍",
+              "drycomfort": "쾌적 제습",
+              "dlightcool": "d'light Cool",
+              "2step": "2단계"
+            }
+          }
+        }
+      },
+      "zone_climate": {
+        "name": "구역 1"
+      },
+      "zone2_climate": {
+        "name": "구역 2"
+      }
+    },
+    "fan": {
+      "air_purifier_fan": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "smart": "스마트",
+              "max": "최대",
+              "mid": "중간",
+              "windfree": "무풍",
+              "sleep": "수면"
+            }
+          }
+        }
+      }
+    },
+    "light": {
+      "lamp": {
+        "name": "램프"
+      }
+    },
+    "number": {
+      "cook_time": {
+        "name": "조리 시간"
+      },
+      "delay_start_hours": {
+        "name": "예약 시작"
+      },
+      "dispense_capacity": {
+        "name": "출수량"
+      },
+      "good_sleep": {
+        "name": "쾌면 시간"
+      },
+      "instance_setpoint": {
+        "name": "{instance_name} 설정값"
+      },
+      "oven_setpoint": {
+        "name": "설정 온도"
+      },
+      "sensing_interval": {
+        "name": "AI Purify 간격"
+      },
+      "setpoint": {
+        "name": "설정값"
+      },
+      "sound_volume": {
+        "name": "음량"
+      },
+      "target_humidity": {
+        "name": "목표 습도"
+      },
+      "tropical_night_mode": {
+        "name": "열대야 모드"
+      },
+      "zone_target_temperature": {
+        "name": "구역 목표 온도"
+      }
+    },
+    "select": {
+      "welcome_lighting_proximity": {
+        "name": "웰컴 라이팅 감지 거리",
+        "state": {
+          "nearest": "가장 가까움",
+          "near": "가까움",
+          "middle": "중간",
+          "far": "멀리"
+        }
+      },
+      "ai_energy_level": {
+        "name": "AI 절약 모드 단계"
+      },
+      "air_filter_threshold": {
+        "name": "필터 알림 기준"
+      },
+      "auto_door_timer": {
+        "name": "오토 오픈 도어 타이머"
+      },
+      "auto_door_mode": {
+        "name": "오토 오픈 도어 모드",
+        "state": {
+          "easy_open": "살짝 열기",
+          "wide_open": "활짝 열기"
+        }
+      },
+      "beverage_zone_mode": {
+        "name": "음료 보관 모드",
+        "state": {
+          "sp_ttype_beer_drinks": "음료",
+          "sp_ttype_wine_dessert": "와인 및 디저트"
+        }
+      },
+      "brightness_level": {
+        "name": "야간 밝기",
+        "state": {
+          "33": "낮음",
+          "66": "중간",
+          "100": "높음"
+        }
+      },
+      "cooler_temperature_setpoint": {
+        "name": "냉장실 온도"
+      },
+      "day_brightness": {
+        "name": "수납장 밝기",
+        "state": {
+          "33": "낮음",
+          "66": "중간",
+          "100": "높음"
+        }
+      },
+      "buzzer_sound": {
+        "name": "부저음",
+        "state": {
+          "off": "끄기",
+          "on": "켜기",
+          "volume_off": "끔",
+          "volume_low": "낮음",
+          "volume_med": "중간",
+          "volume_high": "높음"
+        }
+      },
+      "discharging_time": {
+        "name": "먼지 비움 시간",
+        "state": {
+          "1": "1분",
+          "3": "3분"
+        }
+      },
+      "cycle": {
+        "name": "코스"
+      },
+      "detergent_quantity": {
+        "name": "세제 투입량",
+        "state": {
+          "00": "없음",
+          "01": "적게",
+          "02": "보통",
+          "03": "많이"
+        }
+      },
+      "detergent_water_hardness": {
+        "name": "물 경도",
+        "state": {
+          "01": "연수",
+          "02": "보통",
+          "03": "경수"
+        }
+      },
+      "dishwasher_cycle": {
+        "name": "코스",
+        "state": {
+          "80": "섬세",
+          "83": "표준",
+          "84": "강력",
+          "86": "급속 60분",
+          "90": "내부 세척",
+          "0e": "AI 맞춤 세척",
+          "07": "애벌 세척",
+          "8d": "냄비 및 팬",
+          "8e": "플라스틱",
+          "8f": "젖병 살균",
+          "82": "자동",
+          "8a": "표준",
+          "a7": "강력",
+          "a8": "급속",
+          "8c": "저소음",
+          "88": "내부 세척",
+          "85": "섬세",
+          "0c": "급속",
+          "0d": "내부 세척",
+          "87": "헹굼단독"
+        }
+      },
+      "dispense_type": {
+        "name": "출수 종류"
+      },
+      "door_alert": {
+        "name": "문 열림 알림",
+        "state": {
+          "1": "알림음 1",
+          "2": "알림음 2",
+          "3": "알림음 3",
+          "4": "알림음 4"
+        }
+      },
+      "dryer_cycle_table_00": {
+        "name": "코스",
+        "state": {
+          "01": "표준건조",
+          "9c": "강력건조",
+          "a5": "이불",
+          "9e": "구김방지",
+          "9b": "스팀살균+",
+          "27": "리프레시",
+          "a0": "송풍",
+          "a4": "시간건조",
+          "a6": "쾌속건조",
+          "a3": "운동복",
+          "a2": "섬세의류",
+          "9a": "면의류",
+          "ca": "송풍",
+          "db": "쾌속건조",
+          "99": "혼합",
+          "93": "다림질건조",
+          "b5": "울",
+          "d7": "아웃도어케어",
+          "96": "송풍건조",
+          "97": "온풍건조",
+          "7f": "시간건조",
+          "98": "쾌속건조 35분",
+          "eb": "섬세의류",
+          "b6": "합성섬유"
+        }
+      },
+      "dryer_cycle_table_03": {
+        "name": "코스",
+        "state": {
+          "01": "표준건조",
+          "06": "시간건조",
+          "16": "면의류",
+          "17": "쾌속건조",
+          "18": "합성섬유",
+          "19": "섬세의류",
+          "20": "다림질건조",
+          "21": "살균건조",
+          "22": "조용히 건조",
+          "23": "쾌속건조 35분",
+          "24": "송풍건조",
+          "25": "온풍건조",
+          "27": "시간건조",
+          "29": "AI 맞춤건조",
+          "1a": "울",
+          "1b": "이불",
+          "1c": "셔츠",
+          "1d": "타월",
+          "1e": "아웃도어",
+          "1f": "혼합",
+          "2b": "통 건조",
+          "4c": "에어 리프레시",
+          "51": "에코 면",
+          "53": "AI 맞춤건조+",
+          "4e": "자체 건조",
+          "26": "송풍",
+          "2a": "살균건조+",
+          "02": "AI 맞춤건조",
+          "03": "쾌속건조",
+          "05": "이불",
+          "07": "섬세의류",
+          "09": "셔츠",
+          "0b": "패딩케어",
+          "0c": "아웃도어발수케어",
+          "0e": "타월",
+          "0f": "울",
+          "11": "송풍건조",
+          "28": "열풍내부살균",
+          "37": "블라우스",
+          "38": "다림질건조",
+          "39": "공간제습",
+          "3a": "살균건조",
+          "3b": "이불/먼지털기",
+          "3c": "피트니스",
+          "3d": "데님",
+          "2f": "강력건조",
+          "30": "피트니스",
+          "32": "구김방지",
+          "33": "스팀살균+",
+          "34": "스팀 리프레시",
+          "35": "구김 방지",
+          "36": "송풍",
+          "3e": "소량 세탁",
+          "2e": "에코 표준건조"
+        }
+      },
+      "dryer_dry_level": {
+        "name": "건조 단계",
+        "state": {
+          "none": "끄기",
+          "damp": "촉촉",
+          "less": "적게",
+          "normal": "표준",
+          "more": "많이",
+          "very": "매우 많이"
+        }
+      },
+      "favorite_capacity": {
+        "name": "즐겨찾기 출수량"
+      },
+      "favorite_hotwater_temperature": {
+        "name": "즐겨찾는 온수 온도"
+      },
+      "filter_alarm_time": {
+        "name": "필터 알림 간격",
+        "state": {
+          "180": "180시간",
+          "300": "300시간",
+          "500": "500시간",
+          "700": "700시간"
+        }
+      },
+      "finish_sound": {
+        "name": "종료음",
+        "state": {
+          "off": "끄기",
+          "on": "켜기"
+        }
+      },
+      "flex_zone_mode": {
+        "name": "맞춤 보관실 모드",
+        "state": {
+          "cv_ttype_rf9000a_fridge": "냉장",
+          "cv_ttype_rf9000a_freeze": "냉동",
+          "cv_ttype_rf9000a_softfreeze": "소프트 냉동",
+          "cv_ttype_rf9000a_meat_fish": "육류/생선",
+          "cv_ttype_rf9000a_fruit_veggies": "과일 및 채소",
+          "cv_ttype_rf9000a_beverage": "음료",
+          "cv_fdr_wine": "와인",
+          "cv_fdr_deli": "델리",
+          "cv_fdr_beverage": "음료",
+          "cv_fdr_meat": "육류",
+          "cv_fdr_soft_freezer": "소프트 냉동",
+          "fconvert_freezer": "냉동",
+          "fconvert_fridge": "냉장",
+          "fconvert_off": "끄기"
+        }
+      },
+      "heated_dry": {
+        "name": "스마트 건조",
+        "state": {
+          "off": "끄기",
+          "low": "낮음",
+          "high": "높음",
+          "extra_high": "매우 높음"
+        }
+      },
+      "hot_water_temperature": {
+        "name": "온수 온도"
+      },
+      "ice_type": {
+        "name": "{instance_name} 종류",
+        "state": {
+          "off": "끄기",
+          "whiskey_iceball_3": "하루 3개",
+          "whiskey_iceball_6": "하루 6개",
+          "whiskey_iceball_9": "하루 9개"
+        }
+      },
+      "led_brightness": {
+        "name": "도어 LED 밝기",
+        "state": {
+          "low": "낮음",
+          "high": "높음"
+        }
+      },
+      "led_night_brightness": {
+        "name": "도어 LED 야간 밝기",
+        "state": {
+          "low": "낮음",
+          "high": "높음"
+        }
+      },
+      "cooking_mode": {
+        "name": "조리 모드",
+        "state": {
+          "no_operation": "작동 안 함",
+          "micro_wave": "전자레인지",
+          "micro_wave_grill": "전자레인지 + 그릴",
+          "micro_wave_convection": "전자레인지 + 컨벡션",
+          "convection": "컨벡션",
+          "air_fryer": "에어프라이",
+          "grill": "그릴",
+          "autocook": "자동 조리",
+          "autocook_custom": "자동 조리(사용자 설정)",
+          "deodorization": "탈취",
+          "keep_warm": "보온"
+        }
+      },
+      "oven_mode": {
+        "name": "조리 모드",
+        "state": {
+          "no_operation": "작동 안 함",
+          "bake": "베이크",
+          "broil": "브로일",
+          "convection": "컨벡션",
+          "convection_bake": "컨벡션 베이크",
+          "convection_broil": "컨벡션 브로일",
+          "frozen_pizza_plus": "냉동 피자+",
+          "slow_cook": "저온 조리",
+          "plate_warm": "접시 데우기",
+          "air_fry": "에어프라이",
+          "convection_roast": "컨벡션 로스트",
+          "keep_warm": "보온",
+          "bread_proof": "발효",
+          "dehydrate": "건조",
+          "self_clean": "자동 세척",
+          "air_fryer": "에어프라이",
+          "upper_broil": "브로일 (상단)",
+          "upper_convection_bake": "컨벡션 베이크 (상단)",
+          "upper_convection_roast": "컨벡션 로스트 (상단)",
+          "lower_bake": "베이크 (하단)",
+          "lower_convection_bake": "컨벡션 베이크 (하단)",
+          "steam_bake": "스팀 베이크",
+          "steam_roast": "스팀 로스트",
+          "upper_steam_bake": "스팀 베이크 (상단)",
+          "descale": "석회 제거",
+          "drain": "배수"
+        }
+      },
+      "operating_mode": {
+        "name": "운전 모드"
+      },
+      "kimchi_zone_mode": {
+        "name": "{instance_name} 보관 모드",
+        "state": {
+          "off": "끄기",
+          "kimchi_storage_normal": "김치",
+          "kimchi_storage_cold": "김치 강",
+          "kimchi_storage_warm": "김치 약",
+          "kimchi_storage_low_salt_normal": "저염 김치",
+          "kimchi_storage_low_salt_cold": "저염 김치 강",
+          "kimchi_storage_low_salt_warm": "저염 김치 약",
+          "kimchi_storage_crunfch": "아삭 김치",
+          "kimchi_storage_buy": "구입 김치",
+          "storage_fridge_normal": "냉장",
+          "storage_fridge": "냉장",
+          "storage_fridge_cold": "냉장 강",
+          "storage_fridge_warm": "냉장 약",
+          "storage_freezer_normal": "냉동",
+          "storage_freezer": "냉동",
+          "storage_freezer_cold": "냉동 강",
+          "storage_freezer_warm": "냉동 약",
+          "kimchi_ripe_low_temp": "김치 저온 숙성",
+          "kimchi_ripe_normal_temp": "김치 상온 숙성",
+          "kimchi_ripe_kkakdugi": "깍두기 숙성",
+          "kimchi_ripe_dongchimi": "동치미 숙성",
+          "meat_ripe_normal": "육류 숙성",
+          "storage_meat": "육류 및 생선",
+          "storage_fridge_vegetables_fruit": "과일 및 채소",
+          "storage_fresh_cereal": "곡류",
+          "storage_fridge_drink": "음료",
+          "storage_fresh_wine": "와인",
+          "storage_fresh_potato_banana": "감자 및 바나나",
+          "newmode_kimchi_0000": "새 모드"
+        }
+      },
+      "pantry_zone_mode": {
+        "name": "팬트리실 모드",
+        "state": {
+          "fdr_wine": "와인",
+          "fdr_deli": "델리",
+          "fdr_drinks": "음료",
+          "ttype_meat_fish": "육류/생선",
+          "ttype_rf9000a_fridge": "냉장"
+        }
+      },
+      "winecellar_pantry_zone_mode": {
+        "name": "팬트리실 모드",
+        "state": {
+          "processed_meat": "가공육",
+          "cheese": "치즈",
+          "nuts": "견과류",
+          "fruit": "과일",
+          "wine": "와인"
+        }
+      },
+      "range_burner_power_level": {
+        "name": "{number}번 화구 화력",
+        "state": {
+          "0": "끄기",
+          "boost": "부스트",
+          "simmer": "약불"
+        }
+      },
+      "range_hood_lamp_brightness": {
+        "name": "램프 밝기",
+        "state": {
+          "1": "1단계",
+          "2": "2단계"
+        }
+      },
+      "rinse_cycles": {
+        "name": "헹굼 횟수"
+      },
+      "laundry_out_time": {
+        "name": "세탁물 꺼내기 알림",
+        "state": {
+          "0": "끄기",
+          "30": "30분마다",
+          "60": "60분마다",
+          "90": "90분마다"
+        }
+      },
+      "sensing_mode": {
+        "name": "AI Purify 동작",
+        "state": {
+          "off": "감지만",
+          "airpurify": "자동 청소",
+          "alarm": "알림 받기"
+        }
+      },
+      "softener_concentration": {
+        "name": "섬유유연제 농축도",
+        "state": {
+          "01": "1배",
+          "02": "2배",
+          "03": "3배"
+        }
+      },
+      "softener_quantity": {
+        "name": "섬유유연제 투입량",
+        "state": {
+          "00": "없음",
+          "01": "적게",
+          "02": "보통",
+          "03": "많이"
+        }
+      },
+      "soil_level": {
+        "name": "오염도",
+        "state": {
+          "none": "설정 안 함",
+          "extra_light": "매우 약하게",
+          "light": "약하게",
+          "normal": "표준",
+          "heavy": "강하게",
+          "extra_heavy": "최대"
+        }
+      },
+      "sound_mode": {
+        "name": "소리 모드",
+        "state": {
+          "voice": "음성",
+          "tone": "알림음",
+          "mute": "음소거"
+        }
+      },
+      "energy_saving_mode": {
+        "name": "절전 모드"
+      },
+      "air_purifier_sound_mode": {
+        "name": "소리 모드",
+        "state": {
+          "mute": "음소거",
+          "buzzer": "부저"
+        }
+      },
+      "water_purifier_sound_mode": {
+        "name": "소리 모드",
+        "state": {
+          "voice": "음성",
+          "fixedtone": "고정 알림음",
+          "mute": "음소거"
+        }
+      },
+      "spin_speed": {
+        "name": "탈수 세기",
+        "state": {
+          "rinse_hold": "헹굼 후 대기",
+          "no_spin": "탈수 안 함",
+          "low": "약",
+          "medium": "중",
+          "high": "강",
+          "extra_low": "매우 낮음",
+          "extra_high": "매우 높음"
+        }
+      },
+      "wash_temperature": {
+        "name": "세탁 온도",
+        "state": {
+          "none": "설정 안 함",
+          "cold": "냉수",
+          "cool": "찬물",
+          "warm": "미온수",
+          "hot": "온수",
+          "extra_hot": "고온수",
+          "tap_cold": "수돗물 냉수"
+        }
+      },
+      "washer_cycle_table_00": {
+        "name": "코스",
+        "state": {
+          "01": "표준세탁",
+          "55": "흰옷",
+          "57": "통세척+",
+          "5b": "면",
+          "5c": "초고속세탁",
+          "5d": "초절약세탁",
+          "5e": "섬세의류",
+          "5f": "아기옷",
+          "60": "아웃도어",
+          "61": "검은색 의류",
+          "63": "무세제통세척",
+          "64": "헹굼+탈수",
+          "65": "울",
+          "66": "이불",
+          "67": "합성섬유",
+          "68": "에코 면",
+          "6b": "탈수단독",
+          "6c": "데님",
+          "70": "강력세탁",
+          "71": "이불",
+          "72": "살균",
+          "73": "헹굼+탈수",
+          "74": "운동복",
+          "75": "섬세의류",
+          "77": "구김방지",
+          "78": "쾌속세탁",
+          "ba": "배수/탈수",
+          "d0": "면",
+          "d1": "에코 면",
+          "d2": "합성섬유",
+          "d3": "섬세의류",
+          "d4": "헹굼+탈수",
+          "d5": "무세제통세척",
+          "d6": "이불",
+          "d7": "아웃도어케어",
+          "d8": "울",
+          "da": "초절약세탁",
+          "db": "쾌속세탁",
+          "dc": "15분 쾌속세탁",
+          "e4": "알레르기 케어"
+        }
+      },
+      "washer_cycle_table_02": {
+        "name": "코스",
+        "state": {
+          "01": "표준세탁",
+          "02": "초강력세탁",
+          "03": "초절약세탁",
+          "04": "쾌속세탁",
+          "05": "울/란제리",
+          "06": "이불",
+          "07": "아웃도어",
+          "08": "헹굼+탈수",
+          "09": "무세제통세척",
+          "0a": "타월",
+          "0b": "삶음세탁",
+          "0c": "아기옷",
+          "0d": "탈수단독",
+          "0e": "흐린날세탁",
+          "0f": "청정세탁",
+          "10": "건조탈수",
+          "11": "여름이불",
+          "12": "면의류",
+          "13": "검은면의류",
+          "14": "섬세속옷",
+          "15": "피트니스",
+          "16": "블라우스",
+          "17": "다운로드 코스",
+          "18": "소프트버블",
+          "19": "AI 맞춤세탁",
+          "1a": "셔츠",
+          "1b": "면",
+          "1c": "에코 40-60",
+          "1d": "쾌속세탁",
+          "1e": "15분 쾌속세탁",
+          "1f": "강력 냉수 세탁",
+          "20": "살균세탁",
+          "21": "컬러 의류",
+          "22": "울",
+          "23": "아웃도어",
+          "24": "이불",
+          "25": "합성섬유",
+          "26": "섬세의류",
+          "27": "헹굼+탈수",
+          "28": "배수/탈수",
+          "29": "무세제통세척+",
+          "2a": "청바지",
+          "2b": "AI 맞춤세탁",
+          "2d": "조용히 세탁",
+          "2e": "아기옷",
+          "2f": "피트니스",
+          "30": "흐린 날",
+          "32": "셔츠",
+          "33": "타월",
+          "34": "혼합",
+          "35": "에코 면",
+          "36": "세탁+건조",
+          "37": "에어워시",
+          "38": "면 건조",
+          "39": "합성섬유 건조",
+          "3a": "무세제통세척",
+          "51": "쾌속건조",
+          "52": "에코 냉수 세탁",
+          "53": "강력세탁",
+          "54": "타월",
+          "55": "피트니스",
+          "56": "이불",
+          "57": "섬세의류",
+          "5a": "스팀살균",
+          "5b": "소량 세탁",
+          "5e": "헹굼+탈수",
+          "60": "통세척+",
+          "64": "스팀 흰옷",
+          "65": "컬러 의류",
+          "66": "데님",
+          "69": "AI 맞춤세탁",
+          "6a": "울",
+          "6b": "데님",
+          "6c": "블라우스",
+          "6d": "섬세의류",
+          "6e": "운동복",
+          "6f": "이불",
+          "70": "타월",
+          "71": "쾌속세탁",
+          "72": "셔츠",
+          "73": "살균",
+          "74": "무세제통세척",
+          "75": "아웃도어",
+          "76": "아기옷",
+          "77": "면",
+          "78": "헹굼+탈수",
+          "79": "탈수만",
+          "7c": "흰옷",
+          "7d": "이불/방수 의류",
+          "7e": "통세척",
+          "7f": "울/섬세",
+          "85": "스팀 표준",
+          "86": "찌든 때 세탁",
+          "87": "다운로드",
+          "88": "펫케어",
+          "8b": "쾌속세탁",
+          "8c": "AI OptiWash",
+          "8f": "강력 냉수 세탁",
+          "96": "미세플라스틱저감",
+          "a0": "15분 쾌속세탁",
+          "b0": "혼합 세탁",
+          "58": "울",
+          "5c": "아웃도어",
+          "5d": "강력 헹굼",
+          "5f": "탈수만",
+          "63": "강력 스팀",
+          "67": "스팀 알레르기 케어",
+          "68": "스팀 이불"
+        }
+      },
+      "washer_dry_level": {
+        "name": "건조 단계",
+        "state": {
+          "30": "30분",
+          "60": "1시간",
+          "90": "1시간 30분",
+          "120": "2시간",
+          "180": "3시간",
+          "240": "4시간",
+          "none": "끄기",
+          "cupboard": "옷장 보관"
+        }
+      },
+      "zone_mode": {
+        "name": "구역 모드"
+      },
+      "watertank_light_color": {
+        "name": "물탱크 조명 색상",
+        "state": {
+          "warmwhite": "전구색",
+          "naturalwhite": "주백색",
+          "coolwhite": "주광색",
+          "green": "초록색",
+          "purple": "보라색",
+          "blue": "파란색",
+          "orange": "주황색",
+          "pink": "분홍색"
+        }
+      },
+      "watertank_light_brightness": {
+        "name": "물탱크 조명 밝기"
+      },
+      "air_filter_pm1_threshold": {
+        "name": "PM1 필터 알림 기준"
+      },
+      "freezer_temperature_setpoint": {
+        "name": "냉동실 온도"
+      },
+      "edge_lighting_mode": {
+        "name": "엣지 라이팅 모드",
+        "state": {
+          "smart": "스마트",
+          "high": "높음",
+          "low": "낮음"
+        }
+      },
+      "edge_lighting_color": {
+        "name": "엣지 라이팅 색상",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "indicator_light_mode": {
+        "name": "표시등 모드",
+        "state": {
+          "smart": "스마트",
+          "high": "높음",
+          "low": "낮음"
+        }
+      },
+      "ventilation_mode": {
+        "name": "모드",
+        "state": {
+          "purification": "청정",
+          "ventilation": "환기",
+          "smartventilation": "스마트환기",
+          "aicomfort": "AI 쾌적",
+          "autoventilation": "자동환기",
+          "freshairintake": "외기도입",
+          "indoorpurification": "실내청정",
+          "indoordehumidification": "실내제습"
+        }
+      },
+      "dry_time": {
+        "name": "건조 시간"
+      },
+      "booster_fan_mode": {
+        "name": "부스터 팬 모드",
+        "state": {
+          "off": "끄기",
+          "auto": "자동",
+          "high": "강",
+          "medium": "중"
+        }
+      },
+      "booster_light_color_temperature": {
+        "name": "부스터 조명 색온도",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "booster_light_brightness": {
+        "name": "부스터 조명 밝기",
+        "state": {
+          "smart": "스마트",
+          "high": "밝게",
+          "low": "어둡게"
+        }
+      },
+      "booster_oscillation_angle": {
+        "name": "부스터 회전 각도",
+        "state": {
+          "normal": "일반",
+          "circulation": "순환",
+          "right_narrow": "오른쪽 좁게",
+          "right_wide": "오른쪽 넓게",
+          "left_narrow": "왼쪽 좁게",
+          "left_wide": "왼쪽 넓게"
+        }
+      },
+      "ai_motion_wind": {
+        "name": "AI 모션 바람",
+        "state": {
+          "off": "끄기",
+          "surround": "서라운드",
+          "longreach": "원거리",
+          "down": "하향",
+          "power": "파워",
+          "windfree": "무풍",
+          "aidirect": "AI 직접풍",
+          "aiindirect": "AI 간접풍"
+        }
+      },
+      "wash_zone": {
+        "name": "세척 구역",
+        "state": {
+          "on_on": "상·하단 모두",
+          "off_on": "하단만",
+          "on_off": "상단만"
+        }
+      },
+      "lamp_level": {
+        "name": "램프 단계",
+        "state": {
+          "off": "꺼짐",
+          "low": "약",
+          "high": "강"
+        }
+      }
+    },
+    "sensor": {
+      "welcome_lighting_sense_level": {
+        "name": "웰컴 조명 감지 단계",
+        "state": {
+          "nearest": "가장 가까움",
+          "near": "가까움",
+          "middle": "중간",
+          "far": "멀리"
+        }
+      },
+      "auto_clean_progress": {
+        "name": "자동 청소 진행률"
+      },
+      "after_run_progress": {
+        "name": "후속 운전 진행률"
+      },
+      "air_filter_usage": {
+        "name": "필터 사용량"
+      },
+      "air_filter_usage_hours": {
+        "name": "필터 사용 시간"
+      },
+      "deodor_filter_usage": {
+        "name": "필터 사용량"
+      },
+      "air_quality_standard": {
+        "name": "공기질 기준"
+      },
+      "air_sensing_state": {
+        "name": "공기질 감지 상태"
+      },
+      "alarm_code": {
+        "name": "알람 코드"
+      },
+      "auto_ventilation_action": {
+        "name": "자동 환기 동작"
+      },
+      "automatic_ventilation_state": {
+        "name": "자동 환기 상태"
+      },
+      "battery": {
+        "name": "배터리"
+      },
+      "burner_state": {
+        "name": "{number}번 화구 상태"
+      },
+      "burner_power_level": {
+        "name": "{number}번 화구 화력 단계"
+      },
+      "clean_level": {
+        "name": "청정도"
+      },
+      "co2": {
+        "name": "이산화탄소"
+      },
+      "coffee_brew_status": {
+        "name": "커피 추출 상태"
+      },
+      "connection_mode": {
+        "name": "연결 모드",
+        "state": {
+          "observe": "푸시(OBSERVE)",
+          "poll": "폴링"
+        }
+      },
+      "cooktop_running_state": {
+        "name": "쿡탑 작동 상태"
+      },
+      "cooktop_state": {
+        "name": "쿡탑 상태"
+      },
+      "current_limit_level": {
+        "name": "전류 제한 단계"
+      },
+      "filter_time": {
+        "name": "필터 사용 시간"
+      },
+      "hepa_filter_usage": {
+        "name": "HEPA 필터 사용량"
+      },
+      "outdoor_temperature": {
+        "name": "실외 온도"
+      },
+      "odor_controller_progress": {
+        "name": "탈취 진행률"
+      },
+      "panel_status": {
+        "name": "패널 상태"
+      },
+      "sound_output": {
+        "name": "소리 출력"
+      },
+      "dustbag_usage": {
+        "name": "먼지봉투 사용량"
+      },
+      "cleanstation_status": {
+        "name": "청정스테이션 상태"
+      },
+      "stick_status": {
+        "name": "스틱 청소기 상태"
+      },
+      "stick_operation_mode": {
+        "name": "스틱 작동 모드"
+      },
+      "stick_cleaning_status": {
+        "name": "스틱 청소 상태"
+      },
+      "uvc_operation_time": {
+        "name": "UV-C 작동 시간"
+      },
+      "uvc_total_operation_time": {
+        "name": "UV-C 누적 작동 시간"
+      },
+      "uvc_finished_time": {
+        "name": "UV-C 완료 시각"
+      },
+      "uvc_emitted_time": {
+        "name": "UV-C 조사 시간"
+      },
+      "overload_protection_mode": {
+        "name": "과부하 보호 모드",
+        "state": {
+          "alarm": "경보",
+          "powersaving": "절전"
+        }
+      },
+      "absence_power_saving_mode": {
+        "name": "부재 절전 모드",
+        "state": {
+          "eco": "에코",
+          "normal": "일반",
+          "comfort": "쾌적"
+        }
+      },
+      "motion_detect_wind_mode": {
+        "name": "모션 감지 바람 모드",
+        "state": {
+          "direct": "직접풍",
+          "indirect": "간접풍"
+        }
+      },
+      "energy_saving_state": {
+        "name": "절전 상태"
+      },
+      "energy_saving_operating_status": {
+        "name": "절전 작동 상태"
+      },
+      "current_temp_c": {
+        "name": "온도"
+      },
+      "food_probe_temp": {
+        "name": "온도 프로브"
+      },
+      "food_probe_setpoint": {
+        "name": "온도 프로브 목표"
+      },
+      "current_temperature_c": {
+        "name": "온도"
+      },
+      "diagnosis": {
+        "name": "진단",
+        "state": {
+          "ready": "준비됨"
+        }
+      },
+      "diagnosis_status": {
+        "name": "진단 상태",
+        "state": {
+          "ready": "준비됨"
+        }
+      },
+      "drum_clean_cycles_remaining": {
+        "name": "통세척까지 남은 횟수"
+      },
+      "drum_clean_last_cleaned": {
+        "name": "마지막 통세척"
+      },
+      "quick_wash": {
+        "name": "빠른 세탁",
+        "state": {
+          "not_used": "사용 안 함",
+          "off": "끄기",
+          "on": "켜기"
+        }
+      },
+      "dryer_type": {
+        "name": "건조기 유형",
+        "state": {
+          "electricity": "전기",
+          "gas": "가스"
+        }
+      },
+      "dust": {
+        "name": "미세먼지"
+      },
+      "energy_kwh": {
+        "name": "에너지"
+      },
+      "usage_runtime_hours": {
+        "name": "운전 시간"
+      },
+      "energy_last_month_kwh": {
+        "name": "지난달 에너지"
+      },
+      "energy_saved_kwh": {
+        "name": "절감 에너지"
+      },
+      "energy_this_month_kwh": {
+        "name": "이번 달 에너지"
+      },
+      "fan_direction": {
+        "name": "바람 방향"
+      },
+      "fan_speed_level": {
+        "name": "바람 세기 단계"
+      },
+      "filter_clean_remain_time": {
+        "name": "필터 청소까지 남은 시간"
+      },
+      "filter_progress": {
+        "name": "필터 사용률"
+      },
+      "filter_usage": {
+        "name": "필터 사용량"
+      },
+      "fine_dust": {
+        "name": "초미세먼지"
+      },
+      "finish_time": {
+        "name": "예상 완료 시각"
+      },
+      "completion_minutes": {
+        "name": "완료까지 남은 시간"
+      },
+      "freezer_temperature": {
+        "name": "냉동실 온도"
+      },
+      "fridge_temperature": {
+        "name": "냉장실 온도"
+      },
+      "kimchi_ripening_status": {
+        "name": "{instance_name} 숙성 상태"
+      },
+      "kimchi_ripening_remaining": {
+        "name": "{instance_name} 숙성 남은 시간"
+      },
+      "kimchi_rack_count": {
+        "name": "{instance_name} 선반 수"
+      },
+      "hood_filter_capacity": {
+        "name": "후드 필터 용량"
+      },
+      "humidity": {
+        "name": "습도"
+      },
+      "hood_filter_usage": {
+        "name": "후드 필터 사용량"
+      },
+      "instance_temperature": {
+        "name": "{instance_name} 온도"
+      },
+      "job_beginning_status": {
+        "name": "작업 시작 상태"
+      },
+      "last_air_sensing_level": {
+        "name": "마지막 공기질 감지 단계"
+      },
+      "last_air_sensing_time": {
+        "name": "마지막 공기질 감지 시각"
+      },
+      "main_timer_current": {
+        "name": "타이머 현재 값"
+      },
+      "main_timer_state": {
+        "name": "타이머 상태"
+      },
+      "odor": {
+        "name": "냄새"
+      },
+      "operating_mode": {
+        "name": "운전 모드"
+      },
+      "operation_origin": {
+        "name": "마지막 작동 출처"
+      },
+      "operation_time_minutes": {
+        "name": "운전 시간"
+      },
+      "oven_state": {
+        "name": "조리실 상태"
+      },
+      "cavity_state": {
+        "name": "조리실 상태"
+      },
+      "power_level": {
+        "name": "출력 단계"
+      },
+      "paired_hood_fan_speed": {
+        "name": "연동 후드 풍량"
+      },
+      "paired_hood_firmware": {
+        "name": "연동 후드 펌웨어"
+      },
+      "paired_hood_model": {
+        "name": "연동 후드 모델"
+      },
+      "power_energy_kwh": {
+        "name": "소비 에너지"
+      },
+      "power_watts": {
+        "name": "소비 전력"
+      },
+      "probe_battery": {
+        "name": "탐침 온도계 배터리"
+      },
+      "probe_target_temperature": {
+        "name": "탐침 온도계 목표 온도"
+      },
+      "probe_temperature": {
+        "name": "탐침 온도계 현재 온도"
+      },
+      "progress": {
+        "name": "진행률",
+        "state": {
+          "idle": "대기",
+          "delaywash": "예약 시작",
+          "weightsensing": "세탁물 감지",
+          "wash": "세탁",
+          "rinse": "헹굼",
+          "spin": "탈수",
+          "finish": "완료",
+          "steaming": "스팀",
+          "airwashing": "에어워시",
+          "drying": "건조",
+          "dryingwithdooropen": "환기",
+          "cooling": "냉각",
+          "predrain": "사전 배수",
+          "prewash": "애벌빨래",
+          "sanitizing": "살균"
+        }
+      },
+      "progress_percentage": {
+        "name": "진행률"
+      },
+      "selfcheck_error": {
+        "name": "자가 점검 오류"
+      },
+      "selfcheck_result": {
+        "name": "자가 점검 결과"
+      },
+      "selfcheck_status": {
+        "name": "자가 점검 상태"
+      },
+      "sterilize_last_time": {
+        "name": "마지막 살균 시각"
+      },
+      "sterilize_period": {
+        "name": "살균 주기"
+      },
+      "sterilize_plan_time": {
+        "name": "살균 예약 시각"
+      },
+      "sterilize_run_time": {
+        "name": "살균 작동 시간"
+      },
+      "super_fine_dust": {
+        "name": "극초미세먼지"
+      },
+      "warming_center_state": {
+        "name": "보온 화구 상태"
+      },
+      "water_liters": {
+        "name": "물 사용량"
+      },
+      "waterpurifier_status": {
+        "name": "상태"
+      },
+      "cup_state": {
+        "name": "컵 상태"
+      },
+      "last_pour_type": {
+        "name": "마지막 출수 유형"
+      },
+      "last_pour_capacity": {
+        "name": "마지막 출수량"
+      },
+      "machine_state": {
+        "name": "기기 상태",
+        "state": {
+          "idle": "대기",
+          "active": "작동 중",
+          "pause": "일시 정지"
+        }
+      },
+      "filter_status": {
+        "name": "필터 상태",
+        "state": {
+          "normal": "정상",
+          "wash": "세척 필요",
+          "replace": "교체 필요"
+        }
+      },
+      "ice_making_status": {
+        "name": "{instance_name} 제빙 상태",
+        "state": {
+          "icestatus_stop": "대기",
+          "icestatus_run": "제빙 중"
+        }
+      },
+      "zone_temperature": {
+        "name": "구역 온도"
+      },
+      "zone2_temperature": {
+        "name": "구역 2 온도"
+      },
+      "watertank_full_alarm_status": {
+        "name": "물통 가득 참 알림 상태"
+      },
+      "air_filter_pm1_usage": {
+        "name": "PM1 필터 사용량"
+      },
+      "air_filter_pm1_usage_hours": {
+        "name": "PM1 필터 사용 시간"
+      },
+      "active_burners": {
+        "name": "작동 중인 버너"
+      },
+      "cooktop_monitoring": {
+        "name": "쿡탑 모니터링"
+      },
+      "booster_angle_location": {
+        "name": "부스터 각도 위치"
+      },
+      "cooking_mode": {
+        "name": "조리 모드",
+        "state": {
+          "no_operation": "작동 안 함",
+          "micro_wave": "전자레인지",
+          "autocook": "자동 조리",
+          "keep_warm": "보온"
+        }
+      },
+      "cook_time": {
+        "name": "조리 시간"
+      },
+      "cook_time_remaining": {
+        "name": "남은 조리 시간"
+      },
+      "cook_finish_time": {
+        "name": "조리 완료 시각"
+      },
+      "sub_operation": {
+        "name": "세부 동작"
+      },
+      "hood_fan_speed": {
+        "name": "팬 세기",
+        "state": {
+          "off": "꺼짐",
+          "low": "약",
+          "medium": "중",
+          "high": "강",
+          "boost": "터보"
+        }
+      },
+      "hood_lamp": {
+        "name": "램프",
+        "state": {
+          "off": "꺼짐",
+          "medium": "중",
+          "on": "켜짐"
+        }
+      },
+      "dual_setpoint_cooling": {
+        "name": "이중 설정 온도 냉방"
+      },
+      "dual_setpoint_heating": {
+        "name": "이중 설정 온도 난방"
+      },
+      "auto_changeover_cool_primary_offset": {
+        "name": "자동 전환 냉방 1차 편차"
+      },
+      "auto_changeover_cool_secondary_offset": {
+        "name": "자동 전환 냉방 2차 편차"
+      },
+      "auto_changeover_heat_primary_offset": {
+        "name": "자동 전환 난방 1차 편차"
+      },
+      "auto_changeover_heat_secondary_offset": {
+        "name": "자동 전환 난방 2차 편차"
+      }
+    },
+    "switch": {
+      "night_lighting_schedule": {
+        "name": "야간 조명 일정"
+      },
+      "ai_energy_level": {
+        "name": "AI 절약 모드"
+      },
+      "air_monitoring": {
+        "name": "공기질 모니터링"
+      },
+      "air_purify": {
+        "name": "공기 청정"
+      },
+      "auto_clean": {
+        "name": "자동 청소"
+      },
+      "absence_power_saving_active": {
+        "name": "부재 절전 작동"
+      },
+      "absence_clean": {
+        "name": "부재 청소"
+      },
+      "motion_detect_wind_active": {
+        "name": "모션 감지 바람 회피 작동"
+      },
+      "beep": {
+        "name": "비프음"
+      },
+      "display": {
+        "name": "디스플레이"
+      },
+      "periodic_air_sensing": {
+        "name": "AI Purify"
+      },
+      "periodic_sensing_skip_status": {
+        "name": "AI Purify 감지 건너뛰기"
+      },
+      "pet_filter_activation": {
+        "name": "펫 필터 작동"
+      },
+      "auto_empty": {
+        "name": "자동 먼지 비움"
+      },
+      "dustbin_auto_close": {
+        "name": "먼지통 자동 닫힘"
+      },
+      "spi": {
+        "name": "청정 이온"
+      },
+      "uvc_intensive_mode": {
+        "name": "UV-C 집중 모드"
+      },
+      "auto_door_opener": {
+        "name": "오토 오픈 도어"
+      },
+      "auto_door_sound_control": {
+        "name": "오토 오픈 도어 소리"
+      },
+      "auto_door_voice_control": {
+        "name": "오토 오픈 도어 음성 안내"
+      },
+      "auto_release_dry": {
+        "name": "자동 문 열림 건조"
+      },
+      "autofill": {
+        "name": "오토필 정수기"
+      },
+      "bubble_soak": {
+        "name": "버블 불림"
+      },
+      "buzz_lock": {
+        "name": "알림음 잠금"
+      },
+      "cabinet_light_dim": {
+        "name": "서서히 밝아짐"
+      },
+      "cabinet_light_switch": {
+        "name": "내부 조명"
+      },
+      "child_lock": {
+        "name": "어린이 보호 잠금"
+      },
+      "coldwater_lock": {
+        "name": "냉수 잠금"
+      },
+      "cooktop_child_lock": {
+        "name": "어린이 보호 잠금"
+      },
+      "defrost_delay": {
+        "name": "제상 지연"
+      },
+      "display_light": {
+        "name": "디스플레이 조명"
+      },
+      "dnd": {
+        "name": "방해 금지 모드"
+      },
+      "fast_preheat": {
+        "name": "빠른 예열"
+      },
+      "favorite_capacity_enabled": {
+        "name": "즐겨찾기 출수량 사용"
+      },
+      "favorite_coffee_enabled": {
+        "name": "즐겨찾기 커피"
+      },
+      "filter_remind": {
+        "name": "필터 알림"
+      },
+      "fridge_sound": {
+        "name": "소리"
+      },
+      "hotwater_lock": {
+        "name": "온수 잠금"
+      },
+      "ice_maker_enabled": {
+        "name": "제빙기"
+      },
+      "ice_night_mode": {
+        "name": "야간 제빙 저소음 모드"
+      },
+      "ai_precise_cooling": {
+        "name": "AI 정밀 냉각"
+      },
+      "instance_enabled": {
+        "name": "{instance_name} 사용"
+      },
+      "intensive": {
+        "name": "강력"
+      },
+      "add_wash_alarm": {
+        "name": "애드워시 알림"
+      },
+      "add_wash_alarm_rinse": {
+        "name": "애드워시 헹굼"
+      },
+      "add_wash_alarm_final_rinse": {
+        "name": "애드워시 마지막 헹굼"
+      },
+      "add_wash_alarm_spin": {
+        "name": "애드워시 탈수"
+      },
+      "lamp": {
+        "name": "램프"
+      },
+      "led_night_light": {
+        "name": "도어 LED 야간 조명"
+      },
+      "mute_once": {
+        "name": "한 번 음소거"
+      },
+      "natural_steam": {
+        "name": "내추럴 스팀"
+      },
+      "energy_saving": {
+        "name": "절전"
+      },
+      "cooktop_on_alert": {
+        "name": "쿡탑 켜짐 알림"
+      },
+      "power_switch": {
+        "name": "전원"
+      },
+      "pre_wash": {
+        "name": "예비 세탁"
+      },
+      "rapid_freezing": {
+        "name": "급속 냉동"
+      },
+      "rapid_fridge": {
+        "name": "급속 냉장"
+      },
+      "remind_beep": {
+        "name": "종료 알림음"
+      },
+      "sabbath_mode": {
+        "name": "사바스 모드"
+      },
+      "sanitize": {
+        "name": "살균"
+      },
+      "sound": {
+        "name": "소리"
+      },
+      "station_light": {
+        "name": "스테이션 조명"
+      },
+      "storm_wash": {
+        "name": "스톰 워시+"
+      },
+      "welcome_lighting": {
+        "name": "웰컴 라이팅"
+      },
+      "wrinkle_prevent": {
+        "name": "구김 방지"
+      },
+      "zone_power": {
+        "name": "구역 전원"
+      },
+      "away_mode": {
+        "name": "외출 모드"
+      },
+      "watertank_light": {
+        "name": "물통 조명"
+      },
+      "uv_led": {
+        "name": "자외선 LED"
+      },
+      "ventilation_alarm": {
+        "name": "환기 알림"
+      },
+      "edge_lighting": {
+        "name": "엣지 라이팅"
+      },
+      "indicator_light": {
+        "name": "표시등"
+      },
+      "windfree": {
+        "name": "무풍 모드"
+      },
+      "windsleep": {
+        "name": "취침 모드"
+      },
+      "auto_detergent": {
+        "name": "세제 자동 투입"
+      },
+      "auto_softener": {
+        "name": "섬유유연제 자동 투입"
+      },
+      "booster_light": {
+        "name": "부스터 조명"
+      },
+      "booster_light_manual_brightness": {
+        "name": "부스터 수동 밝기"
+      },
+      "booster_oscillation": {
+        "name": "부스터 회전"
+      },
+      "auto_changeover": {
+        "name": "자동 전환"
+      },
+      "interlock": {
+        "name": "연동"
+      },
+      "speed_booster": {
+        "name": "스피드 부스터"
+      },
+      "damp_alert": {
+        "name": "다림질 알림"
+      },
+      "extra_rinse": {
+        "name": "헹굼 추가"
+      }
+    },
+    "time": {
+      "delay_finish_at": {
+        "name": "종료 시각"
+      },
+      "dnd_end": {
+        "name": "방해 금지 종료"
+      },
+      "dnd_start": {
+        "name": "방해 금지 시작"
+      },
+      "led_night_end": {
+        "name": "도어 LED 야간 종료"
+      },
+      "led_night_start": {
+        "name": "도어 LED 야간 시작"
+      },
+      "ice_night_end": {
+        "name": "야간 제빙 저소음 모드 종료"
+      },
+      "ice_night_start": {
+        "name": "야간 제빙 저소음 모드 시작"
+      },
+      "night_end": {
+        "name": "야간 조명 종료"
+      },
+      "night_start": {
+        "name": "야간 조명 시작"
+      },
+      "sensing_skip_end": {
+        "name": "AI Purify 감지 건너뛰기 종료"
+      },
+      "sensing_skip_start": {
+        "name": "AI Purify 감지 건너뛰기 시작"
+      }
+    },
+    "water_heater": {
+      "dhw": {
+        "name": "온수"
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "삼성 가전제품 추가",
+        "description": "삼성 가전제품의 IP 주소를 입력하세요. LocalThings가 자체 서명 인증서로 자동으로 설정하며, 대부분의 가전제품은 그 외에 아무것도 필요하지 않습니다.",
+        "data": {
+          "host": "IP 주소"
+        },
+        "data_description": {
+          "host": "삼성 가전제품의 로컬 IP 주소입니다(예: 192.168.1.50)."
+        }
+      },
+      "user_reuse": {
+        "title": "삼성 가전제품 추가",
+        "description": "삼성 가전제품의 IP 주소를 입력하세요. 기존 LocalThings 가전제품의 CA 인증 정보를 다시 사용합니다.",
+        "data": {
+          "host": "IP 주소"
+        },
+        "data_description": {
+          "host": "삼성 가전제품의 로컬 IP 주소입니다(예: 192.168.1.50)."
+        }
+      },
+      "credential": {
+        "title": "인증서 거부됨",
+        "description": "{host}이(가) 자동 인증서를 거부했습니다. 일부 기기는 인증서 대신 사전 공유 키(PSK)를 사용합니다. LocalThings는 이 키를 직접 얻을 수 없으므로 이미 가지고 있는 키를 가져오세요. AC14K_M CA 인증서도 선택할 수 있지만, 자동 인증서를 거부한 기기가 이를 받아들였다는 보고는 아직 없습니다.\n\n사전 공유 키를 사용하는 기기는 아직 저희가 파악해 가는 중이라 문제가 생길 가능성이 높습니다. 계획, 지금까지 알아낸 내용, 의견을 남길 곳은 [이슈 #435]({issue_url})에 있습니다.",
+        "menu_options": {
+          "psk_owner": "소유자 사전 공유 키 가져오기",
+          "psk_peer": "피어 사전 공유 키 가져오기",
+          "fallback_ca": "AC14K_M CA 인증서 시도"
+        }
+      },
+      "credential_psk": {
+        "title": "이 기기는 사전 공유 키를 사용하는 것으로 보입니다",
+        "description": "{host}이(가) 자동 인증서를 거부했으며, 암호화되지 않은 보안 메타데이터에 따르면 대신 사전 공유 키(PSK)로 인증합니다. LocalThings는 이 키를 직접 얻을 수 없으므로 이미 가지고 있는 키를 가져오세요. AC14K_M CA 인증서도 선택할 수 있지만, 자동 인증서를 거부한 기기가 이를 받아들였다는 보고는 아직 없습니다.\n\n사전 공유 키를 사용하는 기기는 아직 저희가 파악해 가는 중이라 문제가 생길 가능성이 높습니다. 계획, 지금까지 알아낸 내용, 의견을 남길 곳은 [이슈 #435]({issue_url})에 있습니다.",
+        "menu_options": {
+          "psk_owner": "소유자 사전 공유 키 가져오기",
+          "psk_peer": "피어 사전 공유 키 가져오기",
+          "fallback_ca": "AC14K_M CA 인증서 시도"
+        }
+      },
+      "ca_rejected": {
+        "title": "인증서가 여전히 거부됨",
+        "description": "{host}이(가) 해당 CA로 서명한 인증서도 거부했습니다. 지금까지의 모든 보고와 같습니다. 자동 인증서를 거부한 기기 중 AC14K_M CA를 받아들인 기기는 없습니다. 사전 공유 키를 사용하는 기기일 수 있습니다. 정확한 경고는 Home Assistant 로그에 기록됩니다.\n\n사전 공유 키를 사용하는 기기는 아직 저희가 파악해 가는 중이라 문제가 생길 가능성이 높습니다. 계획, 지금까지 알아낸 내용, 의견을 남길 곳은 [이슈 #435]({issue_url})에 있습니다.",
+        "menu_options": {
+          "psk_owner": "소유자 사전 공유 키 가져오기",
+          "psk_peer": "피어 사전 공유 키 가져오기",
+          "fallback_ca": "CA 다시 입력"
+        }
+      },
+      "fallback_ca": {
+        "title": "AC14K_M CA 인증서",
+        "description": "AC14K_M CA 인증서와 개인 키를 붙여 넣으세요. LocalThings가 이를 사용해 {host}의 기기 인증서에 서명합니다.",
+        "data": {
+          "ca_cert_pem": "CA 인증서(PEM)",
+          "ca_key_pem": "CA 개인 키(PEM)"
+        },
+        "data_description": {
+          "ca_cert_pem": "PEM으로 인코딩된 AC14K_M CA 인증서 체인입니다. 모든 BEGIN/END CERTIFICATE 블록을 포함한 전체 인증서 체인 PEM 내용을 붙여 넣으세요.",
+          "ca_key_pem": "PEM으로 인코딩된 AC14K_M 개인 키입니다. BEGIN/END PRIVATE KEY 머리글과 바닥글을 포함한 전체 내용을 붙여 넣으세요."
+        }
+      },
+      "psk_owner": {
+        "title": "소유자 사전 공유 키",
+        "description": "{host}의 소유자 사전 공유 키를 입력하세요. ID는 OCF 소유자 UUID이며, 기기가 알려 주면 미리 채워집니다. LocalThings는 추가하기 전에 기기에서 키를 확인하고 어느 기기가 응답했는지 기록합니다.\n\n사전 공유 키를 사용하는 기기는 아직 저희가 파악해 가는 중이라 문제가 생길 가능성이 높습니다. 계획, 지금까지 알아낸 내용, 의견을 남길 곳은 [이슈 #435]({issue_url})에 있습니다.",
+        "data": {
+          "psk_identity": "ID (소유자 UUID)",
+          "psk_key": "키"
+        },
+        "data_description": {
+          "psk_key": "16진수 32자 또는 64자."
+        }
+      },
+      "psk_peer": {
+        "title": "피어 사전 공유 키",
+        "description": "삼성의 소유권과 함께 {host}에 설치된 페어와이즈 피어 자격 증명을, 설치한 도구가 알려 준 그대로 입력하세요. ID와 키 모두 기기에서 읽어 올 수 없습니다. LocalThings는 추가하기 전에 기기에서 키를 확인하고 어느 기기가 응답했는지 기록합니다.\n\n사전 공유 키를 사용하는 기기는 아직 저희가 파악해 가는 중이라 문제가 생길 가능성이 높습니다. 계획, 지금까지 알아낸 내용, 의견을 남길 곳은 [이슈 #435]({issue_url})에 있습니다.",
+        "data": {
+          "psk_identity": "ID (피어 UUID)",
+          "psk_key": "키"
+        },
+        "data_description": {
+          "psk_key": "16진수 32자 또는 64자."
+        }
+      },
+      "reconfigure": {
+        "title": "가전제품 주소 변경",
+        "description": "가전제품의 현재 IP 주소를 입력하세요. 이 기기의 나머지 설정은 그대로 유지되며 엔티티, 기록, 자동화도 보존됩니다.",
+        "data": {
+          "host": "IP 주소"
+        },
+        "data_description": {
+          "host": "삼성 가전제품의 로컬 IP 주소입니다(예: 192.168.1.50)."
+        }
+      },
+      "confirm_unknown_type": {
+        "title": "가전제품 유형을 인식할 수 없음",
+        "description": "이 가전제품이 보고한 모델은 \"{model}\"이며, 아직 LocalThings에서 인식하는 유형이 아닙니다. 그래도 추가할 수 있지만, 해당 제품군의 전체 기능 대신 공통 기능(전원, 알림 등 기기에서 제공하는 기능)만 사용할 수 있습니다. 나중에 이 기기의 진단 정보를 다운로드(설정 > 기기 및 서비스 > 이 기기 > 메뉴 > 진단 정보 다운로드)하여 새 이슈에 첨부하면 전체 기능 지원을 추가하는 데 도움을 줄 수 있습니다. 그래도 추가하려면 제출을 선택하세요."
+      },
+      "legacy_token": {
+        "title": "기기 토큰",
+        "description": "이 가전({host})은 삼성의 구형 로컬 API를 사용하며, 인증서 외에 기기 토큰도 필요합니다.\n\n비워 둔 채로 제출하면 가전이 직접 토큰을 발급합니다. 토큰을 요청하면 가전이 8889 포트로 Home Assistant에 다시 보냅니다. 먼저 문을 닫은 상태에서 가전의 원격 제어(스마트 컨트롤)를 켜십시오. 그렇지 않으면 몇 분 안에 Wi-Fi에서 사라지고 응답하지 않습니다. 최대 1분 30초 정도 걸립니다.\n\n가전이 8889 포트로 Home Assistant에 연결할 수 없으면 다른 방법으로 토큰을 구해 여기에 붙여넣으십시오.",
+        "data": {
+          "device_token": "기기 토큰 (비워 두면 요청)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "기기 토큰이 거부됨",
+        "description": "{host}이(가) 더 이상 기기 토큰을 받아들이지 않습니다. 이 칸을 비워 두고 제출하면 가전제품이 새 토큰을 발급합니다(원격 제어 켜짐, 문 닫힘, Home Assistant의 포트 8889에 연결 가능해야 함). 다른 방법으로 얻은 토큰을 붙여 넣을 수도 있습니다.",
+        "data": {
+          "device_token": "기기 토큰 (비워 두면 새로 요청)"
+        }
+      }
+    },
+    "error": {
+      "no_response": "해당 IP 주소에서 응답이 없습니다. 가전제품의 로컬 API 포트 범위(UDP 49152-49160)에 있는 어떤 포트에서도 응답하지 않았습니다. IP 주소가 올바른지, 가전제품의 전원이 켜져 있고 Home Assistant와 같은 네트워크에 연결되어 있는지, 방화벽이 가전제품으로 향하는 UDP 트래픽을 차단하고 있지 않은지 확인하세요.",
+      "ports_closed": "해당 IP 주소에는 연결할 수 있지만, 로컬 API 포트 범위(UDP 49152-49160)의 모든 포트가 연결을 거부했고 검색 채널에서도 응답이 전혀 없었습니다. 삼성 가전제품이 아니거나, 로컬 API가 활성화되지 않은 기기일 가능성이 큽니다.",
+      "no_dtls_server": "해당 주소의 로컬 API 포트 범위에는 연결할 수 있지만, DTLS 핸드셰이크에 응답하는 서버가 없습니다. IP 주소가 네트워크의 다른 기기가 아닌 해당 가전제품의 주소인지 확인하세요.",
+      "appliance_no_dtls": "해당 주소는 삼성 가전제품입니다. 암호화되지 않은 검색 채널을 통해 모델을 \"{model}\"(으)로 알리고 보안 포트를 {port}(으)로 알렸지만, 해당 포트에서 DTLS 핸드셰이크를 완료하지 못했습니다. 주소 자체는 문제가 아닙니다. 가전제품 조작부에서 스마트 컨트롤 등의 설정이 꺼져 있지 않은지 확인하고, 정확한 실패 원인은 Home Assistant 로그에서 확인하세요.",
+      "non_appliance_stack": "해당 IP 주소에서 응답이 있었지만 가전제품이 아닌 OCF 서비스로 확인되었습니다. 일부 삼성 가전제품은 자체 서비스 외에 이런 서비스를 함께 실행하며, LocalThings는 Home Assistant가 같은 네트워크 세그먼트에 있을 때만 그 뒤의 가전제품을 찾을 수 있습니다. Home Assistant와 가전제품을 같은 서브넷과 VLAN에 둔 뒤 다시 시도하세요.",
+      "multiple_appliances": "해당 IP 주소에서 둘 이상의 삼성 가전제품이 응답하며, LocalThings는 아직 그중 하나를 선택할 수 없습니다. LocalThings 이슈 트래커에 Home Assistant 로그와 함께 알려 주세요.",
+      "handshake_timeout": "가전제품이 로컬 API 포트에서 응답했지만 재시도 후에도 DTLS 핸드셰이크를 완료하지 않았습니다. 다시 시도하세요. 계속 실패하면 가전제품을 다시 시작하면 아직 유지 중인 연결이 정리됩니다. 정확한 오류는 Home Assistant 로그에서 확인할 수 있습니다.",
+      "cert_rejected": "가전제품이 인증서를 거부했습니다. CA 인증서와 키가 이 가전제품에서 신뢰하는 AC14K_M CA의 것이 아니거나 서로 일치하지 않을 가능성이 큽니다. 가전제품이 보낸 정확한 경고는 Home Assistant 로그에 기록됩니다.",
+      "psk_rejected": "기기가 사전 공유 키를 거부했습니다. ID나 키가 잘못되었거나, 다른 기기 또는 이후 바뀐 소유자의 것입니다. 정확한 경고는 Home Assistant 로그에 기록됩니다.",
+      "identity_unproven": "키는 작동했지만 기기가 암호화된 연결로 OCF 기기 ID를 알려 주지 않아, LocalThings가 어느 기기가 키를 가지고 있는지 확인할 수 없으므로 추가하지 않습니다. 기기가 깨어 있을 때 다시 시도하세요. 계속 발생하면 Home Assistant 로그와 함께 [이슈 #435]({issue_url})에 알려 주세요.",
+      "invalid_psk_identity": "ID를 UUID 형식으로 입력하세요. 예: 12345678-1234-1234-1234-123456789abc",
+      "psk_identity_zero_byte": "이 UUID에는 설치된 전송 계층이 보낼 수 없는 0 바이트가 들어 있습니다. 복구한 ID를 변경하지 마세요.",
+      "invalid_psk_key": "키를 16진수 32자 또는 64자로 입력하세요.",
+      "handshake_failed": "인증서와 관련 없는 이유로 가전제품이 DTLS 핸드셰이크를 거부했습니다. 프로토콜이나 암호화 방식이 일치하지 않을 가능성이 큽니다. 가전제품이 보낸 정확한 경고는 Home Assistant 로그에 기록됩니다.",
+      "cloud_unreachable": "이 기기의 인증서 발급에 필요한 UUID를 가져오기 위해 삼성 클라우드 게이트웨이에 연결할 수 없습니다. Home Assistant의 인터넷 연결을 확인한 후 다시 시도하세요.",
+      "unexpected_response": "기기에 연결했지만 사용할 수 있는 기기 설명을 반환하지 않았습니다. 이 통합 구성요소에서 지원하는 가전제품이 아닐 수 있습니다. 기기가 보낸 내용은 Home Assistant 로그에 기록됩니다.",
+      "cannot_connect": "기기에 연결할 수 없습니다. IP 주소가 올바른지, 그리고 가전제품이 켜져 있고 네트워크에 연결되어 있는지 확인하세요.",
+      "invalid_ca": "CA 인증서 또는 개인 키를 불러올 수 없습니다. PEM 내용이 올바르고 키가 인증서와 일치하는지 확인하세요.",
+      "unknown": "예기치 않은 오류가 발생했습니다. 자세한 내용은 Home Assistant 로그에서 확인하세요.",
+      "wrong_device": "해당 주소에서 삼성 가전제품이 응답했지만 이 기기가 아닙니다. 다른 신원을 보고했습니다. 주소가 이 가전제품의 것인지 확인하세요. 다른 기기를 추가하려면 기기 추가를 사용하세요.",
+      "token_not_received": "기기 토큰이 도착하지 않았습니다. 문을 닫은 상태에서 가전의 원격 제어가 켜져 있는지, 그리고 8889 포트로 Home Assistant에 연결할 수 있는지 확인하거나, 다른 방법으로 얻은 토큰을 붙여넣으십시오.",
+      "invalid_token": "가전제품이 해당 기기 토큰을 거부했습니다. 새 토큰을 요청하려면 칸을 비워 두세요.",
+      "callback_port_in_use": "Home Assistant의 포트 8889가 이미 사용 중입니다. 보통 아직 대기 중인 토큰 요청 때문입니다. 1분 30초 후에 다시 시도하세요.",
+      "callback_cert_rejected": "가전이 포트 8889로 콜백했지만 Home Assistant의 자체 서명 인증서를 거부했습니다. LocalThings가 기기가 받아들일 인증서에 서명할 수 있도록 AC14K_M CA 인증서와 키를 붙여 넣으세요. 그러면 토큰 요청이 다시 실행됩니다.",
+      "callback_ca_rejected": "가전이 포트 8889로 콜백했지만 AC14K_M으로 서명된 인증서도 거부했습니다. 다른 방법으로 얻은 토큰을 붙여 넣고, 핸드셰이크 오류는 Home Assistant 로그에서 확인하세요."
+    },
+    "abort": {
+      "already_configured": "기기가 이미 구성되어 있습니다",
+      "already_in_progress": "구성이 이미 진행 중입니다",
+      "reconfigure_successful": "주소가 업데이트되었습니다",
+      "no_entry_for_mac": "해당 MAC 주소를 저장한 가전제품이 없습니다",
+      "reauth_successful": "새 기기 토큰이 작동합니다. 가전제품이 다시 연결 중입니다.",
+      "reauth_unsupported": "이 가전제품에는 여기서 갱신할 자격 증명이 없습니다. 응답하지 않으면 제거한 뒤 다시 추가하세요."
+    },
+    "progress": {
+      "legacy_token": "{host}이(가) 포트 8889로 Home Assistant에 기기 토큰을 보내기를 기다리는 중입니다. 최대 1분 30초가 걸립니다."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "LocalThings 옵션",
+        "menu_options": {
+          "settings": "기기 설정",
+          "cloud_courses": "다운로드 코스",
+          "forget_learned_modes": "기억된 모드 지우기",
+          "debug_write": "디버그: 리소스에 쓰기"
+        }
+      },
+      "settings": {
+        "title": "기기 설정",
+        "description": "일부 기기는 스마트 컨트롤이 꺼져 있다고 보고하는 동안에도 특정 쓰기 요청(예: 세탁기의 기본 세제/섬유유연제 투입량)을 받아들입니다. 기본적으로 LocalThings는 기기가 스마트 컨트롤 꺼짐을 보고하면 기기가 쓰기 요청을 조용히 거부하도록 두지 않고, 명확한 오류와 함께 모든 쓰기를 차단합니다. 스마트 컨트롤이 꺼진 상태에서도 이 기기에 쓰기가 실제로 동작하는 것을 확인한 경우에만 이 옵션을 활성화하세요. 그렇지 않으면 명확한 오류 대신 아무 표시 없이 쓰기에 실패할 수 있습니다.\n\n예상 완료 시각은 기기가 보고하는 남은 시간 추정치를 사용하여 상태를 확인할 때마다 다시 계산합니다. 이 추정치는 업데이트 사이에 1~2분 정도 변하거나 수정될 수 있습니다. 아래의 최소 변경량을 늘리면 추정치가 설정한 시간(분) 이상 변할 때까지 센서가 마지막으로 보고된 값을 유지하므로 기록과 로그북에 불필요한 항목이 쌓이는 것을 줄일 수 있습니다. 계산된 모든 변경 사항을 보고하려면 0으로 설정하세요.\n\n일부 모델은 지원 목록에 없는 모드를 현재 모드로 보고합니다. 예를 들어 Off/Sleep/Speed만 제공하면서 Quiet 모드로 동작 중이라고 보고하는 에어컨이 그렇습니다. LocalThings는 이렇게 발견한 모드를 기억해 두고 계속 제공하므로, 기기가 한 번이라도 그 모드였다면 이후에도 선택할 수 있습니다. 이 옵션을 끄면 기기가 지원한다고 알린 모드만 제공합니다. 이미 기억된 항목을 지우려면 이전 화면의 '기억된 모드 지우기'를 사용하세요. 클라우드에서 다운로드한 코스가 있는 세탁기는 Home Assistant가 아직 제공할 수 없는 코스를 보고하는 즉시 여기에서 알림을 받습니다. 일부 기기는 SmartThings 앱의 \"다운로드 코스\" 화면을 직접 연 적이 없어도 이런 코스를 보고합니다. 이 옵션을 끄면 이 알림이 멈추고 이미 이름을 지정한 다운로드 코스도 코스 목록에서 숨겨집니다. 이미 설정한 내용은 사라지지 않으며, 다시 켜면 즉시 원래대로 돌아옵니다.",
+        "data": {
+          "bypass_remote_control_lock": "스마트 컨트롤이 꺼진 것으로 보고되어도 쓰기 허용",
+          "finish_time_hysteresis_minutes": "예상 완료 시각 - 최소 변경량(분)",
+          "learn_device_modes": "기기가 보고하지만 지원 목록에 없는 모드 기억하기",
+          "cloud_courses_enabled": "다운로드 코스 제공"
+        }
+      },
+      "forget_learned_modes": {
+        "title": "기억된 모드 지우기",
+        "description": "현재 기억된 항목: {codes}\n\n이 기기가 지원 목록에 넣지 않은 채 자신의 현재 모드로 보고했던 모드들이며, 계속 선택할 수 있도록 보관되어 있습니다. 잘못된 항목이 기억되었다면 지우면 됩니다. 다만 기기가 실제로 다시 보고하면 다시 기억되므로, 그러길 원하지 않는다면 기기 설정에서 '기기가 보고하지만 지원 목록에 없는 모드 기억하기'도 함께 꺼 주세요."
+      },
+      "debug_write": {
+        "title": "디버그: 리소스에 쓰기",
+        "description": "기기별 쓰기 동작을 파악하기 위한 고급 사용자용 도구입니다. 쓰려는 리소스(href)를 선택하거나 목록에 없는 값을 직접 입력하세요. 이 기능은 스마트 컨트롤 꺼짐 차단을 우회하고 입력한 필드를 그대로 전송합니다. 가전제품이 잘못 설정될 수 있으므로 신중하게 사용하세요.",
+        "data": {
+          "href": "리소스 href"
+        }
+      },
+      "debug_edit": {
+        "title": "디버그 쓰기: {href}",
+        "description": "`{href}`의 현재 값:\n```\n{current_value}\n```\n아래에는 변경하려는 필드만 입력하세요. 입력한 내용은 부분 업데이트로 기기에 그대로 전송되며, 위에 표시된 필드와 병합되지 않으므로 전체 값을 다시 붙여 넣지 마세요. 자료형에 주의하세요. \"1\"과 같은 숫자 문자열은 반드시 따옴표로 감싸야 합니다. 따옴표가 없는 1은 정수로 전송되며 일부 기기에서 거부할 수 있습니다.",
+        "data": {
+          "payload": "쓰기 페이로드"
+        }
+      },
+      "debug_result": {
+        "title": "디버그 쓰기 결과",
+        "description": "기기가 반환한 CoAP 코드는 {code}입니다. 2.xx 계열은 쓰기 요청이 수락되었음을, 4.xx/5.xx 계열은 거부되었음을 뜻합니다. 현재 리소스 값은 다음과 같습니다.\n```\n{new_value}\n```\n값이 변경되지 않았다면 기기가 쓰기 요청을 무시했을 가능성이 큽니다. 다음 작업을 선택하세요.",
+        "menu_options": {
+          "debug_write": "다른 리소스에 쓰기",
+          "finish": "완료"
+        }
+      },
+      "cloud_manual": {
+        "title": "다운로드 코스",
+        "description": "이 기기는 다운로드한 코스를 {total}개 보고하며, 지금까지 {found}개를 확인했습니다.\n\n다운로드한 코스의 설정은 해당 코스가 로드되어 있는 동안에만 확인할 수 있고, 기기는 그 이름을 전달하지 않습니다. 누락된 항목({pending}개)을 추가하려면 기기가 아닌 SmartThings 앱에서 이 기기를 열고 \"다운로드 코스\"를 탭하세요. 이는 화면 아래쪽에 있는 \"코스\"와는 별도의 항목이며, 여기서 중요한 것은 이 항목입니다. 그런 다음 다운로드된 프로그램을 하나씩 차례로 실행하면서 LocalThings가 인식할 수 있도록 몇 초씩 머무른 뒤 이 화면으로 돌아오세요.\n\n각 코스에 Home Assistant에서 보고 싶은 이름을 입력하세요. 이름을 비워 두면 해당 코스는 코스 목록에서 제외됩니다. 이름은 서로 달라야 합니다.\n\n다운로드 코스는 이 기기에서 다운로드된 프로그램을 실행하는 코스입니다. 자동으로 감지되지만 사용하기 전에 여기서 확인하세요. 다운로드한 코스를 선택하면 이 코스 코드가 기기에 기록됩니다.",
+        "data": {
+          "download_course": "다운로드 코스 코드"
+        }
+      },
+      "cloud_courses": {
+        "title": "다운로드 코스",
+        "description": "안내 설정은 다음과 같이 진행됩니다. 기기가 아닌 SmartThings 앱에서 이 기기를 열고 \"다운로드 코스\"를 탭하세요. 이는 화면 아래쪽에 있는 \"코스\"와는 별도의 항목이며, 여기서 중요한 것은 이 항목입니다. 그곳에서 코스를 선택한 다음 돌아와서, 코스가 확인될 때마다 하나씩 이름을 지정하세요.\n\n이름 편집은 지금까지 찾은 모든 코스를 한 번에 보여줍니다. 나중에 이름을 바꾸거나 수정할 때 사용하세요. 이름 지정은 어느 경우든 가능하지만, 이름을 지정한 코스는 기기 설정에서 \"다운로드 코스 제공\"이 켜져 있을 때만 선택 가능한 코스로 제공됩니다.",
+        "menu_options": {
+          "cloud_guided": "안내 설정",
+          "cloud_manual": "이름 편집"
+        }
+      },
+      "cloud_wait": {
+        "title": "다운로드 코스"
+      },
+      "cloud_name": {
+        "title": "이 코스 이름 지정",
+        "description": "기기의 \"다운로드 코스\" 슬롯에 이제 새 코스(슬롯 {slot})가 들어 있으며 {remaining} 남았다고 표시됩니다.\n\nHome Assistant에서 보고 싶은 이름을 입력한 다음, SmartThings 앱의 \"다운로드 코스\" 화면에서 아직 \"다운로드됨\"으로 표시되지 않은 다음 코스를 선택하세요. 비워 두면 이 코스는 목록에서 제외됩니다.\n\n지금까지 이름 지정됨 ({named}/{total}개): {named_list}\n\n이름은 서로 달라야 합니다. 이 창은 언제든지 닫을 수 있습니다. 이름은 진행하는 대로 저장됩니다.",
+        "data": {
+          "name": "이름",
+          "download_course": "다운로드 코스 코드"
+        }
+      },
+      "cloud_timeout": {
+        "title": "선택된 코스 없음",
+        "description": "기기에서 변경된 내용이 없습니다. SmartThings 앱에서 \"다운로드 코스\"(화면 아래쪽에 있는 \"코스\"와는 별도의 항목)를 탭하고, 아직 \"다운로드됨\"으로 표시되지 않은 코스를 선택한 다음 완료를 탭했는지 확인하세요.\n\n지금까지 이름 지정됨 ({named}/{total}개): {named_list}\n\n지금까지 이름을 지정한 항목은 이미 저장되었습니다.",
+        "menu_options": {
+          "cloud_guided": "다시 대기",
+          "cloud_finish": "완료"
+        }
+      }
+    },
+    "error": {
+      "empty_payload": "쓸 필드를 하나 이상 입력하세요.",
+      "write_failed": "쓰기에 실패했습니다. 자세한 내용은 Home Assistant 로그에서 확인하세요.",
+      "cloud_course_name_duplicate": "두 코스의 이름이 같습니다. 이름은 서로 달라야 합니다.",
+      "cloud_course_unknown_course": "이 기기가 제공하지 않는 코스입니다. 목록에서 선택하세요."
+    },
+    "abort": {
+      "not_loaded": "이 기기는 아직 연결되지 않았습니다. 기기를 불러온 후 다시 시도하세요."
+    },
+    "progress": {
+      "cloud_wait": "기기가 아닌 SmartThings 앱에서 이 기기를 열고 \"다운로드 코스\"를 탭하세요. 이는 화면 아래쪽에 있는 \"코스\"와는 별도의 항목이며, 이 방식으로 인식할 수 있는 코스만 나열됩니다. 아직 \"다운로드됨\"으로 표시되지 않은 코스를 선택한 다음 완료를 탭하세요.\n\n기기가 근처에 있거나 코스를 실행 중일 필요는 없습니다. 전원이 켜져 있고 연결되어 있기만 하면 됩니다.\n\n지금까지 이름 지정됨 ({named}/{total}개): {named_list}\n\n이 창은 언제든지 닫을 수 있습니다. 이름은 진행하는 대로 저장됩니다."
+    }
+  },
+  "issues": {
+    "device_gap": {
+      "title": "{device_name}의 기능 지원이 완전하지 않음",
+      "description": "이 기기의 일부 기능이 아직 완전히 지원되지 않습니다. 가전제품 유형이 인식되지 않았거나, 기기가 제공하는 일부 리소스가 아직 구현되지 않았습니다. 현재 지원되는 기능은 계속 사용할 수 있습니다. 설정 > 기기 및 서비스 > {device_name} > 오른쪽 위 메뉴 > 진단 정보 다운로드로 이동하여 진단 정보를 내려받은 뒤, 연결된 이슈 양식에 첨부하면 지원 범위를 넓히는 데 도움을 줄 수 있습니다."
+    },
+    "cloud_courses_undiscovered": {
+      "title": "{device_name}의 다운로드 코스가 설정되지 않음",
+      "description": "{device_name}에는 Home Assistant가 아직 제공할 수 없는 다운로드한 코스가 {total}개 중 {pending}개 있습니다. 다운로드한 코스는 SmartThings 앱의 \"다운로드 코스\" 화면(\"코스\" 화면이 아님)에서 기기가 해당 코스로 로드된 상태로 확인되고 이름을 지정한 후에만 사용할 수 있습니다.\n\n설정하려면 설정 > 기기 및 서비스 > LocalThings > {device_name} > 구성 > 다운로드 코스로 이동하여 안내를 따르세요.\n\n다운로드 코스를 사용하지 않나요? 대신 구성 > 기기 설정으로 이동하여 \"다운로드 코스 제공\"을 꺼서 이 알림을 완전히 중지하세요."
+    }
+  },
+  "exceptions": {
+    "remote_control_disabled": {
+      "message": "이 기기의 스마트 컨트롤이 꺼져 있습니다. Home Assistant에서 기기를 제어하려면 가전제품 설명서에서 스마트 컨트롤을 활성화하는 방법을 확인하세요."
+    },
+    "oven_mode_idle_not_selectable": {
+      "message": "NoOperation은 오븐이 대기 중일 때 보고하는 상태입니다. 모드로 선택할 수 없으며, 대신 오븐 조작부에서 조리를 취소하세요."
+    },
+    "debug_payload_empty": {
+      "message": "디버그 쓰기 페이로드는 비어 있지 않은 객체여야 합니다."
+    },
+    "debug_batch_too_many_elements": {
+      "message": "배치 페이로드는 1~{max}개의 요소여야 합니다."
+    },
+    "debug_batch_element_invalid": {
+      "message": "각 배치 요소는 href를 가진 객체여야 하며, rep이 있다면 객체여야 합니다."
+    },
+    "resource_href_required": {
+      "message": "리소스 href가 필요합니다."
+    },
+    "bubble_soak_unavailable_for_cycle": {
+      "message": "선택한 코스에서는 버블 불림을 사용할 수 없습니다."
+    },
+    "pre_wash_unavailable_for_cycle": {
+      "message": "선택한 코스에서는 예비 세탁을 사용할 수 없습니다."
+    },
+    "intensive_unavailable_for_cycle": {
+      "message": "선택한 코스에서는 강력 세탁을 사용할 수 없습니다."
+    },
+    "command_failed": {
+      "message": "재연결 후에도 {href} 명령이 실패했습니다: {error}"
+    },
+    "command_refused": {
+      "message": "가전제품이 {href} 명령을 거부했습니다: {error}"
+    },
+    "command_not_confirmed": {
+      "message": "스마트 컨트롤이 꺼진 상태에서 {href} 명령을 보냈지만 가전제품에 아직 반영되지 않았습니다. 반응이 없으면 가전제품에서 스마트 컨트롤을 켜세요."
+    },
+    "debug_read_failed": {
+      "message": "{href}에서 읽기가 실패했습니다: {error}"
+    },
+    "observe_duration_out_of_range": {
+      "message": "기간은 0보다 크고 최대 {max}초여야 합니다."
+    },
+    "observe_not_supported": {
+      "message": "이 기기의 인터페이스는 리소스 관찰을 지원하지 않습니다."
+    },
+    "observe_query_while_observed": {
+      "message": "{href}은(는) 이 통합에서 이미 관찰 중이므로 쿼리로 다시 관찰할 수 없습니다."
+    },
+    "observe_in_progress": {
+      "message": "다른 호출이 이미 {href}을(를) 관찰하고 있습니다. 끝날 때까지 기다려 주세요."
+    },
+    "debug_observe_failed": {
+      "message": "{href} 관찰에 실패했습니다: {error}"
+    },
+    "debug_too_many_writes": {
+      "message": "1~10개의 쓰기를 지정하세요."
+    },
+    "debug_settle_out_of_range": {
+      "message": "settle 값은 0에서 30초 사이여야 합니다."
+    },
+    "debug_verify_after_out_of_range": {
+      "message": "verify_after 값은 0에서 60초 사이여야 합니다."
+    },
+    "service_device_target_invalid": {
+      "message": "이 서비스는 정확히 하나의 대상 기기가 필요합니다."
+    },
+    "service_device_not_found": {
+      "message": "해당 대상에 일치하는 기기를 찾을 수 없습니다."
+    },
+    "service_device_not_loaded": {
+      "message": "이 기기는 아직 연결되지 않았습니다. 로드된 후 다시 시도하세요."
+    },
+    "cook_start_not_supported": {
+      "message": "이 기기는 원격으로 시작할 수 있는 조리 모드를 알려주지 않으므로 Home Assistant에서 시작할 수 없습니다."
+    },
+    "cook_start_not_idle": {
+      "message": "기기가 이미 조리 중입니다. 먼저 중지하거나, 조리 중에 온도와 조리 시간을 변경하세요."
+    },
+    "cook_mode_required": {
+      "message": "먼저 조리 모드를 선택하세요. 이 기기는 다음 모드로 시작할 수 있습니다: {startable}."
+    },
+    "cook_mode_not_startable": {
+      "message": "이 기기에서는 {mode} 모드를 원격으로 시작할 수 없습니다. 시작 가능한 모드: {startable}."
+    },
+    "cook_mode_unavailable": {
+      "message": "{mode} 모드는 지금 이 조리실에서 사용할 수 없습니다. 시작 가능한 모드: {startable}."
+    },
+    "cook_temperature_not_supported": {
+      "message": "{mode} 모드는 온도를 설정하지 않습니다."
+    },
+    "cook_temperature_required": {
+      "message": "{mode} 모드에는 온도가 필요합니다."
+    },
+    "cook_temperature_not_a_choice": {
+      "message": "{mode} 모드는 {choices}만 허용합니다."
+    },
+    "cook_temperature_out_of_range": {
+      "message": "{mode} 모드의 온도 범위는 {min}~{max}입니다."
+    },
+    "cook_duration_not_supported": {
+      "message": "{mode} 모드는 조리 시간을 설정하지 않습니다."
+    },
+    "cook_duration_required": {
+      "message": "{mode} 모드에는 조리 시간이 필요합니다."
+    },
+    "cook_duration_out_of_range": {
+      "message": "{mode} 모드의 조리 시간 범위는 {min}~{max}입니다."
+    },
+    "extra_rinse_unavailable_for_cycle": {
+      "message": "선택한 코스에서는 추가 헹굼을 사용할 수 없습니다."
+    }
+  },
+  "selector": {
+    "instance_name": {
+      "options": {
+        "freezer": "냉동실",
+        "cooler": "냉장실",
+        "top": "상칸",
+        "middle": "중칸",
+        "bottom": "하칸",
+        "onedoor": "김치 보관실",
+        "winecellar_top": "상단 와인 구역",
+        "winecellar_bottom": "하단 와인 구역",
+        "door_freezer": "냉동실 문",
+        "door_cooler": "냉장실 문",
+        "door_cvroom": "맞춤 보관실 문",
+        "door_winecellar": "와인셀러 문",
+        "door_onedoorfreezer": "메인 문",
+        "door_onedoorkimchi": "메인 문",
+        "ice_maker": "제빙기",
+        "cubed_ice": "각얼음",
+        "ice_bites": "아이스 바이트",
+        "whiskey_ice_ball": "볼 얼음"
+      }
+    }
+  }
+}

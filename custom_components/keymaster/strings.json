@@ -1,7 +1,7 @@
 {
   "config": {
     "abort": {
-        "reconfigure_successful": "Reconfigure Successful"
+      "reconfigure_successful": "Reconfigure Successful"
     },
     "error": {
       "same_name": "keymaster Lock Name already in use"
@@ -48,6 +48,29 @@
         },
         "description": "Select the lock to setup and code slots to create. There may or may not be alarm level and alarm type entities.",
         "title": "keymaster"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "redact_slot_names": "Redact slot names in debug logs",
+          "redact_pin_codes": "Redact PIN codes in debug logs"
+        }
+      }
+    }
+  },
+  "issues": {
+    "large_lock_configuration": {
+      "title": "Very large Keymaster lock configuration",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Acknowledge very large Keymaster lock: {lock_name}",
+            "description": "The Keymaster lock \"{lock_name}\" is projected to create about {entity_count} entities, approaching Home Assistant's per-dispatch event limit of {guard_limit} (warning threshold {threshold}). Reducing slots or splitting this configuration can help now; planned per-lock improvements tracked in issue #670 will reduce this dispatch risk. Acknowledging confirms you understand the risk of instability and want to dismiss this warning for the current projected size. It will reappear if the configuration grows materially larger."
+          }
+        }
       }
     }
   }

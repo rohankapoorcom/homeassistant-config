@@ -1,154 +1,433 @@
+import enum
 import logging
+from collections.abc import Sequence
+from typing import Any, NamedTuple, cast, override
 
-from homeassistant.util import utcnow
+from google.protobuf.json_format import MessageToDict
+from google.protobuf.message import Message as ProtoMessageRaw
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+from homeassistant.util import dt
 
-from custom_components.ecoflow_cloud.devices import BaseDevice
-from custom_components.ecoflow_cloud.entities import (
-    BaseSensorEntity, BaseNumberEntity, BaseSelectEntity, BaseSwitchEntity
+from custom_components.ecoflow_cloud.api import EcoflowApiClient
+from custom_components.ecoflow_cloud.api.message import JSONDict, Message, PrivateAPIMessageProtocol
+from custom_components.ecoflow_cloud.devices import BaseInternalDevice, const
+from custom_components.ecoflow_cloud.devices.data_holder import PreparedData
+from custom_components.ecoflow_cloud.devices.internal import to_lower_camel_case
+from custom_components.ecoflow_cloud.devices.internal.proto import AddressId
+from custom_components.ecoflow_cloud.devices.internal.proto import powerstream_pb2 as powerstream
+from custom_components.ecoflow_cloud.number import (
+    DeciChargingPowerEntity,
+    MaxBatteryLevelEntity,
+    MinBatteryLevelEntity,
 )
+from custom_components.ecoflow_cloud.select import PowerDictSelectEntity
 from custom_components.ecoflow_cloud.sensor import (
-    MilliampSensorEntity, CentivoltSensorEntity, DeciampSensorEntity,
-    DecicelsiusSensorEntity, DecihertzSensorEntity, DeciwattsSensorEntity,
-    DecivoltSensorEntity, InWattsSolarSensorEntity, LevelSensorEntity,
-    MiscSensorEntity, RemainSensorEntity, StatusSensorEntity, ReconnectStatusSensorEntity,
+    CelsiusSensorEntity,
+    CentivoltSensorEntity,
+    DeciampSensorEntity,
+    DecicelsiusSensorEntity,
+    DecihertzSensorEntity,
+    DecivoltSensorEntity,
+    DeciwattsSensorEntity,
+    InWattsSolarSensorEntity,
+    LevelSensorEntity,
+    MilliampSensorEntity,
+    MiscSensorEntity,
+    QuotaStatusSensorEntity,
+    RemainSensorEntity,
+    ResettingInEnergySensorEntity,
+    ResettingInEnergySolarSensorEntity,
+    ResettingOutEnergySensorEntity,
+    StatusSensorEntity,
 )
-from ...api import EcoflowApiClient
+from custom_components.ecoflow_cloud.switch import EnabledEntity
 
-# from ..number import MinBatteryLevelEntity, MaxBatteryLevelEntity
-# from ..select import DictSelectEntity
 _LOGGER = logging.getLogger(__name__)
 
-class PowerStream(BaseDevice):
-    def sensors(self, client: EcoflowApiClient) -> list[BaseSensorEntity]:
+
+class CommandFuncAndId(NamedTuple):
+    func: int
+    id: int
+
+
+class Command(enum.Enum):
+    @enum.property
+    def func(self) -> int:
+        return self.value.func
+
+    @enum.property
+    def id(self) -> int:
+        return self.value.id
+
+    INVERTER_HEARTBEAT = CommandFuncAndId(func=20, id=1)
+    PERMANENT_WATTS_PACK = CommandFuncAndId(func=20, id=129)
+    SET_SUPPLY_PRIORITY = CommandFuncAndId(func=20, id=130)
+    SET_BAT_LOWER = CommandFuncAndId(func=20, id=132)
+    SET_BAT_UPPER = CommandFuncAndId(func=20, id=133)
+    SET_BRIGHTNESS = CommandFuncAndId(func=20, id=135)
+    SET_FEED_PROTECT = CommandFuncAndId(func=20, id=143)
+    RATED_POWER = CommandFuncAndId(func=20, id=146)
+
+    PLATFORM_WATTH = CommandFuncAndId(func=254, id=32)
+
+
+class WatthType(enum.IntEnum):
+    TO_SMART_PLUGS = 2
+    TO_BATTERY = 3
+    FROM_BATTERY = 4
+    PV1 = 7
+    PV2 = 8
+
+
+# Local payload mapping
+def get_expected_payload_type(cmd: Command) -> type[ProtoMessageRaw]:
+    _expected_payload_types = {
+        Command.INVERTER_HEARTBEAT: powerstream.PowerStreamInverterHeartbeat,
+        Command.PERMANENT_WATTS_PACK: powerstream.PowerStreamPermanentWattsPack,
+        Command.PLATFORM_WATTH: powerstream.PowerStreamBatchEnergyTotalReport,
+        Command.SET_SUPPLY_PRIORITY: powerstream.PowerStreamSupplyPriorityPack,
+        Command.SET_BAT_LOWER: powerstream.PowerStreamBatLowerPack,
+        Command.SET_BAT_UPPER: powerstream.PowerStreamBatUpperPack,
+        Command.SET_BRIGHTNESS: powerstream.PowerStreamBrightnessPack,
+        Command.SET_FEED_PROTECT: powerstream.PowerStreamSetValue,
+    }
+    return _expected_payload_types[cmd]
+
+
+class PowerStreamCommandMessage(PrivateAPIMessageProtocol):
+    """Message wrapper for PowerStream protobuf commands."""
+
+    def __init__(
+        self,
+        device_sn: str,
+        command: Command,
+        payload: ProtoMessageRaw | None,
+    ):
+        self._packet = powerstream.PowerStreamSendHeaderMsg()
+        self._payload = payload
+        message = self._packet.msg.add()
+        message.seq = Message.gen_seq()
+        message.device_sn = device_sn
+        message.from_ = "HomeAssistant"
+
+        if command == Command.INVERTER_HEARTBEAT:
+            message.src = AddressId.APP
+            message.dest = AddressId.APP
+            message.data_len = 0
+        else:
+            message.src = AddressId.APP
+            message.dest = AddressId.MQTT
+            message.d_src = 1
+            message.d_dest = 1
+            message.check_type = 3
+            message.need_ack = 1
+            message.version = 19
+            message.payload_ver = 1
+            if payload is not None:
+                pdata = payload.SerializeToString()
+                message.pdata = pdata
+                message.data_len = len(pdata)
+
+        message.cmd_func = command.func
+        message.cmd_id = command.id
+
+    @override
+    def to_mqtt_payload(self):
+        return self._packet.SerializeToString()
+
+    @override
+    def to_dict(self) -> dict:
+        if self._payload is None:
+            payload_dict = {}
+        else:
+            payload_dict = MessageToDict(self._payload, preserving_proto_field_name=True)
+
+        result = MessageToDict(self._packet, preserving_proto_field_name=True)
+        result["msg"][0]["pdata"] = {type(self._payload).__name__: payload_dict}
+        result["msg"][0].pop("seq", None)
+        return {type(self._packet).__name__: result}
+
+
+class PowerStream(BaseInternalDevice):
+    @override
+    def sensors(self, client: EcoflowApiClient) -> Sequence[SensorEntity]:
         return [
-            InWattsSolarSensorEntity(client, self,  "pv1_input_watts", "Solar 1 Watts"),
-            DecivoltSensorEntity(client, self,  "pv1_input_volt", "Solar 1 Input Potential"),
-            CentivoltSensorEntity(client, self,  "pv1_op_volt", "Solar 1 Op Potential"),
-            DeciampSensorEntity(client, self,  "pv1_input_cur", "Solar 1 Currrent"),
-            DecicelsiusSensorEntity(client, self,  "pv1_temp", "Solar 1 Temperature"),
-            MiscSensorEntity(client, self,  "pv1_relay_status", "Solar 1 Relay Status"),
-            MiscSensorEntity(client, self,  "pv1_error_code", "Solar 1 Error Code", False),
-            MiscSensorEntity(client, self,  "pv1_warning_code", "Solar 1 Warning Code", False),
-            MiscSensorEntity(client, self,  "pv1_status", "Solar 1 Status", False),
-
-            InWattsSolarSensorEntity(client, self,  "pv2_input_watts", "Solar 2 Watts"),
-            DecivoltSensorEntity(client, self,  "pv2_input_volt", "Solar 2 Input Potential"),
-            CentivoltSensorEntity(client, self,  "pv2_op_volt", "Solar 2 Op Potential"),
-            DeciampSensorEntity(client, self,  "pv2_input_cur", "Solar 2 Current"),
-            DecicelsiusSensorEntity(client, self,  "pv2_temp", "Solar 2 Temperature"),
-            MiscSensorEntity(client, self,  "pv2_relay_status", "Solar 2 Relay Status"),
-            MiscSensorEntity(client, self,  "pv2_error_code", "Solar 2 Error Code", False),
-            MiscSensorEntity(client, self,  "pv2_warning_code", "Solar 2 Warning Code", False),
-            MiscSensorEntity(client, self,  "pv2_status", "Solar 2 Status", False),
-
-            MiscSensorEntity(client, self,  "bp_type", "Battery Type", False),
-            LevelSensorEntity(client, self,  "bat_soc", "Battery Charge"),
-            DeciwattsSensorEntity(client, self,  "bat_input_watts", "Battery Input Watts"),
-            DecivoltSensorEntity(client, self,  "bat_input_volt", "Battery Input Potential"),
-            DecivoltSensorEntity(client, self,  "bat_op_volt", "Battery Op Potential"),
-            MilliampSensorEntity(client, self,  "bat_input_cur", "Battery Input Current"),
-            DecicelsiusSensorEntity(client, self,  "bat_temp", "Battery Temperature"),
-            RemainSensorEntity(client, self,  "battery_charge_remain", "Charge Time"),
-            RemainSensorEntity(client, self,  "battery_discharge_remain", "Discharge Time"),
-            MiscSensorEntity(client, self,  "bat_error_code", "Battery Error Code", False),
-            MiscSensorEntity(client, self,  "bat_warning_code", "Battery Warning Code", False),
-            MiscSensorEntity(client, self,  "bat_status", "Battery Status", False),
-
-            DecivoltSensorEntity(client, self,  "llc_input_volt", "LLC Input Potential", False),
-            DecivoltSensorEntity(client, self,  "llc_op_volt", "LLC Op Potential", False),
-            MiscSensorEntity(client, self,  "llc_error_code", "LLC Error Code", False),
-            MiscSensorEntity(client, self,  "llc_warning_code", "LLC Warning Code", False),
-            MiscSensorEntity(client, self,  "llc_status", "LLC Status", False),
-
-            MiscSensorEntity(client, self,  "inv_on_off", "Inverter On/Off Status"),
-            DeciwattsSensorEntity(client, self,  "inv_output_watts", "Inverter Output Watts"),
-            DecivoltSensorEntity(client, self,  "inv_input_volt", "Inverter Output Potential", False),
-            DecivoltSensorEntity(client, self,  "inv_op_volt", "Inverter Op Potential"),
-            MilliampSensorEntity(client, self,  "inv_output_cur", "Inverter Output Current"),
-            MilliampSensorEntity(client, self,  "inv_dc_cur", "Inverter DC Current"),
-            DecihertzSensorEntity(client, self,  "inv_freq", "Inverter Frequency"),
-            DecicelsiusSensorEntity(client, self,  "inv_temp", "Inverter Temperature"),
-            MiscSensorEntity(client, self,  "inv_relay_status", "Inverter Relay Status"),
-            MiscSensorEntity(client, self,  "inv_error_code", "Inverter Error Code", False),
-            MiscSensorEntity(client, self,  "inv_warning_code", "Inverter Warning Code", False),
-            MiscSensorEntity(client, self,  "inv_status", "Inverter Status", False),
-
-            DeciwattsSensorEntity(client, self,  "permanent_watts", "Other Loads"),
-            DeciwattsSensorEntity(client, self,  "dynamic_watts", "Smart Plug Loads"),
-            DeciwattsSensorEntity(client, self,  "rated_power", "Rated Power"),
-
-            MiscSensorEntity(client, self,  "lower_limit", "Lower Battery Limit", False),
-            MiscSensorEntity(client, self,  "upper_limit", "Upper Battery Limit", False),
-            MiscSensorEntity(client, self,  "wireless_error_code", "Wireless Error Code", False),
-            MiscSensorEntity(client, self,  "wireless_warning_code", "Wireless Warning Code", False),
-            MiscSensorEntity(client, self,  "inv_brightness", "LED Brightness", False),
-            MiscSensorEntity(client, self,  "heartbeat_frequency", "Heartbeat Frequency", False),
-
-            ReconnectStatusSensorEntity(client, self)
+            CelsiusSensorEntity(client, self, "20_1.espTempsensor", "ESP Temperature"),
+            InWattsSolarSensorEntity(client, self, "20_1.pv1InputWatts", "Solar 1 Watts"),
+            DecivoltSensorEntity(client, self, "20_1.pv1InputVolt", "Solar 1 Input Potential"),
+            CentivoltSensorEntity(client, self, "20_1.pv1OpVolt", "Solar 1 Op Potential"),
+            DeciampSensorEntity(client, self, "20_1.pv1InputCur", "Solar 1 Current"),
+            DecicelsiusSensorEntity(client, self, "20_1.pv1Temp", "Solar 1 Temperature"),
+            MiscSensorEntity(client, self, "20_1.pv1RelayStatus", "Solar 1 Relay Status"),
+            MiscSensorEntity(client, self, "20_1.pv1ErrCode", "Solar 1 Error Code", False),
+            MiscSensorEntity(client, self, "20_1.pv1WarnCode", "Solar 1 Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.pv1Statue", "Solar 1 Status", False),
+            InWattsSolarSensorEntity(client, self, "20_1.pv2InputWatts", "Solar 2 Watts"),
+            DecivoltSensorEntity(client, self, "20_1.pv2InputVolt", "Solar 2 Input Potential"),
+            CentivoltSensorEntity(client, self, "20_1.pv2OpVolt", "Solar 2 Op Potential"),
+            DeciampSensorEntity(client, self, "20_1.pv2InputCur", "Solar 2 Current"),
+            DecicelsiusSensorEntity(client, self, "20_1.pv2Temp", "Solar 2 Temperature"),
+            MiscSensorEntity(client, self, "20_1.pv2RelayStatus", "Solar 2 Relay Status"),
+            MiscSensorEntity(client, self, "20_1.pv2ErrCode", "Solar 2 Error Code", False),
+            MiscSensorEntity(client, self, "20_1.pv2WarningCode", "Solar 2 Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.pv2Statue", "Solar 2 Status", False),
+            MiscSensorEntity(client, self, "20_1.bpType", "Battery Type", False),
+            LevelSensorEntity(client, self, "20_1.batSoc", "Battery Charge"),
+            DeciwattsSensorEntity(client, self, "20_1.batInputWatts", "Battery Input Watts"),
+            DecivoltSensorEntity(client, self, "20_1.batInputVolt", "Battery Input Potential"),
+            DecivoltSensorEntity(client, self, "20_1.batOpVolt", "Battery Op Potential"),
+            MilliampSensorEntity(client, self, "20_1.batInputCur", "Battery Input Current"),
+            DecicelsiusSensorEntity(client, self, "20_1.batTemp", "Battery Temperature"),
+            RemainSensorEntity(client, self, "20_1.chgRemainTime", "Charge Time"),
+            RemainSensorEntity(client, self, "20_1.dsgRemainTime", "Discharge Time"),
+            MiscSensorEntity(client, self, "20_1.batErrCode", "Battery Error Code", False),
+            MiscSensorEntity(client, self, "20_1.batWarningCode", "Battery Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.batStatue", "Battery Status", False),
+            DecivoltSensorEntity(client, self, "20_1.llcInputVolt", "LLC Input Potential", False),
+            DecivoltSensorEntity(client, self, "20_1.llcOpVolt", "LLC Op Potential", False),
+            DecicelsiusSensorEntity(client, self, "20_1.llcTemp", "LLC Temperature"),
+            MiscSensorEntity(client, self, "20_1.llcErrCode", "LLC Error Code", False),
+            MiscSensorEntity(client, self, "20_1.llcWarningCode", "LLC Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.llcStatue", "LLC Status", False),
+            MiscSensorEntity(client, self, "20_1.invOnOff", "Inverter On/Off Status"),
+            DeciwattsSensorEntity(client, self, "20_1.invOutputWatts", "Inverter Output Watts"),
+            DecivoltSensorEntity(client, self, "20_1.invInputVolt", "Inverter Output Potential", False),
+            DecivoltSensorEntity(client, self, "20_1.invOpVolt", "Inverter Op Potential"),
+            MilliampSensorEntity(client, self, "20_1.invOutputCur", "Inverter Output Current"),
+            #  MilliampSensorEntity(client, self, "inv_dc_cur", "Inverter DC Current"),
+            DecihertzSensorEntity(client, self, "20_1.invFreq", "Inverter Frequency"),
+            DecicelsiusSensorEntity(client, self, "20_1.invTemp", "Inverter Temperature"),
+            MiscSensorEntity(client, self, "20_1.invRelayStatus", "Inverter Relay Status"),
+            MiscSensorEntity(client, self, "20_1.invErrCode", "Inverter Error Code", False),
+            MiscSensorEntity(client, self, "20_1.invWarnCode", "Inverter Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.invStatue", "Inverter Status", False),
+            DeciwattsSensorEntity(client, self, "20_1.permanentWatts", const.CUSTOM_LOAD_POWER),
+            DeciwattsSensorEntity(client, self, "20_1.dynamicWatts", "Smart Plug Loads"),
+            DeciwattsSensorEntity(client, self, "20_1.ratedPower", "Rated Power"),
+            MiscSensorEntity(client, self, "20_1.lowerLimit", "Lower Battery Limit", False),
+            MiscSensorEntity(client, self, "20_1.upperLimit", "Upper Battery Limit", False),
+            MiscSensorEntity(client, self, "20_1.wirelessErrCode", "Wireless Error Code", False),
+            MiscSensorEntity(client, self, "20_1.wirelessWarnCode", "Wireless Warning Code", False),
+            MiscSensorEntity(client, self, "20_1.invBrightness", "LED Brightness", False),
+            MiscSensorEntity(client, self, "20_1.heartbeatFrequency", "Heartbeat Frequency", False),
+            ResettingInEnergySolarSensorEntity(
+                client,
+                self,
+                "254_32.watthPv1",
+                "PV1 Today Energy Total",
+                enabled=True,
+            ),
+            ResettingInEnergySolarSensorEntity(
+                client,
+                self,
+                "254_32.watthPv2",
+                "PV2 Today Energy Total",
+                enabled=True,
+            ),
+            ResettingInEnergySensorEntity(
+                client,
+                self,
+                "254_32.watthFromBattery",
+                "From Battery Today Energy Total",
+                enabled=True,
+            ).with_icon("mdi:battery-arrow-down-outline"),
+            ResettingOutEnergySensorEntity(
+                client,
+                self,
+                "254_32.watthToBattery",
+                "To Battery Today Energy Total",
+                enabled=True,
+            ).with_icon("mdi:battery-arrow-up"),
+            ResettingOutEnergySensorEntity(
+                client,
+                self,
+                "254_32.watthToSmartPlugs",
+                "To Smart Plugs Today Energy Total",
+                enabled=True,
+            ),
+            self._status_sensor(client),
         ]
 
-
-    def numbers(self, client: EcoflowApiClient) -> list[BaseNumberEntity]:
+    @override
+    def switches(self, client: EcoflowApiClient) -> Sequence[SwitchEntity]:
         return [
-            # These will likely be some form of serialised data rather than JSON will look into it later
-            # MinBatteryLevelEntity(client, self,  "lowerLimit", "Min Discharge Level", 50, 100,
-            #                       lambda value: {"moduleType": 0, "operateType": "TCP",
-            #                                      "params": {"id": 00, "lowerLimit": value}}),
-            # MaxBatteryLevelEntity(client, self,  "upperLimit", "Max Charge Level", 0, 30,
-            #                       lambda value: {"moduleType": 0, "operateType": "TCP",
-            #                                      "params": {"id": 00, "upperLimit": value}}),
+            EnabledEntity(
+                client,
+                self,
+                "20_1.feedProtect",
+                "Feed-in Control",
+                lambda value: PowerStreamCommandMessage(
+                    device_sn=self.device_info.sn,
+                    command=Command.SET_FEED_PROTECT,
+                    payload=powerstream.PowerStreamSetValue(value=value),
+                ),
+                enabled=True,
+                enableValue=1,
+            )
         ]
 
-    def switches(self, client: EcoflowApiClient) -> list[BaseSwitchEntity]:
-        return []
-
-    def selects(self, client: EcoflowApiClient) -> list[BaseSelectEntity]:
+    @override
+    def selects(self, client: EcoflowApiClient) -> Sequence[SelectEntity]:
         return [
-            # DictSelectEntity(client, self,  "supplyPriority", "Power supply mode", {"Prioritize power supply", "Prioritize power storage"},
-            #         lambda value: {"moduleType": 00, "operateType": "supplyPriority",
-            #                     "params": {"supplyPriority": value}}),
+            PowerDictSelectEntity(
+                client,
+                self,
+                "20_1.supplyPriority",
+                "Power supply mode",
+                const.POWER_SUPPLY_PRIORITY_OPTIONS,
+                lambda value: PowerStreamCommandMessage(
+                    device_sn=self.device_info.sn,
+                    command=Command.SET_SUPPLY_PRIORITY,
+                    payload=powerstream.PowerStreamSupplyPriorityPack(supply_priority=value),
+                ),
+            ),
         ]
 
-    def _prepare_data(self, raw_data) -> dict[str, any]:
-        raw = {"params": {}}
-        from .proto import ecopacket_pb2 as ecopacket, powerstream_pb2 as powerstream
+    @override
+    def numbers(self, client: EcoflowApiClient) -> Sequence[NumberEntity]:
+        return [
+            MaxBatteryLevelEntity(
+                client,
+                self,
+                "20_1.upperLimit",
+                const.MAX_CHARGE_LEVEL,
+                50,
+                100,
+                lambda value: PowerStreamCommandMessage(
+                    device_sn=self.device_info.sn,
+                    command=Command.SET_BAT_UPPER,
+                    payload=powerstream.PowerStreamBatUpperPack(upper_limit=value),
+                ),
+            ),
+            MinBatteryLevelEntity(
+                client,
+                self,
+                "20_1.lowerLimit",
+                const.MIN_DISCHARGE_LEVEL,
+                0,
+                30,
+                lambda value: PowerStreamCommandMessage(
+                    device_sn=self.device_info.sn,
+                    command=Command.SET_BAT_LOWER,
+                    payload=powerstream.PowerStreamBatLowerPack(lower_limit=value),
+                ),
+            ),
+            DeciChargingPowerEntity(
+                client,
+                self,
+                "20_1.permanentWatts",
+                const.CUSTOM_LOAD_POWER,
+                0,
+                800,
+                lambda value: PowerStreamCommandMessage(
+                    device_sn=self.device_info.sn,
+                    command=Command.PERMANENT_WATTS_PACK,
+                    payload=powerstream.PowerStreamPermanentWattsPack(permanent_watts=value),
+                ),
+            ).with_icon("mdi:transmission-tower-export"),
+        ]
+
+    @override
+    def _prepare_data(self, raw_data: bytes) -> dict[str, Any]:
+        res: dict[str, Any] = {"params": {}}
+        from google.protobuf.json_format import MessageToDict
+
         try:
-            payload =raw_data
+            packet = powerstream.PowerStreamSendHeaderMsg()
+            _ = packet.ParseFromString(raw_data)
+            for message in packet.msg:
+                _LOGGER.debug(
+                    'cmd_func %u, cmd_id %u, payload "%s"',
+                    message.cmd_func,
+                    message.cmd_id,
+                    message.pdata.hex(),
+                )
 
-            while True:
-                packet = ecopacket.SendHeaderMsg()
-                packet.ParseFromString(payload)
+                if message.HasField("device_sn") and message.device_sn != self.device_data.sn:
+                    _LOGGER.info(
+                        "Ignoring EcoPacket for SN %s on topic for SN %s",
+                        message.device_sn,
+                        self.device_data.sn,
+                    )
 
-                _LOGGER.debug("cmd id %u payload \"%s\"", packet.msg.cmd_id, payload.hex())
+                command_desc = CommandFuncAndId(func=message.cmd_func, id=message.cmd_id)
 
-                if packet.msg.cmd_id != 1:
-                    _LOGGER.info("Unsupported EcoPacket cmd id %u", packet.msg.cmd_id)
+                try:
+                    command = Command(command_desc)
+                except ValueError:
+                    _LOGGER.info(
+                        "Unsupported EcoPacket cmd_func %u, cmd_id %u",
+                        command_desc.func,
+                        command_desc.id,
+                    )
+                    continue
 
-                else:
-                    heartbeat = powerstream.InverterHeartbeat()
-                    heartbeat.ParseFromString(packet.msg.pdata)
-
-                    for descriptor in heartbeat.DESCRIPTOR.fields:
-                        if not heartbeat.HasField(descriptor.name):
+                params = cast(JSONDict, res.setdefault("params", {}))
+                if command in {Command.INVERTER_HEARTBEAT}:
+                    payload_inverter_heartbeat = powerstream.PowerStreamInverterHeartbeat()
+                    _ = payload_inverter_heartbeat.ParseFromString(message.pdata)
+                    params.update(
+                        (f"{command.func}_{command.id}.{key}", value)
+                        for key, value in cast(
+                            JSONDict,
+                            MessageToDict(payload_inverter_heartbeat, preserving_proto_field_name=False),
+                        ).items()
+                    )
+                elif command in {Command.PLATFORM_WATTH}:
+                    payload_energy_total = powerstream.PowerStreamBatchEnergyTotalReport()
+                    _ = payload_energy_total.ParseFromString(message.pdata)
+                    for watth_item in payload_energy_total.watth_item:
+                        try:
+                            watth_type_name = to_lower_camel_case(WatthType(watth_item.watth_type).name)
+                        except ValueError:
                             continue
 
-                        raw["params"][descriptor.name] = getattr(heartbeat, descriptor.name)
+                        field_name = f"watth{watth_type_name[0].upper()}{watth_type_name[1:]}"
+                        params.update(
+                            {
+                                f"{command.func}_{command.id}.{field_name}": sum(watth_item.watth),
+                                f"{command.func}_{command.id}.{field_name}Timestamp": watth_item.timestamp,
+                            }
+                        )
 
-                    _LOGGER.info("Found %u fields", len(raw["params"]))
-
-                    raw["timestamp"] = utcnow()
-
-                if packet.ByteSize() >= len(payload):
-                    break
-
-                _LOGGER.info("Found another frame in payload")
-
-                packet_length = len(payload) - packet.ByteSize()
-                payload = payload[:packet_length]
-
+                # Add cmd information to allow extraction in extract_quota_data
+                res["cmdFunc"] = command_desc.func
+                res["cmdId"] = command_desc.id
+                res["timestamp"] = dt.utcnow()
+                continue
         except Exception as error:
             _LOGGER.error(error)
             _LOGGER.info(raw_data.hex())
+        return res
 
-        return raw
+    def _status_sensor(self, client: EcoflowApiClient) -> StatusSensorEntity:
+        return QuotaStatusSensorEntity(client, self)
 
+    @override
+    def _prepare_data_get_reply_topic(self, raw_data: bytes) -> PreparedData:
+        data = self._prepare_data(raw_data)
+        if "cmdFunc" in data and "cmdId" in data:
+            command_desc = CommandFuncAndId(func=data["cmdFunc"], id=data["cmdId"])
+
+            try:
+                command = Command(command_desc)
+            except ValueError:
+                pass
+            # ???
+            if command in [
+                Command.INVERTER_HEARTBEAT,
+                Command.PLATFORM_WATTH,
+            ]:
+                return PreparedData(None, data, {"proto": raw_data.hex()})
+        return PreparedData(None, None, {"proto": raw_data.hex()})
+
+    @override
+    def get_quota_message(self) -> PowerStreamCommandMessage:
+        return PowerStreamCommandMessage(
+            device_sn=self.device_info.sn,
+            command=Command.INVERTER_HEARTBEAT,
+            payload=None,
+        )

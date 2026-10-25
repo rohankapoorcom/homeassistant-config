@@ -2,13 +2,14 @@
 
 import logging
 
+from homeassistant.components.mqtt.const import CONF_ENTITY_PICTURE
 from homeassistant.components.mqtt.image import CONF_URL_TOPIC
 from homeassistant.const import ATTR_ENTITY_PICTURE, ATTR_STATE, Platform
 from homeassistant.helpers.network import get_url
 
-from ..const import ATTR_ATTRIBUTES, CONF_ENT_PIC
+from ..const import ATTR_ATTRIBUTES
+from ..helpers.base_entity import DiscoveryEntity
 from ..utils import EntityInfo, build_topic
-from .base_entity import DiscoveryEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,8 +22,8 @@ class DiscoveryItem(DiscoveryEntity):
     def build_config(self, config, entity_info: EntityInfo):
         """Build the config for a image."""
 
-        if CONF_ENT_PIC in config:
-            del config[CONF_ENT_PIC]
+        if CONF_ENTITY_PICTURE in config:
+            del config[CONF_ENTITY_PICTURE]
         config[CONF_URL_TOPIC] = build_topic(ATTR_ENTITY_PICTURE)
 
     async def async_publish_state(self, new_state, mybase):

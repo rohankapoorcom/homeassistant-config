@@ -1,0 +1,2301 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "auto_clean_running": {
+        "name": "Pulizia automatica in corso"
+      },
+      "after_run_active": {
+        "name": "Post-funzionamento attivo"
+      },
+      "any_burner_active": {
+        "name": "Fornello attivo"
+      },
+      "automatic_operation": {
+        "name": "Funzionamento automatico"
+      },
+      "battery_charging": {
+        "name": "In carica"
+      },
+      "burner_hot_surface": {
+        "name": "Fornello {number} superficie calda"
+      },
+      "burner_pan_detected": {
+        "name": "Fornello {number} pentola rilevata"
+      },
+      "child_lock": {
+        "name": "Blocco Bambini"
+      },
+      "cloud_connected": {
+        "name": "Connesso al cloud"
+      },
+      "dustbag_full": {
+        "name": "Sacchetto polvere pieno"
+      },
+      "cooktop_power": {
+        "name": "Alimentazione piano cottura"
+      },
+      "cooktop_safety_shutoff_enabled": {
+        "name": "Spegnimento automatico superficie calda abilitato"
+      },
+      "current_limit_enabled": {
+        "name": "Limite di corrente abilitato"
+      },
+      "overload_protection_active": {
+        "name": "Protezione da sovraccarico attiva"
+      },
+      "odor_controller_active": {
+        "name": "Controllo odori attivo"
+      },
+      "cycle_active": {
+        "name": "In esecuzione"
+      },
+      "defrost_active": {
+        "name": "Sbrinamento attivo"
+      },
+      "detergent_low": {
+        "name": "Aggiungi detersivo"
+      },
+      "device_active": {
+        "name": "Dispositivo attivo"
+      },
+      "door_open": {
+        "name": "Sportello"
+      },
+      "filter_blockage": {
+        "name": "Ostruzione del filtro"
+      },
+      "filter_door_status": {
+        "name": "Sportello filtro"
+      },
+      "firmware_update": {
+        "name": "Firmware"
+      },
+      "instance_open": {
+        "name": "{instance_name} aperto"
+      },
+      "paired_hood_connected": {
+        "name": "Cappa abbinata connessa"
+      },
+      "paired_hood_light": {
+        "name": "Luce cappa abbinata"
+      },
+      "paired_hood_power": {
+        "name": "Alimentazione cappa abbinata"
+      },
+      "periodic_air_sensing": {
+        "name": "Rilevamento aria periodico"
+      },
+      "pouring": {
+        "name": "Erogazione in corso"
+      },
+      "alarm_in_mute": {
+        "name": "Allarme silenziato"
+      },
+      "power_state": {
+        "name": "Stato alimentazione"
+      },
+      "probe_connected": {
+        "name": "Sonda connessa"
+      },
+      "power_switch": {
+        "name": "Alimentazione"
+      },
+      "rapid_freezing": {
+        "name": "Congelamento rapido"
+      },
+      "rapid_fridge": {
+        "name": "Raffreddamento rapido"
+      },
+      "remote_control": {
+        "name": "Smart Control"
+      },
+      "softener_low": {
+        "name": "Aggiungi ammorbidente"
+      },
+      "add_wash_available": {
+        "name": "AddWash consentito"
+      },
+      "add_wash_indicator": {
+        "name": "AddWash disponibile"
+      },
+      "pre_wash_selected": {
+        "name": "Prelavaggio selezionato"
+      },
+      "delay_wash_set": {
+        "name": "Partenza ritardata impostata"
+      },
+      "stick_ble_connected": {
+        "name": "Scopa elettrica connessa via BLE"
+      },
+      "cooktop_burner": {
+        "name": "Bruciatore {number}"
+      },
+      "beep": {
+        "name": "Segnale acustico"
+      },
+      "remind_beep": {
+        "name": "Promemoria segnale di fine"
+      },
+      "display_time_auto_sync": {
+        "name": "Sincronizzazione automatica dell'ora"
+      },
+      "grease_filter_alarm": {
+        "name": "Allarme filtro antigrasso"
+      },
+      "front_vent_open": {
+        "name": "Presa d'aria anteriore"
+      },
+      "dual_setpoint_enabled": {
+        "name": "Doppio setpoint attivo"
+      },
+      "divider": {
+        "name": "Divisorio"
+      },
+      "wrinkle_prevent_active": {
+        "name": "Antipiega attivo"
+      }
+    },
+    "button": {
+      "after_run_cancel": {
+        "name": "Annulla post-funzionamento"
+      },
+      "diagnosis_start": {
+        "name": "Avvia diagnosi"
+      },
+      "auto_clean_stop": {
+        "name": "Arresta autopulizia"
+      },
+      "air_filter_reset": {
+        "name": "Azzera il filtro dell'aria"
+      },
+      "air_filter_pm1_reset": {
+        "name": "Azzera il filtro PM1.0"
+      },
+      "hepa_filter_reset": {
+        "name": "Azzera il filtro HEPA"
+      },
+      "deodor_filter_reset": {
+        "name": "Azzera il filtro deodorante"
+      },
+      "hood_filter_reset": {
+        "name": "Azzera il filtro della cappa"
+      },
+      "filter_reset": {
+        "name": "Azzera il filtro dell'acqua"
+      },
+      "filter_time_reset": {
+        "name": "Azzera il contatore del filtro"
+      },
+      "pause": {
+        "name": "Pausa"
+      },
+      "selfcheck_start": {
+        "name": "Avvia autodiagnosi"
+      },
+      "start": {
+        "name": "Avvio"
+      },
+      "sync_clock": {
+        "name": "Sincronizza orologio"
+      },
+      "stop": {
+        "name": "Arresto"
+      },
+      "start_cooking": {
+        "name": "Avvia cottura"
+      }
+    },
+    "climate": {
+      "airconditioner": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "turbo": "Turbo",
+              "max": "Max"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "ai_comfort": "AI Comfort",
+              "quiet": "Silenzioso",
+              "smart": "Smart",
+              "speed": "Veloce",
+              "nano": "WindFree",
+              "sleep": "Sonno",
+              "nanosleep": "WindFree sonno",
+              "longwind": "Vento prolungato",
+              "motionindirect": "Indiretto al movimento",
+              "motiondirect": "Diretto al movimento",
+              "drycomfort": "Comfort asciugatura",
+              "dlightcool": "d'light Cool",
+              "2step": "2 fasi"
+            }
+          }
+        }
+      },
+      "zone_climate": {
+        "name": "Zona 1"
+      },
+      "zone2_climate": {
+        "name": "Zona 2"
+      }
+    },
+    "fan": {
+      "air_purifier_fan": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "smart": "Smart",
+              "max": "Max",
+              "mid": "Media",
+              "windfree": "WindFree",
+              "sleep": "Sonno"
+            }
+          }
+        }
+      }
+    },
+    "light": {
+      "lamp": {
+        "name": "Lampada"
+      }
+    },
+    "number": {
+      "cook_time": {
+        "name": "Tempo di cottura"
+      },
+      "delay_start_hours": {
+        "name": "Ritardo di avvio"
+      },
+      "dispense_capacity": {
+        "name": "Capacità erogazione"
+      },
+      "good_sleep": {
+        "name": "Good Sleep"
+      },
+      "instance_setpoint": {
+        "name": "{instance_name}: valore impostato"
+      },
+      "oven_setpoint": {
+        "name": "Valore impostato"
+      },
+      "sensing_interval": {
+        "name": "Intervallo AI Purify"
+      },
+      "setpoint": {
+        "name": "Valore impostato"
+      },
+      "sound_volume": {
+        "name": "Volume audio"
+      },
+      "target_humidity": {
+        "name": "Umidità obiettivo"
+      },
+      "tropical_night_mode": {
+        "name": "Modalità notte tropicale"
+      },
+      "zone_target_temperature": {
+        "name": "Temperatura obiettivo zona"
+      }
+    },
+    "select": {
+      "welcome_lighting_proximity": {
+        "name": "Prossimità illuminazione di benvenuto",
+        "state": {
+          "nearest": "Più vicino",
+          "near": "Vicino",
+          "middle": "Medio",
+          "far": "Lontano"
+        }
+      },
+      "ai_energy_level": {
+        "name": "Livello AI Energy Mode"
+      },
+      "air_filter_threshold": {
+        "name": "Soglia allarme filtro"
+      },
+      "auto_door_timer": {
+        "name": "Timer apertura automatica sportello"
+      },
+      "auto_door_mode": {
+        "name": "Modalità apertura automatica sportello",
+        "state": {
+          "easy_open": "Apertura facile",
+          "wide_open": "Apertura ampia"
+        }
+      },
+      "beverage_zone_mode": {
+        "name": "Modalità zona bevande",
+        "state": {
+          "sp_ttype_beer_drinks": "Bevande",
+          "sp_ttype_wine_dessert": "Vino e dessert"
+        }
+      },
+      "brightness_level": {
+        "name": "Luminosità notturna",
+        "state": {
+          "33": "Bassa",
+          "66": "Media",
+          "100": "Alta"
+        }
+      },
+      "cooler_temperature_setpoint": {
+        "name": "Temperatura frigorifero"
+      },
+      "day_brightness": {
+        "name": "Luminosità vano",
+        "state": {
+          "33": "Bassa",
+          "66": "Media",
+          "100": "Alta"
+        }
+      },
+      "buzzer_sound": {
+        "name": "Suono cicalino",
+        "state": {
+          "off": "Spento",
+          "on": "Acceso",
+          "volume_off": "Spento",
+          "volume_low": "Basso",
+          "volume_med": "Medio",
+          "volume_high": "Alto"
+        }
+      },
+      "discharging_time": {
+        "name": "Tempo di scarico",
+        "state": {
+          "1": "1 minuto",
+          "3": "3 minuti"
+        }
+      },
+      "cycle": {
+        "name": "Ciclo"
+      },
+      "detergent_quantity": {
+        "name": "Quantità detersivo",
+        "state": {
+          "00": "Nessuna",
+          "01": "Bassa",
+          "02": "Normale",
+          "03": "Alta"
+        }
+      },
+      "detergent_water_hardness": {
+        "name": "Durezza dell'acqua detersivo",
+        "state": {
+          "01": "Dolce",
+          "02": "Media",
+          "03": "Dura"
+        }
+      },
+      "dishwasher_cycle": {
+        "name": "Ciclo",
+        "state": {
+          "80": "Delicato",
+          "83": "Normale",
+          "84": "Intenso",
+          "86": "Express 60",
+          "90": "Autopulizia",
+          "0e": "AI Wash",
+          "07": "Prelavaggio intenso",
+          "8d": "Pentole e padelle",
+          "8e": "Plastica",
+          "8f": "Bambini",
+          "82": "Automatico",
+          "8a": "Normale",
+          "a7": "Intenso",
+          "a8": "Express",
+          "8c": "Extra silenzioso",
+          "88": "Autopulizia",
+          "85": "Delicato",
+          "0c": "Express",
+          "0d": "Autopulizia",
+          "87": "Solo risciacquo"
+        }
+      },
+      "dispense_type": {
+        "name": "Tipo erogazione"
+      },
+      "door_alert": {
+        "name": "Allarme sportello",
+        "state": {
+          "1": "Allarme 1",
+          "2": "Allarme 2",
+          "3": "Allarme 3",
+          "4": "Allarme 4"
+        }
+      },
+      "dryer_cycle_table_00": {
+        "name": "Ciclo",
+        "state": {
+          "01": "Normale",
+          "9c": "Intenso",
+          "a5": "Biancheria da letto",
+          "9e": "Pronto da stirare",
+          "9b": "Igienizzante a vapore+",
+          "27": "Rinfresca",
+          "a0": "Arieggiatura",
+          "a4": "Asciugatura a tempo",
+          "a6": "Asciugatura rapida",
+          "a3": "Abbigliamento sportivo",
+          "a2": "Delicati",
+          "9a": "Cotone",
+          "ca": "Arieggiatura",
+          "db": "Super Speed",
+          "99": "Carico misto",
+          "93": "Pronto da stirare",
+          "b5": "Lana",
+          "d7": "Cura outdoor",
+          "96": "Aria fredda",
+          "97": "Aria calda",
+          "7f": "Asciugatura a tempo",
+          "98": "Asciugatura rapida 35",
+          "eb": "Delicati",
+          "b6": "Sintetici"
+        }
+      },
+      "dryer_cycle_table_03": {
+        "name": "Ciclo",
+        "state": {
+          "01": "Normale",
+          "06": "Asciugatura a tempo",
+          "16": "Cotone",
+          "17": "Super Speed",
+          "18": "Sintetici",
+          "19": "Delicati",
+          "20": "Pronto da stirare",
+          "21": "Cura igienica",
+          "22": "Asciugatura silenziosa",
+          "23": "Asciugatura rapida 35'",
+          "24": "Aria fredda",
+          "25": "Aria calda",
+          "27": "Asciugatura a tempo",
+          "29": "Asciugatura AI",
+          "1a": "Lana",
+          "1b": "Biancheria da letto",
+          "1c": "Camicie",
+          "1d": "Asciugamani",
+          "1e": "Capi outdoor",
+          "1f": "Carico misto",
+          "2b": "Asciugatura cestello",
+          "4c": "Rinfresca",
+          "51": "Eco cotone",
+          "53": "Asciugatura AI+",
+          "4e": "Autoasciugatura",
+          "26": "Arieggiatura",
+          "2a": "Cura igienica+",
+          "02": "Asciugatura AI",
+          "03": "Super Speed",
+          "05": "Biancheria da letto",
+          "07": "Delicati",
+          "09": "Camicie",
+          "0b": "Cura piumini",
+          "0c": "Cura idrorepellente outdoor",
+          "0e": "Asciugamani",
+          "0f": "Lana",
+          "11": "Aria fredda",
+          "28": "Sanificazione interna ad aria calda",
+          "37": "Camicette",
+          "38": "Pronto da stirare",
+          "39": "Deumidificazione ambiente",
+          "3a": "Cura igienica",
+          "3b": "Biancheria da letto/Antipolvere",
+          "3c": "Abbigliamento sportivo",
+          "3d": "Jeans",
+          "2f": "Intenso",
+          "30": "Abbigliamento sportivo",
+          "32": "Pronto da stirare",
+          "33": "Igienizzante a vapore+",
+          "34": "Rinfresca a vapore",
+          "35": "Antipiega",
+          "36": "Arieggiatura",
+          "3e": "Carico ridotto",
+          "2e": "Eco Normale"
+        }
+      },
+      "dryer_dry_level": {
+        "name": "Livello asciugatura",
+        "state": {
+          "none": "Spento",
+          "damp": "Umido",
+          "less": "Meno",
+          "normal": "Normale",
+          "more": "Più",
+          "very": "Molto"
+        }
+      },
+      "favorite_capacity": {
+        "name": "Capacità preferita"
+      },
+      "favorite_hotwater_temperature": {
+        "name": "Temperatura preferita acqua calda"
+      },
+      "filter_alarm_time": {
+        "name": "Intervallo allarme filtro",
+        "state": {
+          "180": "180 ore",
+          "300": "300 ore",
+          "500": "500 ore",
+          "700": "700 ore"
+        }
+      },
+      "finish_sound": {
+        "name": "Suono di fine",
+        "state": {
+          "off": "Spento",
+          "on": "Acceso"
+        }
+      },
+      "flex_zone_mode": {
+        "name": "Modalità zona flessibile",
+        "state": {
+          "cv_ttype_rf9000a_fridge": "Refrigerazione",
+          "cv_ttype_rf9000a_freeze": "Congelamento",
+          "cv_ttype_rf9000a_softfreeze": "Congelamento leggero",
+          "cv_ttype_rf9000a_meat_fish": "Carne/Pesce",
+          "cv_ttype_rf9000a_fruit_veggies": "Frutta e verdura",
+          "cv_ttype_rf9000a_beverage": "Bevande",
+          "cv_fdr_wine": "Vino",
+          "cv_fdr_deli": "Salumeria",
+          "cv_fdr_beverage": "Bevande",
+          "cv_fdr_meat": "Carne",
+          "cv_fdr_soft_freezer": "Congelatore leggero",
+          "fconvert_freezer": "Congelamento",
+          "fconvert_fridge": "Refrigerazione",
+          "fconvert_off": "Spento"
+        }
+      },
+      "heated_dry": {
+        "name": "Smart Dry",
+        "state": {
+          "off": "Spento",
+          "low": "Bassa",
+          "high": "Alta",
+          "extra_high": "Extra alta"
+        }
+      },
+      "hot_water_temperature": {
+        "name": "Temperatura acqua calda"
+      },
+      "ice_type": {
+        "name": "{instance_name}: tipo",
+        "state": {
+          "off": "Spento",
+          "whiskey_iceball_3": "3 palline/giorno",
+          "whiskey_iceball_6": "6 palline/giorno",
+          "whiskey_iceball_9": "9 palline/giorno"
+        }
+      },
+      "led_brightness": {
+        "name": "Luminosità LED sportello",
+        "state": {
+          "low": "Bassa",
+          "high": "Alta"
+        }
+      },
+      "led_night_brightness": {
+        "name": "Luminosità notturna LED sportello",
+        "state": {
+          "low": "Bassa",
+          "high": "Alta"
+        }
+      },
+      "cooking_mode": {
+        "name": "Modalità di cottura",
+        "state": {
+          "no_operation": "Nessuna operazione",
+          "micro_wave": "Microonde",
+          "micro_wave_grill": "Microonde + grill",
+          "micro_wave_convection": "Microonde + convezione",
+          "convection": "Convezione",
+          "air_fryer": "Frittura ad aria",
+          "grill": "Grill",
+          "autocook": "Cottura automatica",
+          "autocook_custom": "Cottura automatica (personalizzata)",
+          "deodorization": "Deodorizzazione",
+          "keep_warm": "Mantieni caldo"
+        }
+      },
+      "oven_mode": {
+        "name": "Modalità di cottura",
+        "state": {
+          "no_operation": "Nessuna operazione",
+          "bake": "Statico",
+          "broil": "Grill",
+          "convection": "Convezione",
+          "convection_bake": "Cottura a convezione",
+          "convection_broil": "Grill a convezione",
+          "frozen_pizza_plus": "Frozen Pizza+",
+          "slow_cook": "Cottura lenta",
+          "plate_warm": "Scalda piatti",
+          "air_fry": "Frittura ad aria",
+          "convection_roast": "Arrosto ventilato",
+          "keep_warm": "Mantieni in caldo",
+          "bread_proof": "Lievitazione",
+          "dehydrate": "Essiccazione",
+          "self_clean": "Autopulizia",
+          "air_fryer": "Friggitrice ad aria",
+          "upper_broil": "Grill (superiore)",
+          "upper_convection_bake": "Cottura a convezione (superiore)",
+          "upper_convection_roast": "Arrosto ventilato (superiore)",
+          "lower_bake": "Statico (inferiore)",
+          "lower_convection_bake": "Cottura a convezione (inferiore)",
+          "steam_bake": "Cottura a vapore",
+          "steam_roast": "Arrosto a vapore",
+          "upper_steam_bake": "Cottura a vapore (superiore)",
+          "descale": "Decalcificazione",
+          "drain": "Scarico acqua"
+        }
+      },
+      "operating_mode": {
+        "name": "Modalità operativa"
+      },
+      "kimchi_zone_mode": {
+        "name": "{instance_name}: modalità conservazione",
+        "state": {
+          "off": "Spento",
+          "kimchi_storage_normal": "Kimchi",
+          "kimchi_storage_cold": "Kimchi, forte",
+          "kimchi_storage_warm": "Kimchi, debole",
+          "kimchi_storage_low_salt_normal": "Kimchi a basso contenuto di sale",
+          "kimchi_storage_low_salt_cold": "Kimchi a basso contenuto di sale, forte",
+          "kimchi_storage_low_salt_warm": "Kimchi a basso contenuto di sale, debole",
+          "kimchi_storage_crunfch": "Kimchi croccante",
+          "kimchi_storage_buy": "Kimchi acquistato",
+          "storage_fridge_normal": "Frigorifero",
+          "storage_fridge": "Frigorifero",
+          "storage_fridge_cold": "Frigorifero, forte",
+          "storage_fridge_warm": "Frigorifero, debole",
+          "storage_freezer_normal": "Congelatore",
+          "storage_freezer": "Congelatore",
+          "storage_freezer_cold": "Congelatore, forte",
+          "storage_freezer_warm": "Congelatore, debole",
+          "kimchi_ripe_low_temp": "Maturazione kimchi, bassa temperatura",
+          "kimchi_ripe_normal_temp": "Maturazione kimchi, temperatura ambiente",
+          "kimchi_ripe_kkakdugi": "Maturazione kkakdugi",
+          "kimchi_ripe_dongchimi": "Maturazione dongchimi",
+          "meat_ripe_normal": "Maturazione carne",
+          "storage_meat": "Carne e pesce",
+          "storage_fridge_vegetables_fruit": "Frutta e verdura",
+          "storage_fresh_cereal": "Cereali",
+          "storage_fridge_drink": "Bevande",
+          "storage_fresh_wine": "Vino",
+          "storage_fresh_potato_banana": "Patate e banane",
+          "newmode_kimchi_0000": "Nuova modalità"
+        }
+      },
+      "pantry_zone_mode": {
+        "name": "Modalità zona dispensa",
+        "state": {
+          "fdr_wine": "Vino",
+          "fdr_deli": "Salumeria",
+          "fdr_drinks": "Bevande",
+          "ttype_meat_fish": "Carne/Pesce",
+          "ttype_rf9000a_fridge": "Refrigerazione"
+        }
+      },
+      "winecellar_pantry_zone_mode": {
+        "name": "Modalità zona dispensa",
+        "state": {
+          "processed_meat": "Salumi",
+          "cheese": "Formaggio",
+          "nuts": "Frutta secca",
+          "fruit": "Frutta",
+          "wine": "Vino"
+        }
+      },
+      "range_burner_power_level": {
+        "name": "Livello potenza fornello {number}",
+        "state": {
+          "0": "Spento",
+          "boost": "Boost",
+          "simmer": "Sobbollire"
+        }
+      },
+      "range_hood_lamp_brightness": {
+        "name": "Luminosità lampada",
+        "state": {
+          "1": "Livello 1",
+          "2": "Livello 2"
+        }
+      },
+      "rinse_cycles": {
+        "name": "Risciacquo"
+      },
+      "laundry_out_time": {
+        "name": "Promemoria bucato nel cestello",
+        "state": {
+          "0": "Spento",
+          "30": "Ogni 30 min",
+          "60": "Ogni 60 min",
+          "90": "Ogni 90 min"
+        }
+      },
+      "sensing_mode": {
+        "name": "Azione AI Purify",
+        "state": {
+          "off": "Solo rilevamento",
+          "airpurify": "Pulizia automatica",
+          "alarm": "Ricevi notifica"
+        }
+      },
+      "softener_concentration": {
+        "name": "Concentrazione ammorbidente",
+        "state": {
+          "01": "1x",
+          "02": "2x",
+          "03": "3x"
+        }
+      },
+      "softener_quantity": {
+        "name": "Quantità ammorbidente",
+        "state": {
+          "00": "Nessuna",
+          "01": "Bassa",
+          "02": "Normale",
+          "03": "Alta"
+        }
+      },
+      "soil_level": {
+        "name": "Livello di sporco",
+        "state": {
+          "none": "Nessuno",
+          "extra_light": "Extra leggero",
+          "light": "Leggero",
+          "normal": "Normale",
+          "heavy": "Molto sporco",
+          "extra_heavy": "Extra sporco"
+        }
+      },
+      "sound_mode": {
+        "name": "Modalità audio",
+        "state": {
+          "voice": "Voce",
+          "tone": "Tono",
+          "mute": "Muto"
+        }
+      },
+      "energy_saving_mode": {
+        "name": "Modalità risparmio energetico"
+      },
+      "air_purifier_sound_mode": {
+        "name": "Modalità audio",
+        "state": {
+          "mute": "Muto",
+          "buzzer": "Cicalino"
+        }
+      },
+      "water_purifier_sound_mode": {
+        "name": "Modalità audio",
+        "state": {
+          "voice": "Voce",
+          "fixedtone": "Tono fisso",
+          "mute": "Muto"
+        }
+      },
+      "spin_speed": {
+        "name": "Centrifuga",
+        "state": {
+          "rinse_hold": "Mantieni in ammollo senza centrifuga",
+          "no_spin": "Scarico acqua senza centrifuga",
+          "low": "Bassa",
+          "medium": "Media",
+          "high": "Alta",
+          "extra_low": "Extra bassa",
+          "extra_high": "Extra alta"
+        }
+      },
+      "wash_temperature": {
+        "name": "Temperatura",
+        "state": {
+          "none": "Nessuna",
+          "cold": "Freddo",
+          "cool": "Fresco",
+          "warm": "Tiepido",
+          "hot": "Caldo",
+          "extra_hot": "Extra caldo",
+          "tap_cold": "Freddo di rete"
+        }
+      },
+      "washer_cycle_table_00": {
+        "name": "Ciclo",
+        "state": {
+          "01": "Normale",
+          "55": "Bianchi",
+          "57": "Self Clean+",
+          "5b": "Cotone",
+          "5c": "Extra rapido",
+          "5d": "Super Eco",
+          "5e": "Delicati",
+          "5f": "Bambini",
+          "60": "Capi outdoor",
+          "61": "Capi scuri",
+          "63": "Pulizia cestello",
+          "64": "Risciacquo+Centrifuga",
+          "65": "Lana",
+          "66": "Biancheria da letto",
+          "67": "Sintetici",
+          "68": "Cotone E",
+          "6b": "Solo centrifuga",
+          "6c": "Jeans",
+          "70": "Intenso",
+          "71": "Biancheria da letto",
+          "72": "Igienizzante",
+          "73": "Risciacquo+Centrifuga",
+          "74": "Abbigliamento sportivo",
+          "75": "Delicati",
+          "77": "Pronto da stirare",
+          "78": "Lavaggio rapido",
+          "ba": "Scarico/Centrifuga",
+          "d0": "Cotone",
+          "d1": "Cotone E",
+          "d2": "Sintetici",
+          "d3": "Delicati",
+          "d4": "Risciacquo+Centrifuga",
+          "d5": "Pulizia cestello",
+          "d6": "Biancheria da letto",
+          "d7": "Cura outdoor",
+          "d8": "Lana",
+          "da": "Super Eco",
+          "db": "Super Speed",
+          "dc": "Rapido 15'",
+          "e4": "Anti-allergia"
+        }
+      },
+      "washer_cycle_table_02": {
+        "name": "Ciclo",
+        "state": {
+          "01": "Normale",
+          "02": "Extra Intenso",
+          "03": "Super Eco",
+          "04": "Lavaggio rapido",
+          "05": "Lana/Lingerie",
+          "06": "Biancheria da letto",
+          "07": "Capi outdoor",
+          "08": "Risciacquo+Centrifuga",
+          "09": "Pulizia cestello",
+          "0a": "Asciugamani",
+          "0b": "Lavaggio a ebollizione",
+          "0c": "Bambini",
+          "0d": "Solo centrifuga",
+          "0e": "Giornata nuvolosa",
+          "0f": "Lavaggio puro",
+          "10": "Asciugatura centrifuga",
+          "11": "Biancheria da letto estiva",
+          "12": "Cotone",
+          "13": "Cotone nero",
+          "14": "Biancheria intima delicata",
+          "15": "Abbigliamento sportivo",
+          "16": "Camicette",
+          "17": "Scaricato",
+          "18": "Soft Bubble",
+          "19": "Lavaggio AI",
+          "1a": "Camicie",
+          "1b": "Cotone",
+          "1c": "Eco 40-60",
+          "1d": "Super Speed",
+          "1e": "Rapido 15'",
+          "1f": "Intenso a freddo",
+          "20": "Vapore igienizzante",
+          "21": "Colorati",
+          "22": "Lana",
+          "23": "Capi outdoor",
+          "24": "Biancheria da letto",
+          "25": "Sintetici",
+          "26": "Delicati",
+          "27": "Risciacquo+Centrifuga",
+          "28": "Scarico/Centrifuga",
+          "29": "Drum Clean+",
+          "2a": "Jeans",
+          "2b": "Lavaggio AI",
+          "2d": "Silenzioso",
+          "2e": "Bambini",
+          "2f": "Abbigliamento sportivo",
+          "30": "Giornata nuvolosa",
+          "32": "Camicie",
+          "33": "Asciugamani",
+          "34": "Misti",
+          "35": "Cotone E",
+          "36": "Lavaggio+Asciugatura",
+          "37": "Lavaggio ad aria",
+          "38": "Asciugatura cotone",
+          "39": "Asciugatura sintetici",
+          "3a": "Pulizia cestello",
+          "51": "Super Speed",
+          "52": "Eco freddo",
+          "53": "Intenso",
+          "54": "Asciugamani",
+          "55": "Capi sportivi",
+          "56": "Biancheria da letto",
+          "57": "Delicati",
+          "5a": "Igienizzante a vapore",
+          "5b": "Carico ridotto",
+          "5e": "Risciacquo+Centrifuga",
+          "60": "Self Clean+",
+          "64": "Bianchi a vapore",
+          "65": "Colorati",
+          "66": "Jeans",
+          "69": "Lavaggio AI",
+          "6a": "Lana",
+          "6b": "Jeans",
+          "6c": "Camicette",
+          "6d": "Delicati",
+          "6e": "Abbigliamento sportivo",
+          "6f": "Biancheria da letto",
+          "70": "Asciugamani",
+          "71": "Lavaggio rapido",
+          "72": "Camicie",
+          "73": "Igienizzante",
+          "74": "Pulizia cestello",
+          "75": "Capi outdoor",
+          "76": "Bambini",
+          "77": "Cotone",
+          "78": "Risciacquo+Centrifuga",
+          "79": "Solo centrifuga",
+          "7c": "Bianchi",
+          "7d": "Biancheria da letto/Impermeabile",
+          "7e": "Pulizia cestello",
+          "7f": "Lana/Delicati",
+          "85": "Normale a vapore",
+          "86": "Lavaggio profondo",
+          "87": "Scaricato",
+          "88": "Cura animali",
+          "8b": "Lavaggio rapido",
+          "8c": "AI OptiWash",
+          "8f": "Intenso a freddo",
+          "96": "Riduci microfibre",
+          "a0": "Rapido 15'",
+          "b0": "Carico misto",
+          "58": "Lana",
+          "5c": "Capi outdoor",
+          "5d": "Risciacquo potente",
+          "5f": "Solo centrifuga",
+          "63": "Vapore potente",
+          "67": "Antiallergia a vapore",
+          "68": "Voluminosi a vapore"
+        }
+      },
+      "washer_dry_level": {
+        "name": "Livello asciugatura",
+        "state": {
+          "30": "30 min",
+          "60": "1 h",
+          "90": "1 h 30",
+          "120": "2 h",
+          "180": "3 h",
+          "240": "4 h",
+          "none": "Spento",
+          "cupboard": "Pronto da riporre"
+        }
+      },
+      "zone_mode": {
+        "name": "Modalità zona"
+      },
+      "watertank_light_color": {
+        "name": "Colore della luce del serbatoio dell'acqua",
+        "state": {
+          "warmwhite": "Bianco caldo",
+          "naturalwhite": "Bianco naturale",
+          "coolwhite": "Bianco freddo",
+          "green": "Verde",
+          "purple": "Viola",
+          "blue": "Blu",
+          "orange": "Arancione",
+          "pink": "Rosa"
+        }
+      },
+      "watertank_light_brightness": {
+        "name": "Luminosità della luce del serbatoio dell'acqua"
+      },
+      "air_filter_pm1_threshold": {
+        "name": "Soglia di allarme del filtro PM1"
+      },
+      "freezer_temperature_setpoint": {
+        "name": "Temperatura freezer"
+      },
+      "edge_lighting_mode": {
+        "name": "Modalità illuminazione perimetrale",
+        "state": {
+          "smart": "Smart",
+          "high": "Alta",
+          "low": "Bassa"
+        }
+      },
+      "edge_lighting_color": {
+        "name": "Colore illuminazione perimetrale",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "indicator_light_mode": {
+        "name": "Modalità spia luminosa",
+        "state": {
+          "smart": "Smart",
+          "high": "Alta",
+          "low": "Bassa"
+        }
+      },
+      "ventilation_mode": {
+        "name": "Modalità",
+        "state": {
+          "purification": "Purificazione",
+          "ventilation": "Ventilazione",
+          "smartventilation": "Ventilazione intelligente",
+          "aicomfort": "AI Comfort",
+          "autoventilation": "Ventilazione automatica",
+          "freshairintake": "Immissione aria fresca",
+          "indoorpurification": "Purificazione interna",
+          "indoordehumidification": "Deumidificazione interna"
+        }
+      },
+      "dry_time": {
+        "name": "Tempo di asciugatura"
+      },
+      "booster_fan_mode": {
+        "name": "Modalità ventola booster",
+        "state": {
+          "off": "Spento",
+          "auto": "Automatico",
+          "high": "Alta",
+          "medium": "Media"
+        }
+      },
+      "booster_light_color_temperature": {
+        "name": "Temperatura colore luce booster",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "booster_light_brightness": {
+        "name": "Luminosità luce booster",
+        "state": {
+          "smart": "Smart",
+          "high": "Alta",
+          "low": "Bassa"
+        }
+      },
+      "booster_oscillation_angle": {
+        "name": "Angolo di oscillazione booster",
+        "state": {
+          "normal": "Normale",
+          "circulation": "Circolazione",
+          "right_narrow": "Destra stretta",
+          "right_wide": "Destra ampia",
+          "left_narrow": "Sinistra stretta",
+          "left_wide": "Sinistra ampia"
+        }
+      },
+      "ai_motion_wind": {
+        "name": "Flusso d'aria AI a rilevamento movimento",
+        "state": {
+          "off": "Spento",
+          "surround": "Avvolgente",
+          "longreach": "Lunga gittata",
+          "down": "Verso il basso",
+          "power": "Potenza",
+          "windfree": "Wind-Free",
+          "aidirect": "AI diretto",
+          "aiindirect": "AI indiretto"
+        }
+      },
+      "wash_zone": {
+        "name": "Zona di lavaggio",
+        "state": {
+          "on_on": "Entrambi i cestelli",
+          "off_on": "Solo cestello inferiore",
+          "on_off": "Solo cestello superiore"
+        }
+      },
+      "lamp_level": {
+        "name": "Livello lampada",
+        "state": {
+          "off": "Spenta",
+          "low": "Bassa",
+          "high": "Alta"
+        }
+      }
+    },
+    "sensor": {
+      "welcome_lighting_sense_level": {
+        "name": "Livello di rilevamento dell'illuminazione di benvenuto",
+        "state": {
+          "nearest": "Più vicino",
+          "near": "Vicino",
+          "middle": "Medio",
+          "far": "Lontano"
+        }
+      },
+      "auto_clean_progress": {
+        "name": "Avanzamento pulizia automatica"
+      },
+      "after_run_progress": {
+        "name": "Avanzamento post-funzionamento"
+      },
+      "air_filter_usage": {
+        "name": "Utilizzo filtro"
+      },
+      "air_filter_usage_hours": {
+        "name": "Ore di utilizzo filtro"
+      },
+      "deodor_filter_usage": {
+        "name": "Utilizzo filtro"
+      },
+      "air_quality_standard": {
+        "name": "Standard qualità aria"
+      },
+      "air_sensing_state": {
+        "name": "Stato rilevamento aria"
+      },
+      "alarm_code": {
+        "name": "Codice allarme"
+      },
+      "auto_ventilation_action": {
+        "name": "Azione ventilazione automatica"
+      },
+      "automatic_ventilation_state": {
+        "name": "Stato ventilazione automatica"
+      },
+      "battery": {
+        "name": "Batteria"
+      },
+      "burner_state": {
+        "name": "Stato fornello {number}"
+      },
+      "burner_power_level": {
+        "name": "Livello di potenza fornello {number}"
+      },
+      "clean_level": {
+        "name": "Livello di pulizia"
+      },
+      "co2": {
+        "name": "CO2"
+      },
+      "coffee_brew_status": {
+        "name": "Stato preparazione caffè"
+      },
+      "connection_mode": {
+        "name": "Modalità di connessione",
+        "state": {
+          "observe": "Push (osservazione)",
+          "poll": "Interrogazione"
+        }
+      },
+      "cooktop_running_state": {
+        "name": "Stato di funzionamento piano cottura"
+      },
+      "cooktop_state": {
+        "name": "Stato piano cottura"
+      },
+      "current_limit_level": {
+        "name": "Livello limite di corrente"
+      },
+      "filter_time": {
+        "name": "Tempo filtro"
+      },
+      "hepa_filter_usage": {
+        "name": "Utilizzo filtro HEPA"
+      },
+      "outdoor_temperature": {
+        "name": "Temperatura esterna"
+      },
+      "odor_controller_progress": {
+        "name": "Avanzamento controllo odori"
+      },
+      "panel_status": {
+        "name": "Stato pannello"
+      },
+      "sound_output": {
+        "name": "Uscita audio"
+      },
+      "dustbag_usage": {
+        "name": "Utilizzo sacchetto polvere"
+      },
+      "cleanstation_status": {
+        "name": "Stato stazione di pulizia"
+      },
+      "stick_status": {
+        "name": "Stato scopa elettrica"
+      },
+      "stick_operation_mode": {
+        "name": "Modalità operativa scopa elettrica"
+      },
+      "stick_cleaning_status": {
+        "name": "Stato pulizia scopa elettrica"
+      },
+      "uvc_operation_time": {
+        "name": "Tempo funzionamento UV-C"
+      },
+      "uvc_total_operation_time": {
+        "name": "Tempo funzionamento totale UV-C"
+      },
+      "uvc_finished_time": {
+        "name": "Tempo completamento UV-C"
+      },
+      "uvc_emitted_time": {
+        "name": "Tempo emissione UV-C"
+      },
+      "overload_protection_mode": {
+        "name": "Modalità protezione da sovraccarico",
+        "state": {
+          "alarm": "Allarme",
+          "powersaving": "Risparmio energetico"
+        }
+      },
+      "absence_power_saving_mode": {
+        "name": "Modalità risparmio energetico in assenza",
+        "state": {
+          "eco": "Eco",
+          "normal": "Normale",
+          "comfort": "Comfort"
+        }
+      },
+      "motion_detect_wind_mode": {
+        "name": "Modalità flusso d'aria a rilevamento movimento",
+        "state": {
+          "direct": "Diretto",
+          "indirect": "Indiretto"
+        }
+      },
+      "energy_saving_state": {
+        "name": "Stato risparmio energetico"
+      },
+      "energy_saving_operating_status": {
+        "name": "Stato di funzionamento del risparmio energetico"
+      },
+      "current_temp_c": {
+        "name": "Temperatura"
+      },
+      "food_probe_temp": {
+        "name": "Sonda per alimenti"
+      },
+      "food_probe_setpoint": {
+        "name": "Target sonda"
+      },
+      "current_temperature_c": {
+        "name": "Temperatura"
+      },
+      "diagnosis": {
+        "name": "Diagnosi",
+        "state": {
+          "ready": "Pronto"
+        }
+      },
+      "diagnosis_status": {
+        "name": "Stato diagnosi",
+        "state": {
+          "ready": "Pronto"
+        }
+      },
+      "drum_clean_cycles_remaining": {
+        "name": "Pulizia cestello fra"
+      },
+      "drum_clean_last_cleaned": {
+        "name": "Ultima pulizia cestello"
+      },
+      "quick_wash": {
+        "name": "Lavaggio rapido",
+        "state": {
+          "not_used": "Non disponibile",
+          "off": "Spento",
+          "on": "Acceso"
+        }
+      },
+      "dryer_type": {
+        "name": "Tipo di asciugatrice",
+        "state": {
+          "electricity": "Elettricità",
+          "gas": "Gas"
+        }
+      },
+      "dust": {
+        "name": "Polvere"
+      },
+      "energy_kwh": {
+        "name": "Energia"
+      },
+      "usage_runtime_hours": {
+        "name": "Tempo di funzionamento"
+      },
+      "energy_last_month_kwh": {
+        "name": "Energia (mese scorso)"
+      },
+      "energy_saved_kwh": {
+        "name": "Energia risparmiata"
+      },
+      "energy_this_month_kwh": {
+        "name": "Energia (questo mese)"
+      },
+      "fan_direction": {
+        "name": "Direzione ventola"
+      },
+      "fan_speed_level": {
+        "name": "Livello velocità ventola"
+      },
+      "filter_clean_remain_time": {
+        "name": "Tempo residuo pulizia filtro"
+      },
+      "filter_progress": {
+        "name": "Avanzamento filtro"
+      },
+      "filter_usage": {
+        "name": "Utilizzo filtro"
+      },
+      "fine_dust": {
+        "name": "Polvere fine"
+      },
+      "finish_time": {
+        "name": "Fine stimata"
+      },
+      "completion_minutes": {
+        "name": "Tempo di completamento"
+      },
+      "freezer_temperature": {
+        "name": "Temperatura congelatore"
+      },
+      "fridge_temperature": {
+        "name": "Temperatura frigorifero"
+      },
+      "kimchi_ripening_status": {
+        "name": "{instance_name}: stato maturazione"
+      },
+      "kimchi_ripening_remaining": {
+        "name": "{instance_name}: tempo residuo maturazione"
+      },
+      "kimchi_rack_count": {
+        "name": "{instance_name}: numero ripiani"
+      },
+      "hood_filter_capacity": {
+        "name": "Capacità filtro"
+      },
+      "humidity": {
+        "name": "Umidità"
+      },
+      "hood_filter_usage": {
+        "name": "Utilizzo filtro"
+      },
+      "instance_temperature": {
+        "name": "{instance_name}: temperatura"
+      },
+      "job_beginning_status": {
+        "name": "Stato avvio ciclo"
+      },
+      "last_air_sensing_level": {
+        "name": "Ultimo livello rilevamento aria"
+      },
+      "last_air_sensing_time": {
+        "name": "Ultimo orario rilevamento aria"
+      },
+      "main_timer_current": {
+        "name": "Valore attuale timer"
+      },
+      "main_timer_state": {
+        "name": "Stato timer"
+      },
+      "odor": {
+        "name": "Odore"
+      },
+      "operating_mode": {
+        "name": "Modalità operativa"
+      },
+      "operation_origin": {
+        "name": "Ultima origine operazione"
+      },
+      "operation_time_minutes": {
+        "name": "Tempo di funzionamento"
+      },
+      "oven_state": {
+        "name": "Stato camera di cottura"
+      },
+      "cavity_state": {
+        "name": "Stato camera di cottura"
+      },
+      "power_level": {
+        "name": "Livello potenza"
+      },
+      "paired_hood_fan_speed": {
+        "name": "Velocità ventola cappa abbinata"
+      },
+      "paired_hood_firmware": {
+        "name": "Firmware cappa abbinata"
+      },
+      "paired_hood_model": {
+        "name": "Modello cappa abbinata"
+      },
+      "power_energy_kwh": {
+        "name": "Energia"
+      },
+      "power_watts": {
+        "name": "Potenza"
+      },
+      "probe_battery": {
+        "name": "Batteria sonda"
+      },
+      "probe_target_temperature": {
+        "name": "Temperatura obiettivo sonda"
+      },
+      "probe_temperature": {
+        "name": "Temperatura sonda"
+      },
+      "progress": {
+        "name": "Avanzamento",
+        "state": {
+          "idle": "Inattivo",
+          "delaywash": "Ritardo di avvio",
+          "weightsensing": "Rilevamento del carico",
+          "wash": "Lavaggio",
+          "rinse": "Risciacquo",
+          "spin": "Centrifuga",
+          "finish": "Completato",
+          "steaming": "Vapore",
+          "airwashing": "Lavaggio ad aria",
+          "drying": "Asciugatura",
+          "dryingwithdooropen": "Ventilazione",
+          "cooling": "Raffreddamento",
+          "predrain": "Scarico preliminare",
+          "prewash": "Prelavaggio",
+          "sanitizing": "Igienizzazione"
+        }
+      },
+      "progress_percentage": {
+        "name": "Avanzamento percentuale"
+      },
+      "selfcheck_error": {
+        "name": "Errore autodiagnosi"
+      },
+      "selfcheck_result": {
+        "name": "Risultato autodiagnosi"
+      },
+      "selfcheck_status": {
+        "name": "Stato autodiagnosi"
+      },
+      "sterilize_last_time": {
+        "name": "Ultima sterilizzazione"
+      },
+      "sterilize_period": {
+        "name": "Periodo sterilizzazione"
+      },
+      "sterilize_plan_time": {
+        "name": "Orario sterilizzazione pianificata"
+      },
+      "sterilize_run_time": {
+        "name": "Durata sterilizzazione"
+      },
+      "super_fine_dust": {
+        "name": "Polvere ultrafine"
+      },
+      "warming_center_state": {
+        "name": "Stato zona scaldavivande"
+      },
+      "water_liters": {
+        "name": "Consumo d'acqua"
+      },
+      "waterpurifier_status": {
+        "name": "Stato"
+      },
+      "cup_state": {
+        "name": "Stato tazza"
+      },
+      "last_pour_type": {
+        "name": "Ultimo tipo di erogazione"
+      },
+      "last_pour_capacity": {
+        "name": "Ultima quantità erogata"
+      },
+      "machine_state": {
+        "name": "Stato macchina",
+        "state": {
+          "idle": "Inattivo",
+          "active": "Attivo",
+          "pause": "In pausa"
+        }
+      },
+      "filter_status": {
+        "name": "Stato filtro",
+        "state": {
+          "normal": "Normale",
+          "wash": "Lavare",
+          "replace": "Sostituire"
+        }
+      },
+      "ice_making_status": {
+        "name": "{instance_name}: stato produzione",
+        "state": {
+          "icestatus_stop": "Inattivo",
+          "icestatus_run": "Produzione ghiaccio"
+        }
+      },
+      "zone_temperature": {
+        "name": "Temperatura zona"
+      },
+      "zone2_temperature": {
+        "name": "Temperatura zona 2"
+      },
+      "watertank_full_alarm_status": {
+        "name": "Stato allarme serbatoio d'acqua pieno"
+      },
+      "air_filter_pm1_usage": {
+        "name": "Utilizzo del filtro PM1"
+      },
+      "air_filter_pm1_usage_hours": {
+        "name": "Ore di utilizzo del filtro PM1"
+      },
+      "active_burners": {
+        "name": "Bruciatori attivi"
+      },
+      "cooktop_monitoring": {
+        "name": "Monitoraggio piano cottura"
+      },
+      "booster_angle_location": {
+        "name": "Posizione angolo booster"
+      },
+      "cooking_mode": {
+        "name": "Modalità di cottura",
+        "state": {
+          "no_operation": "Nessuna operazione",
+          "micro_wave": "Microonde",
+          "autocook": "Cottura automatica",
+          "keep_warm": "Mantieni caldo"
+        }
+      },
+      "cook_time": {
+        "name": "Tempo di cottura"
+      },
+      "cook_time_remaining": {
+        "name": "Tempo di cottura rimanente"
+      },
+      "cook_finish_time": {
+        "name": "Fine cottura"
+      },
+      "sub_operation": {
+        "name": "Sotto-operazione"
+      },
+      "hood_fan_speed": {
+        "name": "Velocità ventola",
+        "state": {
+          "off": "Spenta",
+          "low": "Bassa",
+          "medium": "Media",
+          "high": "Alta",
+          "boost": "Turbo"
+        }
+      },
+      "hood_lamp": {
+        "name": "Lampada",
+        "state": {
+          "off": "Spenta",
+          "medium": "Media",
+          "on": "Accesa"
+        }
+      },
+      "dual_setpoint_cooling": {
+        "name": "Doppio setpoint raffreddamento"
+      },
+      "dual_setpoint_heating": {
+        "name": "Doppio setpoint riscaldamento"
+      },
+      "auto_changeover_cool_primary_offset": {
+        "name": "Commutazione automatica offset primario raffreddamento"
+      },
+      "auto_changeover_cool_secondary_offset": {
+        "name": "Commutazione automatica offset secondario raffreddamento"
+      },
+      "auto_changeover_heat_primary_offset": {
+        "name": "Commutazione automatica offset primario riscaldamento"
+      },
+      "auto_changeover_heat_secondary_offset": {
+        "name": "Commutazione automatica offset secondario riscaldamento"
+      }
+    },
+    "switch": {
+      "night_lighting_schedule": {
+        "name": "Programma illuminazione notturna"
+      },
+      "ai_energy_level": {
+        "name": "AI Energy Mode"
+      },
+      "air_monitoring": {
+        "name": "Monitoraggio aria"
+      },
+      "air_purify": {
+        "name": "Purificazione aria"
+      },
+      "auto_clean": {
+        "name": "Pulizia automatica"
+      },
+      "absence_power_saving_active": {
+        "name": "Risparmio energetico in assenza attivo"
+      },
+      "absence_clean": {
+        "name": "Pulizia in assenza"
+      },
+      "motion_detect_wind_active": {
+        "name": "Elusione flusso d'aria a rilevamento movimento attiva"
+      },
+      "beep": {
+        "name": "Segnale acustico"
+      },
+      "display": {
+        "name": "Display"
+      },
+      "periodic_air_sensing": {
+        "name": "AI Purify"
+      },
+      "periodic_sensing_skip_status": {
+        "name": "Esclusione rilevamento AI Purify"
+      },
+      "pet_filter_activation": {
+        "name": "Attivazione filtro animali"
+      },
+      "auto_empty": {
+        "name": "Svuotamento automatico"
+      },
+      "dustbin_auto_close": {
+        "name": "Chiusura automatica contenitore polvere"
+      },
+      "spi": {
+        "name": "Ionizzazione purificante"
+      },
+      "uvc_intensive_mode": {
+        "name": "Modalità intensiva UV-C"
+      },
+      "auto_door_opener": {
+        "name": "Apertura automatica sportello"
+      },
+      "auto_door_sound_control": {
+        "name": "Suono apertura automatica sportello"
+      },
+      "auto_door_voice_control": {
+        "name": "Controllo vocale apertura automatica sportello"
+      },
+      "auto_release_dry": {
+        "name": "Apertura automatica per asciugatura"
+      },
+      "autofill": {
+        "name": "Riempimento automatico caraffa"
+      },
+      "bubble_soak": {
+        "name": "Smacchia tutto+"
+      },
+      "buzz_lock": {
+        "name": "Blocco cicalino"
+      },
+      "cabinet_light_dim": {
+        "name": "Aumento graduale luminosità"
+      },
+      "cabinet_light_switch": {
+        "name": "Luce vano"
+      },
+      "child_lock": {
+        "name": "Blocco Bambini"
+      },
+      "coldwater_lock": {
+        "name": "Blocco acqua fredda"
+      },
+      "cooktop_child_lock": {
+        "name": "Blocco Bambini"
+      },
+      "defrost_delay": {
+        "name": "Ritardo sbrinamento"
+      },
+      "display_light": {
+        "name": "Luce display"
+      },
+      "dnd": {
+        "name": "Non disturbare"
+      },
+      "fast_preheat": {
+        "name": "Preriscaldamento rapido"
+      },
+      "favorite_capacity_enabled": {
+        "name": "Capacità preferita"
+      },
+      "favorite_coffee_enabled": {
+        "name": "Caffè preferito"
+      },
+      "filter_remind": {
+        "name": "Promemoria filtro"
+      },
+      "fridge_sound": {
+        "name": "Suono"
+      },
+      "hotwater_lock": {
+        "name": "Blocco acqua calda"
+      },
+      "ice_maker_enabled": {
+        "name": "Produttore di ghiaccio"
+      },
+      "ice_night_mode": {
+        "name": "Modalità silenziosa ghiaccio notturna"
+      },
+      "ai_precise_cooling": {
+        "name": "Raffreddamento preciso IA"
+      },
+      "instance_enabled": {
+        "name": "{instance_name} abilitato"
+      },
+      "intensive": {
+        "name": "Intensivo"
+      },
+      "add_wash_alarm": {
+        "name": "Avviso AddWash"
+      },
+      "add_wash_alarm_rinse": {
+        "name": "AddWash al risciacquo"
+      },
+      "add_wash_alarm_final_rinse": {
+        "name": "AddWash all'ultimo risciacquo"
+      },
+      "add_wash_alarm_spin": {
+        "name": "AddWash alla centrifuga"
+      },
+      "lamp": {
+        "name": "Lampada"
+      },
+      "led_night_light": {
+        "name": "Luce notturna LED sportello"
+      },
+      "mute_once": {
+        "name": "Silenzia una volta"
+      },
+      "natural_steam": {
+        "name": "Vapore naturale"
+      },
+      "energy_saving": {
+        "name": "Risparmio energetico"
+      },
+      "cooktop_on_alert": {
+        "name": "Avviso piano cottura acceso"
+      },
+      "power_switch": {
+        "name": "Potenza"
+      },
+      "pre_wash": {
+        "name": "Prelavaggio"
+      },
+      "rapid_freezing": {
+        "name": "Congelamento rapido"
+      },
+      "rapid_fridge": {
+        "name": "Raffreddamento rapido"
+      },
+      "remind_beep": {
+        "name": "Promemoria segnale di fine"
+      },
+      "sabbath_mode": {
+        "name": "Modalità sabbath"
+      },
+      "sanitize": {
+        "name": "Igienizzazione"
+      },
+      "sound": {
+        "name": "Suono"
+      },
+      "station_light": {
+        "name": "Luce della stazione"
+      },
+      "storm_wash": {
+        "name": "Storm Wash+"
+      },
+      "welcome_lighting": {
+        "name": "Illuminazione di benvenuto"
+      },
+      "wrinkle_prevent": {
+        "name": "Antipiega"
+      },
+      "zone_power": {
+        "name": "Alimentazione zona"
+      },
+      "away_mode": {
+        "name": "Modalità assenza"
+      },
+      "watertank_light": {
+        "name": "Luce del serbatoio dell'acqua"
+      },
+      "uv_led": {
+        "name": "LED UV"
+      },
+      "ventilation_alarm": {
+        "name": "Allarme ventilazione"
+      },
+      "edge_lighting": {
+        "name": "Illuminazione perimetrale"
+      },
+      "indicator_light": {
+        "name": "Spia luminosa"
+      },
+      "windfree": {
+        "name": "Modalità Wind-Free"
+      },
+      "windsleep": {
+        "name": "Modalità notte"
+      },
+      "auto_detergent": {
+        "name": "Detersivo automatico"
+      },
+      "auto_softener": {
+        "name": "Ammorbidente automatico"
+      },
+      "booster_light": {
+        "name": "Luce booster"
+      },
+      "booster_light_manual_brightness": {
+        "name": "Luminosità manuale booster"
+      },
+      "booster_oscillation": {
+        "name": "Oscillazione booster"
+      },
+      "auto_changeover": {
+        "name": "Commutazione automatica"
+      },
+      "interlock": {
+        "name": "Interblocco"
+      },
+      "speed_booster": {
+        "name": "Speed Booster"
+      },
+      "damp_alert": {
+        "name": "Avviso di umidità"
+      },
+      "extra_rinse": {
+        "name": "Risciacquo extra"
+      }
+    },
+    "time": {
+      "delay_finish_at": {
+        "name": "Termina alle"
+      },
+      "dnd_end": {
+        "name": "Fine non disturbare"
+      },
+      "dnd_start": {
+        "name": "Inizio non disturbare"
+      },
+      "led_night_end": {
+        "name": "Fine luce notturna LED sportello"
+      },
+      "led_night_start": {
+        "name": "Inizio luce notturna LED sportello"
+      },
+      "ice_night_end": {
+        "name": "Fine modalità silenziosa ghiaccio notturna"
+      },
+      "ice_night_start": {
+        "name": "Inizio modalità silenziosa ghiaccio notturna"
+      },
+      "night_end": {
+        "name": "Fine luce notturna"
+      },
+      "night_start": {
+        "name": "Inizio luce notturna"
+      },
+      "sensing_skip_end": {
+        "name": "Fine esclusione rilevamento AI Purify"
+      },
+      "sensing_skip_start": {
+        "name": "Inizio esclusione rilevamento AI Purify"
+      }
+    },
+    "water_heater": {
+      "dhw": {
+        "name": "Acqua calda"
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Aggiungi un elettrodomestico Samsung",
+        "description": "Inserisci l'indirizzo IP del tuo dispositivo Samsung. LocalThings lo configura automaticamente con un certificato autofirmato: la maggior parte dei dispositivi non richiede altro.",
+        "data": {
+          "host": "Indirizzo IP"
+        },
+        "data_description": {
+          "host": "Indirizzo IP locale del tuo dispositivo Samsung (ad esempio 192.168.1.50)."
+        }
+      },
+      "user_reuse": {
+        "title": "Aggiungi un elettrodomestico Samsung",
+        "description": "Inserisci l'indirizzo IP del tuo dispositivo Samsung. Le credenziali CA di un dispositivo LocalThings esistente verranno riutilizzate.",
+        "data": {
+          "host": "Indirizzo IP"
+        },
+        "data_description": {
+          "host": "Indirizzo IP locale del tuo dispositivo Samsung (ad esempio 192.168.1.50)."
+        }
+      },
+      "credential": {
+        "title": "Certificato rifiutato",
+        "description": "{host} ha rifiutato il certificato automatico. Alcuni elettrodomestici usano una chiave precondivisa invece di un certificato. LocalThings non può ottenere quella chiave da solo, quindi importane una che possiedi già. Viene offerto anche un certificato CA AC14K_M, ma non è stato segnalato alcun elettrodomestico che, dopo aver rifiutato il certificato automatico, lo abbia accettato.\n\nGli elettrodomestici che usano una chiave precondivisa sono qualcosa che stiamo ancora cercando di capire, ed è probabile che tu incontri problemi. Il nostro piano, quanto scoperto finora e un posto dove lasciare un riscontro sono nella [segnalazione #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Importa una chiave precondivisa del proprietario",
+          "psk_peer": "Importa una chiave precondivisa peer",
+          "fallback_ca": "Prova un certificato CA AC14K_M"
+        }
+      },
+      "credential_psk": {
+        "title": "Questo elettrodomestico probabilmente usa una chiave precondivisa",
+        "description": "{host} ha rifiutato il certificato automatico e i suoi metadati di sicurezza non cifrati indicano che si autentica invece con una chiave precondivisa. LocalThings non può ottenere quella chiave da solo, quindi importane una che possiedi già. Viene offerto anche un certificato CA AC14K_M, ma non è stato segnalato alcun elettrodomestico che, dopo aver rifiutato il certificato automatico, lo abbia accettato.\n\nGli elettrodomestici che usano una chiave precondivisa sono qualcosa che stiamo ancora cercando di capire, ed è probabile che tu incontri problemi. Il nostro piano, quanto scoperto finora e un posto dove lasciare un riscontro sono nella [segnalazione #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Importa una chiave precondivisa del proprietario",
+          "psk_peer": "Importa una chiave precondivisa peer",
+          "fallback_ca": "Prova un certificato CA AC14K_M"
+        }
+      },
+      "ca_rejected": {
+        "title": "Certificato ancora rifiutato",
+        "description": "{host} ha rifiutato anche il certificato firmato da quella CA. Corrisponde a tutte le segnalazioni finora: nessun elettrodomestico che ha rifiutato il certificato automatico ha accettato una CA AC14K_M. Potrebbe usare una chiave precondivisa. Il log di Home Assistant riporta l'avviso esatto.\n\nGli elettrodomestici che usano una chiave precondivisa sono qualcosa che stiamo ancora cercando di capire, ed è probabile che tu incontri problemi. Il nostro piano, quanto scoperto finora e un posto dove lasciare un riscontro sono nella [segnalazione #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Importa una chiave precondivisa del proprietario",
+          "psk_peer": "Importa una chiave precondivisa peer",
+          "fallback_ca": "Inserisci di nuovo la CA"
+        }
+      },
+      "fallback_ca": {
+        "title": "Certificato CA AC14K_M",
+        "description": "Incolla il certificato della CA AC14K_M e la relativa chiave privata. LocalThings li usa per firmare un certificato di dispositivo per {host}.",
+        "data": {
+          "ca_cert_pem": "Certificato CA (PEM)",
+          "ca_key_pem": "Chiave privata CA (PEM)"
+        },
+        "data_description": {
+          "ca_cert_pem": "La catena di certificati CA AC14K_M codificata in formato PEM. Incolla l'intero contenuto del tuo file PEM dell'intera catena, inclusi tutti i blocchi BEGIN/END CERTIFICATE.",
+          "ca_key_pem": "La chiave privata AC14K_M codificata in formato PEM. Incollare l'intero contenuto, inclusi l'intestazione e il piè di pagina BEGIN/END PRIVATE KEY."
+        }
+      },
+      "psk_owner": {
+        "title": "Chiave precondivisa del proprietario",
+        "description": "Inserisci la chiave precondivisa del proprietario di {host}. L'identità è l'UUID del proprietario OCF, precompilato se l'elettrodomestico lo riporta. LocalThings verifica la chiave sull'elettrodomestico, e registra quale elettrodomestico ha risposto, prima di aggiungerlo.\n\nGli elettrodomestici che usano una chiave precondivisa sono qualcosa che stiamo ancora cercando di capire, ed è probabile che tu incontri problemi. Il nostro piano, quanto scoperto finora e un posto dove lasciare un riscontro sono nella [segnalazione #435]({issue_url}).",
+        "data": {
+          "psk_identity": "Identità (UUID del proprietario)",
+          "psk_key": "Chiave"
+        },
+        "data_description": {
+          "psk_key": "32 o 64 caratteri esadecimali."
+        }
+      },
+      "psk_peer": {
+        "title": "Chiave precondivisa peer",
+        "description": "Inserisci la credenziale peer installata su {host} accanto alla proprietà di Samsung, esattamente come l'ha riportata lo strumento che l'ha installata. Né l'identità né la chiave si possono leggere dall'elettrodomestico. LocalThings verifica la chiave sull'elettrodomestico, e registra quale elettrodomestico ha risposto, prima di aggiungerlo.\n\nGli elettrodomestici che usano una chiave precondivisa sono qualcosa che stiamo ancora cercando di capire, ed è probabile che tu incontri problemi. Il nostro piano, quanto scoperto finora e un posto dove lasciare un riscontro sono nella [segnalazione #435]({issue_url}).",
+        "data": {
+          "psk_identity": "Identità (UUID del peer)",
+          "psk_key": "Chiave"
+        },
+        "data_description": {
+          "psk_key": "32 o 64 caratteri esadecimali."
+        }
+      },
+      "reconfigure": {
+        "title": "Modifica l'indirizzo dell'elettrodomestico",
+        "description": "Inserisci l'indirizzo IP attuale dell'elettrodomestico. Tutto il resto resta invariato: entità, cronologia e automazioni vengono mantenute.",
+        "data": {
+          "host": "Indirizzo IP"
+        },
+        "data_description": {
+          "host": "Indirizzo IP locale del tuo dispositivo Samsung (ad esempio 192.168.1.50)."
+        }
+      },
+      "confirm_unknown_type": {
+        "title": "Tipo di elettrodomestico non riconosciuto",
+        "description": "Questo apparecchio dichiara il modello \"{model}\", un tipo che LocalThings non riconosce ancora. Verrà comunque aggiunto, ma solo con le funzionalità di base (alimentazione, allarmi, ... se presenti) anziché con tutte le funzionalità della sua famiglia. Puoi contribuire all'aggiunta del supporto completo in seguito scaricando i dati diagnostici per questo dispositivo (Impostazioni > Dispositivi e servizi > questo dispositivo > il menu > Scarica diagnostica) e inviandoli in una nuova segnalazione. Invia comunque la segnalazione per aggiungerlo."
+      },
+      "legacy_token": {
+        "title": "Token del dispositivo",
+        "description": "Questo elettrodomestico ({host}) usa la vecchia API locale di Samsung, che oltre al certificato richiede un token del dispositivo.\n\nLascia il campo vuoto e invia per farlo emettere all'elettrodomestico stesso: gli verrà chiesto un token e lo rispedirà a Home Assistant sulla porta 8889. Attiva prima il controllo remoto (Smart Control) sull'elettrodomestico, con lo sportello chiuso, altrimenti si scollega dal Wi-Fi in pochi minuti e non risponde più. Può richiedere fino a un minuto e mezzo.\n\nSe l'elettrodomestico non raggiunge Home Assistant sulla porta 8889, procurati un token in altro modo e incollalo qui.",
+        "data": {
+          "device_token": "Token del dispositivo (vuoto per richiederlo)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Token del dispositivo rifiutato",
+        "description": "{host} non accetta più il suo token del dispositivo. Lascia vuoto il campo e invia per far emettere un nuovo token all'apparecchio (controllo remoto attivo, sportello chiuso e porta 8889 raggiungibile su Home Assistant), oppure incolla un token ottenuto in altro modo.",
+        "data": {
+          "device_token": "Token del dispositivo (lascia vuoto per richiederne uno)"
+        }
+      }
+    },
+    "error": {
+      "no_response": "Nessuna risposta da quell'indirizzo IP: non è arrivato nulla su nessuna porta dell'intervallo dell'API locale dell'apparecchio (UDP 49152-49160). Verifica che l'indirizzo IP sia corretto, che l'apparecchio sia acceso e sulla stessa rete di Home Assistant e che nessun firewall stia scartando il traffico UDP diretto a esso.",
+      "ports_closed": "Quell'indirizzo IP è raggiungibile, ma ha rifiutato attivamente tutte le porte dell'intervallo dell'API locale (UDP 49152-49160) e non ha risposto nulla sul canale discovery. Molto probabilmente non è un apparecchio Samsung, oppure è un apparecchio senza l'API locale attivata.",
+      "no_dtls_server": "Le porte dell'intervallo dell'API locale sono raggiungibili a quell'indirizzo, ma nulla ha risposto a un handshake DTLS. Verifica che l'indirizzo IP appartenga all'apparecchio e non a un altro dispositivo della rete.",
+      "appliance_no_dtls": "Quell'indirizzo è un apparecchio Samsung: si è identificato come {model} sul canale discovery non cifrato e ha dichiarato {port} come sua porta sicura, ma non ha mai completato un handshake DTLS su di essa. L'indirizzo non è il problema. Verifica che il Controllo remoto o un'impostazione simile non sia disattivata sul pannello dell'apparecchio, e consulta il log di Home Assistant per l'errore esatto.",
+      "non_appliance_stack": "Qualcosa ha risposto a quell'indirizzo IP, ma si è identificato come un servizio OCF che non è un elettrodomestico. Alcuni elettrodomestici Samsung ne eseguono uno accanto al proprio, e LocalThings trova l'elettrodomestico dietro di esso solo quando Home Assistant è nello stesso segmento di rete. Metti Home Assistant e l'elettrodomestico nella stessa sottorete e VLAN, poi riprova.",
+      "multiple_appliances": "A quell'indirizzo IP risponde più di un elettrodomestico Samsung e LocalThings non sa ancora scegliere tra loro. Segnalalo nel tracker delle issue di LocalThings e allega il log di Home Assistant.",
+      "handshake_timeout": "L'elettrodomestico ha risposto sulla sua porta dell'API locale ma non ha completato l'handshake DTLS, nemmeno dopo un nuovo tentativo. Riprova. Se continua a non riuscire, riavviare l'apparecchio libera le connessioni che sta ancora mantenendo; il log di Home Assistant riporta l'errore esatto.",
+      "cert_rejected": "L'apparecchio ha rifiutato il certificato. Con ogni probabilità il certificato e la chiave della CA non sono quelli della CA AC14K_M di cui questo apparecchio si fida, oppure non corrispondono tra loro. Il log di Home Assistant riporta l'alert esatto inviato dall'apparecchio.",
+      "psk_rejected": "L'elettrodomestico ha rifiutato la chiave precondivisa. L'identità o la chiave sono errate, oppure appartengono a un altro elettrodomestico o a un proprietario nel frattempo cambiato. Il log di Home Assistant riporta l'avviso esatto.",
+      "identity_unproven": "La chiave ha funzionato, ma l'elettrodomestico non ha riportato il proprio ID dispositivo OCF sulla connessione cifrata, quindi LocalThings non può confermare quale elettrodomestico possiede la chiave e non lo aggiungerà. Riprova mentre l'elettrodomestico è attivo. Se continua a succedere, faccelo sapere nella [segnalazione #435]({issue_url}) allegando il log di Home Assistant.",
+      "invalid_psk_identity": "Inserisci l'identità come UUID, ad esempio 12345678-1234-1234-1234-123456789abc.",
+      "psk_identity_zero_byte": "Questo UUID contiene un byte zero che il trasporto installato non può inviare. Mantieni invariata l'identità recuperata.",
+      "invalid_psk_key": "Inserisci la chiave come 32 o 64 caratteri esadecimali.",
+      "handshake_failed": "L'apparecchio ha rifiutato l'handshake DTLS per un motivo non legato al certificato, molto probabilmente un'incompatibilità di protocollo o di cifratura. Il log di Home Assistant riporta l'alert esatto inviato.",
+      "cloud_unreachable": "Impossibile raggiungere il gateway cloud di Samsung per ottenere l'UUID necessario a emettere il certificato di questo dispositivo. Verifica l'accesso a internet di Home Assistant e riprova.",
+      "unexpected_response": "Connessione al dispositivo riuscita, ma non ha restituito una descrizione del dispositivo utilizzabile. Potrebbe non essere un apparecchio supportato da questa integrazione. Il log di Home Assistant riporta ciò che ha inviato.",
+      "cannot_connect": "Impossibile connettersi al dispositivo. Verifica che l'indirizzo IP sia corretto e che il dispositivo sia acceso e connesso alla rete.",
+      "invalid_ca": "Impossibile caricare il certificato CA o la chiave privata. Verificare che il contenuto del file PEM sia corretto e che la chiave corrisponda al certificato.",
+      "unknown": "Errore imprevisto. Controlla i registri di Home Assistant per i dettagli.",
+      "wrong_device": "A quell'indirizzo ha risposto un elettrodomestico Samsung, ma non è questo: ha dichiarato un'identità diversa. Verifica che l'indirizzo appartenga a questo dispositivo. Per aggiungere l'altro, usa Aggiungi dispositivo.",
+      "token_not_received": "Non è arrivato alcun token del dispositivo. Verifica che il controllo remoto sia attivo sull'elettrodomestico con lo sportello chiuso e che riesca a raggiungere Home Assistant sulla porta 8889, oppure incolla un token ottenuto in altro modo.",
+      "invalid_token": "L'apparecchio ha rifiutato quel token. Lascia vuoto il campo per richiederne uno nuovo.",
+      "callback_port_in_use": "La porta 8889 è già in uso su Home Assistant, di solito da una richiesta di token ancora in attesa. Riprova tra un minuto e mezzo.",
+      "callback_cert_rejected": "L'elettrodomestico ha risposto sulla porta 8889 ma ha rifiutato il certificato autofirmato di Home Assistant. Incolla il certificato e la chiave della CA AC14K_M perché LocalThings ne firmi uno accettato; poi la richiesta del token verrà ripetuta.",
+      "callback_ca_rejected": "L'elettrodomestico ha risposto sulla porta 8889 ma ha rifiutato anche il certificato firmato con AC14K_M. Incolla un token ottenuto in altro modo e controlla il log di Home Assistant per l'errore di handshake."
+    },
+    "abort": {
+      "already_configured": "Il dispositivo è già configurato",
+      "already_in_progress": "La configurazione è già in corso",
+      "reconfigure_successful": "Indirizzo aggiornato",
+      "no_entry_for_mac": "Nessun dispositivo configurato conserva quell'indirizzo MAC",
+      "reauth_successful": "Il nuovo token funziona; l'apparecchio si sta riconnettendo.",
+      "reauth_unsupported": "Questo apparecchio non ha credenziali da rinnovare qui. Se ha smesso di rispondere, rimuovilo e aggiungilo di nuovo."
+    },
+    "progress": {
+      "legacy_token": "In attesa che {host} invii un token del dispositivo a Home Assistant sulla porta 8889. Richiede fino a un minuto e mezzo."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni LocalThings",
+        "menu_options": {
+          "settings": "Impostazioni dispositivo",
+          "cloud_courses": "Cicli scaricati",
+          "forget_learned_modes": "Dimentica le modalità memorizzate",
+          "debug_write": "Debug: scrivi su una risorsa"
+        }
+      },
+      "settings": {
+        "title": "Impostazioni dispositivo",
+        "description": "Alcuni dispositivi accettano determinate scritture (ad esempio, il dosaggio predefinito di detersivo/ammorbidente su una lavatrice) anche quando segnalano che il controllo remoto è disattivato. Per impostazione predefinita, LocalThings blocca ogni scrittura con un errore chiaro ogni volta che un dispositivo segnala che il controllo remoto è disattivato, invece di consentire al dispositivo di rifiutarla silenziosamente. Abilitare questa opzione solo se si è verificato che le scritture funzionano effettivamente su questo dispositivo con il controllo remoto disattivato; in caso contrario, si sostituirà l'errore chiaro con un errore silenzioso.\n\nIl tempo di fine stimato viene ricalcolato dalla stima del tempo rimanente del dispositivo a ogni interrogazione, che può variare o essere rivista di uno o due minuti tra un aggiornamento e l'altro. Aumentare il valore di variazione minima riportato di seguito per mantenere il sensore al suo ultimo valore segnalato finché la stima non si sposta di almeno quel numero di minuti, riducendo il rumore nella cronologia/registro. Impostarlo su 0 per segnalare ogni variazione calcolata.\n\nAlcuni modelli segnalano una modalità che non elencano mai tra quelle supportate: ad esempio un condizionatore in modalità Quiet che offre solo Off/Sleep/Speed. LocalThings memorizza ogni modalità di questo tipo che rileva e continua a proporla, così resta selezionabile una volta che il dispositivo vi è stato almeno una volta. Disattivare questa opzione per proporre solo ciò che il dispositivo dichiara; usare «Dimentica le modalità memorizzate» nella schermata precedente per cancellare quanto già memorizzato. Un dispositivo per il bucato con cicli scaricati dal cloud riceve qui un promemoria non appena ne segnala uno che Home Assistant non può ancora offrire -- alcuni dispositivi ne segnalano uno anche se non è mai stata aperta la schermata \"Cicli scaricati\" dell'app SmartThings. Disattivarlo per interrompere il promemoria e nascondere dall'elenco dei cicli quelli scaricati già nominati; nulla di quanto già configurato va perso, e riattivandolo riappare subito.",
+        "data": {
+          "bypass_remote_control_lock": "Consenti la scrittura anche quando il controllo remoto risulta disattivato.",
+          "finish_time_hysteresis_minutes": "Tempo finale stimato - variazione minima (minuti)",
+          "learn_device_modes": "Memorizza le modalità che il dispositivo segnala ma non dichiara supportate",
+          "cloud_courses_enabled": "Offri cicli scaricati"
+        }
+      },
+      "forget_learned_modes": {
+        "title": "Dimentica le modalità memorizzate",
+        "description": "Attualmente memorizzate: {codes}\n\nSono modalità in cui questo dispositivo si è dichiarato senza elencarle tra quelle supportate; vengono conservate perché restino selezionabili. Dimenticarle è la soluzione se una si è rivelata errata: qualsiasi modalità che il dispositivo segnali davvero di nuovo verrà memorizzata un'altra volta, a meno che non si disattivi anche «Memorizza le modalità che il dispositivo segnala ma non dichiara supportate» nelle impostazioni del dispositivo."
+      },
+      "debug_write": {
+        "title": "Debug: scrivi su una risorsa",
+        "description": "Strumento avanzato per definire con precisione il comportamento di scrittura specifico del dispositivo. Seleziona la risorsa (href) su cui desideri scrivere oppure digitane una personalizzata non presente nell'elenco. Questo bypassa il blocco di disattivazione del controllo remoto e invia esattamente i campi specificati; tuttavia, potrebbe causare una configurazione errata del dispositivo, quindi utilizzalo con cautela.",
+        "data": {
+          "href": "Risorsa href"
+        }
+      },
+      "debug_edit": {
+        "title": "Scrittura di debug: {href}",
+        "description": "Valore corrente di `{href}`:\n```\n{current_value}\n```\nInserisci SOLO il/i campo/i che desideri modificare qui sotto. Ciò che inserisci viene inviato al dispositivo così com'è (un aggiornamento parziale); NON viene unito ai campi mostrati sopra, quindi non incollare l'intero valore. Fai attenzione ai tipi: una stringa numerica come \"1\" deve rimanere tra virgolette; un semplice 1 viene inviato come numero intero, che alcuni dispositivi rifiutano.",
+        "data": {
+          "payload": "Payload da scrivere"
+        }
+      },
+      "debug_result": {
+        "title": "Risultato della scrittura di debug",
+        "description": "Il dispositivo ha restituito il codice CoAP {code}. Una classe 2.xx significa che la scrittura è stata accettata; 4.xx/5.xx significa che è stata rifiutata. La risorsa ora legge:\n```\n{new_value}\n```\nSe il valore non è cambiato, è probabile che il dispositivo abbia rifiutato la scrittura. Scegli cosa fare dopo:",
+        "menu_options": {
+          "debug_write": "Scrivi un'altra risorsa",
+          "finish": "Fine"
+        }
+      },
+      "cloud_manual": {
+        "title": "Cicli scaricati",
+        "description": "Questo dispositivo segnala {total} cicli scaricati; finora ne sono stati rilevati {found}.\n\nLe impostazioni di un ciclo scaricato sono visibili solo mentre quel ciclo è caricato, e il dispositivo non ne segnala mai il nome. Per aggiungere quelli mancanti ({pending}): nell'app SmartThings (non sul dispositivo), aprire questo dispositivo e toccare \"Cicli scaricati\" -- una riga separata da \"Ciclo\", più in basso nella schermata, ed è quella che conta qui. Scorrere ciascun programma scaricato uno alla volta, sostando qualche secondo su ognuno perché LocalThings possa rilevarlo, e tornare qui.\n\nAssegnare a ciascuno il nome che si desidera vedere in Home Assistant. Lasciare un nome vuoto per escludere quel ciclo dall'elenco dei cicli. I nomi devono essere univoci.\n\nIl ciclo Scaricato è il programma su questo dispositivo che esegue un programma scaricato. Viene rilevato automaticamente, ma confermarlo qui prima dell'uso: selezionare un ciclo scaricato scrive questo codice di programma sul dispositivo.",
+        "data": {
+          "download_course": "Codice programma del ciclo Scaricato"
+        }
+      },
+      "cloud_courses": {
+        "title": "Cicli scaricati",
+        "description": "La configurazione guidata accompagna l'utente: nell'app SmartThings (non sul dispositivo), aprire questo dispositivo e toccare \"Cicli scaricati\" -- una riga separata da \"Ciclo\", più in basso nella schermata, ed è quella che conta qui. Scegliere un ciclo lì, poi tornare qui e assegnargli un nome non appena viene rilevato, uno alla volta.\n\nModifica nomi mostra tutto ciò che è stato trovato finora in una sola volta — usarla in seguito per rinominare o correggere qualcosa. Assegnare un nome funziona comunque, ma un ciclo con nome viene offerto come ciclo selezionabile solo quando \"Offri cicli scaricati\" è attivo nelle impostazioni del dispositivo.",
+        "menu_options": {
+          "cloud_guided": "Configurazione guidata",
+          "cloud_manual": "Modifica nomi"
+        }
+      },
+      "cloud_wait": {
+        "title": "Cicli scaricati"
+      },
+      "cloud_name": {
+        "title": "Assegna un nome a questo ciclo",
+        "description": "Lo slot \"Cicli scaricati\" del dispositivo ora contiene un nuovo ciclo (slot {slot}) e segnala {remaining} rimanenti.\n\nAssegnargli il nome che si desidera vedere in Home Assistant, quindi nella schermata \"Cicli scaricati\" dell'app SmartThings scegliere il successivo non ancora contrassegnato come \"Scaricato\". Lasciare vuoto per escludere questo ciclo dall'elenco.\n\nAssegnati finora ({named} di {total}): {named_list}\n\nI nomi devono essere univoci. È possibile chiudere questa finestra in qualsiasi momento — i nomi vengono salvati man mano.",
+        "data": {
+          "name": "Nome",
+          "download_course": "Codice programma del ciclo Scaricato"
+        }
+      },
+      "cloud_timeout": {
+        "title": "Nessun ciclo selezionato",
+        "description": "Non è cambiato nulla sul dispositivo. Assicurarsi di aver toccato \"Cicli scaricati\" nell'app SmartThings -- una riga separata da \"Ciclo\", più in basso nella schermata -- e di aver scelto un ciclo non ancora contrassegnato come \"Scaricato\", quindi di aver toccato Fine.\n\nAssegnati finora ({named} di {total}): {named_list}\n\nTutto ciò che è stato assegnato finora è già salvato.",
+        "menu_options": {
+          "cloud_guided": "Attendi di nuovo",
+          "cloud_finish": "Fine"
+        }
+      }
+    },
+    "error": {
+      "empty_payload": "Inserisci almeno un campo da scrivere.",
+      "write_failed": "Operazione di scrittura non riuscita. Controlla i registri di Home Assistant per i dettagli.",
+      "cloud_course_name_duplicate": "Due cicli hanno lo stesso nome. I nomi devono essere univoci.",
+      "cloud_course_unknown_course": "Quel programma non è tra quelli offerti da questo dispositivo. Selezionarne uno dall'elenco."
+    },
+    "abort": {
+      "not_loaded": "Questo dispositivo non è ancora connesso. Riprova dopo il caricamento."
+    },
+    "progress": {
+      "cloud_wait": "Nell'app SmartThings (non sul dispositivo), aprire questo dispositivo e toccare \"Cicli scaricati\" -- una riga separata da \"Ciclo\", più in basso nella schermata, che elenca solo i cicli rilevabili in questo modo. Scegliere uno non ancora contrassegnato come \"Scaricato\", quindi toccare Fine.\n\nIl dispositivo non deve essere nelle vicinanze né in esecuzione -- deve solo essere acceso e connesso.\n\nAssegnati finora ({named} di {total}): {named_list}\n\nÈ possibile chiudere questa finestra in qualsiasi momento — i nomi vengono salvati man mano."
+    }
+  },
+  "issues": {
+    "device_gap": {
+      "title": "Copertura delle funzionalità incompleta per {device_name}",
+      "description": "Questo dispositivo non è completamente supportato. Il tipo di dispositivo non è stato riconosciuto oppure alcune delle risorse che espone non sono ancora state modellate. Continuerò a funzionare con le funzionalità già supportate. Puoi contribuire ad ampliare il supporto andando su Impostazioni > Dispositivi e servizi > {device_name} > il menu (in alto a destra) > Scarica diagnostica, quindi inviando una segnalazione tramite il modulo di segnalazione collegato."
+    },
+    "cloud_courses_undiscovered": {
+      "title": "Cicli scaricati non configurati per {device_name}",
+      "description": "{device_name} ha {pending} cicli scaricati su {total} che Home Assistant non può ancora offrire. Un ciclo scaricato può essere usato solo dopo che il dispositivo è stato rilevato con quel ciclo caricato -- nella schermata \"Cicli scaricati\" dell'app SmartThings, non in quella \"Ciclo\" -- ed è stato assegnato un nome.\n\nPer configurarli, andare su Impostazioni > Dispositivi e servizi > LocalThings > {device_name} > Configura > Cicli scaricati e seguire le istruzioni presenti lì.\n\nNon si usano cicli scaricati? Andare invece su Configura > Impostazioni dispositivo e disattivare \"Offri cicli scaricati\" per silenziare questo promemoria definitivamente."
+    }
+  },
+  "exceptions": {
+    "remote_control_disabled": {
+      "message": "Smart Control è disattivato su questo dispositivo. Verificare sul manuale utente come abilitarlo prima che Home Assistant possa controllarlo."
+    },
+    "oven_mode_idle_not_selectable": {
+      "message": "NoOperation è lo stato che il forno riporta quando è inattivo. Non può essere selezionato come modalità; annullare la cottura dal pannello del forno."
+    },
+    "debug_payload_empty": {
+      "message": "Il payload di scrittura di debug deve essere un oggetto non vuoto."
+    },
+    "debug_batch_too_many_elements": {
+      "message": "Un payload batch deve avere da 1 a {max} elementi."
+    },
+    "debug_batch_element_invalid": {
+      "message": "Ogni elemento del batch deve essere un oggetto con href e, se presente, un rep che sia un oggetto."
+    },
+    "resource_href_required": {
+      "message": "E' richiesta una risorsa href."
+    },
+    "bubble_soak_unavailable_for_cycle": {
+      "message": "Smacchia tutto+ non è disponibile per il ciclo selezionato."
+    },
+    "pre_wash_unavailable_for_cycle": {
+      "message": "Prelavaggio non è disponibile per il ciclo selezionato."
+    },
+    "intensive_unavailable_for_cycle": {
+      "message": "Intensivo non è disponibile per il ciclo selezionato."
+    },
+    "command_failed": {
+      "message": "Il comando per {href} è fallito anche dopo la riconnessione: {error}"
+    },
+    "command_refused": {
+      "message": "L'elettrodomestico ha rifiutato il comando per {href}: {error}"
+    },
+    "command_not_confirmed": {
+      "message": "Il comando per {href} è stato inviato con Smart Control disattivato, ma l'elettrodomestico non lo mostra ancora. Se non risponde, attivare Smart Control sull'elettrodomestico."
+    },
+    "debug_read_failed": {
+      "message": "La lettura da {href} è fallita: {error}"
+    },
+    "observe_duration_out_of_range": {
+      "message": "La durata deve essere maggiore di 0 e al massimo {max} secondi."
+    },
+    "observe_not_supported": {
+      "message": "L'interfaccia di questo elettrodomestico non supporta l'osservazione delle risorse."
+    },
+    "observe_query_while_observed": {
+      "message": "{href} è già osservato da questa integrazione, quindi non può essere osservato di nuovo con una query."
+    },
+    "observe_in_progress": {
+      "message": "{href} è già osservato da un'altra chiamata. Attendi che finisca."
+    },
+    "debug_observe_failed": {
+      "message": "Osservazione di {href} non riuscita: {error}"
+    },
+    "debug_too_many_writes": {
+      "message": "Specificare da 1 a 10 scritture."
+    },
+    "debug_settle_out_of_range": {
+      "message": "settle deve essere compreso tra 0 e 30 secondi."
+    },
+    "debug_verify_after_out_of_range": {
+      "message": "verify_after deve essere compreso tra 0 e 60 secondi."
+    },
+    "service_device_target_invalid": {
+      "message": "Questo servizio richiede esattamente un dispositivo di destinazione."
+    },
+    "service_device_not_found": {
+      "message": "Nessun dispositivo corrispondente trovato per quella destinazione."
+    },
+    "service_device_not_loaded": {
+      "message": "Questo dispositivo non è ancora connesso. Riprova una volta caricato."
+    },
+    "cook_start_not_supported": {
+      "message": "Questo apparecchio non indica alcuna modalità avviabile da remoto, quindi Home Assistant non può avviarlo."
+    },
+    "cook_start_not_idle": {
+      "message": "L'apparecchio sta già cuocendo. Fermalo prima, oppure modifica temperatura e tempo durante la cottura."
+    },
+    "cook_mode_required": {
+      "message": "Scegli prima una modalità di cottura. Questo apparecchio può essere avviato in: {startable}."
+    },
+    "cook_mode_not_startable": {
+      "message": "{mode} non può essere avviata da remoto su questo apparecchio. Modalità avviabili: {startable}."
+    },
+    "cook_mode_unavailable": {
+      "message": "{mode} non è disponibile ora in questa cavità. Si può avviare: {startable}."
+    },
+    "cook_temperature_not_supported": {
+      "message": "{mode} non prevede una temperatura."
+    },
+    "cook_temperature_required": {
+      "message": "{mode} richiede una temperatura."
+    },
+    "cook_temperature_not_a_choice": {
+      "message": "{mode} accetta solo {choices}."
+    },
+    "cook_temperature_out_of_range": {
+      "message": "{mode} accetta una temperatura da {min} a {max}."
+    },
+    "cook_duration_not_supported": {
+      "message": "{mode} non prevede un tempo di cottura."
+    },
+    "cook_duration_required": {
+      "message": "{mode} richiede un tempo di cottura."
+    },
+    "cook_duration_out_of_range": {
+      "message": "{mode} accetta un tempo di cottura da {min} a {max}."
+    },
+    "extra_rinse_unavailable_for_cycle": {
+      "message": "Risciacquo extra non è disponibile per il ciclo selezionato."
+    }
+  },
+  "selector": {
+    "instance_name": {
+      "options": {
+        "freezer": "Congelatore",
+        "cooler": "Frigorifero",
+        "top": "Scomparto superiore",
+        "middle": "Scomparto centrale",
+        "bottom": "Scomparto inferiore",
+        "onedoor": "Scomparto kimchi",
+        "winecellar_top": "Zona vino superiore",
+        "winecellar_bottom": "Zona vino inferiore",
+        "door_freezer": "Sportello congelatore",
+        "door_cooler": "Sportello frigorifero",
+        "door_cvroom": "Sportello zona flessibile",
+        "door_winecellar": "Sportello cantinetta",
+        "door_onedoorfreezer": "Sportello principale",
+        "door_onedoorkimchi": "Sportello principale",
+        "ice_maker": "Produttore di ghiaccio",
+        "cubed_ice": "Produttore di cubetti",
+        "ice_bites": "Produttore di Ice Bites",
+        "whiskey_ice_ball": "Produttore di sfere di ghiaccio"
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ Consolidated ValetudoConnector with grouped data.
 Last Updated on version: 2025.10.0
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 import json
 from typing import Any, Dict, List
@@ -155,6 +156,7 @@ class ValetudoConnector:
         self.mqtt_data = MQTTData()
         self.rrm_data = RRMData(rrm_command=f"{mqtt_topic}/command")
         self.pkohelrs_data = PkohelrsData()
+        self._notification_listeners: Dict[str, Callable[[], None]] = {}
 
     async def update_data(self, process: bool = True):
         """
@@ -364,23 +366,134 @@ class ValetudoConnector:
         self.config.shared.dock_state = dock_text
 
     async def _hypfer_handle_valetudo_events(self, events) -> None:
-        """Handle Valetudo events (errors, warnings, etc.)."""
-        if events and isinstance(events, dict):
-            self.mqtt_data.valetudo_events = events
-            # Extract error messages from unprocessed events
-            for event_id, event_data in events.items():
-                if isinstance(event_data, dict) and not event_data.get(
-                    "processed", True
-                ):
-                    if event_data.get("__class") == "ErrorStateValetudoEvent":
-                        error_message = event_data.get("message", "Unknown error")
-                        self.mqtt_data.mqtt_vac_err = error_message
-                        persistent_notification.async_create(
-                            self.connector_data.hass,
-                            message=f"**{self.connector_data.file_name}**\n\n{error_message}",
-                            title="Valetudo Error",
-                            notification_id=f"valetudo_error_{event_id}",
-                        )
+        """Handle Valetudo events (errors, warnings, etc.).
+
+        Valetudo retains the events topic in MQTT. Each event has a 'processed'
+        flag that Valetudo sets to True once the event has been acknowledged via
+        any interface (its own web UI, the HTTP API, or the MQTT interact topic).
+        'processed' does NOT mean a specific interface was used — it just means
+        someone acknowledged it somewhere.
+
+        Bidirectional sync:
+        - Valetudo → HA: when an unprocessed event arrives, a persistent
+          notification is created in HA and a state-change listener is registered
+          so that dismissing the notification propagates back to Valetudo.
+        - HA → Valetudo: when the user dismisses the HA notification,
+          _dismiss_valetudo_event publishes to the MQTT interact topic, causing
+          Valetudo to mark the event as processed and republish the events topic.
+        - Valetudo → HA (reverse): when Valetudo republishes the event with
+          processed=True (e.g. dismissed in the Valetudo web UI), the HA
+          notification is dismissed automatically.
+        """
+        if events is None or not isinstance(events, dict):
+            return
+        self.mqtt_data.valetudo_events = events
+        for event_id, event_data in events.items():
+            if not isinstance(event_data, dict):
+                continue
+            event_class = event_data.get("__class", "")
+            processed = event_data.get("processed", True)
+
+            if event_class == "ErrorStateValetudoEvent":
+                notification_id = f"valetudo_error_{event_id}"
+                if processed:
+                    # Event acknowledged (via any interface) — clear the HA notification.
+                    # Unsubscribe BEFORE dismissing so our own dismiss call doesn't
+                    # echo back through the REMOVED callback and re-publish the
+                    # interact command Valetudo already processed.
+                    self._unsubscribe_notification_listener(notification_id)
+                    persistent_notification.async_dismiss(
+                        self.connector_data.hass,
+                        notification_id=notification_id,
+                    )
+                else:
+                    error_message = event_data.get("message", "Unknown error")
+                    self.mqtt_data.mqtt_vac_err = error_message
+                    persistent_notification.async_create(
+                        self.connector_data.hass,
+                        message=f"**{self.connector_data.file_name}**\n\n{error_message}",
+                        title="Valetudo Error",
+                        notification_id=notification_id,
+                    )
+                    # Watch for the HA notification being dismissed so we can
+                    # propagate the dismissal back to Valetudo.
+                    self._register_notification_dismiss_listener(
+                        event_id, "ok", notification_id
+                    )
+
+    def _unsubscribe_notification_listener(self, notification_id: str) -> None:
+        """Remove and invoke a tracked persistent-notification callback, if any."""
+        unsubscribe = self._notification_listeners.pop(notification_id, None)
+        if unsubscribe is None:
+            return
+        unsubscribe()
+        if unsubscribe in self.connector_data.unsubscribe_handlers:
+            self.connector_data.unsubscribe_handlers.remove(unsubscribe)
+
+    def _register_notification_dismiss_listener(
+        self, event_id: str, interaction: str, notification_id: str
+    ) -> None:
+        """Register a dispatcher callback for persistent-notification removal.
+
+        Persistent notifications stopped creating state machine entities in
+        Home Assistant 2023.6, so tracking ``persistent_notification.<id>`` via
+        ``async_track_state_change_event`` never fires. We use
+        ``persistent_notification.async_register_callback`` and match on
+        ``UpdateType.REMOVED`` + our ``notification_id`` instead.
+
+        When the user dismisses the HA notification the callback schedules
+        ``_dismiss_valetudo_event`` to publish the interact command, completing
+        the HA → Valetudo direction of the bidirectional sync.
+
+        Guards against duplicate registration: if a listener is already tracked
+        for this notification_id, the call is a no-op.
+        """
+        if notification_id in self._notification_listeners:
+            return
+
+        @callback
+        def _on_notification_update(
+            update_type: persistent_notification.UpdateType,
+            notifications: Dict[str, Any],
+        ) -> None:
+            if (
+                update_type == persistent_notification.UpdateType.REMOVED
+                and notification_id in notifications
+            ):
+                # Notification dismissed in HA — propagate back to Valetudo.
+                self._unsubscribe_notification_listener(notification_id)
+                self.connector_data.hass.async_create_task(
+                    self._dismiss_valetudo_event(event_id, interaction)
+                )
+
+        unsub = persistent_notification.async_register_callback(
+            self.connector_data.hass, _on_notification_update
+        )
+        self._notification_listeners[notification_id] = unsub
+        self.connector_data.unsubscribe_handlers.append(unsub)
+
+    async def _dismiss_valetudo_event(self, event_id: str, interaction: str) -> None:
+        """Publish an interact command to Valetudo via MQTT to mark an event as processed.
+
+        Valetudo's MQTT interact topic expects:
+            {"id": "<event_id>", "interaction": "<interaction>"}
+
+        The interaction value is event-class-specific:
+            - ErrorStateValetudoEvent       → "ok"
+            - ConsumableDepletedValetudoEvent → "reset"
+
+        Source: ValetudoEventsNodeMqttHandle.js in the Valetudo backend.
+        """
+        topic = f"{self.config.mqtt_topic}/ValetudoEvents/valetudo_events/interact/set"
+        await self.publish_to_broker(
+            topic, {"id": event_id, "interaction": interaction}
+        )
+        LOGGER.debug(
+            "%s: Sent dismiss for Valetudo event %s (interaction=%s)",
+            self.connector_data.file_name,
+            event_id,
+            interaction,
+        )
 
     async def _rand256_handle_image_payload(self, msg) -> None:
         """Handle Rand256 image payload."""

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 from california_midasapi import Midas
@@ -18,17 +19,18 @@ class IntegrationMidasApiClient:
     def __init__(
         self,
         hass: HomeAssistant,
-        username: str,
-        password: str,
     ) -> None:
         """Midas API Client."""
         self._hass = hass
-        self._midas = Midas(async_get_clientsession(hass), username, password)
+        self._midas = Midas(async_get_clientsession(hass))
 
     async def async_get_rate_data(self, rate_id: str) -> RateInfo:
         """Get data from the API."""
         return await self._midas.GetRateInfo(rate_id)
 
-    async def async_test_credentials(self) -> None:
-        """Check for validity of the set credentials. Throws if invalid."""
-        await self._midas.test_credentials()
+    async def async_get_historical_rate_data(self, rate_id: str) -> RateInfo:
+        """Get historical data from the API."""
+        now = datetime.now()  # noqa: DTZ005
+        yesterday = now - timedelta(days=1)
+        tomorrow = now + timedelta(days=1)
+        return await self._midas.GetHistoricalRateInfo(rate_id, yesterday, tomorrow)

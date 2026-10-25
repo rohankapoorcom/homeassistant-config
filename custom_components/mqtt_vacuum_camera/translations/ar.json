@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "فشل نشر الأمر إلى vacuum عبر MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "ستتوقف الإجراء \"reset_trims\" عن العمل في الإصدار 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "ستتوقف الإجراء \"reset_trims\" عن العمل في الإصدار 2026.8.0",
+            "description": "تم تنفيذ الإجراء «{domain}.reset_trims» إما تلقائيًا أو يدويًّا. سيتوقف هذا الإجراء عن العمل في الإصدار 2026.8.0.\n\nاستبدل هذه الخدمة بـ **Camera Update Floor Data** ({domain}.camera_update_floor_data).\n\nيرجى معالجة هذا الأمر قبل الترقية، ثم انقر فوق **إرسال** لتأكيد إتمام عملية الترحيل."
+          }
+        }
+      }
+    }
   }
 }

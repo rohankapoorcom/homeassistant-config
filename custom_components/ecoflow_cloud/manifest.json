@@ -6,15 +6,16 @@
   ],
   "config_flow": true,
   "dependencies": [
-    "mqtt"
+    "mqtt",
+    "integration"
   ],
   "documentation": "https://github.com/tolwi/hassio-ecoflow-cloud",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/tolwi/hassio-ecoflow-cloud/issues",
   "requirements": [
     "paho-mqtt>=2.1.0",
-    "protobuf>=4.23.0",
+    "protobuf>=6.32.0,<8",
     "jsonpath-ng>=1.7.0"
   ],
-  "version": "1.3.0"
+  "version": "1.7.2"
 }

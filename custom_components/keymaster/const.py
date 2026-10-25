@@ -5,7 +5,7 @@ from enum import StrEnum
 from homeassistant.const import Platform
 
 DOMAIN = "keymaster"
-VERSION = "v0.3.0"
+VERSION = "v0.6.2"
 ISSUE_URL = "https://github.com/FutureTense/keymaster"
 
 # Strategy module constants
@@ -26,13 +26,21 @@ PLATFORMS: list = [
 THROTTLE_SECONDS: int = 5
 SYNC_STATUS_THRESHOLD: int = 15
 QUICK_REFRESH_SECONDS: int = 15
+PIN_SET_GRACE_SECONDS: int = 60
+ENTITY_DEBOUNCE_SECONDS: int = 5
 BACKOFF_INITIAL_SECONDS: int = 60
 BACKOFF_MAX_SECONDS: int = 1800  # 30 minutes
 BACKOFF_FAILURE_THRESHOLD: int = 3  # consecutive failures before backoff
+LARGE_LOCK_WARNING_THRESHOLD = 8000
+LARGE_LOCK_CRITICAL_THRESHOLD = 9500
+LARGE_LOCK_EVENT_GUARD_LIMIT = 10000
+LARGE_LOCK_ACK_STORE_KEY = "keymaster_large_lock_ack"
+LARGE_LOCK_ACK_STORE_VERSION = 1
 
 # hass.data attributes
 CHILD_LOCKS = "child_locks"
 COORDINATOR = "coordinator"
+LOCK_COORDINATORS = "lock_coordinators"
 PRIMARY_LOCK = "primary_lock"
 UNSUB_LISTENERS = "unsub_listeners"
 
@@ -65,6 +73,8 @@ CONF_CHILD_LOCKS = "child_locks"
 CONF_CHILD_LOCKS_FILE = "child_locks_file"
 CONF_ENTITY_ID = "entity_id"
 CONF_HIDE_PINS = "hide_pins"
+CONF_REDACT_PIN_CODES = "redact_pin_codes"
+CONF_REDACT_SLOT_NAMES = "redact_slot_names"
 CONF_LOCK_ENTITY_ID = "lock_entity_id"
 CONF_LOCK_NAME = "lockname"
 CONF_PARENT = "parent"
@@ -78,12 +88,18 @@ CONF_NOTIFY_SCRIPT_NAME = "notify_script"
 DEFAULT_CODE_SLOTS = 10
 DEFAULT_START = 1
 DEFAULT_HIDE_PINS = False
+DEFAULT_REDACT_PIN_CODES = True
+DEFAULT_REDACT_SLOT_NAMES = True
 DEFAULT_ADVANCED_DATE_RANGE = True
 DEFAULT_ADVANCED_DAY_OF_WEEK = True
 DEFAULT_AUTOLOCK_MIN_DAY: int = 120
 DEFAULT_AUTOLOCK_MIN_NIGHT: int = 15
 
 NONE_TEXT = "(none)"
+# Placeholder sentinel values keymaster stores for optional entity fields.
+# async_setup_entry normalizes these to None before platforms load, so projection
+# treats them as unset to match generated entities.
+NORMALIZED_TO_NONE_SENTINELS = (NONE_TEXT, "sensor.fake", "binary_sensor.fake")
 
 SERVICE_UPDATE_PIN = "update_pin"
 SERVICE_CLEAR_PIN = "clear_pin"

@@ -1,13 +1,17 @@
 """Schema for MQTT Discovery Stream."""
 
-import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+
 from homeassistant.components.mqtt import valid_publish_topic
 from homeassistant.components.mqtt.const import (
+    AVAILABILITY_LATEST,
+    AVAILABILITY_MODES,
+    CONF_AVAILABILITY_MODE,
     CONF_TOPIC,
     DEFAULT_PAYLOAD_AVAILABLE,
     DEFAULT_PAYLOAD_NOT_AVAILABLE,
 )
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entityfilter import INCLUDE_EXCLUDE_BASE_FILTER_SCHEMA
 
 from .const import (
@@ -23,6 +27,8 @@ from .const import (
     CONF_PUBLISH_TIMESTAMPS,
     CONF_REMOTE_STATUS,
     CONF_REPUBLISH_TIME,
+    CONF_STALE_AFTER,
+    CONF_UNIQUE_ENTITY_PREFIX,
     CONF_UNIQUE_PREFIX,
     DEFAULT_REFRESH_TIME,
     DEFAULT_RETAIN,
@@ -57,7 +63,13 @@ BASE_SCHEMA = {
     vol.Optional(CONF_PUBLISH_DISCOVERY, default=False): cv.boolean,
     vol.Optional(CONF_PUBLISH_RETAIN, default=DEFAULT_RETAIN): cv.boolean,
     vol.Optional(CONF_UNIQUE_PREFIX, default="mqtt"): cv.string,
+    vol.Optional(CONF_UNIQUE_ENTITY_PREFIX): cv.string,
     vol.Optional(CONF_REPUBLISH_TIME, default=DEFAULT_REFRESH_TIME): cv.time_period,
+    vol.Optional(CONF_STALE_AFTER): cv.time_period,
+    vol.Optional(
+        CONF_AVAILABILITY_MODE,
+        default=AVAILABILITY_LATEST,
+    ): vol.In(AVAILABILITY_MODES),
 }
 
 

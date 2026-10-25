@@ -1,14 +1,24 @@
 """Utilities for MQTT Discovery Stream."""
 
-import logging
 from dataclasses import dataclass, field
+from typing import Any
 
-from .const import (
-    CONF_BASE_TOPIC,
-    OUTPUT_ENTITIES,
+from homeassistant.components.mqtt.abbreviations import (
+    ABBREVIATIONS,
+    DEVICE_ABBREVIATIONS,
+    ORIGIN_ABBREVIATIONS,
 )
+from homeassistant.components.mqtt.const import CONF_AVAILABILITY, CONF_ORIGIN
+from homeassistant.const import CONF_DEVICE
 
-_LOGGER = logging.getLogger(__name__)
+from .const import CONF_BASE_TOPIC
+
+ABBREVIATIONS_KEYS = list(ABBREVIATIONS.keys())
+ABBREVIATIONS_VALUES = list(ABBREVIATIONS.values())
+ORIGIN_ABBREVIATIONS_KEYS = list(ORIGIN_ABBREVIATIONS.keys())
+ORIGIN_ABBREVIATIONS_VALUES = list(ORIGIN_ABBREVIATIONS.values())
+DEVICE_ABBREVIATIONS_KEYS = list(DEVICE_ABBREVIATIONS.keys())
+DEVICE_ABBREVIATIONS_VALUES = list(DEVICE_ABBREVIATIONS.values())
 
 
 def set_topic(conf, topic):
@@ -19,24 +29,14 @@ def set_topic(conf, topic):
     return response_topic
 
 
-def translate_entity_type(entity_id):
-    """Translate the entity type to the output type."""
-    ent_parts = entity_id.split(".")
-    if ent_parts[0] in OUTPUT_ENTITIES:
-        output_entity = OUTPUT_ENTITIES[ent_parts[0]]
-    else:
-        output_entity = ent_parts[0]
-    return f"{output_entity}.{ent_parts[1]}"
-
-
 def simple_attribute_add(config, attributes, attribute_name, conf_name=None):
-    """Simple check for attribute existence and inclusion."""
+    """Do simple check for attribute existence and inclusion."""
     if attribute_name in attributes:
         config[conf_name or attribute_name] = attributes[attribute_name]
 
 
 def simple_entry_attribute(config_device, attribute, conf_name):
-    """Simple check for attribute existence and inclusion."""
+    """Do simple check for attribute existence and inclusion."""
     if attribute:
         config_device[conf_name] = attribute
 
@@ -59,3 +59,45 @@ def add_config_command(config, entity_info: EntityInfo, confname, confvalue):
 def build_topic(attrname):
     """Build a standard topic."""
     return f"~/{attrname}"
+
+
+def translate_all_to_abbreviations(
+    payload: dict[str, Any] | str,
+) -> None:
+    """Use abbreviations in an MQTT discovery payload."""
+    if CONF_ORIGIN in payload:
+        payload[CONF_ORIGIN] = _translate_to_abbreviations(
+            payload[CONF_ORIGIN], ORIGIN_ABBREVIATIONS_KEYS, ORIGIN_ABBREVIATIONS_VALUES
+        )
+    if CONF_DEVICE in payload:
+        payload[CONF_DEVICE] = _translate_to_abbreviations(
+            payload[CONF_DEVICE], DEVICE_ABBREVIATIONS_KEYS, DEVICE_ABBREVIATIONS_VALUES
+        )
+    if CONF_AVAILABILITY in payload:
+        topics = []
+        for topic in payload[CONF_AVAILABILITY]:
+            topic = _translate_to_abbreviations(
+                topic, ABBREVIATIONS_KEYS, ABBREVIATIONS_VALUES
+            )
+            topics.append(topic)
+        payload[CONF_AVAILABILITY] = topics
+
+    return _translate_to_abbreviations(
+        payload, ABBREVIATIONS_KEYS, ABBREVIATIONS_VALUES
+    )
+
+
+def _translate_to_abbreviations(
+    payload: dict[str, Any] | str, abbreviations_keys, abbreviations_values
+) -> None:
+    """Translate specific set of abbreviations."""
+    if not isinstance(payload, dict):
+        return None
+    return_payload = {}
+    for key in payload:
+        keyvalue = key
+        if key in abbreviations_values:
+            keyvalue = abbreviations_keys[abbreviations_values.index(key)]
+        return_payload[keyvalue] = payload[key]
+
+    return return_payload

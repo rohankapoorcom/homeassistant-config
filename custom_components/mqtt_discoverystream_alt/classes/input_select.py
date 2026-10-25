@@ -2,7 +2,7 @@
 
 from homeassistant.components.input_select import DOMAIN as INPUT_SELECT_DOMAIN
 
-from .base_input_entity import SelectDiscoveryEntity
+from ..helpers.base_input_entity import SelectDiscoveryEntity
 
 
 class DiscoveryItem(SelectDiscoveryEntity):

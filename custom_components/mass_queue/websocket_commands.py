@@ -1,3 +1,4 @@
+# ty:ignore[unresolved-import]
 """Music Assistant Queue Actions Websocket Commands."""
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from .utils import (
     download_and_encode_image,
     download_single_image_from_image_data,
     get_entity_info,
+    get_user_info,
 )
 
 
@@ -46,14 +48,14 @@ def api_get_entity_info(
 )
 @websocket_api.async_response
 async def api_download_and_encode_image(
-    hass: HomeAssistant,
+    hass: HomeAssistant,  # noqa: ARG001
     connection: websocket_api.ActiveConnection,
     msg: dict,
 ) -> None:
     """Download images and return them as b64 encoded."""
     LOGGER.debug(f"Got message: {msg}")
     url = msg["url"]
-    result = await download_and_encode_image(url, hass)
+    result = await download_and_encode_image(url)
     connection.send_result(msg["id"], result)
 
 
@@ -101,3 +103,25 @@ async def get_playlist_items(
     msg: dict,
 ) -> None:
     """Retrieves all playlist items."""
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "mass_queue/get_user_info",
+        vol.Required("entity_id"): str,
+        vol.Required("username"): str,
+    },
+)
+@websocket_api.async_response
+async def api_get_user_info(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Returns the information for a given user."""
+    entity_id = msg["entity_id"]
+    username = msg["username"]
+    LOGGER.debug(f"Received message {msg}")
+    result = await get_user_info(hass, entity_id, username)
+    LOGGER.debug(f"Sending result {result}")
+    connection.send_result(msg["id"], result)

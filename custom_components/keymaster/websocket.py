@@ -16,6 +16,7 @@ from .const import (
     CONF_ADVANCED_DATE_RANGE,
     CONF_ADVANCED_DAY_OF_WEEK,
     CONF_DOOR_SENSOR_ENTITY_ID,
+    CONF_HIDE_PINS,
     CONF_LOCK_ENTITY_ID,
     CONF_LOCK_NAME,
     CONF_PARENT_ENTRY_ID,
@@ -187,7 +188,6 @@ async def ws_get_section_config(
         )
         return
 
-    # Validate slot_num is within configured range
     code_slot_start = config_entry.data.get(CONF_START, 1)
     code_slots = config_entry.data.get(CONF_SLOTS, 0)
     if slot_num < code_slot_start or slot_num >= code_slot_start + code_slots:
@@ -205,6 +205,7 @@ async def ws_get_section_config(
         advanced_date_range=config_entry.data.get(CONF_ADVANCED_DATE_RANGE, True),
         advanced_day_of_week=config_entry.data.get(CONF_ADVANCED_DAY_OF_WEEK, True),
         parent_config_entry_id=config_entry.data.get(CONF_PARENT_ENTRY_ID),
+        hide_pins=config_entry.data.get(CONF_HIDE_PINS, False),
     )
 
     connection.send_result(msg["id"], section_config)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 
 from homeassistant.components.event import EventEntity, EventEntityDescription
 from homeassistant.components.lock.const import LockState
@@ -22,10 +23,12 @@ from .const import (
     EVENT_KEYMASTER_CODE_SLOT_RESET,
     EVENT_KEYMASTER_LOCK_STATE_CHANGED,
 )
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 EVENT_TYPE_UNLOCKED = "unlocked"
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -39,7 +42,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up event entities for keymaster code slots."""
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
 
     entities: list[KeymasterCodeSlotEventEntity] = [
         KeymasterCodeSlotEventEntity(
@@ -115,7 +121,7 @@ class KeymasterCodeSlotEventEntity(KeymasterEntity, EventEntity):
                 ATTR_NAME: event.data.get(ATTR_NAME, ""),
             },
         )
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed(force=True)
 
     @callback
     def _handle_reset_event(self, event: Event) -> None:
@@ -128,25 +134,25 @@ class KeymasterCodeSlotEventEntity(KeymasterEntity, EventEntity):
             return
 
         self._clear_event_state()
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed(force=True)
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle coordinator data updates for availability."""
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if ".code_slots" in self._property and (
             not self._kmlock.code_slots or self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
 
     def _clear_event_state(self) -> None:
         """Clear the event entity state back to None."""
@@ -159,4 +165,8 @@ class KeymasterCodeSlotEventEntity(KeymasterEntity, EventEntity):
             self._EventEntity__last_event_type = None
             self._EventEntity__last_event_attributes = None
         except AttributeError:
-            pass
+            _LOGGER.debug(
+                "Unable to clear event entity internals for %s",
+                self.entity_id,
+                exc_info=True,
+            )

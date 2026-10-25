@@ -465,6 +465,19 @@
       }
     }
   },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Action 'reset_trims' will stop working in version 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Action 'reset_trims' will stop working in version 2026.8.0",
+            "description": "The action `{domain}.reset_trims` was run in an automation or manually. This stops working in version 2026.8.0.\n\nReplace this service with **Camera Update Floor Data** (`{domain}.camera_update_floor_data`).\n\nPlease address before upgrading, then click **Submit** to confirm you have migrated."
+          }
+        }
+      }
+    }
+  },
   "exceptions": {
     "no_entity_id_provided": {
       "message": "Missing entity_id in the configuration."

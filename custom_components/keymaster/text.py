@@ -2,14 +2,16 @@
 
 from dataclasses import dataclass
 import logging
+from typing import Any
 
 from homeassistant.components.text import TextEntity, TextEntityDescription, TextMode
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_HIDE_PINS, CONF_SLOTS, CONF_START, COORDINATOR, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -22,7 +24,10 @@ async def async_setup_entry(
 ) -> None:
     """Create keymaster Text entities."""
 
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
     entities: list = []
 
     for x in range(
@@ -82,14 +87,25 @@ class KeymasterText(KeymasterEntity, TextEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.CONFIG
         self._attr_native_value: str | None = None
+
+    def _redact_value(self, value: str | None) -> str | None:
+        """Redact the value if configured."""
+        if not value:
+            return value
+        if (self._property.endswith(".pin") and self._kmlock and self._kmlock.redact_pin_codes) or (
+            self._property.endswith(".name") and self._kmlock and self._kmlock.redact_slot_names
+        ):
+            return "[REDACTED]"
+        return value
 
     @callback
     def _handle_coordinator_update(self) -> None:
         # _LOGGER.debug("[Text handle_coordinator_update] self.coordinator.data: %s", self.coordinator.data)
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if (
@@ -102,32 +118,38 @@ class KeymasterText(KeymasterEntity, TextEntity):
             )
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if ".code_slots" in self._property and (
             not self._kmlock.code_slots or self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
         self._attr_native_value = self._get_property_value()
+        log_value = self._redact_value(self.native_value)
         _LOGGER.debug(
             "[Text handle_coordinator_update] %s: property: %s, value: %s",
             self.name,
             self._property,
-            self.native_value,
+            log_value,
         )
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the native value."""
+        return (*super()._state_signature(), self._attr_native_value)
 
     async def async_set_value(self, value: str) -> None:
         """Set the value of a text entity."""
+        log_value = self._redact_value(value)
         _LOGGER.debug(
             "[Text async_set_value] %s: value: %s",
             self.name,
-            value,
+            log_value,
         )
         if self._property.endswith(".pin"):
             if value and value.isdigit() and len(value) >= 4 and self._code_slot:
@@ -138,11 +160,13 @@ class KeymasterText(KeymasterEntity, TextEntity):
                     set_in_kmlock=True,
                 )
             elif not value and self._code_slot:
-                await self.coordinator.clear_pin_from_lock(
+                result = await self.coordinator.clear_pin_from_lock(
                     config_entry_id=self._config_entry.entry_id,
                     code_slot_num=self._code_slot,
                     clear_from_kmlock=True,
                 )
+                if not result:
+                    return
             else:
                 return
         elif (
@@ -184,4 +208,4 @@ class KeymasterText(KeymasterEntity, TextEntity):
                     pin=slot_pin,
                     override=True,
                 )
-            await self.coordinator.async_refresh()
+            await self.coordinator.async_request_debounced_refresh()

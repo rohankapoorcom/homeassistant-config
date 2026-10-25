@@ -1,0 +1,117 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Add InvisOutlet device",
+        "description": "Is this outlet already connected to your Wi-Fi network?",
+        "menu_options": {
+          "commission": "No, it's new.",
+          "outlet": "Yes, it's already configured."
+        },
+        "menu_option_descriptions": {
+          "commission": "Set up a new or factory reset outlet",
+          "outlet": "The outlet is already connected to Wi-Fi."
+        }
+      },
+      "outlet": {
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "The IP address or hostname of the InvisOutlet device."
+        }
+      },
+      "name": {
+        "title": "Name outlet",
+        "data": {
+          "name": "Name",
+          "area": "Area"
+        }
+      },
+      "zeroconf_confirm": {
+        "description": "Do you want to add the InvisOutlet device {name}?",
+        "data": {
+          "name": "Name",
+          "area": "Area"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect"
+    },
+    "abort": {
+      "already_configured": "Device is already configured",
+      "outlet_added": "Outlet added",
+      "no_serial": "The discovered device did not report a serial number",
+      "commission_failed": "Commissioning didn't complete. Please try again.",
+      "commission_in_progress": "This outlet is being commissioned.",
+      "not_an_outlet": "The discovered device is not an InvisOutlet"
+    },
+    "progress": {
+      "commissioning": "> [!NOTE]\n> If the process stalls on “Connecting”, cancel and try again.",
+      "finalize": "Adding device"
+    }
+  },
+  "config_subentries": {
+    "aura_effect": {
+      "initiate_flow": {
+        "user": "Add Aura Effect"
+      },
+      "entry_type": "Aura effect",
+      "step": {
+        "user": {
+          "title": "Add Aura Effect",
+          "data": {
+            "name": "Name"
+          }
+        }
+      },
+      "abort": {
+        "added": "Aura Effect added"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "transport": {
+        "name": "Transport",
+        "state": {
+          "tcp": "TCP",
+          "ws": "WebSocket"
+        }
+      },
+      "reconnects": {
+        "name": "Reconnects"
+      },
+      "faceplate_dropouts": {
+        "name": "Faceplate dropouts"
+      },
+      "connected_since": {
+        "name": "Connected since"
+      },
+      "last_sensor_push": {
+        "name": "Last sensor push"
+      }
+    },
+    "select": {
+      "aura_effect": {
+        "name": "Effect",
+        "state": {
+          "static_color": "Static (Color)",
+          "static_temperature": "Static (Temperature)",
+          "breathing": "Breathing",
+          "strobing": "Strobing",
+          "color_cycle": "Color cycle",
+          "rainbow": "Rainbow",
+          "starry_night": "Starry night"
+        }
+      }
+    },
+    "switch": {
+      "outlet": {
+        "name": "Outlet {number}"
+      }
+    }
+  }
+}

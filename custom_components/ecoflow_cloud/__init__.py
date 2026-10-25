@@ -1,27 +1,40 @@
-from __future__ import annotations  # for DeviceData.parent: DeviceData
-import dataclasses
 import logging
-from typing import Final
+from typing import Any, Final
 
+import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import entity_registry as er
+
+from custom_components.ecoflow_cloud.api import (
+    EcoflowApiClient,
+    EcoflowAuthException,
+    EcoflowException,
+)
+
+from . import _preload_proto  # noqa: F401 # pyright: ignore[reportUnusedImport]
+from .device_data import DeviceData, DeviceOptions
 
 _LOGGER = logging.getLogger(__name__)
 
 ECOFLOW_DOMAIN = "ecoflow_cloud"
-CONFIG_VERSION = 9
+CONFIG_VERSION = 13
 
 _PLATFORMS = {
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON,
     Platform.NUMBER,
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,
-    Platform.BUTTON,
+    Platform.CLIMATE,
 }
 
 ATTR_STATUS_SN = "SN"
 ATTR_STATUS_UPDATES = "status_request_count"
+ATTR_DATA_UPDATES = "data_update_count"
 ATTR_STATUS_LAST_UPDATE = "status_last_update"
 ATTR_STATUS_DATA_LAST_UPDATE = "data_last_update"
 ATTR_MQTT_CONNECTED = "mqtt_connected"
@@ -50,25 +63,32 @@ CONF_PARENT_SN: Final = "parent_sn"
 OPTS_DIAGNOSTIC_MODE: Final = "diagnostic_mode"
 OPTS_POWER_STEP: Final = "power_step"
 OPTS_REFRESH_PERIOD_SEC: Final = "refresh_period_sec"
+OPTS_ASSUME_OFFLINE_SEC: Final = "assume_offline_sec"
+OPTS_VERBOSE_STATUS_MODE: Final = "verbose_status_mode"
+OPTS_RESET_SENSORS_ON_OFFLINE: Final = "reset_sensors_on_offline"
 
 DEFAULT_REFRESH_PERIOD_SEC: Final = 5
+DEFAULT_ASSUME_OFFLINE_SEC: Final = 300  # 5 minutes
+DEFAULT_RESET_SENSORS_ON_OFFLINE: Final = True
+
+_STATUS_COORDINATOR_KEY = "__status_coordinator"
 
 
-@dataclasses.dataclass
-class DeviceOptions:
-    refresh_period: int
-    power_step: int
-    diagnostic_mode: bool
+def _migrate_entity_unique_id(
+    hass: HomeAssistant,
+    platform: Platform,
+    old_unique_id: str,
+    new_unique_id: str,
+) -> bool:
+    registry = er.async_get(hass)
+    entity_id = registry.async_get_entity_id(platform, ECOFLOW_DOMAIN, old_unique_id)
+    if entity_id is None:
+        return False
+    if registry.async_get_entity_id(platform, ECOFLOW_DOMAIN, new_unique_id) is not None:
+        return False
 
-
-@dataclasses.dataclass
-class DeviceData:
-    sn: str
-    name: str
-    device_type: str
-    options: DeviceOptions
-    display_name: str | None
-    parent: DeviceData | None
+    registry.async_update_entity(entity_id, new_unique_id=new_unique_id)
+    return True
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -76,21 +96,15 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     if config_entry.version in (5, 6):
         new_data = dict(config_entry.data)
         new_options = dict(config_entry.options)
-        new_devices = dict[str, DeviceData]()
+        new_devices = dict[str, Any]()
         for sn, device_info in config_entry.data[CONF_DEVICE_LIST].items():
             new_devices[sn] = {
                 CONF_DEVICE_NAME: device_info[CONF_DEVICE_NAME],
                 CONF_DEVICE_TYPE: device_info[CONF_DEVICE_TYPE],
                 "options": {
-                    OPTS_REFRESH_PERIOD_SEC: config_entry.options[CONF_DEVICE_LIST][sn][
-                        OPTS_REFRESH_PERIOD_SEC
-                    ],
-                    OPTS_POWER_STEP: config_entry.options[CONF_DEVICE_LIST][sn][
-                        OPTS_POWER_STEP
-                    ],
-                    OPTS_DIAGNOSTIC_MODE: config_entry.options[CONF_DEVICE_LIST][sn][
-                        OPTS_DIAGNOSTIC_MODE
-                    ],
+                    OPTS_REFRESH_PERIOD_SEC: config_entry.options[CONF_DEVICE_LIST][sn][OPTS_REFRESH_PERIOD_SEC],
+                    OPTS_POWER_STEP: config_entry.options[CONF_DEVICE_LIST][sn][OPTS_POWER_STEP],
+                    OPTS_DIAGNOSTIC_MODE: config_entry.options[CONF_DEVICE_LIST][sn][OPTS_DIAGNOSTIC_MODE],
                 },
             }
 
@@ -115,9 +129,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         else:
             new_data[CONF_API_HOST] = "api.ecoflow.com"
 
-        updated = hass.config_entries.async_update_entry(
-            config_entry, version=8, data=new_data
-        )
+        updated = hass.config_entries.async_update_entry(config_entry, version=8, data=new_data)
         _LOGGER.info("Config entries updated to version %d", config_entry.version)
 
     if config_entry.version == 8:
@@ -128,23 +140,73 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
         for sn, device_info in new_data[CONF_DEVICE_LIST].items():
             if "name" in device_info:
-                new_data[CONF_DEVICE_LIST][sn][CONF_DEVICE_NAME] = new_data[
-                    CONF_DEVICE_LIST
-                ][sn].pop("name")
+                new_data[CONF_DEVICE_LIST][sn][CONF_DEVICE_NAME] = new_data[CONF_DEVICE_LIST][sn].pop("name")
                 new_data[CONF_DEVICE_LIST][sn].pop("sn", None)
 
-            new_options[CONF_DEVICE_LIST][sn] = new_data[CONF_DEVICE_LIST][sn].pop(
-                "options"
-            )
+            new_options[CONF_DEVICE_LIST][sn] = new_data[CONF_DEVICE_LIST][sn].pop("options")
 
             if "refresh_period" in new_options[CONF_DEVICE_LIST][sn]:
-                new_options[CONF_DEVICE_LIST][sn][OPTS_REFRESH_PERIOD_SEC] = (
-                    new_options[CONF_DEVICE_LIST][sn].pop("refresh_period")
+                new_options[CONF_DEVICE_LIST][sn][OPTS_REFRESH_PERIOD_SEC] = new_options[CONF_DEVICE_LIST][sn].pop(
+                    "refresh_period"
                 )
 
-        updated = hass.config_entries.async_update_entry(
-            config_entry, version=9, data=new_data, options=new_options
-        )
+        updated = hass.config_entries.async_update_entry(config_entry, version=9, data=new_data, options=new_options)
+        _LOGGER.info("Config entries updated to version %d", config_entry.version)
+
+    if config_entry.version == 9:
+        new_options = dict(config_entry.options)
+        for sn, device_options in new_options[CONF_DEVICE_LIST].items():
+            device_options[OPTS_VERBOSE_STATUS_MODE] = False
+            device_options[OPTS_ASSUME_OFFLINE_SEC] = DEFAULT_ASSUME_OFFLINE_SEC
+
+        updated = hass.config_entries.async_update_entry(config_entry, version=10, options=new_options)
+        _LOGGER.info("Config entries updated to version %d", config_entry.version)
+
+    if config_entry.version == 10:
+        if CONF_ACCESS_KEY in config_entry.data:
+            for sn, device_info in config_entry.data[CONF_DEVICE_LIST].items():
+                if device_info[CONF_DEVICE_TYPE] not in ("PowerStream", "Power Ocean"):
+                    continue
+
+                migrated = _migrate_entity_unique_id(
+                    hass,
+                    Platform.SENSOR,
+                    f"ecoflow-api-{sn}-status-scheduled",
+                    f"ecoflow-api-{sn}-status",
+                )
+                if migrated:
+                    _LOGGER.info("Migrated scheduled status entity unique ID for %s", sn)
+
+        updated = hass.config_entries.async_update_entry(config_entry, version=11)
+        _LOGGER.info("Config entries updated to version %d", config_entry.version)
+
+    if config_entry.version == 11:
+        # River 2 / River 2 Max solar sensors moved off inv.dcIn*, which stays at 0
+        # on these devices, onto the live mppt.* telemetry.
+        if CONF_ACCESS_KEY not in config_entry.data:
+            for sn, device_info in config_entry.data[CONF_DEVICE_LIST].items():
+                if device_info[CONF_DEVICE_TYPE] not in ("RIVER_2", "RIVER_2_MAX"):
+                    continue
+
+                for old_key, new_key in (("inv-dcInAmp", "mppt-inAmp"), ("inv-dcInVol", "mppt-inVol")):
+                    migrated = _migrate_entity_unique_id(
+                        hass,
+                        Platform.SENSOR,
+                        f"ecoflow-{sn}-{old_key}",
+                        f"ecoflow-{sn}-{new_key}",
+                    )
+                    if migrated:
+                        _LOGGER.info("Migrated %s entity unique ID to %s for %s", old_key, new_key, sn)
+
+        updated = hass.config_entries.async_update_entry(config_entry, version=12)
+        _LOGGER.info("Config entries updated to version %d", config_entry.version)
+
+    if config_entry.version == 12:
+        new_options = dict(config_entry.options)
+        for device_options in new_options[CONF_DEVICE_LIST].values():
+            device_options[OPTS_RESET_SENSORS_ON_OFFLINE] = DEFAULT_RESET_SENSORS_ON_OFFLINE
+
+        updated = hass.config_entries.async_update_entry(config_entry, version=13, options=new_options)
         _LOGGER.info("Config entries updated to version %d", config_entry.version)
 
     return updated
@@ -161,6 +223,9 @@ def extract_devices(entry: ConfigEntry) -> dict[str, DeviceData]:
                 entry.options[CONF_DEVICE_LIST][sn][OPTS_REFRESH_PERIOD_SEC],
                 entry.options[CONF_DEVICE_LIST][sn][OPTS_POWER_STEP],
                 entry.options[CONF_DEVICE_LIST][sn][OPTS_DIAGNOSTIC_MODE],
+                entry.options[CONF_DEVICE_LIST][sn][OPTS_VERBOSE_STATUS_MODE],
+                entry.options[CONF_DEVICE_LIST][sn][OPTS_ASSUME_OFFLINE_SEC],
+                entry.options[CONF_DEVICE_LIST][sn][OPTS_RESET_SENSORS_ON_OFFLINE],
             ),
             None,
             None,
@@ -178,9 +243,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         return False
 
     _LOGGER.info("Setup entry %s (data = %s)", str(entry), str(entry.data))
+    api_client: EcoflowApiClient
     if ECOFLOW_DOMAIN not in hass.data:
         hass.data[ECOFLOW_DOMAIN] = {}
-
     if CONF_USERNAME in entry.data and CONF_PASSWORD in entry.data:
         from .api.private_api import EcoflowPrivateApiClient
 
@@ -204,18 +269,61 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         return False
 
     devices_list: dict[str, DeviceData] = extract_devices(entry)
+    # Try to connect and authenticate
+    try:
+        await api_client.login()
+    except (ConnectionError, TimeoutError, aiohttp.ClientError) as ex:
+        # Transient network issues - retry later. aiohttp's connector errors are not
+        # ConnectionError subclasses, so they need naming separately
+        _LOGGER.warning("Failed to connect to EcoFlow API: %s", ex)
+        raise ConfigEntryNotReady(f"Connection failed: {ex}") from ex
+    except EcoflowAuthException as ex:
+        # Ask the user for new credentials instead of retrying with the rejected ones
+        raise ConfigEntryAuthFailed(str(ex)) from ex
+    except EcoflowException as ex:
+        # Any other API error may well be transient - let HA retry with backoff
+        _LOGGER.warning("EcoFlow API login failed: %s", ex)
+        raise ConfigEntryNotReady(f"Login failed: {ex}") from ex
 
-    await api_client.login()
+    # Fetch current device statuses from API
+    try:
+        api_devices = await api_client.fetch_all_available_devices()
+        api_devices_map = {d.sn: d for d in api_devices}
+    except Exception as ex:
+        _LOGGER.warning("Failed to fetch device statuses: %s", ex)
+        api_devices_map = None
 
-    for sn, device_data in devices_list.items():
-        device = api_client.configure_device(device_data)
+    for device_data in devices_list.values():
+        device = api_client.configure_device(device_data, api_devices_map)
         device.configure(hass)
 
+    def request_reauth() -> None:
+        # called from the paho thread once EcoFlow rejects the MQTT credentials
+        hass.loop.call_soon_threadsafe(entry.async_start_reauth, hass)
+
+    api_client.on_auth_failure = request_reauth
     await hass.async_add_executor_job(api_client.start)
     hass.data[ECOFLOW_DOMAIN][entry.entry_id] = api_client
+
+    # Must load all device data before configuring devices because the data
+    # is used for entity setup.
+    await api_client.quota_all(None)
+
+    for device in api_client.devices.values():
+        await device.async_restore_state()
+
+    # Forward entry setup to the platforms to set up the entities
     await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
 
-    await api_client.quota_all(None)
+    # Register with the global status coordinator
+    from .devices.status_coordinator import DeviceStatusCoordinator
+
+    if _STATUS_COORDINATOR_KEY not in hass.data[ECOFLOW_DOMAIN]:
+        hass.data[ECOFLOW_DOMAIN][_STATUS_COORDINATOR_KEY] = DeviceStatusCoordinator(hass)
+
+    coordinator: DeviceStatusCoordinator = hass.data[ECOFLOW_DOMAIN][_STATUS_COORDINATOR_KEY]
+    coordinator.register(entry.entry_id, api_client)
+    await coordinator.async_request_refresh()
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
 
@@ -225,6 +333,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
+
+    # Unregister from the global status coordinator
+    coordinator = hass.data[ECOFLOW_DOMAIN].get(_STATUS_COORDINATOR_KEY)
+    if coordinator is not None:
+        coordinator.unregister(entry.entry_id)
+        if coordinator.empty:
+            hass.data[ECOFLOW_DOMAIN].pop(_STATUS_COORDINATOR_KEY)
 
     client = hass.data[ECOFLOW_DOMAIN].pop(entry.entry_id)
     client.stop()

@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Det lykkedes ikke at offentliggøre kommandoen til vakuum via MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Handlingen 'reset_trims' vil ikke længere fungere i version 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Handlingen 'reset_trims' vil ikke længere fungere i version 2026.8.0",
+            "description": "Handlingen `{domain}.reset_trims` blev udført som en automatiseret proces eller manuelt. Denne funktion virker ikke længere i version 2026.8.0.\n\nErstat denne tjeneste med **Camera Update Floor Data** (`{domain}.camera_update_floor_data`).\n\nSørg for at udføre dette inden opgraderingen, og klik derefter på **Send** for at bekræfte, at du har gennemført overgangen."
+          }
+        }
+      }
+    }
   }
 }

@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 from homeassistant.components import (
     automation,
+    counter,
+    group,
     input_boolean,
     input_button,
     input_datetime,
@@ -17,6 +19,7 @@ from homeassistant.components import (
     person,
     script,
     sun,
+    timer,
     zone,
 )
 from homeassistant.components.sensor import (
@@ -39,6 +42,7 @@ from homeassistant.helpers import (
 from homeassistant.helpers.event import async_call_later
 
 from ...entity import SpookEntityDescription
+from ...listeners import async_listen_once_tracked
 from .entity import HomeAssistantSpookEntity
 
 if TYPE_CHECKING:
@@ -59,6 +63,16 @@ class HomeAssistantSpookSensorEntityDescription(
 
     value_fn: Callable[[HomeAssistant], int | None]
     update_events: set[EventType[Any] | str] = field(default_factory=set)
+
+
+@callback
+def _count_active_domain_entities(hass: HomeAssistant, domain: str) -> int:
+    """Count domain entities that are not restored placeholders."""
+    return sum(
+        (state := hass.states.get(entity_id)) is not None
+        and not state.attributes.get("restored", False)
+        for entity_id in hass.states.async_entity_ids(domain)
+    )
 
 
 SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
@@ -102,7 +116,7 @@ SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.TOTAL,
         update_events={automation.EVENT_AUTOMATION_RELOADED},
-        value_fn=lambda hass: len(hass.states.async_entity_ids(automation.DOMAIN)),
+        value_fn=lambda hass: _count_active_domain_entities(hass, automation.DOMAIN),
     ),
     HomeAssistantSpookSensorEntityDescription(
         key=Platform.BINARY_SENSOR,
@@ -153,6 +167,16 @@ SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL,
         update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
         value_fn=lambda hass: len(hass.states.async_entity_ids(Platform.CLIMATE)),
+    ),
+    HomeAssistantSpookSensorEntityDescription(
+        key=counter.DOMAIN,
+        translation_key="homeassistant_counter",
+        entity_id="sensor.counters",
+        icon="mdi:counter",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        state_class=SensorStateClass.TOTAL,
+        update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
+        value_fn=lambda hass: len(hass.states.async_entity_ids(counter.DOMAIN)),
     ),
     HomeAssistantSpookSensorEntityDescription(
         key=Platform.COVER,
@@ -225,6 +249,16 @@ SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL,
         update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
         value_fn=lambda hass: len(hass.states.async_entity_ids(Platform.FAN)),
+    ),
+    HomeAssistantSpookSensorEntityDescription(
+        key=group.DOMAIN,
+        translation_key="homeassistant_group",
+        entity_id="sensor.groups",
+        icon="mdi:google-circles-communities",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        state_class=SensorStateClass.TOTAL,
+        update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
+        value_fn=lambda hass: len(hass.states.async_entity_ids(group.DOMAIN)),
     ),
     HomeAssistantSpookSensorEntityDescription(
         key=Platform.HUMIDIFIER,
@@ -421,7 +455,7 @@ SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.TOTAL,
         update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
-        value_fn=lambda hass: len(hass.states.async_entity_ids(script.DOMAIN)),
+        value_fn=lambda hass: _count_active_domain_entities(hass, script.DOMAIN),
     ),
     HomeAssistantSpookSensorEntityDescription(
         key=Platform.SELECT,
@@ -504,6 +538,26 @@ SENSORS: tuple[HomeAssistantSpookSensorEntityDescription, ...] = (
         value_fn=lambda hass: len(hass.states.async_entity_ids(Platform.TIME)),
     ),
     HomeAssistantSpookSensorEntityDescription(
+        key=timer.DOMAIN,
+        translation_key="homeassistant_timer",
+        entity_id="sensor.timers",
+        icon="mdi:timer-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        state_class=SensorStateClass.TOTAL,
+        update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
+        value_fn=lambda hass: len(hass.states.async_entity_ids(timer.DOMAIN)),
+    ),
+    HomeAssistantSpookSensorEntityDescription(
+        key=Platform.TODO,
+        translation_key="homeassistant_todo",
+        entity_id="sensor.todos",
+        icon="mdi:clipboard-list",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        state_class=SensorStateClass.TOTAL,
+        update_events={EVENT_COMPONENT_LOADED, er.EVENT_ENTITY_REGISTRY_UPDATED},
+        value_fn=lambda hass: len(hass.states.async_entity_ids(Platform.TODO)),
+    ),
+    HomeAssistantSpookSensorEntityDescription(
         key=Platform.TTS,
         translation_key="homeassistant_tts",
         entity_id="sensor.tts",
@@ -578,7 +632,7 @@ async def async_setup_entry(
 
 
 class HomeAssistantSpookSensorEntity(HomeAssistantSpookEntity, SensorEntity):
-    """Spook sensor providig Home Asistant information."""
+    """Spook sensor providing Home Assistant information."""
 
     entity_description: HomeAssistantSpookSensorEntityDescription
     _unsub_debouncer: Callable[[], None] | None = None
@@ -605,7 +659,9 @@ class HomeAssistantSpookSensorEntity(HomeAssistantSpookEntity, SensorEntity):
             self.async_on_remove(self.hass.bus.async_listen(event, _update_state))
 
         self.async_on_remove(
-            self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _update_state),
+            async_listen_once_tracked(
+                self.hass, EVENT_HOMEASSISTANT_STARTED, _update_state
+            ),
         )
 
     async def async_will_remove_from_hass(self) -> None:

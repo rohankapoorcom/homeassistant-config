@@ -6,13 +6,21 @@ import logging
 
 from homeassistant.components import mqtt
 from homeassistant.components.mqtt.const import (
-    AVAILABILITY_LATEST,
     CONF_AVAILABILITY,
+    CONF_AVAILABILITY_MODE,
+    CONF_CONNECTIONS,
+    CONF_DEFAULT_ENTITY_ID,
+    CONF_ENTITY_PICTURE,
+    CONF_IDENTIFIERS,
+    CONF_JSON_ATTRS_TOPIC,
+    CONF_MANUFACTURER,
+    CONF_ORIGIN,
     CONF_PAYLOAD_AVAILABLE,
     CONF_PAYLOAD_NOT_AVAILABLE,
+    CONF_STATE_TOPIC,
+    CONF_SW_VERSION,
     CONF_TOPIC,
 )
-from homeassistant.components.sensor import ATTR_STATE_CLASS
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ENTITY_PICTURE,
@@ -20,42 +28,34 @@ from homeassistant.const import (
     ATTR_ICON,
     ATTR_STATE,
     ATTR_UNIT_OF_MEASUREMENT,
+    CONF_DEVICE,
+    CONF_DEVICE_CLASS,
+    CONF_ENTITY_CATEGORY,
     CONF_INCLUDE,
+    CONF_MODEL,
     CONF_NAME,
+    CONF_UNIQUE_ID,
+    CONF_UNIT_OF_MEASUREMENT,
     Platform,
 )
-from homeassistant.helpers import device_registry, entity_registry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.json import JSONEncoder
 
 from .const import (
     ATTR_ATTRIBUTES,
     ATTR_CONFIG,
-    CONF_AVTY,
-    CONF_AVTY_MODE,
     CONF_BASE_TOPIC,
-    CONF_CNS,
     CONF_COMMAND_TOPIC,
-    CONF_DEF_ENT_ID,
-    CONF_DEV,
-    CONF_DEV_CLA,
     CONF_DISCOVERY_TOPIC,
-    CONF_ENT_CAT,
-    CONF_ENT_PIC,
-    CONF_IDS,
-    CONF_JSON_ATTR_T,
     CONF_LOCAL_STATUS,
-    CONF_MDL,
-    CONF_MF,
     CONF_OFFLINE_STATUS,
     CONF_ONLINE_STATUS,
     CONF_PUBLISH_RETAIN,
-    CONF_STAT_CLA,
-    CONF_STAT_T,
-    CONF_SW,
     CONF_TILDA,
-    CONF_UNIQ_ID,
+    CONF_UNIQUE_ENTITY_PREFIX,
     CONF_UNIQUE_PREFIX,
-    CONF_UNIT_OF_MEAS,
+    DOMAIN,
     SUPPORTED_ENTITY_TYPE_COMMANDS,
 )
 from .utils import (
@@ -64,7 +64,7 @@ from .utils import (
     set_topic,
     simple_attribute_add,
     simple_entry_attribute,
-    translate_entity_type,
+    translate_all_to_abbreviations,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ _LOGGER = logging.getLogger(__name__)
 class Discovery:
     """Manage discovery publication for MQTT Discovery Statestream."""
 
-    def __init__(self, hass, conf):
+    def __init__(self, hass: HomeAssistant, conf) -> None:
         """Initiate discovery."""
         self._hass = hass
         self._conf = conf
@@ -90,12 +90,13 @@ class Discovery:
         ) = self._set_local_status()
 
         self._has_includes = bool(conf.get(CONF_INCLUDE))
-        self._dev_reg = device_registry.async_get(hass)
-        self._ent_reg = entity_registry.async_get(hass)
+        self._dev_reg = dr.async_get(hass)
+        self._ent_reg = er.async_get(hass)
         self._discovery_topic = set_topic(conf, CONF_DISCOVERY_TOPIC)
         self.subscribe_possible = False
         self._error_domain = []
         self._unique_prefix = self._conf.get(CONF_UNIQUE_PREFIX)
+        self._availability_mode = self._conf.get(CONF_AVAILABILITY_MODE)
 
     async def async_discovery_publish(self, entity_id, attributes, mybase):
         """Publish Discovery information for entitiy."""
@@ -117,27 +118,34 @@ class Discovery:
             return False
 
         entity_info = EntityInfo(mycommand, attributes, mybase, entity_id)
-        config = self._build_base(entity_info)
 
         if ent_domain not in self.discovery_classes:
             await self._hass.async_add_executor_job(
                 self._build_discovery_class, ent_domain
             )
         entityclass = self.discovery_classes[ent_domain]
+        config = self._build_base(entity_info, entityclass)
+
         if ent_domain not in self._subscribed and self.subscribe_possible:
-            await entityclass.async_subscribe_commands(
-                set_topic(self._conf, CONF_COMMAND_TOPIC)
-            )
+            await entityclass.async_subscribe_commands()
             self._subscribed.append(ent_domain)
 
-        entityclass.build_config(config, entity_info)
+        result = entityclass.build_config(config, entity_info)
+        if result is False:
+            return False
 
         if device := self._build_device(entity_id):
-            config[CONF_DEV] = device
+            config[CONF_DEVICE] = device
+
+        config[CONF_ORIGIN] = {
+            CONF_NAME: DOMAIN,
+        }
 
         self.discovered_entities.append(entity_id)
 
-        entity_id = translate_entity_type(entity_id)
+        entity_id = entityclass.translate_entity_type(entity_id, attributes)
+
+        config = translate_all_to_abbreviations(config)
 
         encoded = json.dumps(config, cls=JSONEncoder)
         entity_disc_topic = (
@@ -149,9 +157,8 @@ class Discovery:
 
         return True
 
-    def _build_base(self, entity_info: EntityInfo):
+    def _build_base(self, entity_info: EntityInfo, entityclass):
         ent_parts = entity_info.entity_id.split(".")
-        ent_id = ent_parts[1]
         availability = [{CONF_TOPIC: f"~/{CONF_AVAILABILITY}"}]
         if self._local_status:
             availability.append(
@@ -162,20 +169,25 @@ class Discovery:
                 }
             )
 
+        uid = entityclass.translate_entity_type(
+            entity_info.entity_id, entity_info.attributes
+        )
         config = {
             CONF_TILDA: entity_info.mybase.removesuffix("/"),
-            CONF_UNIQ_ID: f"{self._unique_prefix}_{translate_entity_type(entity_info.entity_id)}",
-            CONF_DEF_ENT_ID: entity_info.entity_id,
-            CONF_STAT_T: build_topic(ATTR_STATE),
-            CONF_JSON_ATTR_T: build_topic(ATTR_ATTRIBUTES),
-            CONF_AVTY: availability,
-            CONF_AVTY_MODE: AVAILABILITY_LATEST,
+            CONF_UNIQUE_ID: f"{self._unique_prefix}_{uid}",
+            CONF_DEFAULT_ENTITY_ID: self._build_default_entity_id(
+                entity_info.entity_id
+            ),
+            CONF_STATE_TOPIC: build_topic(ATTR_STATE),
+            CONF_JSON_ATTRS_TOPIC: build_topic(ATTR_ATTRIBUTES),
+            CONF_AVAILABILITY: availability,
+            CONF_AVAILABILITY_MODE: self._availability_mode,
         }
         name = None
         if ATTR_FRIENDLY_NAME in entity_info.attributes:
             name = entity_info.attributes[ATTR_FRIENDLY_NAME]
         else:
-            name = ent_id.replace("_", " ").title()
+            name = ent_parts[1].replace("_", " ").title()
         if entry := self._ent_reg.async_get(entity_info.entity_id):
             if entry.device_id and name:
                 device = self._dev_reg.async_get(entry.device_id)
@@ -183,41 +195,60 @@ class Discovery:
                     name = name[len(device.name) + 1 :].strip()
                     if name == "":
                         name = None
-            simple_entry_attribute(config, entry.entity_category, CONF_ENT_CAT)
-            simple_entry_attribute(config, entry.original_device_class, CONF_DEV_CLA)
-            simple_entry_attribute(config, entry.device_class, CONF_DEV_CLA)
+            simple_entry_attribute(config, entry.entity_category, CONF_ENTITY_CATEGORY)
+            simple_entry_attribute(
+                config, entry.original_device_class, CONF_DEVICE_CLASS
+            )
+            simple_entry_attribute(config, entry.device_class, CONF_DEVICE_CLASS)
         config[CONF_NAME] = name
 
         simple_attribute_add(
-            config, entity_info.attributes, ATTR_UNIT_OF_MEASUREMENT, CONF_UNIT_OF_MEAS
-        )
-        simple_attribute_add(
-            config, entity_info.attributes, ATTR_STATE_CLASS, CONF_STAT_CLA
+            config,
+            entity_info.attributes,
+            ATTR_UNIT_OF_MEASUREMENT,
+            CONF_UNIT_OF_MEASUREMENT,
         )
         simple_attribute_add(config, entity_info.attributes, ATTR_ICON, ATTR_ICON)
         simple_attribute_add(
-            config, entity_info.attributes, ATTR_ENTITY_PICTURE, CONF_ENT_PIC
+            config, entity_info.attributes, ATTR_ENTITY_PICTURE, CONF_ENTITY_PICTURE
         )
 
         return config
+
+    def _build_default_entity_id(self, entity_id):
+        """Add the source namespace to a default entity ID when configured."""
+
+        if ent_prefix := self._conf.get(CONF_UNIQUE_ENTITY_PREFIX):
+            domain, output_id = entity_id.split(".", 1)
+            return f"{domain}.{ent_prefix}_{output_id}"
+
+        return entity_id
 
     def _build_device(self, entity_id):  # sourcery skip: extract-method
         config_device = {}
         entry = self._ent_reg.async_get(entity_id)
         if entry and entry.device_id:
             if device := self._dev_reg.async_get(entry.device_id):
-                simple_entry_attribute(config_device, device.manufacturer, CONF_MF)
-                simple_entry_attribute(config_device, device.model, CONF_MDL)
+                simple_entry_attribute(
+                    config_device, device.manufacturer, CONF_MANUFACTURER
+                )
+                simple_entry_attribute(config_device, device.model, CONF_MODEL)
                 if device.name_by_user:
                     simple_entry_attribute(
                         config_device, device.name_by_user, CONF_NAME
                     )
                 else:
                     simple_entry_attribute(config_device, device.name, CONF_NAME)
-                simple_entry_attribute(config_device, device.sw_version, CONF_SW)
-                simple_entry_attribute(config_device, device.connections, CONF_CNS)
+                simple_entry_attribute(
+                    config_device, device.sw_version, CONF_SW_VERSION
+                )
+                simple_entry_attribute(
+                    config_device, device.connections, CONF_CONNECTIONS
+                )
                 if device.identifiers:
-                    config_device[CONF_IDS] = [id[1] for id in device.identifiers]
+                    config_device[CONF_IDENTIFIERS] = [
+                        deviceid[1] for deviceid in device.identifiers
+                    ]
 
         return config_device
 
@@ -252,6 +283,7 @@ class Discovery:
         module_class = module.DiscoveryItem(
             self._hass,
             self._conf.get(CONF_BASE_TOPIC),
+            self._command_topic,
             self._publish_retain,
             self.discovered_entities,
             module.DiscoveryItem.PLATFORM,

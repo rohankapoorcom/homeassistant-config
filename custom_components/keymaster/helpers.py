@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, MutableMapping
-from datetime import datetime as dt, timedelta
+from collections.abc import MutableMapping
 import logging
 import time
 from typing import TYPE_CHECKING, Any
@@ -12,11 +11,10 @@ from homeassistant.components import persistent_notification
 from homeassistant.components.script import DOMAIN as SCRIPT_DOMAIN
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ServiceNotFound
-from homeassistant.helpers import entity_registry as er, sun
-from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers import entity_registry as er
 from homeassistant.util import slugify
 
-from .const import DEFAULT_AUTOLOCK_MIN_DAY, DEFAULT_AUTOLOCK_MIN_NIGHT, DOMAIN
+from .const import DOMAIN
 from .providers import is_platform_supported
 
 if TYPE_CHECKING:
@@ -44,119 +42,10 @@ class Throttle:
             return True
         return False
 
-
-class KeymasterTimer:
-    """Timer to use in keymaster."""
-
-    def __init__(self) -> None:
-        """Initialize the keymaster Timer."""
-        self.hass: HomeAssistant | None = None
-        self._unsub_events: list[Callable] = []
-        self._kmlock: KeymasterLock | None = None
-        self._call_action: Callable | None = None
-        self._end_time: dt | None = None
-        self._duration: int | None = None
-
-    async def setup(
-        self, hass: HomeAssistant, kmlock: KeymasterLock, call_action: Callable
-    ) -> None:
-        """Create fields for the keymaster Timer."""
-        self.hass = hass
-        self._kmlock = kmlock
-        self._call_action = call_action
-
-    async def start(self) -> bool:
-        """Start a timer."""
-        if not self.hass or not self._kmlock or not self._call_action:
-            _LOGGER.error("[KeymasterTimer] Cannot start timer as timer not setup")
-            return False
-
-        if isinstance(self._end_time, dt) and isinstance(self._unsub_events, list):
-            # Already running so reset and restart timer
-            for unsub in self._unsub_events:
-                unsub()
-            self._unsub_events = []
-
-        if sun.is_up(self.hass):
-            delay: int = (self._kmlock.autolock_min_day or DEFAULT_AUTOLOCK_MIN_DAY) * 60
-        else:
-            delay = (self._kmlock.autolock_min_night or DEFAULT_AUTOLOCK_MIN_NIGHT) * 60
-        self._duration = int(delay)
-        self._end_time = dt.now().astimezone() + timedelta(seconds=delay)
-        _LOGGER.debug(
-            "[KeymasterTimer] Starting auto-lock timer for %s seconds. Ending %s",
-            int(delay),
-            self._end_time,
-        )
-        self._unsub_events.append(
-            async_call_later(hass=self.hass, delay=delay, action=self._call_action)
-        )
-        self._unsub_events.append(async_call_later(hass=self.hass, delay=delay, action=self.cancel))
-        return True
-
-    async def cancel(self, timer_elapsed: dt | None = None) -> None:
-        """Cancel a timer."""
-        if timer_elapsed:
-            _LOGGER.debug("[KeymasterTimer] Timer elapsed")
-        else:
-            _LOGGER.debug("[KeymasterTimer] Cancelling auto-lock timer")
-        self._cleanup_expired()
-
-    def _cleanup_expired(self) -> None:
-        """Clean up all timer state (unsub events, end_time, duration)."""
-        if isinstance(self._unsub_events, list):
-            for unsub in self._unsub_events:
-                unsub()
-            self._unsub_events = []
-        self._end_time = None
-        self._duration = None
-
-    def _check_expired(self) -> bool:
-        """Check if the timer has expired and clean up if so. Returns True if expired."""
-        if isinstance(self._end_time, dt) and self._end_time <= dt.now().astimezone():
-            self._cleanup_expired()
-            return True
-        return False
-
-    @property
-    def is_running(self) -> bool:
-        """Return if the timer is running."""
-        if not self._end_time:
-            return False
-        if self._check_expired():
-            return False
-        return True
-
-    @property
-    def is_setup(self) -> bool:
-        """Return if the timer has been initially setup."""
-        self._check_expired()
-        return bool(self.hass and self._kmlock and self._call_action)
-
-    @property
-    def end_time(self) -> dt | None:
-        """Returns when the timer will end."""
-        if not self._end_time:
-            return None
-        if self._check_expired():
-            return None
-        return self._end_time
-
-    @property
-    def remaining_seconds(self) -> int | None:
-        """Return the seconds until the timer ends."""
-        if not self._end_time:
-            return None
-        if self._check_expired():
-            return None
-        return round((self._end_time - dt.now().astimezone()).total_seconds())
-
-    @property
-    def duration(self) -> int | None:
-        """Return the total timer duration in seconds."""
-        if self._duration is None or not self.is_running:
-            return None
-        return self._duration
+    def reset(self, func_name: str, key: str) -> None:
+        """Clear the cooldown for a function/key so the next call is allowed."""
+        if func_name in self._cooldowns:
+            self._cooldowns[func_name].pop(key, None)
 
 
 @callback
@@ -266,19 +155,30 @@ async def call_hass_service(
     service: str,
     service_data: dict[str, Any] | None = None,
     target: dict[str, Any] | None = None,
+    *,
+    raise_on_missing: bool = False,
 ) -> None:
-    """Call a hass service and log a failure on an error."""
+    """Call a hass service and log a failure on an error.
+
+    If `raise_on_missing` is True, a `ServiceNotFound` (e.g. the lock
+    entity was removed/renamed) propagates to the caller instead of
+    being swallowed with a warning. Safety-critical callers (autolock)
+    set this so the failure surfaces to user notifications rather than
+    silently retiring the timer as if the action had succeeded.
+    """
     _LOGGER.debug(
-        "[call_hass_service] service: %s.%s, target: %s, service_data: %s",
+        "[call_hass_service] service: %s.%s, target: %s, service_data_keys: %s",
         domain,
         service,
         target,
-        service_data,
+        list(service_data.keys()) if isinstance(service_data, dict) else None,
     )
 
     try:
         await hass.services.async_call(domain, service, service_data=service_data, target=target)
     except ServiceNotFound:
+        if raise_on_missing:
+            raise
         _LOGGER.warning("Action Not Found: %s.%s", domain, service)
 
 
@@ -290,11 +190,11 @@ async def send_manual_notification(
 ) -> None:
     """Send a manual notification to notify script."""
     _LOGGER.debug(
-        "[send_manual_notification] script: %s.%s, title: %s, message: %s",
+        "[send_manual_notification] script: %s.%s, has_title: %s, message_len: %s",
         SCRIPT_DOMAIN,
         script_name,
-        title,
-        message,
+        bool(title),
+        len(message) if message else 0,
     )
     if not script_name:
         return
@@ -314,9 +214,9 @@ async def send_persistent_notification(
 ) -> None:
     """Send a persistent notification."""
     _LOGGER.debug(
-        "[send_persistent_notification] title: %s, message: %s, notification_id: %s",
-        title,
-        message,
+        "[send_persistent_notification] has_title: %s, message_len: %s, notification_id: %s",
+        bool(title),
+        len(message) if message else 0,
         notification_id,
     )
     persistent_notification.async_create(
@@ -328,3 +228,56 @@ async def dismiss_persistent_notification(hass: HomeAssistant, notification_id: 
     """Clear or dismisss a persistent notification."""
     _LOGGER.debug("[dismiss_persistent_notification] notification_id: %s", notification_id)
     persistent_notification.async_dismiss(hass=hass, notification_id=notification_id)
+
+
+def format_slot_message(
+    kmlock: KeymasterLock,
+    code_slot_num: int,
+    event_label: str | None,
+) -> str | None:
+    """Append code slot details to a notification message."""
+    if code_slot_num <= 0:
+        return event_label
+    slot = kmlock.code_slots.get(code_slot_num) if kmlock.code_slots else None
+    if slot and slot.name:
+        return f"{event_label} by {slot.name} [{code_slot_num}]"
+    return f"{event_label} by Code Slot {code_slot_num}"
+
+
+def global_notification_superseded(
+    kmlock: KeymasterLock,
+    code_slot_num: int,
+) -> bool:
+    """Return whether per-slot notification should replace global lock/unlock text."""
+    if not kmlock.code_slots:
+        return False
+
+    if code_slot_num > 0:
+        slot = kmlock.code_slots.get(code_slot_num)
+        return bool(slot and slot.notifications)
+
+    return False
+
+
+def should_defer_keypad_unlock_notification(
+    kmlock: KeymasterLock,
+    code_slot_num: int,
+    event_label: str | None,
+) -> bool:
+    """Return whether a slot=0 keypad unlock may be superseded by slot details."""
+    if code_slot_num != 0 or event_label != "Keypad Unlock" or not kmlock.code_slots:
+        return False
+
+    return any(slot.notifications for slot in kmlock.code_slots.values())
+
+
+def should_defer_keypad_lock_notification(
+    kmlock: KeymasterLock,
+    code_slot_num: int,
+    event_label: str | None,
+) -> bool:
+    """Return whether a slot=0 keypad lock may be superseded by slot details."""
+    if code_slot_num != 0 or event_label != "Keypad Lock" or not kmlock.code_slots:
+        return False
+
+    return any(slot.notifications for slot in kmlock.code_slots.values())

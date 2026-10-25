@@ -4,11 +4,14 @@ This guide explains how to add support for new lock platforms in keymaster.
 
 ## Overview
 
-Keymaster uses a provider abstraction to support multiple lock platforms. Each provider implements the `BaseLockProvider` interface to handle platform-specific operations like setting/clearing user codes and subscribing to lock events.
+Keymaster uses a provider abstraction to support multiple lock platforms.
+Each provider implements the `BaseLockProvider` interface to handle
+platform-specific operations like setting/clearing user codes and subscribing
+to lock events.
 
 ## Architecture
 
-```
+```text
 providers/
 ├── __init__.py      # Registry and factory functions
 ├── _base.py         # BaseLockProvider ABC and CodeSlot dataclass
@@ -37,6 +40,7 @@ from ._base import BaseLockProvider, CodeSlot, LockEventCallback
 
 if TYPE_CHECKING:
     from ..lock import KeymasterLock
+
 
 @dataclass
 class ZHALockProvider(BaseLockProvider):
@@ -106,12 +110,14 @@ async def async_get_usercodes(self) -> list[CodeSlot]:
     # Call ZHA service or API to get codes
     # Convert to CodeSlot format:
     for slot in zha_codes:
-        codes.append(CodeSlot(
-            slot_num=slot["slot"],
-            code=slot.get("code"),
-            in_use=slot.get("in_use", False),
-            name=slot.get("name"),
-        ))
+        codes.append(
+            CodeSlot(
+                slot_num=slot["slot"],
+                code=slot.get("code"),
+                in_use=slot.get("in_use", False),
+                name=slot.get("name"),
+            )
+        )
 
     return codes
 ```
@@ -120,10 +126,10 @@ async def async_get_usercodes(self) -> list[CodeSlot]:
 
 Sets a user code on the lock.
 
+<!-- markdownlint-disable MD013 -->
+
 ```python
-async def async_set_usercode(
-    self, slot_num: int, code: str, name: str | None = None
-) -> bool:
+async def async_set_usercode(self, slot_num: int, code: str, name: str | None = None) -> bool:
     """Set user code on ZHA lock."""
     try:
         await self.hass.services.async_call(
@@ -141,6 +147,8 @@ async def async_set_usercode(
         _LOGGER.exception("Failed to set user code")
         return False
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 #### `async_clear_usercode(slot_num) -> bool`
 
@@ -177,6 +185,7 @@ def supports_push_updates(self) -> bool:
     """ZHA supports real-time events."""
     return True
 
+
 def subscribe_lock_events(
     self, kmlock: KeymasterLock, callback: LockEventCallback
 ) -> Callable[[], None]:
@@ -198,19 +207,22 @@ def subscribe_lock_events(
 
 #### Connection Status Monitoring
 
+<!-- markdownlint-disable MD013 -->
+
 ```python
 @property
 def supports_connection_status(self) -> bool:
     """ZHA can report connection status."""
     return True
 
-def subscribe_connection_events(
-    self, callback: ConnectionCallback
-) -> Callable[[], None]:
+
+def subscribe_connection_events(self, callback: ConnectionCallback) -> Callable[[], None]:
     """Subscribe to connection state changes."""
     # Subscribe to ZHA device availability events
     # ...
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 ### Step 4: Register the Provider
 
@@ -241,8 +253,8 @@ If the platform requires additional dependencies, add them to `manifest.json`:
 
 | Capability | Property | Description |
 |------------|----------|-------------|
-| Push Updates | `supports_push_updates` | Real-time lock/unlock events with code slot detection |
-| Connection Status | `supports_connection_status` | Lock online/offline tracking |
+| Push Updates | `supports_push_updates` | Real-time events with slot detection |
+| Connection Status | `supports_connection_status` | Online/offline tracking |
 
 ## Testing Your Provider
 
@@ -258,6 +270,7 @@ def mock_zha_provider(hass):
     """Create a ZHA provider with mocked internals."""
     # Setup mocks...
 
+
 async def test_zha_set_usercode(mock_zha_provider):
     """Test setting user code via ZHA."""
     result = await mock_zha_provider.async_set_usercode(1, "1234")
@@ -267,16 +280,19 @@ async def test_zha_set_usercode(mock_zha_provider):
 ## Platform-Specific Considerations
 
 ### Z-Wave JS
+
 - Uses `zwave_js_server` library for direct node access
 - Events come via `ZWAVE_JS_NOTIFICATION_EVENT`
 - Has rich code slot metadata
 
 ### ZHA
+
 - Uses Home Assistant services for code operations
 - Events come via `zha_event`
 - May have device-specific quirks
 
 ### Zigbee2MQTT
+
 - Uses MQTT publish/subscribe
 - Requires MQTT integration dependency
 - Device-specific payload formats
@@ -284,6 +300,8 @@ async def test_zha_set_usercode(mock_zha_provider):
 ## Error Handling
 
 Always handle platform errors gracefully:
+
+<!-- markdownlint-disable MD013 -->
 
 ```python
 async def async_set_usercode(self, slot_num: int, code: str, name: str | None = None) -> bool:
@@ -301,6 +319,7 @@ async def async_set_usercode(self, slot_num: int, code: str, name: str | None = 
 ## Debugging Tips
 
 1. Enable debug logging for your provider:
+
    ```yaml
    logger:
      logs:
@@ -308,6 +327,7 @@ async def async_set_usercode(self, slot_num: int, code: str, name: str | None = 
    ```
 
 2. Use `get_platform_data()` to expose diagnostic info:
+
    ```python
    def get_platform_data(self) -> dict[str, Any]:
        return {

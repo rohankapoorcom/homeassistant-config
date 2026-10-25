@@ -7,39 +7,31 @@ import base64
 import json
 import logging
 import uuid
-from collections.abc import AsyncGenerator, Callable
-from datetime import datetime
 from typing import TYPE_CHECKING, Any, Literal
 
 import demoji
 import openai
-import voluptuous as vol
 from homeassistant.components import conversation
-from homeassistant.config_entries import ConfigSubentry
 from homeassistant.const import CONF_MODEL
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import llm, template
 from homeassistant.helpers.entity import Entity
-from openai._streaming import AsyncStream
+from homeassistant.util import dt as dt_util
 from openai.types.chat import (
     ChatCompletionAssistantMessageParam,
-    ChatCompletionChunk,
     ChatCompletionContentPartImageParam,
     ChatCompletionContentPartTextParam,
     ChatCompletionFunctionToolParam,
     ChatCompletionMessageFunctionToolCallParam,
-    ChatCompletionMessageParam,
     ChatCompletionSystemMessageParam,
     ChatCompletionToolMessageParam,
     ChatCompletionUserMessageParam,
 )
 from openai.types.chat.chat_completion_message_function_tool_call_param import Function
 from openai.types.shared_params import FunctionDefinition, ResponseFormatJSONSchema
-from openai.types.shared_params.response_format_json_schema import JSONSchema
 from voluptuous_openapi import convert
 
-from . import LocalAiConfigEntry
 from .const import (
     CONF_CHAT_TEMPLATE_KWARGS,
     CONF_CHAT_TEMPLATE_OPTS,
@@ -48,6 +40,10 @@ from .const import (
     CONF_CONTENT_INJECTION_METHOD_TOOL,
     CONF_CONTENT_INJECTION_METHOD_USER,
     CONF_MAX_MESSAGE_HISTORY,
+    CONF_PASS_SESSION_ID,
+    CONF_REQUEST_BODY_OPTS,
+    CONF_REQUEST_BODY_PARAMETERS,
+    CONF_SERVER_OPTIONS,
     CONF_STRIP_EMOJIS,
     CONF_TEMPERATURE,
     CONF_WEAVIATE_API_KEY,
@@ -65,6 +61,22 @@ from .const import (
 )
 from .weaviate import WeaviateClient
 
+if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator, Callable
+    from pathlib import Path
+
+    import voluptuous as vol
+    from homeassistant.config_entries import ConfigSubentry
+    from openai._streaming import AsyncStream
+    from openai.types.chat import (
+        ChatCompletionChunk,
+        ChatCompletionMessageParam,
+        ChatCompletionMessageToolCall,
+    )
+    from openai.types.shared_params.response_format_json_schema import JSONSchema
+
+    from . import LocalAiConfigEntry
+
 _LOGGER = logging.getLogger(__name__)
 
 # Max number of back and forth with the LLM to generate a response
@@ -72,7 +84,9 @@ MAX_TOOL_ITERATIONS = 10
 
 # Check if HA supports thinking_content (2026.4+)
 _SUPPORTS_THINKING = "thinking_content" in getattr(
-    conversation.AssistantContent, "__dataclass_fields__", {}
+    conversation.AssistantContent,
+    "__dataclass_fields__",
+    {},
 )
 
 
@@ -106,7 +120,9 @@ def _adjust_schema(schema: dict[str, Any]) -> None:
 
 
 def _format_structured_output(
-    name: str, schema: vol.Schema, llm_api: llm.APIInstance | None
+    name: str,
+    schema: vol.Schema,
+    llm_api: llm.APIInstance | None,
 ) -> JSONSchema:
     """Format the schema to be compatible with OpenAI API."""
     result: JSONSchema = {
@@ -146,85 +162,9 @@ def _format_tool(
     return ChatCompletionFunctionToolParam(type="function", function=tool_spec)
 
 
-def b64_file(file_path):
+def b64_file(file_path: Path) -> str:
     """Retrieve the base64 encoded file contents."""
     return base64.b64encode(file_path.read_bytes()).decode("utf-8")
-
-
-async def _convert_content_to_chat_message(
-    content: conversation.Content,
-) -> ChatCompletionMessageParam | None:
-    """Convert any native chat message for this agent to the native format."""
-    if isinstance(content, conversation.ToolResultContent):
-
-        def log_and_str(value) -> str:
-            _LOGGER.warning(
-                f"Attempting string convertion of non-JSON-serialisable response content from LLM tool '{content.tool_name}': {value}"
-            )
-            return str(value)
-
-        return ChatCompletionToolMessageParam(
-            role="tool",
-            tool_call_id=content.tool_call_id,
-            content=json.dumps(content.tool_result, default=log_and_str),
-        )
-
-    role: Literal["user", "assistant", "system"] = content.role
-    if role == "system" and content.content:
-        return ChatCompletionSystemMessageParam(role="system", content=content.content)
-
-    if role == "user" and content.content:
-        messages = []
-
-        if content.attachments:
-            loop = asyncio.get_running_loop()
-            for attachment in content.attachments or ():
-                if not attachment.mime_type.startswith("image/"):
-                    raise HomeAssistantError(
-                        translation_domain=DOMAIN,
-                        translation_key="unsupported_attachment_type",
-                    )
-                base64_file = await loop.run_in_executor(
-                    None, b64_file, attachment.path
-                )
-                messages.append(
-                    ChatCompletionContentPartImageParam(
-                        type="image_url",
-                        image_url={
-                            "url": f"data:{attachment.mime_type};base64,{base64_file}",
-                            "detail": "auto",
-                        },
-                    )
-                )
-
-        messages.append(
-            ChatCompletionContentPartTextParam(type="text", text=content.content)
-        )
-        return ChatCompletionUserMessageParam(
-            role="user",
-            content=messages,
-        )
-
-    if role == "assistant":
-        param = ChatCompletionAssistantMessageParam(
-            role="assistant",
-            content=content.content,
-        )
-        if isinstance(content, conversation.AssistantContent) and content.tool_calls:
-            param["tool_calls"] = [
-                ChatCompletionMessageFunctionToolCallParam(
-                    type="function",
-                    id=tool_call.id,
-                    function=Function(
-                        arguments=json.dumps(tool_call.tool_args),
-                        name=tool_call.tool_name,
-                    ),
-                )
-                for tool_call in content.tool_calls
-            ]
-        return param
-    _LOGGER.warning("Could not convert message to Completions API: %s", content)
-    return None
 
 
 def _make_uuid(identifier: str) -> str:
@@ -248,16 +188,168 @@ class LocalAiEntity(Entity):
             entry_type=dr.DeviceEntryType.SERVICE,
         )
 
+    @property
+    def options(self) -> dict:
+        """Return subentry data options."""
+        return self.subentry.data
+
+    @property
+    def server_options(self) -> dict:
+        """Return server options from entry data."""
+        return self.entry.data.get(CONF_SERVER_OPTIONS, {})
+
+    @property
+    def weaviate_server_opts(self) -> dict:
+        """Return Weaviate server options from entry data."""
+        return self.entry.data.get(CONF_WEAVIATE_OPTIONS, {})
+
+    def _get_extra_body_args(self, options: dict) -> dict:
+        """
+        Build extra_body args for the completion request.
+
+        Chat Template Arguments are sent as a top-level `chat_template_kwargs`
+        field, which most inference servers (llama.cpp, vLLM) read. Server-type
+        subclasses may override this to deliver them elsewhere.
+        """
+        extra_body_args: dict = {}
+
+        chat_template_opts = options.get(CONF_CHAT_TEMPLATE_OPTS, {})
+        chat_template_args = chat_template_opts.get(CONF_CHAT_TEMPLATE_KWARGS, [])
+        chat_template_args = [
+            keypair for keypair in chat_template_args if keypair["Key"].strip()
+        ]
+
+        if chat_template_args:
+            kwargs = {}
+            for keypair in chat_template_args:
+                if keypair["Key"]:
+                    # Value is a template, so non-string types and structures can be provided
+                    kwargs[keypair["Key"]] = template.Template(
+                        keypair["Value"],
+                        self.hass,
+                    ).async_render()
+            extra_body_args["chat_template_kwargs"] = kwargs
+
+        request_body_opts = options.get(CONF_REQUEST_BODY_OPTS, {})
+        request_body_parameters = request_body_opts.get(
+            CONF_REQUEST_BODY_PARAMETERS, []
+        )
+        request_body_parameters = [
+            keypair
+            for keypair in request_body_parameters
+            if keypair.get("Key", "").strip()
+        ]
+
+        for keypair in request_body_parameters:
+            key = keypair.get("Key", "").strip()
+            if key:
+                extra_body_args[key] = template.Template(
+                    keypair.get("Value", ""),
+                    self.hass,
+                ).async_render()
+
+        return extra_body_args
+
+    async def _convert_content_to_chat_message(
+        self,
+        content: conversation.Content,
+        conversation_id: str | None = None,
+    ) -> ChatCompletionMessageParam | None:
+        if isinstance(content, conversation.ToolResultContent):
+
+            def log_and_str(value: Any) -> str:
+                _LOGGER.warning(
+                    "Attempting string convertion of non-JSON-serialisable response content from LLM tool '%s': %s",
+                    content.tool_name,
+                    value,
+                )
+                return str(value)
+
+            return ChatCompletionToolMessageParam(
+                role="tool",
+                tool_call_id=content.tool_call_id,
+                content=json.dumps(content.tool_result, default=log_and_str),
+            )
+
+        role: Literal["user", "assistant", "system"] = content.role
+        if role == "system" and content.content:
+            return ChatCompletionSystemMessageParam(
+                role="system",
+                content=content.content,
+            )
+
+        if role == "user" and content.content:
+            messages = []
+
+            if content.attachments:
+                loop = asyncio.get_running_loop()
+                for attachment in content.attachments or ():
+                    if not attachment.mime_type.startswith("image/"):
+                        raise HomeAssistantError(
+                            translation_domain=DOMAIN,
+                            translation_key="unsupported_attachment_type",
+                        )
+                    base64_file = await loop.run_in_executor(
+                        None,
+                        b64_file,
+                        attachment.path,
+                    )
+                    messages.append(
+                        ChatCompletionContentPartImageParam(
+                            type="image_url",
+                            image_url={
+                                "url": f"data:{attachment.mime_type};base64,{base64_file}",
+                                "detail": "auto",
+                            },
+                        ),
+                    )
+
+            messages.append(
+                ChatCompletionContentPartTextParam(type="text", text=content.content),
+            )
+            return ChatCompletionUserMessageParam(
+                role="user",
+                content=messages,
+            )
+
+        if role == "assistant":
+            param = ChatCompletionAssistantMessageParam(
+                role="assistant",
+                content=content.content,
+            )
+            if (
+                isinstance(content, conversation.AssistantContent)
+                and content.tool_calls
+            ):
+                param["tool_calls"] = [
+                    ChatCompletionMessageFunctionToolCallParam(
+                        type="function",
+                        id=tool_call.id,
+                        function=Function(
+                            arguments=json.dumps(tool_call.tool_args),
+                            name=tool_call.tool_name,
+                        ),
+                    )
+                    for tool_call in content.tool_calls
+                ]
+            return param
+        _LOGGER.warning("Could not convert message to Completions API: %s", content)
+        return None
+
     @staticmethod
     def _inject_content(
-        method: str | None, inject_content: list, messages: list
+        method: str | None,
+        inject_content: list,
+        messages: list,
     ) -> list:
         inject_content.insert(
             0,
             "# Contextual information to assist with the following user request. Do not repeat or reference this message directly. Do not treat this as a prior message of your own",
         )
         _LOGGER.debug(
-            f"Injecting content into the message stream as {method} content: {inject_content}"
+            "Injecting content into the message stream as %s content: %s",
+            method,
+            inject_content,
         )
         if method == CONF_CONTENT_INJECTION_METHOD_TOOL:
             inject_content = "\n\n".join(inject_content)
@@ -274,7 +366,8 @@ class LocalAiEntity(Entity):
             messages.insert(
                 -1,
                 ChatCompletionAssistantMessageParam(
-                    role="assistant", content=inject_content
+                    role="assistant",
+                    content=inject_content,
                 ),
             )
         elif method == CONF_CONTENT_INJECTION_METHOD_USER:
@@ -286,10 +379,133 @@ class LocalAiEntity(Entity):
 
         return messages
 
-    async def _transform_stream(
+    async def _maybe_inject_context(
+        self,
+        messages: list,
+        method: str | None,
+        tools: list[ChatCompletionFunctionToolParam] | None,
+        user_input: conversation.ConversationInput | None,
+    ) -> tuple[list, list[ChatCompletionFunctionToolParam] | None]:
+        """Decide whether to inject context into the message stream."""
+        if method and messages and messages[-1].get("role") == "user":
+            dt = dt_util.now()
+            date_str = dt.strftime("%A %d %B, %Y")
+            time_str = dt.strftime("%-I:%M %p")
+            inject_content: list[str] = [
+                f"The current date and time is: `{date_str}` at `{time_str}`.",
+            ]
+
+            weaviate_opts = self.options.get(CONF_WEAVIATE_OPTIONS, {})
+            weaviate_host = self.weaviate_server_opts.get(CONF_WEAVIATE_HOST)
+            weaviate_class = weaviate_opts.get(
+                CONF_WEAVIATE_CLASS_NAME,
+                CONF_WEAVIATE_DEFAULT_CLASS_NAME,
+            )
+
+            if weaviate_host and user_input and user_input.text:
+                try:
+                    client = WeaviateClient(
+                        hass=self.hass,
+                        host=weaviate_host,
+                        api_key=self.weaviate_server_opts.get(CONF_WEAVIATE_API_KEY),
+                    )
+
+                    results = await client.hybrid_search(
+                        class_name=weaviate_class,
+                        query=user_input.text,
+                        alpha=weaviate_opts.get(
+                            CONF_WEAVIATE_HYBRID_SEARCH_ALPHA,
+                            CONF_WEAVIATE_DEFAULT_HYBRID_SEARCH_ALPHA,
+                        ),
+                        threshold=weaviate_opts.get(
+                            CONF_WEAVIATE_THRESHOLD,
+                            CONF_WEAVIATE_DEFAULT_THRESHOLD,
+                        ),
+                        limit=int(
+                            weaviate_opts.get(
+                                CONF_WEAVIATE_MAX_RESULTS,
+                                CONF_WEAVIATE_DEFAULT_MAX_RESULTS,
+                            ),
+                        ),
+                    )
+
+                    _LOGGER.debug("Weaviate results: %s", results)
+
+                    result_content = [
+                        f"Query: {result.get('query').strip()}\nContent: {result.get('content').strip()}"
+                        for result in results
+                    ]
+                    if result_content:
+                        inject_content += result_content
+                except Exception:
+                    _LOGGER.exception(
+                        "An unexpected exception occurred while processing RAG",
+                    )
+
+            if inject_content:
+                messages = self._inject_content(method, inject_content, messages)
+                if tools:
+                    tools = [
+                        tool
+                        for tool in tools
+                        if not tool["function"]["name"].endswith("GetDateTime")
+                    ]
+        return messages, tools
+
+    def _accumulate_tool_call(
+        self,
+        pending_tool_calls: dict,
+        tool_call_id: str | None,
+        tool_call_name: str | None,
+        tool_call: ChatCompletionMessageToolCall,
+        conversation_id: str | None = None,
+    ) -> tuple[str | None, str | None]:
+        """
+        Accumulate a tool call delta into pending_tool_calls.
+
+        Returns the (possibly updated) tool_call_id and tool_call_name.
+        """
+        tool_call_id = tool_call.id or tool_call_id
+
+        tool_call_name = (
+            tool_call.function.name
+            if tool_call.function.name and tool_call.function.name != tool_call_name
+            else tool_call_name
+        )
+        tool_key = tool_call_id + tool_call_name
+
+        if tool_key not in pending_tool_calls:
+            pending_tool_calls[tool_key] = {
+                "id": tool_call_id,
+                "name": tool_call.function.name,
+                "args": tool_call.function.arguments or "",
+            }
+        else:
+            pending_tool_calls[tool_key]["args"] += tool_call.function.arguments or ""
+
+        self._on_tool_call_delta(
+            tool_call_id, tool_call_name, tool_call, conversation_id
+        )
+        return tool_call_id, tool_call_name
+
+    def _on_tool_call_delta(
+        self,
+        tool_call_id: str | None,
+        tool_call_name: str | None,
+        tool_call: ChatCompletionMessageToolCall,
+        conversation_id: str | None = None,
+    ) -> None:
+        """
+        Process tool call delta during streaming.
+
+        Subclasses can override to capture additional data from the raw chunk.
+        """
+
+    async def _transform_stream(  # noqa: C901 todo: will break this up
         self,
         stream: AsyncStream[ChatCompletionChunk],
         strip_emojis: bool,
+        conversation_id: str | None = None,
     ) -> AsyncGenerator[conversation.AssistantContentDeltaDict, None]:
         """Transform a streaming OpenAI response to ChatLog format."""
         new_msg = True
@@ -309,52 +525,43 @@ class LocalAiEntity(Entity):
 
             choice = event.choices[0]
             delta = choice.delta
-            _LOGGER.debug(event)
 
             if new_msg:
                 # openvinotoolkit/model_server fails to provide a message role in its responses, so lets default to assistant if none is received
-                chunk["role"] = delta.role if delta.role else "assistant"
+                chunk["role"] = delta.role or "assistant"
                 new_msg = False
 
             if (tool_calls := delta.tool_calls) is not None and tool_calls:
                 # I've never seen this contain more than a single tool call, but let's iterate over it just in case
                 for tool_call in tool_calls:
-                    # llama.cpp - only the initial tool call chunk has an ID, subsequent argument chunks do not
-                    # Ollama - parallel tool calls all share the same .index value (0)
-                    tool_call_id = tool_call.id if tool_call.id else tool_call_id
-
-                    # And some mystery engine from OpenRouter uses the same index and ID across parallel tool requests within so lets track the tool name itself for changes as well
-                    tool_call_name = (
-                        tool_call.function.name
-                        if tool_call.function.name
-                        and tool_call.function.name != tool_call_name
-                        else tool_call_name
+                    tool_call_id, tool_call_name = self._accumulate_tool_call(
+                        pending_tool_calls,
+                        tool_call_id,
+                        tool_call_name,
+                        tool_call,
+                        conversation_id,
                     )
-                    tool_key = tool_call_id + tool_call_name
-
-                    if tool_key not in pending_tool_calls:
-                        pending_tool_calls[tool_key] = {
-                            "id": tool_call_id,
-                            "name": tool_call.function.name,
-                            "args": tool_call.function.arguments or "",
-                        }
-                    else:
-                        pending_tool_calls[tool_key]["args"] += (
-                            tool_call.function.arguments or ""
-                        )
 
             # Handle reasoning_content field (used by reasoning models via OpenAI-compatible APIs)
-            reasoning_content = getattr(delta, "reasoning_content", None)
+            # Naming for this field varies. See https://github.com/vllm-project/vllm/issues/27755
+            reasoning_content = getattr(delta, "reasoning_content", None) or getattr(
+                delta,
+                "reasoning",
+                None,
+            )
             if reasoning_content:
                 if _SUPPORTS_THINKING:
                     chunk["thinking_content"] = reasoning_content
                 else:
-                    _LOGGER.debug(f"LLM Thought: {reasoning_content}")
+                    _LOGGER.debug("LLM Thought: %s", reasoning_content)
 
             if (content := delta.content) is not None:
                 if strip_emojis:
                     content = await loop.run_in_executor(
-                        None, demoji.replace, content, ""
+                        None,
+                        demoji.replace,
+                        content,
+                        "",
                     )
 
                 # Handle <think> tags that may appear within larger chunks
@@ -376,7 +583,7 @@ class LocalAiEntity(Entity):
                             if before_close:
                                 chunk["thinking_content"] = before_close
                         elif pending_think.strip():
-                            _LOGGER.debug(f"LLM Thought: {pending_think}")
+                            _LOGGER.debug("LLM Thought: %s", pending_think)
 
                         pending_think = ""
                     else:
@@ -392,29 +599,66 @@ class LocalAiEntity(Entity):
                 if seen_visible:
                     chunk["content"] = content
 
+            tool_error_deltas: list[dict] = []
             if choice.finish_reason:
                 try:
                     # Retrieve timings from llamacpp responses, if available
                     if event.timings:
                         self.extra_state_attributes = {"timings": event.timings}
-                except Exception:
+                except Exception:  # noqa: S110
                     pass
 
                 if pending_tool_calls:
-                    chunk["tool_calls"] = [
-                        llm.ToolInput(
-                            id=tool_call["id"],
-                            tool_name=tool_call["name"],
-                            tool_args=json.loads(tool_call["args"])
-                            if tool_call["args"]
-                            else {},
-                        )
-                        for key, tool_call in pending_tool_calls.items()
-                    ]
-                    _LOGGER.debug(f"Calling tools: {pending_tool_calls}")
+                    parsed_tool_calls: list[llm.ToolInput] = []
+                    for tool_call in pending_tool_calls.values():
+                        try:
+                            args = (
+                                json.loads(tool_call["args"])
+                                if tool_call["args"]
+                                else {}
+                            )
+                            parsed_tool_calls.append(
+                                llm.ToolInput(
+                                    id=tool_call["id"],
+                                    tool_name=tool_call["name"],
+                                    tool_args=args,
+                                )
+                            )
+                        except json.JSONDecodeError:  # noqa: PERF203
+                            parsed_tool_calls.append(
+                                llm.ToolInput(
+                                    id=tool_call["id"],
+                                    tool_name=tool_call["name"],
+                                    tool_args={
+                                        "json_decode_failure": tool_call["args"]
+                                    },
+                                    external=True,
+                                )
+                            )
+                            tool_error_deltas.append(
+                                {
+                                    "role": "tool_result",
+                                    "tool_call_id": tool_call["id"],
+                                    "tool_name": tool_call["name"],
+                                    "tool_result": {
+                                        "error": f"Failed to parse tool arguments: {tool_call['args']}\n\nCheck your JSON and try again.",
+                                    },
+                                }
+                            )
 
-            if seen_visible or chunk.get("tool_calls") or chunk.get("role") or chunk.get("thinking_content"):
+                    _LOGGER.debug("Calling tools: %s", parsed_tool_calls)
+                    chunk["tool_calls"] = parsed_tool_calls
+                    pending_tool_calls.clear()
+
+            if (
+                seen_visible
+                or chunk.get("tool_calls")
+                or chunk.get("role")
+                or chunk.get("thinking_content")
+            ):
                 yield chunk
+                for error_delta in tool_error_deltas:
+                    yield error_delta
 
     async def _async_handle_chat_log(
         self,
@@ -422,11 +666,16 @@ class LocalAiEntity(Entity):
         structure_name: str | None = None,
         structure: vol.Schema | None = None,
         user_input: conversation.ConversationInput | None = None,
+        *,
         parallel_tool_calls: bool = False,
     ) -> None:
         """Generate an answer for the chat log."""
-        options = self.subentry.data
+        options = self.options
+        server_options = self.server_options
         strip_emojis = options.get(CONF_STRIP_EMOJIS)
+
+        # Pass conversation session ID via metadata for LLM proxy tracing (LiteLLM + Langfuse)
+        pass_session_id = server_options.get(CONF_PASS_SESSION_ID, False)
         max_message_history = int(options.get(CONF_MAX_MESSAGE_HISTORY, 0))
         temperature = options.get(CONF_TEMPERATURE, 0.6)
 
@@ -434,128 +683,58 @@ class LocalAiEntity(Entity):
             "model": self.model,
             "temperature": temperature,
             "parallel_tool_calls": parallel_tool_calls,
+            "extra_headers": {
+                "HTTP-Referer": "https://github.com/skye-harris/hass_local_openai_llm",
+                "X-Title": "Home Assistant",
+            },
         }
 
         tools: list[ChatCompletionFunctionToolParam] | None = None
         if chat_log.llm_api:
+            # Sorted by name because intent.async_get() yields tools in registration
+            # order, which differs from one restart to the next. Tool schemas render
+            # at the start of the prompt, so a reorder invalidates the whole prefix
+            # of a server-side prompt cache.
             tools = [
                 _format_tool(tool, chat_log.llm_api.custom_serializer)
-                for tool in chat_log.llm_api.tools
+                for tool in sorted(chat_log.llm_api.tools, key=lambda tool: tool.name)
             ]
 
         messages = self._trim_history(
             [
                 m
                 for content in chat_log.content
-                if (m := await _convert_content_to_chat_message(content))
+                if (
+                    m := await self._convert_content_to_chat_message(
+                        content, chat_log.conversation_id
+                    )
+                )
             ],
             max_message_history,
         )
 
-        # Home Assistant no longer injects the current date/time into the system prompt, for performance reasons (negatively impacts caching)
-        # It's still useful context to have however, and we can inject this at the end of the message chain along with any RAG content queried
-        dt = datetime.now()
-        date_str = dt.strftime("%A %d %B, %Y")
-        time_str = dt.strftime("%-I:%M %p")
-
-        inject_content = [
-            f"The current date and time is: `{date_str}` at `{time_str}`.",
-        ]
-
-        # Retrieval Augmented Generation: Query Weaviate vector DB
-        weaviate_opts = options.get(CONF_WEAVIATE_OPTIONS, {})
-        weaviate_server_opts = self.entry.data.get(CONF_WEAVIATE_OPTIONS, {})
-        weaviate_host = weaviate_server_opts.get(CONF_WEAVIATE_HOST)
-        weaviate_class = weaviate_opts.get(
-            CONF_WEAVIATE_CLASS_NAME, CONF_WEAVIATE_DEFAULT_CLASS_NAME
-        )
-
-        if weaviate_host and user_input and user_input.text:
-            try:
-                client = WeaviateClient(
-                    hass=self.hass,
-                    host=weaviate_host,
-                    api_key=weaviate_server_opts.get(CONF_WEAVIATE_API_KEY),
-                )
-
-                results = await client.hybrid_search(
-                    class_name=weaviate_class,
-                    query=user_input.text,
-                    alpha=weaviate_opts.get(
-                        CONF_WEAVIATE_HYBRID_SEARCH_ALPHA,
-                        CONF_WEAVIATE_DEFAULT_HYBRID_SEARCH_ALPHA,
-                    ),
-                    threshold=weaviate_opts.get(
-                        CONF_WEAVIATE_THRESHOLD, CONF_WEAVIATE_DEFAULT_THRESHOLD
-                    ),
-                    limit=int(
-                        weaviate_opts.get(
-                            CONF_WEAVIATE_MAX_RESULTS, CONF_WEAVIATE_DEFAULT_MAX_RESULTS
-                        )
-                    ),
-                )
-
-                _LOGGER.debug(f"Weaviate results: {results}")
-
-                result_content = [
-                    f"Query: {result.get('query').strip()}\nContent: {result.get('content').strip()}"
-                    for result in results
-                ]
-                if result_content:
-                    # inject_content.append(
-                    #     f"# Retrieval Augmented Generation\nYou may use the following information to answer the user question, if appropriate.\nIgnore this if it does not relate to or answer the users query.\n\n{'\n'.join(result_content)}"
-                    # )
-                    inject_content += result_content
-            except Exception as err:
-                _LOGGER.warning(
-                    "An unexpected exception occurred while processing RAG: %s", err
-                )
-                _LOGGER.exception(err)
-
-        # Inject any pending content into the current user message
-        # We prepend to the last message to avoid creating consecutive user messages
-        # which would violate chat template role alternation requirements
         method = options.get(CONF_CONTENT_INJECTION_METHOD)
-
-        if (
-            method
-            and inject_content
-            and messages
-            and messages[-1].get("role") == "user"
-        ):
-            messages = self._inject_content(method, inject_content, messages)
-            # remove the get date time tool if we are injecting it
-            if tools:
-                tools = [
-                    tool
-                    for tool in tools
-                    if not tool["function"]["name"].endswith("GetDateTime")
-                ]
+        messages, tools = await self._maybe_inject_context(
+            messages,
+            method,
+            tools,
+            user_input,
+        )
         model_args["messages"] = messages
 
         if tools:
             model_args["tools"] = tools
+        extra_body_args = self._get_extra_body_args(options)
+        # Pass conversation session ID via metadata for LLM proxy tracing (LiteLLM + Langfuse)
+        if pass_session_id:
+            extra_body_args.setdefault("metadata", {})["session_id"] = (
+                chat_log.conversation_id
+            )
 
-        chat_template_opts = options.get(CONF_CHAT_TEMPLATE_OPTS, {})
-        chat_template_args = chat_template_opts.get(CONF_CHAT_TEMPLATE_KWARGS, [])
-
-        # Filter args without a name - they are marked as required in the schema but this isn't being enforced on the front-end
-        chat_template_args = [
-            keypair for keypair in chat_template_args if keypair["Name"].strip()
-        ]
-
-        if chat_template_args:
-            kwargs = {}
-            for keypair in chat_template_args:
-                if keypair["Name"]:
-                    # Our value is a template, so that non-string data types and more complex structures can be provided by the user
-                    kwargs[keypair["Name"]] = template.Template(
-                        keypair["Value"],
-                        self.hass,
-                    ).async_render()
-
-            _LOGGER.debug(f"Chat template kwargs: {kwargs}")
-            model_args["extra_body"] = {"chat_template_kwargs": kwargs}
+        # Insert our extra_body args if we have any
+        if extra_body_args:
+            _LOGGER.debug("Extra-body args: %s", extra_body_args)
+            model_args["extra_body"] = extra_body_args
 
         if structure:
             if TYPE_CHECKING:
@@ -563,40 +742,87 @@ class LocalAiEntity(Entity):
             model_args["response_format"] = ResponseFormatJSONSchema(
                 type="json_schema",
                 json_schema=_format_structured_output(
-                    structure_name, structure, chat_log.llm_api
+                    structure_name,
+                    structure,
+                    chat_log.llm_api,
                 ),
             )
 
         client = self.entry.runtime_data
 
-        for _iteration in range(MAX_TOOL_ITERATIONS):
-            try:
-                result_stream = await client.chat.completions.create(
-                    **model_args, stream=True
+        await self._run_agent_loop(
+            client, model_args, chat_log, strip_emojis, chat_log.conversation_id
+        )
+
+    async def _run_agent_loop(
+        self,
+        client: openai.AsyncOpenAI,
+        model_args: dict[str, Any],
+        chat_log: conversation.ChatLog,
+        strip_emojis: bool,
+        conversation_id: str | None = None,
+    ) -> None:
+        """Run the LLM agent loop with tool call iteration."""
+        for iteration in range(MAX_TOOL_ITERATIONS):
+            if iteration == MAX_TOOL_ITERATIONS - 1:
+                _LOGGER.debug("Max iterations reached, injecting stop message")
+                model_args["messages"] = self._inject_stop_directive(
+                    model_args["messages"]
                 )
-            except openai.OpenAIError as err:
-                _LOGGER.exception(err)
-                raise HomeAssistantError("Error talking to API") from err
+                model_args["tool_choice"] = "none"
 
             try:
+                result_stream = await client.chat.completions.create(
+                    **model_args,
+                    stream=True,
+                )
+
                 model_args["messages"].extend(
                     [
                         msg
                         async for content in chat_log.async_add_delta_content_stream(
                             self.entity_id,
                             self._transform_stream(
-                                stream=result_stream, strip_emojis=strip_emojis
+                                stream=result_stream,
+                                strip_emojis=strip_emojis,
+                                conversation_id=conversation_id,
                             ),
                         )
-                        if (msg := await _convert_content_to_chat_message(content))
-                    ]
+                        if (
+                            msg := await self._convert_content_to_chat_message(
+                                content, conversation_id
+                            )
+                        )
+                    ],
                 )
+            except openai.OpenAIError as err:
+                _LOGGER.exception("API server returned an error")
+                msg = "API server returned an error. Check the system logs for further details."
+                raise HomeAssistantError(msg) from err
             except Exception as err:
-                _LOGGER.exception(err)
-                raise HomeAssistantError("Error handling API response") from err
+                _LOGGER.exception("Error handling API response")
+                msg = "Error handling API response. Check the system logs for further details."
+                raise HomeAssistantError(msg) from err
 
             if not chat_log.unresponded_tool_results:
                 break
+
+    @staticmethod
+    def _inject_stop_directive(messages: list) -> list:
+        """Append a stop-directive to the last tool result if present."""
+        if not messages:
+            return messages
+        last_msg = messages[-1]
+        if last_msg.get("role") != "tool":
+            return messages
+        directive = (
+            "\n\nYou have reached the maximum number of tool call iterations. "
+            "You must now provide your final response directly to the user "
+            "without calling any more tools."
+        )
+        existing_content = last_msg.get("content", "")
+        last_msg["content"] = existing_content + directive
+        return messages
 
     @staticmethod
     def _trim_history(messages: list, max_messages: int) -> list:
@@ -632,31 +858,35 @@ class LocalAiEntity(Entity):
         return messages
 
     async def upsert_data_in_weaviate(
-        self, query: str, content: str, identifier: str | None
-    ):
+        self,
+        query: str,
+        content: str,
+        identifier: str | None,
+    ) -> None:
         """Add or update a record in Weaviate."""
-        options = self.subentry.data
-        weaviate_opts = options.get(CONF_WEAVIATE_OPTIONS, {})
-        weaviate_server_opts = self.entry.data.get(CONF_WEAVIATE_OPTIONS, {})
-        weaviate_host = weaviate_server_opts.get(CONF_WEAVIATE_HOST)
+        weaviate_opts = self.options.get(CONF_WEAVIATE_OPTIONS, {})
+        weaviate_host = self.weaviate_server_opts.get(CONF_WEAVIATE_HOST)
         weaviate_class = weaviate_opts.get(
-            CONF_WEAVIATE_CLASS_NAME, CONF_WEAVIATE_DEFAULT_CLASS_NAME
+            CONF_WEAVIATE_CLASS_NAME,
+            CONF_WEAVIATE_DEFAULT_CLASS_NAME,
         )
 
         if not weaviate_host:
-            raise RuntimeError("Weaviate is not configured for this Agent")
+            msg = "Weaviate is not configured for this Agent"
+            raise RuntimeError(msg)
 
         client = WeaviateClient(
             hass=self.hass,
             host=weaviate_host,
-            api_key=weaviate_server_opts.get(CONF_WEAVIATE_API_KEY),
+            api_key=self.weaviate_server_opts.get(CONF_WEAVIATE_API_KEY),
         )
 
         # If we have been provided an identifier, generate a UUID and check if it exists
         object_uuid = _make_uuid(identifier) if identifier else None
         if object_uuid:
             object_exists = await client.does_object_exist(
-                class_name=weaviate_class, object_uuid=object_uuid
+                class_name=weaviate_class,
+                object_uuid=object_uuid,
             )
 
             if object_exists:
@@ -668,7 +898,7 @@ class LocalAiEntity(Entity):
                     object_uuid=object_uuid,
                 )
 
-                _LOGGER.info(f"Object updated in Weaviate: {object_uuid}")
+                _LOGGER.info("Object updated in Weaviate: %s", object_uuid)
                 return
 
         # Object does not exist, create new object
@@ -679,4 +909,4 @@ class LocalAiEntity(Entity):
             object_uuid=object_uuid,
         )
 
-        _LOGGER.info(f"Object added to Weaviate class: {weaviate_class}")
+        _LOGGER.info("Object added to Weaviate class: %s", weaviate_class)

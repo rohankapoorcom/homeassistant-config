@@ -2,22 +2,45 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 import logging
-from typing import Any, Literal
+from typing import Any, Final, Literal
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
 from .const import DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterLockCoordinator
 from .lock import KeymasterLock
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
+
+# Sentinel marking that no state signature has been captured yet, so the first
+# write always happens even if the first computed signature is falsy or None.
+_UNSET: Final = object()
+
+
+def _freeze(value: Any) -> Any:
+    """Return a stable, comparable, hashable snapshot of an attribute payload.
+
+    Attribute payloads such as ``extra_state_attributes`` are mutable and can be
+    mutated in place, so a stored reference would compare equal to its own later
+    mutations.  Recursively convert containers into immutable equivalents to
+    capture a true point-in-time snapshot.
+    """
+    if isinstance(value, Mapping):
+        return tuple(sorted((str(key), _freeze(val)) for key, val in value.items()))
+    if isinstance(value, list | tuple):
+        return tuple(_freeze(val) for val in value)
+    if isinstance(value, set | frozenset):
+        return frozenset(_freeze(val) for val in value)
+    return value
+
 
 # Naming convention for EntityDescription key (Property) for all entities:
 # <Platform>.<Property>.<SubProperty>:<Slot Number*>.<SubProperty>:<Slot Number*>  *Only if needed
@@ -25,20 +48,17 @@ _LOGGER: logging.Logger = logging.getLogger(__name__)
 # Items cannot contain . or : in their names
 
 
-class KeymasterEntity(CoordinatorEntity[KeymasterCoordinator]):
+class KeymasterEntity(CoordinatorEntity[KeymasterLockCoordinator]):
     """Base entity for Keymaster."""
 
     def __init__(self, entity_description: KeymasterEntityDescription) -> None:
         """Initialize base keymaster entity."""
         # _LOGGER.debug("[Entity init] entity_description: %s", entity_description)
         self.hass: HomeAssistant = entity_description.hass
-        self.coordinator: KeymasterCoordinator = entity_description.coordinator
+        self.coordinator: KeymasterLockCoordinator = entity_description.coordinator
         self._config_entry: ConfigEntry = entity_description.config_entry
         self.entity_description: KeymasterEntityDescription = entity_description
         self._property: str = entity_description.key  # <Platform>.<Property>.<SubProperty>:<Slot Number*>.<SubProperty>:<Slot Number*>  *Only if needed
-        self._kmlock: KeymasterLock | None = self.coordinator.sync_get_lock_by_config_entry_id(
-            self._config_entry.entry_id
-        )
         self._code_slot = self._get_x_num("code_slots")
         self._day_of_week_num = self._get_x_num("accesslimit_day_of_week")
 
@@ -56,6 +76,7 @@ class KeymasterEntity(CoordinatorEntity[KeymasterCoordinator]):
         #     self.unique_id,
         # )
         self._attr_extra_state_attributes: dict[str, Any] = {}
+        self._last_state_signature: Any = _UNSET
         self._attr_device_info: DeviceInfo = {
             "identifiers": {(DOMAIN, self._config_entry.entry_id)},
         }
@@ -64,10 +85,46 @@ class KeymasterEntity(CoordinatorEntity[KeymasterCoordinator]):
         super().__init__(self.coordinator, self._attr_unique_id)
         # _LOGGER.debug(f"[Entity init] Entity created: {self.name}, device_info: {self.device_info}")
 
+    async def async_added_to_hass(self) -> None:
+        """Apply current coordinator data after the entity is added."""
+        await super().async_added_to_hass()
+
+        if (
+            self.entity_id is None
+            or self.coordinator.data is None
+            or not self.coordinator.last_update_success
+            or self._kmlock is None
+        ):
+            return
+
+        self._handle_coordinator_update()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot of everything this entity publishes."""
+        return (self._attr_available, _freeze(self._attr_extra_state_attributes))
+
+    @callback
+    def async_write_ha_state_if_changed(self, *, force: bool = False) -> None:
+        """Write state only when this entity's published data actually changed."""
+        signature = self._state_signature()
+        if (
+            not force
+            and self._last_state_signature is not _UNSET
+            and self._last_state_signature == signature
+        ):
+            return
+        self._last_state_signature = signature
+        self.async_write_ha_state()
+
     @property
     def available(self) -> bool:
         """Return whether entity is available."""
         return self._attr_available
+
+    @property
+    def _kmlock(self) -> KeymasterLock | None:
+        """Get the live KeymasterLock instance."""
+        return self.coordinator.sync_get_lock_by_config_entry_id(self._config_entry.entry_id)
 
     def _get_property_value(self) -> Any:
         if "." not in self._property:
@@ -84,7 +141,12 @@ class KeymasterEntity(CoordinatorEntity[KeymasterCoordinator]):
                     result = result[int(num)]
                 else:
                     result = getattr(result, key)
-        except (TypeError, KeyError, AttributeError, IndexError):
+        except (
+            TypeError,
+            KeyError,
+            AttributeError,
+            IndexError,
+        ):
             return None
 
         return result
@@ -139,4 +201,4 @@ class KeymasterEntityDescription(EntityDescription):
 
     hass: HomeAssistant
     config_entry: ConfigEntry
-    coordinator: KeymasterCoordinator
+    coordinator: KeymasterLockCoordinator

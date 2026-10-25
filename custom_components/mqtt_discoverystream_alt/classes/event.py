@@ -2,14 +2,15 @@
 
 import logging
 
-from homeassistant.components.event import ATTR_EVENT_TYPE, ATTR_EVENT_TYPES
+from homeassistant.components.event import (
+    EventEntityCapabilityAttribute,
+    EventEntityStateAttribute,
+)
+from homeassistant.components.mqtt.event import CONF_EVENT_TYPES
 from homeassistant.const import ATTR_STATE, Platform
 
-from ..const import (
-    CONF_EVT_TYP,
-)
+from ..helpers.base_entity import DiscoveryEntity
 from ..utils import EntityInfo
-from .base_entity import DiscoveryEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,16 +23,22 @@ class DiscoveryItem(DiscoveryEntity):
 
     def build_config(self, config, entity_info: EntityInfo):
         """Build the config for a event."""
-        config[CONF_EVT_TYP] = entity_info.attributes[ATTR_EVENT_TYPES]
+        config[CONF_EVENT_TYPES] = entity_info.attributes[
+            EventEntityCapabilityAttribute.EVENT_TYPES
+        ]
 
     async def async_publish_state(self, new_state, mybase):
         """Publish the state for a text."""
 
         if (
-            new_state.attributes[ATTR_EVENT_TYPE]
-            in new_state.attributes[ATTR_EVENT_TYPES]
+            new_state.attributes[EventEntityStateAttribute.EVENT_TYPE]
+            in new_state.attributes[EventEntityCapabilityAttribute.EVENT_TYPES]
         ):
-            payload = {ATTR_EVENT_TYPE: new_state.attributes[ATTR_EVENT_TYPE]}
+            payload = {
+                EventEntityStateAttribute.EVENT_TYPE: new_state.attributes[
+                    EventEntityStateAttribute.EVENT_TYPE
+                ]
+            }
             await self._async_mqtt_publish(ATTR_STATE, payload, mybase, encoded=True)
 
         await super().async_publish_state(new_state, mybase)

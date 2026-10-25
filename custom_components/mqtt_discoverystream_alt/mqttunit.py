@@ -25,13 +25,13 @@ _LOGGER = logging.getLogger(__name__)
 class MQTTUnit:
     """A single MQTT config."""
 
-    def __init__(self, conf):
+    def __init__(self, conf) -> None:
         """Initialise MQTT unit."""
         self._conf = conf
         self.publisher = None
 
-    def setup_unit(self, hass):
-        """Setup the MQTT Unit."""
+    def setup_unit(self, hass: HomeAssistant):
+        """Do setup of the MQTT Unit."""
         publish_filter = convert_include_exclude_filter(self._conf)
         base_topic: str | None = self._conf.get(CONF_BASE_TOPIC)
         publish_attributes: bool | None = self._conf.get(CONF_PUBLISH_ATTRIBUTES)

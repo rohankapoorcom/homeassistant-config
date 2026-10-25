@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "No se ha podido publicar el comando para vaciar a través de MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "La acción «reset_trims» dejará de funcionar en la versión 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "La acción «reset_trims» dejará de funcionar en la versión 2026.8.0",
+            "description": "La acción «{domain}.reset_trims» se ejecutó mediante automatización o manualmente. Esta dejará de funcionar en la versión 2026.8.0.\n\nSustituya este servicio por **Camera Update Floor Data** («{domain}.camera_update_floor_data»).\n\nResuelva este asunto antes de actualizar y, a continuación, haga clic en **Enviar** para confirmar que ha realizado la migración."
+          }
+        }
+      }
+    }
   }
 }

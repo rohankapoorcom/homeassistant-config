@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Échec de la publication de la commande de nettoyage via MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "L'action « reset_trims » cessera de fonctionner à partir de la version 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "L'action « reset_trims » cessera de fonctionner à partir de la version 2026.8.0",
+            "description": "L'action « {domain}.reset_trims » a été exécutée via une automatisation ou manuellement. Elle ne fonctionnera plus à partir de la version 2026.8.0.\n\nRemplacez ce service par **Camera Update Floor Data** (« {domain}.camera_update_floor_data »).\n\nVeuillez effectuer cette modification avant la mise à niveau, puis cliquez sur **Soumettre** pour confirmer que la migration a bien eu lieu."
+          }
+        }
+      }
+    }
   }
 }

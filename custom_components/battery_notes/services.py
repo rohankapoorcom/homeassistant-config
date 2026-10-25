@@ -15,6 +15,7 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.util import dt as dt_util
 
 from .const import (
+    ATTR_AREA_NAME,
     ATTR_BATTERY_LAST_REPLACED,
     ATTR_BATTERY_LAST_REPLACED_DAYS,
     ATTR_BATTERY_LAST_REPORTED,
@@ -97,7 +98,9 @@ async def _async_battery_replaced(call: ServiceCall) -> ServiceResponse:  # noqa
     datetime_replaced_entry = call.data.get(SERVICE_DATA_DATE_TIME_REPLACED)
 
     if datetime_replaced_entry:
-        datetime_replaced = dt_util.as_utc(datetime_replaced_entry).replace(tzinfo=None)
+        datetime_replaced = dt_util.as_utc(datetime_replaced_entry).replace(
+            microsecond=1
+        )
     else:
         datetime_replaced = dt_util.utcnow()
 
@@ -143,6 +146,7 @@ async def _async_battery_replaced(call: ServiceCall) -> ServiceResponse:  # noqa
                         {
                             ATTR_DEVICE_ID: coordinator.device_id or "",
                             ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
+                            ATTR_AREA_NAME: coordinator.area_name,
                             ATTR_DEVICE_NAME: coordinator.device_name,
                             ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                             ATTR_BATTERY_TYPE: coordinator.battery_type,
@@ -200,6 +204,7 @@ async def _async_battery_replaced(call: ServiceCall) -> ServiceResponse:  # noqa
                         {
                             ATTR_DEVICE_ID: coordinator.device_id or "",
                             ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
+                            ATTR_AREA_NAME: coordinator.area_name,
                             ATTR_DEVICE_NAME: coordinator.device_name,
                             ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                             ATTR_BATTERY_TYPE: coordinator.battery_type,
@@ -269,6 +274,7 @@ async def _async_battery_last_replaced(call: ServiceCall) -> ServiceResponse:
                                 ATTR_DEVICE_ID: coordinator.device_id or "",
                                 ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id
                                 or "",
+                                ATTR_AREA_NAME: coordinator.area_name,
                                 ATTR_DEVICE_NAME: coordinator.device_name,
                                 ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                                 ATTR_BATTERY_TYPE: coordinator.battery_type,
@@ -290,6 +296,7 @@ async def _async_battery_last_replaced(call: ServiceCall) -> ServiceResponse:
                             ATTR_DEVICE_ID: coordinator.device_id or "",
                             ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
                             ATTR_DEVICE_NAME: coordinator.device_name,
+                            ATTR_AREA_NAME: coordinator.area_name,
                             ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                             ATTR_BATTERY_TYPE: coordinator.battery_type,
                             ATTR_BATTERY_QUANTITY: coordinator.battery_quantity,
@@ -322,9 +329,26 @@ async def _async_battery_last_reported(call: ServiceCall) -> ServiceResponse:
         for (
             coordinator
         ) in battery_notes_config_entry.runtime_data.subentry_coordinators.values():
-            if coordinator.wrapped_battery and coordinator.last_reported:
-                time_since_last_reported = dt_util.utcnow() - coordinator.last_reported
-                if time_since_last_reported.days > days_last_reported:
+            if coordinator.wrapped_battery or coordinator.wrapped_battery_low:
+                time_since_last_reported = None
+                if coordinator.last_reported:
+                    time_since_last_reported = (
+                        dt_util.utcnow() - coordinator.last_reported
+                    )
+                last_reported_days = (
+                    time_since_last_reported.days
+                    if time_since_last_reported is not None
+                    else None
+                )
+                last_reported_iso = (
+                    coordinator.last_reported.isoformat()
+                    if coordinator.last_reported is not None
+                    else None
+                )
+                if (
+                    time_since_last_reported is None
+                    or time_since_last_reported.days > days_last_reported
+                ):
                     if raise_events:
                         call.hass.bus.async_fire(
                             EVENT_BATTERY_NOT_REPORTED,
@@ -332,12 +356,13 @@ async def _async_battery_last_reported(call: ServiceCall) -> ServiceResponse:
                                 ATTR_DEVICE_ID: coordinator.device_id or "",
                                 ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id
                                 or "",
+                                ATTR_AREA_NAME: coordinator.area_name,
                                 ATTR_DEVICE_NAME: coordinator.device_name,
                                 ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                                 ATTR_BATTERY_TYPE: coordinator.battery_type,
                                 ATTR_BATTERY_QUANTITY: coordinator.battery_quantity,
                                 ATTR_BATTERY_LAST_REPORTED: coordinator.last_reported,
-                                ATTR_BATTERY_LAST_REPORTED_DAYS: time_since_last_reported.days,
+                                ATTR_BATTERY_LAST_REPORTED_DAYS: last_reported_days,
                                 ATTR_BATTERY_LAST_REPORTED_LEVEL: coordinator.last_reported_level,
                                 ATTR_BATTERY_LAST_REPLACED: coordinator.last_replaced,
                             },
@@ -353,11 +378,12 @@ async def _async_battery_last_reported(call: ServiceCall) -> ServiceResponse:
                             ATTR_DEVICE_ID: coordinator.device_id or "",
                             ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
                             ATTR_DEVICE_NAME: coordinator.device_name,
+                            ATTR_AREA_NAME: coordinator.area_name,
                             ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
                             ATTR_BATTERY_TYPE: coordinator.battery_type,
                             ATTR_BATTERY_QUANTITY: coordinator.battery_quantity,
-                            ATTR_BATTERY_LAST_REPORTED: coordinator.last_reported.isoformat(),
-                            ATTR_BATTERY_LAST_REPORTED_DAYS: time_since_last_reported.days,
+                            ATTR_BATTERY_LAST_REPORTED: last_reported_iso,
+                            ATTR_BATTERY_LAST_REPORTED_DAYS: last_reported_days,
                             ATTR_BATTERY_LAST_REPORTED_LEVEL: coordinator.last_reported_level,
                             ATTR_BATTERY_LAST_REPLACED: coordinator.last_replaced.isoformat()
                             if coordinator.last_replaced
@@ -392,6 +418,7 @@ async def _async_battery_low(call: ServiceCall) -> ServiceResponse:
                             ATTR_DEVICE_ID: coordinator.device_id or "",
                             ATTR_DEVICE_NAME: coordinator.device_name,
                             ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
+                            ATTR_AREA_NAME: coordinator.area_name,
                             ATTR_BATTERY_LOW: coordinator.battery_low,
                             ATTR_BATTERY_LOW_THRESHOLD: coordinator.battery_low_threshold,
                             ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,
@@ -412,6 +439,7 @@ async def _async_battery_low(call: ServiceCall) -> ServiceResponse:
                         ATTR_DEVICE_ID: coordinator.device_id or "",
                         ATTR_DEVICE_NAME: coordinator.device_name,
                         ATTR_SOURCE_ENTITY_ID: coordinator.source_entity_id or "",
+                        ATTR_AREA_NAME: coordinator.area_name,
                         ATTR_BATTERY_LOW: coordinator.battery_low,
                         ATTR_BATTERY_LOW_THRESHOLD: coordinator.battery_low_threshold,
                         ATTR_BATTERY_TYPE_AND_QUANTITY: coordinator.battery_type_and_quantity,

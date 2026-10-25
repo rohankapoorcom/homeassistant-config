@@ -2,7 +2,7 @@
 
 from homeassistant.components.input_boolean import DOMAIN as INPUT_BOOLEAN_DOMAIN
 
-from .base_input_entity import SwitchDiscoveryEntity
+from ..helpers.base_input_entity import SwitchDiscoveryEntity
 
 
 class DiscoveryItem(SwitchDiscoveryEntity):

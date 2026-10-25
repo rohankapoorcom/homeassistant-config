@@ -1,17 +1,94 @@
-from custom_components.ecoflow_cloud.api import EcoflowApiClient
-from custom_components.ecoflow_cloud.devices import const, BaseDevice
-from custom_components.ecoflow_cloud.entities import BaseSensorEntity, BaseNumberEntity, BaseSwitchEntity, \
-    BaseSelectEntity
-from custom_components.ecoflow_cloud.sensor import WattsSensorEntity,LevelSensorEntity,CapacitySensorEntity, \
-    InWattsSensorEntity,OutWattsSensorEntity, RemainSensorEntity, MilliVoltSensorEntity, TempSensorEntity, \
-    CyclesSensorEntity, EnergySensorEntity, CumulativeCapacitySensorEntity
-from homeassistant.util import utcnow
+from typing import override
+from typing import Any
 import logging
+
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+from homeassistant.util import utcnow
+
+from custom_components.ecoflow_cloud.api import EcoflowApiClient
+from custom_components.ecoflow_cloud.devices import BaseInternalDevice, const
+from custom_components.ecoflow_cloud.sensor import (
+    AmpSensorEntity,
+    BatteryLimitSensorEntity,
+    CapacitySensorEntity,
+    CumulativeCapacitySensorEntity,
+    CyclesSensorEntity,
+    EnergySensorEntity,
+    InWattsSensorEntity,
+    LevelSensorEntity,
+    MilliVoltSensorEntity,
+    OutWattsSensorEntity,
+    RemainSensorEntity,
+    StateOfHealthSensorEntity,
+    StoredEnergyFromSocSensorEntity,
+    TempSensorEntity,
+    VoltSensorEntity,
+    WattsSensorEntity,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-class StreamAC(BaseDevice):
-    def sensors(self, client: EcoflowApiClient) -> list[BaseSensorEntity]:
+
+class StreamAC(BaseInternalDevice):
+    # StreamAC backs every Stream-family model (registry.py maps STREAM_AC,
+    # STREAM_PRO, STREAM_ULTRA and STREAM_ULTRA_X all to this one class), so
+    # any sensor added here applies to all of them unless explicitly gated.
+    # The per-PV field numbers below (see _ultra_x_pv_sensors()) were
+    # raw-decoded against one physical Stream Ultra X and are NOT verified to
+    # mean the same thing -- or to be populated at all -- on Stream AC/PRO,
+    # which are different products with (at minimum) fewer PV inputs. Gating
+    # by device_type so this can't surface a wrong value mislabelled as PV
+    # power on those models.
+    #
+    # Both "STREAM_ULTRA" and "STREAM_ULTRA_X" are included: the private/MQTT
+    # API used by this class reports the former for what the public API and
+    # the EcoFlow app call "Ultra X" (confirmed: the "BK61" serial prefix on
+    # the physical unit the field mapping was decoded from matches units
+    # reporting "STREAM_ULTRA" here) -- the "_X" suffix appears to be a
+    # public-API-only distinction, not a different private-API device_type.
+    _ULTRA_X_DEVICE_TYPES = {"STREAM_ULTRA", "STREAM_ULTRA_X"}
+
+    def _ultra_x_pv_sensors(self, client: EcoflowApiClient) -> list[SensorEntity]:
+        """Per-PV power/voltage/current for Stream Ultra / Ultra X only.
+
+        The previous powGetPv/powGetPv2/powGetPv3/powGetPv4 keys were never
+        wired to any field in this class's protobuf schema
+        (StreamACChamp_cmd21_3) -- pure dead code, always reading a missing
+        dict key -- which is why these sensors sat at 0 while powGetPvSum (a
+        real field, 517) worked. Field numbers raw-decoded and cross-checked
+        against the app's per-panel display and against powGetPvSum (the
+        four powers sum to it): see stream_ac.proto and
+        https://github.com/tolwi/hassio-ecoflow-cloud/pull/846#issuecomment-5046026257
+        """
+        if self.device_data.device_type not in self._ULTRA_X_DEVICE_TYPES:
+            # Not verified on this model -- fall back to the old dead-but-
+            # harmless wiring so entity ids/behaviour are unchanged for
+            # Stream AC / PRO.
+            return [
+                WattsSensorEntity(client, self, "powGetPv", const.STREAM_POWER_PV_1, False, True),
+                WattsSensorEntity(client, self, "powGetPv2", const.STREAM_POWER_PV_2, False, True),
+                WattsSensorEntity(client, self, "powGetPv3", const.STREAM_POWER_PV_3, False, True),
+                WattsSensorEntity(client, self, "powGetPv4", const.STREAM_POWER_PV_4, False, True),
+            ]
+        return [
+            WattsSensorEntity(client, self, "powGetPv", const.STREAM_POWER_PV_1),
+            WattsSensorEntity(client, self, "powGetPv2", const.STREAM_POWER_PV_2),
+            WattsSensorEntity(client, self, "powGetPv3", const.STREAM_POWER_PV_3),
+            WattsSensorEntity(client, self, "powGetPv4", const.STREAM_POWER_PV_4),
+            VoltSensorEntity(client, self, "inVolPv1", const.STREAM_IN_VOL_PV_1, False),
+            VoltSensorEntity(client, self, "inVolPv2", const.STREAM_IN_VOL_PV_2, False),
+            VoltSensorEntity(client, self, "inVolPv3", const.STREAM_IN_VOL_PV_3, False),
+            VoltSensorEntity(client, self, "inVolPv4", const.STREAM_IN_VOL_PV_4, False),
+            AmpSensorEntity(client, self, "inAmpPv1", const.STREAM_IN_AMPS_PV_1, False),
+            AmpSensorEntity(client, self, "inAmpPv2", const.STREAM_IN_AMPS_PV_2, False),
+            AmpSensorEntity(client, self, "inAmpPv3", const.STREAM_IN_AMPS_PV_3, False),
+            AmpSensorEntity(client, self, "inAmpPv4", const.STREAM_IN_AMPS_PV_4, False),
+        ]
+
+    def sensors(self, client: EcoflowApiClient) -> list[SensorEntity]:
         return [
             # "accuChgCap": 198511,
             CumulativeCapacitySensorEntity(client, self, "accuChgCap", const.ACCU_CHARGE_CAP, False),
@@ -36,7 +113,11 @@ class StreamAC(BaseDevice):
             RemainSensorEntity(client, self, "bmsChgRemTime", const.CHARGE_REMAINING_TIME, False),
             # "bmsDesignCap": 1920,
             # "bmsDsgRemTime": 5939,
-            RemainSensorEntity(client, self, "bmsDsgRemTime", const.DISCHARGE_REMAINING_TIME, False),
+            # Discharge remaining time (minutes). Stream AC emits this as a
+            # top-level value; Stream Ultra / Ultra X carry it inside the nested
+            # Champ_cmd21_2 message (field 13), normalised onto this key by
+            # _normalize_champ_fields(). One sensor works for every variant.
+            RemainSensorEntity(client, self, "bmsDsgRemTime", const.DISCHARGE_REMAINING_TIME),
             # "bmsFault": 0,
             # "bmsFaultState": 0,
             # "bmsHeartbeatVer": 260,
@@ -65,20 +146,34 @@ class StreamAC(BaseDevice):
             # "cmsBattPowInMax": 2114,
             # "cmsBattPowOutMax": 2400,
             # "cmsBattSoc": 43.0,
+            # cmsBattFullEnergy / cmsBattSoc are not emitted on the private API
+            # for Stream Ultra / Ultra X (confirmed absent from both the private
+            # dump and the Public API quota). auto_enable keeps this hidden where
+            # the source fields never arrive, while still surfacing on Stream
+            # models that do report them.
+            StoredEnergyFromSocSensorEntity(
+                client, self, "cmsBattFullEnergy", "cmsBattSoc", const.STREAM_STORED_ENERGY, False, True
+            ),
             # "cmsBattSoh": 100.0,
             # "cmsBmsRunState": 1,
             # "cmsChgDsgState": 2,
             # "cmsChgRemTime": 88,
             # "cmsDsgRemTime": 5939,
             # "cmsMaxChgSoc": 100,
+            # Charge/discharge SoC limits. Stream AC emits these top-level;
+            # Stream Ultra / Ultra X carry them inside the nested Champ_cmd21_2
+            # message (field 7 / field 21), normalised onto these keys by
+            # _normalize_champ_fields().
+            BatteryLimitSensorEntity(client, self, "cmsMaxChgSoc", const.MAX_CHARGE_LEVEL),
             # "cmsMinDsgSoc": 5,
+            BatteryLimitSensorEntity(client, self, "cmsMinDsgSoc", const.MIN_DISCHARGE_LEVEL),
             # "curSensorNtcNum": 0,
             # "curSensorTemp": [],
             # "cycleSoh": 100.0,
             # "cycles": 1,
-            CyclesSensorEntity(client, self, "cycles", const.CYCLES,False),
+            CyclesSensorEntity(client, self, "cycles", const.CYCLES, False),
             # "designCap": 100000,
-            CapacitySensorEntity(client, self, "designCap", const.STREAM_DESIGN_CAPACITY,False),
+            CapacitySensorEntity(client, self, "designCap", const.STREAM_DESIGN_CAPACITY, False),
             # "devCtrlStatus": 1,
             # "devSleepState": 0,
             # "diffSoc": 0.2050476,
@@ -92,7 +187,10 @@ class StreamAC(BaseDevice):
             # "energyStrategyOperateMode.operateSelfPoweredOpen": true,
             # "energyStrategyOperateMode.operateTouModeOpen": false,
             # "f32ShowSoc": 46.317574,
-            LevelSensorEntity(client, self, "f32ShowSoc", const.STREAM_POWER_BATTERY_SOC,False),
+            # Precise battery SoC (float). Stream AC emits this top-level; Stream
+            # Ultra / Ultra X carry it inside the nested Champ_cmd21_2 message
+            # (field 15), normalised onto this key by _normalize_champ_fields().
+            LevelSensorEntity(client, self, "f32ShowSoc", const.STREAM_POWER_BATTERY_SOC),
             # "feedGridMode": 2,
             # "feedGridModePowLimit": 800,
             # "feedGridModePowMax": 800,
@@ -149,24 +247,11 @@ class StreamAC(BaseDevice):
             # "plugInInfoPv2Vol": 0.0,
             # "plugInInfoPv3Amp": 0.0,
             # "plugInInfoPv3Flag": false,
-            # "plugInInfoPv3Vol": 0.0,
-            # "plugInInfoPv4Amp": 0.0,
-            # "plugInInfoPv4Flag": false,
-            # "plugInInfoPv4Vol": 0.0,
-            # "plugInInfoPvAmp": 0.0,
-            # "plugInInfoPvFlag": false,
-            # "plugInInfoPvVol": 0.0,
             # "powConsumptionMeasurement": 2,
             # "powGetBpCms": 1915.0862,
             WattsSensorEntity(client, self, "powGetBpCms", const.STREAM_POWER_BATTERY),
-            # "powGetPv": 0.0,
-            WattsSensorEntity(client, self, "powGetPv", const.STREAM_POWER_PV_1, False, True),
-            # "powGetPv2": 0.0,
-            WattsSensorEntity(client, self, "powGetPv2", const.STREAM_POWER_PV_2, False, True),
-            # "powGetPv3": 0.0,
-            WattsSensorEntity(client, self, "powGetPv3", const.STREAM_POWER_PV_3, False, True),
-            # "powGetPv4": 0.0,
-            WattsSensorEntity(client, self, "powGetPv4", const.STREAM_POWER_PV_4, False, True),
+            # Per-PV power/voltage/current -- see _ultra_x_pv_sensors().
+            *self._ultra_x_pv_sensors(client),
             # "powGetPvSum": 2051.3975,
             WattsSensorEntity(client, self, "powGetPvSum", const.STREAM_POWER_PV_SUM),
             # "powGetSchuko1": 0.0,
@@ -180,7 +265,12 @@ class StreamAC(BaseDevice):
             # "powGetSysLoadFromBp": 0.0,
             WattsSensorEntity(client, self, "powGetSysLoadFromBp", const.STREAM_GET_SYS_LOAD_FROM_BP),
             # "powGetSysLoadFromGrid": 0.0,
-            WattsSensorEntity(client, self, "powGetSysLoadFromGrid", const.STREAM_GET_SYS_LOAD_FROM_GRID),
+            WattsSensorEntity(
+                client,
+                self,
+                "powGetSysLoadFromGrid",
+                const.STREAM_GET_SYS_LOAD_FROM_GRID,
+            ),
             # "powGetSysLoadFromPv": 0.0,
             WattsSensorEntity(client, self, "powGetSysLoadFromPv", const.STREAM_GET_SYS_LOAD_FROM_PV),
             # "powSysAcInMax": 4462,
@@ -188,13 +278,13 @@ class StreamAC(BaseDevice):
             # "productDetail": 5,
             # "productType": 58,
             # "realSoh": 100.0,
-            LevelSensorEntity(client, self, "realSoh", const.REAL_SOH, False),
+            StateOfHealthSensorEntity(client, self, "realSoh", const.REAL_SOH, False),
             # "relay1Onoff": true,
             # "relay2Onoff": true,
             # "relay3Onoff": true,
             # "relay4Onoff": true,
             # "remainCap": 46317,
-            CapacitySensorEntity(client, self, "remainCap", const.STREAM_REMAIN_CAPACITY,False),
+            CapacitySensorEntity(client, self, "remainCap", const.STREAM_REMAIN_CAPACITY, False),
             # "remainTime": 88,
             RemainSensorEntity(client, self, "remainTime", const.REMAINING_TIME, False),
             # "runtimePropertyFullUploadPeriod": 120000,
@@ -202,13 +292,16 @@ class StreamAC(BaseDevice):
             # "seriesConnectDeviceId": 1,
             # "seriesConnectDeviceStatus": "MASTER",
             # "soc": 46,
-            LevelSensorEntity(client, self, "soc", const.STREAM_POWER_BATTERY, False)
+            # Integer battery level. Stream AC emits this top-level; Stream
+            # Ultra / Ultra X carry it inside the nested Champ_cmd21_2 message
+            # (field 9), normalised onto this key by _normalize_champ_fields().
+            LevelSensorEntity(client, self, "soc", const.STREAM_BATTERY_LEVEL)
             .attr("designCap", const.ATTR_DESIGN_CAPACITY, 0)
             .attr("fullCap", const.ATTR_FULL_CAPACITY, 0)
             .attr("remainCap", const.ATTR_REMAIN_CAPACITY, 0),
             # "socketMeasurePower": 0.0,
             # "soh": 100,
-            LevelSensorEntity(client, self, "soh", const.SOH, False),
+            StateOfHealthSensorEntity(client, self, "soh", const.SOH, False),
             # "stormPatternEnable": false,
             # "stormPatternEndTime": 0,
             # "stormPatternOpenFlag": false,
@@ -257,61 +350,73 @@ class StreamAC(BaseDevice):
             .attr("minCellVol", const.ATTR_MIN_CELL_VOLT, 0)
             .attr("maxCellVol", const.ATTR_MAX_CELL_VOLT, 0),
             # "waterInFlag": 0,
-
         ]
+
     # moduleWifiRssi
-    def numbers(self, client: EcoflowApiClient) -> list[BaseNumberEntity]:
+    def numbers(self, client: EcoflowApiClient) -> list[NumberEntity]:
         return []
 
-    def switches(self, client: EcoflowApiClient) -> list[BaseSwitchEntity]:
+    def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:
         return []
 
-    def selects(self, client: EcoflowApiClient) -> list[BaseSelectEntity]:
+    def selects(self, client: EcoflowApiClient) -> list[SelectEntity]:
         return []
 
-    def _prepare_data_get_topic(self, raw_data) -> dict[str, any]:
-        return super()._prepare_data(raw_data)
+    @override
+    def _prepare_data(self, raw_data: bytes) -> dict[str, Any]:
+        raw: dict[str, Any] = {"params": {}}
+        from .proto import stream_ac_pb2 as stream_ac
+        from .proto import stream_ac_pb2 as stream_ac2
 
-    def _prepare_data(self, raw_data) -> dict[str, any]:
-        raw = {"params": {}}
-        from .proto import ecopacket_pb2 as ecopacket, stream_ac_pb2 as stream_ac, stream_ac_pb2 as stream_ac2
         try:
-            payload =raw_data
+            payload = raw_data
 
             while True:
-                _LOGGER.debug("payload \"%s\"", payload.hex())
-                packet = stream_ac.SendHeaderStreamMsg()
+                _LOGGER.debug('payload "%s"', payload.hex())
+                packet = stream_ac.StreamACSendHeaderMsg()
                 packet.ParseFromString(payload)
 
-                if hasattr(packet.msg, "pdata") :
-                    _LOGGER.debug("cmd id \"%u\" fct id \"%u\" content \"%s\" - pdata:\"%s\"", packet.msg.cmd_id, packet.msg.cmd_func, str(packet), str(packet.msg.pdata.hex()))
-                else :
-                    _LOGGER.debug("cmd id \"%u\" fct id \"%u\" content \"%s\"", packet.msg.cmd_id, str(packet))
+                if hasattr(packet.msg, "pdata"):
+                    _LOGGER.debug(
+                        'cmd id "%u" fct id "%u" content "%s" - pdata:"%s"',
+                        packet.msg.cmd_id,
+                        packet.msg.cmd_func,
+                        str(packet),
+                        str(packet.msg.pdata.hex()),
+                    )
+                else:
+                    _LOGGER.debug(
+                        'cmd id "%u" fct id "%u" content "%s"',
+                        packet.msg.cmd_id,
+                        str(packet),
+                    )
 
-                if packet.msg.cmd_id < 0: #packet.msg.cmd_id != 21 and packet.msg.cmd_id != 22 and packet.msg.cmd_id != 50:
+                if (
+                    packet.msg.cmd_id < 0
+                ):  # packet.msg.cmd_id != 21 and packet.msg.cmd_id != 22 and packet.msg.cmd_id != 50:
                     _LOGGER.info("Unsupported EcoPacket cmd id %u", packet.msg.cmd_id)
 
                 else:
-                    _LOGGER.debug("new payload \"%s\"",str(packet.msg.pdata.hex()))
+                    _LOGGER.debug('new payload "%s"', str(packet.msg.pdata.hex()))
                     # paquet HeaderStream
                     if packet.msg.cmd_id > 0:
-                        self._parsedata(packet, stream_ac2.HeaderStream(), raw)
+                        self._parsedata(packet, stream_ac2.StreamACHeader(), raw)
 
                     # paquet Champ_cmd21
                     if packet.msg.cmd_id > 0:
-                        self._parsedata(packet, stream_ac2.Champ_cmd21(), raw)
+                        self._parsedata(packet, stream_ac2.StreamACChamp_cmd21(), raw)
 
                     # paquet Champ_cmd21_3
                     if packet.msg.cmd_id > 0:
-                        self._parsedata(packet, stream_ac2.Champ_cmd21_3(), raw)
+                        self._parsedata(packet, stream_ac2.StreamACChamp_cmd21_3(), raw)
 
                     # paquet Champ_cmd50
                     if packet.msg.cmd_id > 0:
-                        self._parsedata(packet, stream_ac2.Champ_cmd50(), raw)
+                        self._parsedata(packet, stream_ac2.StreamACChamp_cmd50(), raw)
 
                     # paquet Champ_cmd50_3
                     if packet.msg.cmd_id > 0:
-                        self._parsedata(packet, stream_ac2.Champ_cmd50_3(), raw)
+                        self._parsedata(packet, stream_ac2.StreamACChamp_cmd50_3(), raw)
 
                     _LOGGER.info("Found %u fields", len(raw["params"]))
 
@@ -327,23 +432,78 @@ class StreamAC(BaseDevice):
 
         except Exception as error:
             _LOGGER.error(error)
-            _LOGGER.debug("raw_data : \"%s\"  raw_data.hex() : \"%s\"",str(raw_data),str(raw_data.hex()))
+            _LOGGER.debug(
+                'raw_data : "%s"  raw_data.hex() : "%s"',
+                str(raw_data),
+                str(raw_data.hex()),
+            )
+        self._normalize_champ_fields(raw["params"])
         return raw
 
-    def _parsedata(self, packet, content, raw) :
+    # Newer Stream firmware / models (e.g. Stream Ultra / Ultra X) do not emit
+    # certain battery values as top-level parameters; they only appear inside
+    # the correctly-typed nested Champ_cmd21_2 message, flattened by
+    # _store_fields() into "Champ_cmd21_2_fieldN" leaves. Map those leaves back
+    # onto their canonical parameter names so a single set of sensors works
+    # across every Stream variant. Field meanings verified against a live Public
+    # API read and the on-device display from raw pdata captures:
+    #   field 9  -> soc          (integer battery level)
+    #   field 15 -> f32ShowSoc   (precise SoC, == cmsBattSoc)
+    #   field 13 -> bmsDsgRemTime (discharge remaining time, minutes)
+    #   field 7  -> cmsMaxChgSoc (max charge SoC limit)
+    #   field 21 -> cmsMinDsgSoc (min discharge SoC limit)
+    # Any top-level value emitted by the device always takes precedence.
+    _CHAMP_FIELD_ALIASES = {
+        "soc": "Champ_cmd21_2_field9",
+        "f32ShowSoc": "Champ_cmd21_2_field15",
+        "bmsDsgRemTime": "Champ_cmd21_2_field13",
+        "cmsMaxChgSoc": "Champ_cmd21_2_field7",
+        "cmsMinDsgSoc": "Champ_cmd21_2_field21",
+    }
+
+    def _normalize_champ_fields(self, params: dict[str, Any]) -> None:
+        for canonical, nested in self._CHAMP_FIELD_ALIASES.items():
+            if nested in params and params.get(canonical) is None:
+                params[canonical] = params[nested]
+
+    def _parsedata(self, packet, content, raw):
         try:
-            if hasattr(packet.msg, "pdata") and len(packet.msg.pdata) > 0 :
+            if hasattr(packet.msg, "pdata") and len(packet.msg.pdata) > 0:
                 content.ParseFromString(packet.msg.pdata)
 
                 if len(str(content)) > 0:
-                    _LOGGER.debug("initial cmd id \"%u\" fct id \"%u\" msg \n\"%s\"", packet.msg.cmd_id, packet.msg.cmd_func, str(content))
+                    _LOGGER.debug(
+                        'initial cmd id "%u" fct id "%u" msg \n"%s"',
+                        packet.msg.cmd_id,
+                        packet.msg.cmd_func,
+                        str(content),
+                    )
 
-                for descriptor in content.DESCRIPTOR.fields:
-                    if not content.HasField(descriptor.name):
-                        continue
-
-                    raw["params"][descriptor.name] = getattr(content, descriptor.name)
+                self._store_fields(content, raw)
 
         except Exception as error:
             _LOGGER.debug(error)
-            _LOGGER.debug("Erreur parsing pour le flux : %s",str(packet.msg.pdata.hex()))
+            _LOGGER.debug("Erreur parsing pour le flux : %s", str(packet.msg.pdata.hex()))
+
+    def _store_fields(self, content, raw, depth: int = 0) -> None:
+        """Store a parsed protobuf message's fields into ``raw["params"]``.
+
+        Scalar fields are stored under their own name (existing behaviour).
+        Nested sub-messages are stored as-is (backwards compatible) AND their
+        scalar leaves are flattened one level deeper so that values only
+        available inside correctly-typed nested messages (e.g. the battery
+        ``soc`` carried by ``Champ_cmd21_2_field9``) become readable by
+        sensors. Bounded recursion depth guards against pathological nesting.
+        """
+        for descriptor in content.DESCRIPTOR.fields:
+            if not content.HasField(descriptor.name):
+                continue
+
+            value = getattr(content, descriptor.name)
+
+            if descriptor.type == descriptor.TYPE_MESSAGE:
+                raw["params"][descriptor.name] = value
+                if depth < 3:
+                    self._store_fields(value, raw, depth + 1)
+            else:
+                raw["params"][descriptor.name] = value

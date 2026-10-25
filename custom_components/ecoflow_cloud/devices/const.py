@@ -4,10 +4,41 @@ DC_MODE_OPTIONS = {
     "Car Recharging": 2,
 }
 
+DC_MODE_LABELS = {code: label for label, code in DC_MODE_OPTIONS.items()}
+
 DC_ICONS = {
     "Auto": None,
     "MPPT": "mdi:solar-power",
     "DC": "mdi:current-dc",
+}
+
+# River 2 family FT307 MPPT/DC diagnostic bitmask. EcoFlow exposes these as
+# internal rail/input warnings; the integration keeps them diagnostic-only.
+FT307_FAULTS = {
+    1: {
+        "title": "DC input overvoltage",
+        "hint": "Input voltage is above the supported DC/solar range.",
+    },
+    2: {
+        "title": "DC input undervoltage",
+        "hint": "Input voltage is below the supported DC/solar range.",
+    },
+    4: {
+        "title": "DC input overcurrent",
+        "hint": "Input current is above the supported DC/solar range.",
+    },
+    8: {
+        "title": "DC input overtemperature",
+        "hint": "MPPT/DC input path reports overtemperature.",
+    },
+    16: {
+        "title": "DC input reverse polarity",
+        "hint": "Check DC input polarity before reconnecting the source.",
+    },
+    4096: {
+        "title": "No active DC input",
+        "hint": "Auxiliary idle/no-input warning; ignored when voltage/current/power are idle.",
+    },
 }
 
 SCREEN_TIMEOUT_OPTIONS = {
@@ -17,6 +48,19 @@ SCREEN_TIMEOUT_OPTIONS = {
     "1 min": 60,
     "5 min": 300,
     "30 min": 1800,
+}
+
+ENERGY_STRATEGY_OPTIONS = {
+    "Standard": 0,
+    "Self-Powered": 1,
+    "Scheduled": 2,
+    "TOU": 3,
+}
+
+AC_CHARGE_MODE_OPTIONS = {
+    "Auto": 1,
+    "Silent": 2,
+    "Custom": 0,
 }
 
 UNIT_TIMEOUT_OPTIONS = {
@@ -110,10 +154,26 @@ POWER_SUB_MODE_OPTIONS = {
     "Manual": 3
 }
 
+TEMP_UNIT_OPTIONS = {
+    "Celsius": 0,
+    "Fahrenheit": 1
+}
+
 POWER_SUPPLY_PRIORITY_OPTIONS = {
     "Prioritize power supply": 0,
     "Prioritize power storage": 1
 }
+CUSTOM_LOAD_POWER = "Custom Load Power"
+
+UTC_TIMEZONE = "Timezone"
+UTC_TIMEZONE_ID = "Timezone name"
+
+COUNTRY_CODE = "Country code"
+TOWN_CODE = "Town code"
+SYSTEM_GROUP_ID = "System group id"
+
+FACTORY_MODE = "Factory mode enabled"
+DEBUG_MODE = "Debug mode enabled"
 
 COMBINED_BATTERY_LEVEL = "Battery Level"
 COMBINED_BATTERY_LEVEL_F32 = "Battery Level (Precise)"
@@ -137,6 +197,7 @@ SLAVE_N_REMAIN_CAPACITY = "Slave %i Remain Capacity"
 MAIN_BATTERY_LEVEL = "Main Battery Level"
 MAIN_BATTERY_LEVEL_F32 = "Main Battery Level (Precise)"
 MAIN_BATTERY_CURRENT = "Main Battery Current"
+POWER_DIFFERENCE = "Power Difference"
 TOTAL_IN_POWER = "Total In Power"
 SOLAR_IN_POWER = "Solar In Power"
 SOLAR_1_IN_POWER = "Solar (1) In Power"
@@ -222,19 +283,34 @@ SLAVE_N_BATTERY_LEVEL_SOC = "Slave %i Battery level SOC"
 MAX_CHARGE_LEVEL = "Max Charge Level"
 MIN_DISCHARGE_LEVEL = "Min Discharge Level"
 BACKUP_RESERVE_LEVEL = "Backup Reserve Level"
+BACKUP_RESERVE_SOC = "Backup Reserve SOC"
 AC_CHARGING_POWER = "AC Charging Power"
 SCREEN_TIMEOUT = "Screen Timeout"
 UNIT_TIMEOUT = "Unit Timeout"
 AC_TIMEOUT = "AC Timeout"
 DC_TIMEOUT = "DC (12V) Timeout"
 DC_CHARGE_CURRENT = "DC (12V) Charge Current"
+ENERGY_STRATEGY = "Energy Strategy"
+AC_CHARGE_MODE = "AC Charging Mode"
 GEN_AUTO_START_LEVEL = "Generator Auto Start Level"
 GEN_AUTO_STOP_LEVEL = "Generator Auto Stop Level"
+GEN_BAT_CHARGING_POWER = "Generator Battery Charging Power"
+GEN_MAX_OUTPUT_POWER = "Generator Max Output Power"
+GEN_TYPE = "Generator Type"
+GEN_TYPE_OPTIONS = {
+    "Not Set": 0,
+    "Single-Phase (120V)": 1,
+    "Split-Phase (240V)": 2,
+}
 
 POWER = "Power"
+MAX_POWER = "Max Power"
+ENERGY = "Energy"
 CURRENT = "Current"
 MAX_CURRENT = "Max Current"
 MODE_ON = "On"
+MODE_AC1_ON = "AC 1 On"
+MODE_AC2_ON = "AC 2 On"
 BRIGHTNESS = "Brightness"
 BEEPER = "Beeper"
 USB_ENABLED = "USB Enabled"
@@ -245,6 +321,7 @@ XBOOST_ENABLED = "X-Boost Enabled"
 AC_ALWAYS_ENABLED = "AC Always On"
 PV_PRIO = "Prio Solar Charging"
 BP_ENABLED = "Backup Reserve Enabled"
+GRID_BYPASS = "Grid Bypass"
 AUTO_FAN_SPEED = "Auto Fan Speed"
 AC_SLOW_CHARGE = "AC Slow Charging"
 
@@ -276,6 +353,7 @@ FAN_MODE = "Wind speed"
 MAIN_MODE = "Main mode"
 REMOTE_MODE = "Remote startup/shutdown"
 POWER_SUB_MODE = "Sub-mode"
+TEMP_UNIT = "Temperature unit"
 
 
 # Smart Meter
@@ -292,13 +370,18 @@ SMART_METER_VOLT_L3 = "Power Grid (L3) Volts"
 SMART_METER_FLAG_L1 = "Flag L1"
 SMART_METER_FLAG_L2 = "Flag L2"
 SMART_METER_FLAG_L3 = "Flag L3"
+SMART_METER_RECORD_TODAY_ACTIVE_L1 = "L1 Lifetime net usage"
+SMART_METER_RECORD_TODAY_ACTIVE_L2 = "L2 Lifetime net usage"
+SMART_METER_RECORD_TODAY_ACTIVE_L3 = "L3 Lifetime net usage"
+SMART_METER_RECORD_ENERGY_L1_DAILY = "L1 net energy daily"
+SMART_METER_RECORD_ENERGY_L2_DAILY = "L2 net energy daily"
+SMART_METER_RECORD_ENERGY_L3_DAILY = "L3 net energy daily"
 SMART_METER_RECORD_ACTIVE_TODAY = "Lifetime consumption"
-SMART_METER_RECORD_ACTIVE_TOTAL = "Lifetime net usage"
-SMART_METER_RECORD_REACTIVE_TODAY = "Lifetime injection (2)"
-SMART_METER_RECORD_REACTIVE_TOTAL = "Lifetime injection"
-SMART_METER_RECORD_ACTIVE_TODAY_L1 = "L1 Lifetime net usage"
-SMART_METER_RECORD_ACTIVE_TODAY_L2 = "L2 Lifetime net usage"
-SMART_METER_RECORD_ACTIVE_TODAY_L3 = "L3 Lifetime net usage"
+SMART_METER_RECORD_LIFETIME_ENERGY_CONSUMPTION = "Lifetime consumption"
+SMART_METER_RECORD_LIFETIME_ENERGY_DELIVERY = "Lifetime delivery"
+SMART_METER_RECORD_NET_ENERGY_CONSUMPTION = "Net energy consumption"
+SMART_METER_GRID_CONNECTION_POWER_FACTOR = "Grid connection power factor"
+SMART_METER_GRID_CONNECTION_STATE = "Grid connection state"
 
 # Stream AC
 STREAM_POWER_AC = "Power AC" # <0 import from home to battery / >0 export from battery to home
@@ -311,8 +394,12 @@ STREAM_POWER_PV_3 = "Power PV 3"
 STREAM_POWER_PV_4 = "Power PV 4"
 STREAM_IN_AMPS_PV_1 = "Power PV1 In Amps"
 STREAM_IN_AMPS_PV_2 = "Power PV2 In Amps"
+STREAM_IN_AMPS_PV_3 = "Power PV3 In Amps"
+STREAM_IN_AMPS_PV_4 = "Power PV4 In Amps"
 STREAM_IN_VOL_PV_1 = "Power PV1 Volts"
 STREAM_IN_VOL_PV_2 = "Power PV2 Volts"
+STREAM_IN_VOL_PV_3 = "Power PV3 Volts"
+STREAM_IN_VOL_PV_4 = "Power PV4 Volts"
 STREAM_POWER_PV_SUM = "Power PV Sum"
 STREAM_GET_SYS_LOAD = "Power Sys Load" # powGetSysLoad
 STREAM_GET_SYS_LOAD_FROM_BP = "Power Sys Load From Battery" # powGetSysLoadFromBp
@@ -327,6 +414,7 @@ STREAM_BATTERY_LEVEL = "Battery Level"
 STREAM_DESIGN_CAPACITY = "Design Capacity"
 STREAM_FULL_CAPACITY = "Full Capacity"
 STREAM_REMAIN_CAPACITY = "Remain Capacity"
+STREAM_STORED_ENERGY = "Stored Energy"
 STREAM_STR_BATTERY_LEVEL = "Battery Level %s "
 STREAM_STR_DESIGN_CAPACITY = "Design Capacity %s "
 STREAM_STR_FULL_CAPACITY = "Full Capacity %s "
@@ -335,6 +423,15 @@ STREAM_IN_POWER = "In Power"
 STREAM_STR_IN_POWER = "In Power %s"
 STREAM_OUT_POWER = "Out Power"
 STREAM_STR_OUT_POWER = "Out Power %s"
+STREAM_OPERATION_MODE_SELF_POWERED = "Operating mode - Self-powered"
+STREAM_OPERATION_MODE_AI_MODE = "Operating mode - AI Mode"
+STREAM_FEED_IN_CONTROL = "Feed-in control"
+
+# Stream Microinverter (BK-series, internal/App API)
+STREAM_GRID_CONNECTION_STATUS = "Grid Connection Status"
+STREAM_WIFI_RSSI = "WiFi Signal Strength"
+STREAM_FEED_GRID_MODE_POW_LIMIT = "Feed-in Power Limit"
+STREAM_FEED_GRID_MODE_POW_MAX = "Feed-in Power Max"
 
 ACCU_CHARGE_CAP = "Cumulative Capacity Charge (mAh)"
 ACCU_CHARGE_ENERGY = "Cumulative Energy Charge (Wh)"
@@ -346,28 +443,117 @@ SLAVE_N_ACCU_CHARGE_ENERGY = "Slave %i Cumulative Energy Charge (Wh)"
 SLAVE_N_ACCU_DISCHARGE_CAP = "Slave %i Cumulative Capacity Discharge (mAh)"
 SLAVE_N_ACCU_DISCHARGE_ENERGY = "Slave %i Cumulative Energy Discharge (Wh)"
 
-#Smart Home Pannel 2
+# Delta Pro Ultra
+PIO_PORT_CHARGING_POWER = "Power I/O Port Charging Power"                         
+PIO_PORT_N_POWER = "Power I/O Port %i Power"                                      
+PIO_PORT_N_CHARGE_REMAINING_TIME = "Power I/O Port %i Charge Remaining Time"      
+PIO_PORT_N_DISCHARGE_REMAINING_TIME = "Power I/O Port %i Discharge Remaining Time"
+PIO_PORT_IN_POWER = "Power I/O Port Input Power"             
+PIO_PORT_IN_CURRENT = "Power I/O Port Input Current"         
+PIO_PORT_IN_VOLTAGE = "Power I/O Port Input Voltage"         
+PIO_PORT_OUT_POWER = "Power I/O Port Output Power"           
+PIO_PORT_OUT_CURRENT = "Power I/O Port Output Current"       
+PIO_PORT_OUT_VOLTAGE = "Power I/O Port Output Voltage"       
+PIO_PORT_OUT_FREQ = "Power I/O Port Output Frequency"        
+PIO_PORT_INPUT_TYPE = "Power I/O Port Input Type"            
+AC_N_OUT_POWER = "AC (%i) Out Power"                         
+AC_N_OUT_CURRENT = "AC (%i) Out Current"                     
+AC_N_OUT_VOLTAGE = "AC (%i) Out Voltage"                     
+AC_N_OUT_FREQ = "AC (%i) Out Frequency"                      
+WIRELESS_4G_ENABLED = "Wireless 4G Enabled"                  
+WIRELESS_4G_REGISTERED = "Wireless 4G Resgistered"           
+WIRELESS_4G_ERROR_CODE = "Wireless 4G Error Code"            
+WIRELESS_4G_DATA_MAX = "Wireless 4G Data Max"                
+WIRELESS_4G_DATA_REMAINING = "Wireless 4G Data Remaining"    
+WIRELESS_4G_SIM_ID = "Wireless 4G SIM ID"                    
+INTERNET_CONNECTION_TYPE = "Internet Connection Type"        
+BATTERY_COUNT = "Battery Count"                              
+BATTERY_AUTO_HEATING_ENABLED = "Battery Auto-Heating Enabled"
+ERROR_CODE = "Error Code"                      
+AC_IN_CURRENT = "AC In Current"                
 
-BATTERIE_STATUS = "Batterie Status"
+# Smart Home Panel
 
-BATTERIE_STATUS_OPTIONS = {
-    "No operation": 0,
-    "Enabled": 1,
-    "Disabled": 2
+POWER_GRID = "Power Grid"
+POWER_GRID_TODAY = "Power Grid Today"
+BATTERY_TODAY = "Battery Today"
+EPS_MODE = "EPS Mode"
+SCHEDULED_CHARGE = "Scheduled Charge"
+SCHEDULED_CHARGE_BATTERY = "Scheduled Charge Battery"
+SCHEDULED_CHARGE_BATTERY_LEVEL = "Scheduled Charge Battery Level"
+SCHEDULED_CHARGE_POWER = "Scheduled Charge Power"
+
+SCHEDULED_CHARGE_BATTERY_OPTIONS = {
+    "Battery 1": [1, 0],
+    "Battery 2": [0, 1],
+    "Both": [1, 1],
 }
+POWER_GRID_VOLTAGE = "Power Grid Voltage"
+POWER_GRID_FREQUENCY = "Power Grid Frequency"
 
-BATTERIE_FORCE_CHARGE = "Batterie Force Charge"
+BATTERY_N_CHARGE = "Battery %i Charge"
+BATTERY_N_LEVEL = "Battery %i Level"
+BATTERY_N_CHARGE_REMAINING_TIME = "Battery %i Charge Remaining Time"
+BATTERY_N_DISCHARGE_REMAINING_TIME = "Battery %i Discharge Remaining Time"
+BATTERY_N_TEMP = "Battery %i Temperature"
+BATTERY_N_IN_POWER = "Battery %i Input Power"
+BATTERY_N_OUT_POWER = "Battery %i Output Power"
+BATTERY_N_CURRENT = "Battery %i Current"
+CIRCUIT_N_CURRENT = "Circuit %i Current"
+BREAKER_N_POWER = "Breaker %i Power"
 
-BATTERIE_FORCE_CHARGE_OPTIONS =  {
-    "Off": "FORCE_CHARGE_OFF",
-    "On": "FORCE_CHARGE_ON"
-}
+#Smart Home Panel 2
 
-SMART_BACKUP_MODE = "Economic Mode"
+STORM_GUARD = "Storm Guard"
+IN_STORM_MODE = "In Storm Mode"
+BATTERY = "Battery"
+BATTERY_N_POWER = "Battery %i Power"
+BATTERY_N_FORCE_CHARGE = "Battery %i Force Charge"
+
+RELAY_N_OPERATION_COUNT = "Relay %i Operation Count"
+SMART_BACKUP_MODE = "Operating Mode"
 
 SMART_BACKUP_MODE_OPTIONS = {
     "None": 0,
     "TOU" : 1,
-    "Self-service" : 2,
-    "Timed task": 3
+    "Self-powered" : 2,
+    "Scheduled tasks": 3
 }
+
+# Alternator 800W
+ALTERNATOR_OPERATION_MODE_OPTIONS = {
+    "Charge": 1,
+    "Battery Maintenance": 2,
+    "Reverse Charge": 3,
+}
+
+ALTERNATOR_IN_POWER = "Alternator In Power"
+ALTERNATOR_STATION_POWER = "Station Power"
+ALTERNATOR_RATED_POWER = "Alternator Rated Power"
+ALTERNATOR_BAT_SOC = "Station Battery Charge"
+ALTERNATOR_CAR_BAT_VOLT = "Car Battery Voltage"
+ALTERNATOR_TEMP = "Alternator Temperature"
+ALTERNATOR_WIFI_RSSI = "WiFi Signal Strength"
+ALTERNATOR_CHARGE_REMAINING = "Charge Remaining Time"
+ALTERNATOR_DISCHARGE_REMAINING = "Discharge Remaining Time"
+ALTERNATOR_START_VOLTAGE = "Car Battery Start Voltage"
+ALTERNATOR_POWER_LIMIT = "Charging Power Limit"
+ALTERNATOR_CHARGE_CURRENT_LIMIT = "Charge Current Limit"
+ALTERNATOR_REVERSE_CHARGE_CURRENT_LIMIT = "Reverse Charge Current Limit"
+ALTERNATOR_CHARGE_CURRENT_MAX = "Charge Current Max"
+ALTERNATOR_REVERSE_CHARGE_CURRENT_MAX = "Reverse Charge Current Max"
+ALTERNATOR_OPERATION_MODE = "Operation Mode"
+ALTERNATOR_ENABLED = "Charging Enabled"
+ALTERNATOR_CABLE_LENGTH = "Extension Cable Length"
+
+# Wave 3
+SELF_CONSUMPTION_POWER = "Self Consumption Power"
+WATER_LEVEL = "Water Level"
+POWER_OFF_DELAY_REMAINING_TIME = "Power Off Delay Remaining"
+AMBIENT_TEMPERATURE = "Ambient Temperature"
+INDOOR_SUPPLY_AIR_TEMP = "Indoor Supply Air Temp"
+CONDENSER_TEMP = "Condenser Temp"
+EVAPORATOR_TEMP = "Evaporator Temp"
+SCREEN_BRIGHTNESS = "Screen Brightness"
+AUTO_DRAINAGE = "Auto Drain"
+AUTO_OFF_TIMEOUT = "Auto-Off Timeout"

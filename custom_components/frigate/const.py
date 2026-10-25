@@ -32,6 +32,7 @@ S = "s"
 ATTR_CLIENT = "client"
 ATTR_CLIENT_ID = "client_id"
 ATTR_CONFIG = "config"
+ATTR_CONFIG_ENTRY_ID = "config_entry_id"
 ATTR_COORDINATOR = "coordinator"
 ATTR_END_TIME = "end_time"
 ATTR_EVENT_ID = "event_id"
@@ -51,6 +52,7 @@ ATTR_INCLUDE_RECORDING = "include_recording"
 ATTR_NAME = "name"
 
 # Configuration and options
+CONF_VALIDATE_SSL = "validate_ssl"
 CONF_MEDIA_BROWSER_ENABLE = "media_browser_enable"
 CONF_NOTIFICATION_PROXY_ENABLE = "notification_proxy_enable"
 CONF_NOTIFICATION_PROXY_EXPIRE_AFTER_SECONDS = "notification_proxy_expire_after_seconds"
@@ -91,6 +93,9 @@ MIN_THRESHOLD = 5
 # States
 STATE_DETECTED = "active"
 STATE_IDLE = "idle"
+
+# Profiles
+PROFILE_NONE = "none"
 
 # Statuses
 STATUS_ERROR = "error"

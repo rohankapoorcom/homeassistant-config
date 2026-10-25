@@ -1,0 +1,66 @@
+{
+  "entity": {
+    "climate": {
+      "airconditioner": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "1": "mdi:fan-speed-1",
+              "2": "mdi:fan-speed-1",
+              "3": "mdi:fan-speed-2",
+              "4": "mdi:fan-speed-3",
+              "5": "mdi:fan-speed-3",
+              "turbo": "mdi:fan-speed-3",
+              "max": "mdi:fan-speed-3"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "ai_comfort": "mdi:creation",
+              "quiet": "mdi:volume-off",
+              "smart": "mdi:brain",
+              "speed": "mdi:speedometer",
+              "nano": "mdi:weather-dust",
+              "nanosleep": "mdi:sleep",
+              "longwind": "mdi:weather-windy",
+              "motiondirect": "mdi:account-arrow-left",
+              "motionindirect": "mdi:account-arrow-right",
+              "drycomfort": "mdi:water-percent",
+              "2step": "mdi:stairs"
+            }
+          }
+        }
+      }
+    },
+    "fan": {
+      "air_purifier_fan": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "smart": "mdi:brain",
+              "max": "mdi:fan-speed-3",
+              "mid": "mdi:fan-speed-2",
+              "windfree": "mdi:weather-dust",
+              "sleep": "mdi:sleep"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "machine_state": {
+        "state": {
+          "idle": "mdi:power-standby",
+          "active": "mdi:play",
+          "pause": "mdi:pause"
+        }
+      },
+      "connection_mode": {
+        "state": {
+          "observe": "mdi:broadcast",
+          "poll": "mdi:sync"
+        }
+      }
+    }
+  }
+}

@@ -1,17 +1,60 @@
 """Conversation support for Local OpenAI LLM."""
 
-from typing import Literal
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Literal
 
 from homeassistant.components import conversation
-from homeassistant.config_entries import ConfigSubentry
 from homeassistant.const import CONF_LLM_HASS_API, CONF_PROMPT, MATCH_ALL
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from . import LocalAiConfigEntry
-from .const import CONF_PARALLEL_TOOL_CALLS, DOMAIN
+from .const import (
+    CONF_ALWAYS_CONTINUE_CONVERSATION,
+    CONF_ALWAYS_CONTINUE_CONVERSATION_DEFAULT,
+    CONF_PARALLEL_TOOL_CALLS,
+    CONF_SERVER_TYPE,
+    DOMAIN,
+    SERVER_TYPE_DEEPSEEK,
+    SERVER_TYPE_GENERIC,
+    SERVER_TYPE_GOOGLE_GEMINI,
+    SERVER_TYPE_LLAMACPP,
+    SERVER_TYPE_LOCALAI,
+    SERVER_TYPE_VLLM,
+)
 from .entity import LocalAiEntity
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigSubentry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+
+    from . import LocalAiConfigEntry
+
+
+def _get_conversation_entity(
+    server_type: str,
+) -> type[LocalAiConversationEntity]:
+    if getattr(_get_conversation_entity, "entity_map", None) is None:
+        from .entities.deepseek import DeepSeekConversationEntity  # noqa: PLC0415
+        from .entities.google_gemini import (  # noqa: PLC0415
+            GoogleGeminiConversationEntity,
+        )
+        from .entities.llama_cpp import LlamaCppConversationEntity  # noqa: PLC0415
+        from .entities.localai import LocalAIServerConversationEntity  # noqa: PLC0415
+        from .entities.vllm import VllmConversationEntity  # noqa: PLC0415
+
+        _get_conversation_entity.entity_map = {
+            SERVER_TYPE_DEEPSEEK: DeepSeekConversationEntity,
+            SERVER_TYPE_GOOGLE_GEMINI: GoogleGeminiConversationEntity,
+            SERVER_TYPE_LLAMACPP: LlamaCppConversationEntity,
+            SERVER_TYPE_LOCALAI: LocalAIServerConversationEntity,
+            SERVER_TYPE_VLLM: VllmConversationEntity,
+        }
+
+    return _get_conversation_entity.entity_map.get(
+        server_type,
+        LocalAiConversationEntity,
+    )
 
 
 async def async_setup_entry(
@@ -20,11 +63,14 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up conversation entities."""
+    entity_cls = _get_conversation_entity(
+        config_entry.data.get(CONF_SERVER_TYPE, SERVER_TYPE_GENERIC),
+    )
     for subentry_id, subentry in config_entry.subentries.items():
         if subentry.subentry_type != "conversation":
             continue
         async_add_entities(
-            [LocalAiConversationEntity(config_entry, subentry)],
+            [entity_cls(config_entry, subentry)],
             config_subentry_id=subentry_id,
         )
 
@@ -57,6 +103,9 @@ class LocalAiConversationEntity(LocalAiEntity, conversation.ConversationEntity):
         options = self.subentry.data
         system_prompt = options.get(CONF_PROMPT)
         parallel_tool_calls = options.get(CONF_PARALLEL_TOOL_CALLS, True)
+        always_continue_conversation = options.get(
+            CONF_ALWAYS_CONTINUE_CONVERSATION, CONF_ALWAYS_CONTINUE_CONVERSATION_DEFAULT
+        )
 
         hass_apis = [api.id for api in llm.async_get_apis(self.hass)]
 
@@ -75,7 +124,16 @@ class LocalAiConversationEntity(LocalAiEntity, conversation.ConversationEntity):
             return err.as_conversation_result()
 
         await self._async_handle_chat_log(
-            chat_log, user_input=user_input, parallel_tool_calls=parallel_tool_calls
+            chat_log,
+            user_input=user_input,
+            parallel_tool_calls=parallel_tool_calls,
         )
 
-        return conversation.async_get_result_from_chat_log(user_input, chat_log)
+        # Set continue_conversation flag based on always_continue_conversation setting
+        chat_log_result = conversation.async_get_result_from_chat_log(
+            user_input, chat_log
+        )
+        if always_continue_conversation:
+            chat_log_result.continue_conversation = True
+
+        return chat_log_result

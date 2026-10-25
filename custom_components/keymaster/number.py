@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import Any
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -12,10 +13,11 @@ from homeassistant.components.number import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTime
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_SLOTS, CONF_START, COORDINATOR, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -27,7 +29,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create keymaster Number entities."""
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
 
     entities: list = [
         KeymasterNumber(
@@ -111,6 +116,7 @@ class KeymasterNumber(KeymasterEntity, NumberEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.CONFIG
         self._attr_native_value: float | None = None
 
     @property
@@ -123,7 +129,7 @@ class KeymasterNumber(KeymasterEntity, NumberEntity):
         # _LOGGER.debug(f"[Number handle_coordinator_update] self.coordinator.data: {self.coordinator.data}")
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if (
@@ -137,35 +143,23 @@ class KeymasterNumber(KeymasterEntity, NumberEntity):
             )
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if ".code_slots" in self._property and (
             not self._kmlock.code_slots or self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
-            return
-
-        if self._is_accesslimit_count and (
-            not self._kmlock.code_slots
-            or not self._code_slot
-            or not self._kmlock.code_slots[self._code_slot].accesslimit_count_enabled
-        ):
-            self._attr_available = False
-            self.async_write_ha_state()
-            return
-
-        if (
-            self._property.split(".")[-1].startswith("autolock")
-        ) and not self._kmlock.autolock_enabled:
-            self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
         self._attr_native_value = self._get_property_value()
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the native value."""
+        return (*super()._state_signature(), self._attr_native_value)
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the value of the entity."""
@@ -198,5 +192,5 @@ class KeymasterNumber(KeymasterEntity, NumberEntity):
             value = int(value)
         if self._set_property_value(value):
             self._attr_native_value = value
-            self.async_write_ha_state()  # Immediate UI update
-            await self.coordinator.async_refresh()
+            self.async_write_ha_state_if_changed(force=True)  # Immediate UI update
+            await self.coordinator.async_request_debounced_refresh()

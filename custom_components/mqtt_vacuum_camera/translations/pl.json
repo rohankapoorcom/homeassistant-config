@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Nie udało się opublikować polecenia vacuum za pośrednictwem MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Funkcja „reset_trims” przestanie działać w wersji 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Funkcja „reset_trims” przestanie działać w wersji 2026.8.0",
+            "description": "Akcja „{domain}.reset_trims” została uruchomiona w ramach automatyzacji lub ręcznie. W wersji 2026.8.0 przestaje ona działać.\n\nZastąp tę usługę usługą **Camera Update Floor Data** ({domain}.camera_update_floor_data).\n\nProszę wykonać tę zmianę przed aktualizacją, a następnie kliknąć **Prześlij**, aby potwierdzić przeprowadzenie migracji."
+          }
+        }
+      }
+    }
   }
 }

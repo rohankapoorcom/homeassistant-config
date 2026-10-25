@@ -7,10 +7,7 @@ from homeassistant.components import mqtt
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 
-from .const import (
-    DOMAIN,
-    STARTUP_DELAY,
-)
+from .const import DOMAIN, STARTUP_DELAY
 from .mqttunit import MQTTUnit
 from .schema import CONFIG_SCHEMA  # noqa: F401
 
@@ -38,7 +35,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 
 
-def _register_services(hass):
+def _register_services(hass: HomeAssistant):
     async def _async_publish_discovery_state(call: ServiceCall):
         async with asyncio.TaskGroup() as group:
             for unit in hass.data[DOMAIN]:

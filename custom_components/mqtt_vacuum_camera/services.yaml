@@ -24,8 +24,6 @@ snapshot:
       selector:
         text:
 
-reset_trims:
-
 obstacle_view:
   name: Obstacle view
   description: Select the coordinates to Show the obstacle on the map.
@@ -164,3 +162,31 @@ vacuum_map_load:
       example: "My map"
       selector:
         text:
+
+camera_select_floor:
+  name: Camera select floor
+  description: Select the active floor for a camera entity. The floor must already be configured in the integration options.
+  target:
+    entity:
+      domain: camera
+  fields:
+    floor_id:
+      name: Floor
+      description: The floor to set as active (must match a configured floor).
+      required: true
+      selector:
+        floor:
+
+camera_update_floor_data:
+  name: Camera update floor data
+  description: Save the current auto-calculated map trims into the active floor's configuration.
+  target:
+    entity:
+      domain: camera
+  fields:
+    floor_id:
+      name: Floor
+      description: Optional floor to update. Defaults to the currently active floor.
+      required: false
+      selector:
+        floor:

@@ -1,76 +1,103 @@
 {
-  "title": "EcoFlow-Cloud",
-  "config": {
-    "step": {
-      "user": {
-        "data": {
-          "group": "Device group"
-        }
-      },
-      "api": {
-        "menu_options": {
-          "api_add_device": "Add device",
-          "remove_device": "Remove device",
-          "finish": "Finish"
+    "title": "EcoFlow-Cloud",
+    "config": {
+        "error": {
+            "invalid_access_key": "EcoFlow rejected the access key (error 8513). Check the key and secret for typos, and make sure the API host matches the region your developer account belongs to: api-e.ecoflow.com for Europe, api-a.ecoflow.com for the Americas."
         },
-        "data": {
-          "access_key": "Access key",
-          "secret_key": "Secret key",
-          "load_all_devices": "Automatic device loading"
-        }
-      },
-      "choose_type": {
-         "menu_options": {
-          "api": "Use public API",
-          "manual": "Use application API"
-        }
-      },
-      "select_device": {
-        "data": {
-          "select_device": "Select device"
-        }
-      },
-      "confirm_cloud_device": {
-        "data": {
-          "device_type": "Device type",
-          "device_name": "Device name",
-          "device_id": "Device SN"
-        }
-      },
-      "manual": {
-        "menu_options": {
-          "manual_add_device": "Add device",
-          "remove_device": "Remove device",
-          "finish": "Finish"
+        "abort": {
+            "reauth_successful": "Re-authentication was successful",
+            "reconfigure_successful": "Reconfiguration was successful",
+            "do_reconfigure_existing": "A device group with this name already exists. Reconfigure that entry instead.",
+            "no_device_to_add": "No new devices to add: every device in this account has already been added.",
+            "remove_last_device": "The last device cannot be removed. Delete the integration entry instead.",
+            "unknown": "Unexpected error"
         },
-        "data": {
-          "username": "User email",
-          "password": "User password"
+        "step": {
+            "reauth_confirm": {
+                "title": "EcoFlow credentials rejected",
+                "description": "EcoFlow no longer accepts the stored credentials for {name}. Enter the current ones to reconnect.",
+                "data": {
+                    "api_host": "API host",
+                    "access_key": "Access key",
+                    "secret_key": "Secret key",
+                    "username": "User email",
+                    "password": "User password"
+                }
+            },
+            "user": {
+                "data": {
+                    "group": "Device group"
+                }
+            },
+            "api": {
+                "menu_options": {
+                    "api_add_device": "Add device",
+                    "remove_device": "Remove device",
+                    "finish": "Finish"
+                },
+                "data": {
+                    "api_host": "API host",
+                    "access_key": "Access key",
+                    "secret_key": "Secret key",
+                    "load_all_devices": "Automatic device loading"
+                }
+            },
+            "choose_type": {
+                "menu_options": {
+                    "api": "Use public API",
+                    "manual": "Use application API"
+                }
+            },
+            "select_device": {
+                "data": {
+                    "select_device": "Select device"
+                }
+            },
+            "confirm_cloud_device": {
+                "data": {
+                    "device_type": "Device type",
+                    "device_name": "Device name",
+                    "device_id": "Device SN"
+                }
+            },
+            "manual": {
+                "menu_options": {
+                    "manual_add_device": "Add device",
+                    "remove_device": "Remove device",
+                    "finish": "Finish"
+                },
+                "data": {
+                    "api_host": "API host",
+                    "username": "User email",
+                    "password": "User password"
+                }
+            },
+            "manual_device_input": {
+                "data": {
+                    "device_type": "Device type",
+                    "device_name": "Device name",
+                    "device_id": "Device SN"
+                }
+            }
         }
-      },
-      "manual_device_input": {
-        "data": {
-          "device_type": "Device type",
-          "device_name": "Device name",
-          "device_id": "Device SN"
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "select_device": "Select device"
+                }
+            },
+            "options": {
+                "data": {
+                    "power_step": "Charging power slider step",
+                    "refresh_period_sec": "Data refresh period (sec)",
+                    "diagnostic_mode": "Diagnostic mode",
+                    "assume_offline_sec": "Assume offline timeout (sec)",
+                    "verbose_status_mode": "Verbose status mode",
+                    "reset_sensors_on_offline": "Reset sensors when offline"
+                }
+            }
         }
-      }
     }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "data": {
-          "select_device": "Select device"
-        }
-      },
-      "options": {
-        "data": {
-          "power_step": "Charging power slider step",
-          "refresh_period_sec": "Data refresh period (sec)",
-          "diagnostic_mode": "Diagnostic mode"
-        }
-      }
-    }
-  }
 }

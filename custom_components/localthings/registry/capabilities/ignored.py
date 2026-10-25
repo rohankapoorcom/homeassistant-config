@@ -1,0 +1,153 @@
+"""Hrefs deliberately not modeled as capabilities.
+
+Every entry here is either irrelevant plumbing (network/account/OTA
+housekeeping that will never be home-automation-relevant) or a duplicate of
+state we already expose through a friendlier href. Declaring them here,
+rather than leaving them unregistered, keeps discover()'s unknown-resource
+reporting limited to genuine coverage gaps.
+
+Capability defaults entities=() and discover() treats any href that
+resolves to a capability at all as matched, even one with no entities, so
+this list uses the same declaration shape as a real capability with no
+extra machinery. Fold into by_type registries (per-family gap detection)
+and into the global ALL list (unknown-device-type fallback).
+
+Deliberately exact hrefs only, no href_prefix/pattern capabilities: the
+unknown-device-type fallback path (coordinator's `discover(resources,
+CAPABILITIES)` call) doesn't pass pattern_caps, so a prefix-based entry
+here would silently do nothing on that path. Enumerate each known href
+instead; it's a short, stable list.
+
+This list is maintainer-curated only; there is no per-installation
+override. Grow it as real /device/0 dumps surface more universal noise --
+never on a guess. If a href's relevance is unclear, leave it unbound so it
+surfaces as a gap for a human to look at.
+"""
+
+from ..capability import Capability
+
+IGNORED: list[Capability] = [
+    # Device serial/model is read directly by the coordinator for HA device
+    # identity, not modeled as an entity capability.
+    Capability(href="/information/vs/0"),
+    # Bixby voice assistant: feature negotiation, account provisioning
+    # (Samsung account email, access tokens), terms-of-service state, and
+    # enable/disable status.
+    Capability(href="/voice/feature/vs/0"),
+    Capability(href="/voice/provisioning/vs/0"),
+    Capability(href="/bixby/vs/0"),
+    Capability(href="/bixby/status/vs/0"),
+    Capability(href="/bixbyuservalidate/vs/0"),
+    Capability(href="/bixbyterms/vs/0"),
+    # Network/WiFi housekeeping — MAC addresses, supported auth/crypto
+    # types, no controllable or observable appliance state.
+    Capability(href="/wirelessinfo/vs/0"),
+    Capability(href="/connectionconfig/vs/0"),
+    # Static or internal-protocol metadata, not entity-worthy.
+    Capability(href="/quickcontrol/info/vs/0"),
+    Capability(href="/realtimenotiforclient/vs/0"),
+    Capability(href="/file/information/vs/0"),
+    # Normally static region/countryCode metadata. The range, oven and
+    # microwave registries replace this entry with the write-only clock button.
+    Capability(href="/configuration/vs/0"),
+    Capability(href="/setting/vs/0"),  # supported/selected UI language
+    Capability(href="/timezone/vs/0"),  # redundant with HA's own timezone
+    Capability(href="/wm/setinfo/vs/0"),  # model/manufacturing metadata
+    # Resource-monitoring poll-interval config (a bare minPeriod in
+    # milliseconds, issue #165's TP1X_REF_21K fridge) -- internal transport
+    # plumbing, not appliance state.
+    Capability(href="/rm/control/vs/0"),
+    # Its raw-data sibling: a fixed telemetry descriptor for the drum
+    # sensing/RPM control trace ("WMFrameMems"), identical on every laundry
+    # board that reports it (issue #437). Collection config for Samsung's
+    # own diagnostics, not appliance state.
+    Capability(href="/rm/framemems/vs/0"),
+    # Demand Response Load Control — utility-company grid signals; requires
+    # cloud registration with a utility program we don't support locally.
+    Capability(href="/drlc/vs/0"),
+    # Redundant with capabilities already declared elsewhere.
+    # /speakersound/vs/0 duplicates /settings/sound/volume/vs/0 (laundry.SOUND_VOLUME).
+    Capability(href="/speakersound/vs/0"),
+    # No entities of its own -- editCourseList is read directly out of the
+    # resource snapshot by dishwasher.CYCLE_OPTIONS/washer.WASHER_COURSE's
+    # cycle selects to build the device's supported course list.
+    Capability(href="/wm/editcourse/vs/0"),
+    # Bixby audio feedback (chime + volume played when Bixby starts/stops
+    # listening) — only meaningful with Bixby enabled, which this
+    # integration has no local path to configure or use.
+    Capability(href="/sec/networkaudio/audio/vs/0"),
+    # Static Bespoke-product-line flag, not appliance state.
+    Capability(href="/bespoke/vs/0"),
+    # Seasonal defrost schedule (start/period/end per season). Automating
+    # this cleanly would need a multi-field schedule editor; the practical
+    # on/off control is fridge.DEFROST_DELAY.
+    Capability(href="/defrost/reservation/vs/0"),
+    # Warranty/service-plan enrollment status — every field reads "Unknown"
+    # on hardware not enrolled in a Samsung Care+ style program.
+    Capability(href="/dginformation/vs/0"),
+    # OCF-native vacation-mode flag (fridge). Only one value ('RVACATION_OFF')
+    # has ever been seen in `modes` (issue #7's dump) -- no real choice to
+    # expose yet. Revisit if a device surfaces it toggled on.
+    Capability(href="/mode/0"),
+    # Opaque integer with no supportedModes/options list to interpret it
+    # against — meaning unclear from the raw resource alone.
+    Capability(href="/runningmode/vs/0"),
+    # Demand-response energy planner — same utility-program dependency as
+    # /drlc/vs/0 above; every dump seen so far is inert (plan: 'none').
+    Capability(href="/energy/planner/vs/0"),
+    # OpenADR demand response (AHRI 1380, issue #569) -- same
+    # utility-program dependency as /drlc/vs/0 above; status Idle on the dump.
+    Capability(href="/oadr/vs/0"),
+    # Temperature-unit display preference, redundant with HA's own units.
+    Capability(href="/wm/submode/vs/0"),
+    # Read-only re-encoding of the course already exposed by
+    # washer.WASHER_COURSE at /course/vs/0 (same hex code, just prefixed
+    # "Table_02_Course_").
+    #
+    # Course tables arrive in the initial device batch, so discovery has them
+    # before Home Assistant registers the cycle select's translated states.
+    Capability(href="/st/washercourse/vs/0"),
+    # Dryer counterpart: its courseTable supplies dryer_cycle's translated states.
+    Capability(href="/st/dryercourse/vs/0"),
+    # AirDresser counterpart (issue #157): read only for its courseTable id
+    # (air_dresser.AIR_DRESSER_COURSE's table_href), no entity of its own.
+    Capability(href="/st/airdressercourse/vs/0"),
+    # Empty on every washer dump seen so far.
+    Capability(href="/wm/welcomemsg/vs/0"),
+    # User-saved custom course slots (F1-FA). No controllable/observable
+    # state without a multi-slot editor; revisit if that becomes valuable.
+    Capability(href="/wm/personalcourse/vs/0"),
+    # Control-panel entry/user mode. Reads like a demo/showroom-mode
+    # indicator, but every dump carrying it (issues #241, #437, #438)
+    # reports detailUserMode USERMODE_NORMAL and nonUsermodeOperationState
+    # Ready -- no second value to interpret against, so there is nothing to
+    # expose yet. Revisit if a dump ever shows a non-normal mode.
+    Capability(href="/wm/displaymode/state/vs/0"),
+    # OCF-native energy resource is empty ({}) on washer hardware seen so
+    # far -- common.ENERGY_METER on /energy/consumption/vs/0 is the only
+    # real source.
+    Capability(href="/energy/consumption/0"),
+    # Empty ({}) on washers; dryers and air dressers report a lone
+    # cycleInterfaceEnabled flag (issue #438). Either way it gates
+    # SmartThings' own cycle-interface protocol rather than anything the
+    # appliance does.
+    Capability(href="/cycleinterface/vs/0"),
+    # OCF-native duplicate of /drlc/vs/0 above -- same utility-program
+    # dependency this integration doesn't support locally.
+    Capability(href="/drlc/0"),
+    # OCF-native duplicate of /operational/state/vs/0, already modeled by
+    # operational.OPERATIONAL_STATE (richer, write-capable, used by washer,
+    # dishwasher, dryer, oven). This generic href is read-only overlapping
+    # data with no verified write contract worth building around.
+    Capability(href="/operational/state/0"),
+    # Cooktop guided-cooking/recipe status (issue #86): every field
+    # empty/zero on the only dump seen (device idle). Same "don't guess"
+    # treatment as the microwave family's /recipe/cook/vs/0.
+    Capability(href="/cooktop/recipe/status/vs/0"),
+]
+
+
+def without(*hrefs: str) -> tuple[Capability, ...]:
+    """Return the ignored capabilities except for the supplied hrefs."""
+    excluded = set(hrefs)
+    return tuple(capability for capability in IGNORED if capability.href not in excluded)

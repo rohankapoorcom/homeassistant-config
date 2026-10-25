@@ -2,8 +2,8 @@
 
 from homeassistant.const import STATE_OFF, STATE_ON, Platform
 
+from ..helpers.base_entity import DiscoveryEntity
 from ..utils import EntityInfo
-from .base_entity import DiscoveryEntity
 
 
 class DiscoveryItem(DiscoveryEntity):

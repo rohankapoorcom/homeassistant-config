@@ -2,21 +2,19 @@ import base64
 import hashlib
 import logging
 from time import time
+from typing import Any
 
 import aiohttp
 from homeassistant.util import uuid
 
-from . import EcoflowException, EcoflowApiClient
-from .. import DeviceData
-from ..devices import EcoflowDeviceInfo, DiagnosticDevice
+from ..devices import EcoflowDeviceInfo
+from . import EcoflowApiClient, EcoflowAuthException, EcoflowException
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class EcoflowPrivateApiClient(EcoflowApiClient):
-    def __init__(
-        self, api_domain: str, ecoflow_username: str, ecoflow_password: str, group: str
-    ):
+    def __init__(self, api_domain: str, ecoflow_username: str, ecoflow_password: str, group: str):
         super().__init__()
         self.api_domain = api_domain
         self.ecoflow_password = ecoflow_password
@@ -40,16 +38,21 @@ class EcoflowPrivateApiClient(EcoflowApiClient):
             _LOGGER.info(f"Login to EcoFlow API {url}")
 
             resp = await session.post(url, headers=headers, json=data)
-            response = await self._get_json_response(resp)
+            try:
+                response = await self._get_json_response(resp)
+            except EcoflowException as error:
+                # an error code from /auth/login means the credentials were rejected;
+                # transport and parse failures carry no code and stay retryable
+                if error.code is None:
+                    raise
+                raise EcoflowAuthException(str(error), code=error.code) from error
 
             try:
                 self.token = response["data"]["token"]
                 self.user_id = response["data"]["user"]["userId"]
                 self.user_name = response["data"]["user"].get("name", "<no user name>")
             except KeyError as key:
-                raise EcoflowException(
-                    f"Failed to extract key {key} from response: {response}"
-                )
+                raise EcoflowException(f"Failed to extract key {key} from response: {response}")
 
             _LOGGER.info(f"Successfully logged in: {self.user_name}")
 
@@ -58,9 +61,7 @@ class EcoflowPrivateApiClient(EcoflowApiClient):
             self._accept_mqqt_certification(response)
 
             # Should be ANDROID_..str.._user_id !!!
-            self.mqtt_info.client_id = (
-                f"ANDROID_{str(uuid.random_uuid_hex()).upper()}_{self.user_id}"
-            )
+            self.mqtt_info.client_id = f"ANDROID_{str(uuid.random_uuid_hex()).upper()}_{self.user_id}"
 
     # Failed to connect to MQTT: not authorised
     def gen_client_id(self):
@@ -70,15 +71,7 @@ class EcoflowPrivateApiClient(EcoflowApiClient):
         pub = verify_info[:32]
         priv = verify_info[32:]
         k = priv + base + str(millis)
-        res = (
-            base
-            + "_"
-            + pub
-            + "_"
-            + str(millis)
-            + "_"
-            + hashlib.md5(k.encode("utf-8")).hexdigest()
-        )
+        res = base + "_" + pub + "_" + str(millis) + "_" + hashlib.md5(k.encode("utf-8")).hexdigest()
         return res
 
     async def fetch_all_available_devices(self):
@@ -86,47 +79,18 @@ class EcoflowPrivateApiClient(EcoflowApiClient):
 
     async def quota_all(self, device_sn: str | None):
         if not device_sn:
-            target_devices = self.devices.keys()
+            target_devices = self.devices
         else:
-            target_devices = [device_sn]
+            target_devices = {device_sn: self.devices[device_sn]}
 
-        for sn in target_devices:
-            self.mqtt_client.send_get_message(
-                sn,
-                {
-                    "version": "1.1",
-                    "moduleType": 0,
-                    "operateType": "latestQuotas",
-                    "params": {},
-                },
-            )
+        for sn, device in target_devices.items():
+            self.send_get_message(sn, device.get_quota_message())
 
-    def configure_device(self, device_data: DeviceData):
-        if device_data.parent is not None:
-            info = self.__create_device_info(
-                device_data.parent.sn, device_data.name, device_data.parent.device_type
-            )
-        else:
-            info = self.__create_device_info(
-                device_data.sn, device_data.name, device_data.device_type
-            )
-
+    def _device_registry(self) -> dict[str, Any]:
         from ..devices.registry import devices
+        return devices
 
-        if device_data.device_type in devices:
-            device = devices[device_data.device_type](info, device_data)
-        elif device_data.parent.device_type in devices:
-            # this can be problematic if a parent chain is recursive (so a parent has a parent again)
-            # the current data structure alows this, but it is not supported here.
-            device = devices[device_data.parent.device_type](info, device_data)
-        else:
-            device = DiagnosticDevice(info, device_data)
-
-        self.add_device(device)
-
-        return device
-
-    def __create_device_info(
+    def _create_device_info(
         self, device_sn: str, device_name: str, device_type: str, status: int = -1
     ) -> EcoflowDeviceInfo:
         return EcoflowDeviceInfo(
@@ -142,9 +106,7 @@ class EcoflowPrivateApiClient(EcoflowApiClient):
             get_reply_topic=f"/app/{self.user_id}/{device_sn}/thing/property/get_reply",
         )
 
-    async def __call_api(
-        self, endpoint: str, params: dict[str:any] | None = None
-    ) -> dict:
+    async def __call_api(self, endpoint: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession() as session:
             headers = {
                 "lang": "en_US",

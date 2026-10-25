@@ -1,76 +1,103 @@
 {
-  "title": "EcoFlow-Cloud",
-  "config": {
-    "step": {
-      "user": {
-        "data": {
-          "group": "Groupe d'appareils"
-        }
-      },
-      "api": {
-        "menu_options": {
-          "api_add_device": "Ajouter un appareil",
-          "remove_device": "Supprimer un appareil",
-          "finish": "Terminer"
+    "title": "EcoFlow-Cloud",
+    "config": {
+        "error": {
+            "invalid_access_key": "EcoFlow a rejeté la clé d'accès (erreur 8513). Vérifiez que la clé d'accès et la clé secrète ne contiennent pas de fautes de frappe, et assurez-vous que l'hôte API correspond à la région de votre compte développeur : api-e.ecoflow.com pour l'Europe, api-a.ecoflow.com pour les Amériques."
         },
-        "data": {
-          "access_key": "Clé d'accès",
-          "secret_key": "Clé secrète",
-          "load_all_devices": "Chargement automatique des appareils"
-        }
-      },
-      "choose_type": {
-         "menu_options": {
-          "api": "Utiliser l'API publique",
-          "manual": "Utiliser l'API de l'application"
-        }
-      },
-      "select_device": {
-        "data": {
-          "select_device": "Sélectionner un appareil"
-        }
-      },
-      "confirm_cloud_device": {
-        "data": {
-          "device_type": "Type d'appareil",
-          "device_name": "Nom de l'appareil",
-          "device_id": "SN de l'appareil"
-        }
-      },
-      "manual": {
-        "menu_options": {
-          "manual_add_device": "Ajouter un appareil",
-          "remove_device": "Supprimer un appareil",
-          "finish": "Terminer"
+        "abort": {
+            "reauth_successful": "La réauthentification a réussi",
+            "reconfigure_successful": "La reconfiguration a réussi",
+            "do_reconfigure_existing": "Un groupe d'appareils portant ce nom existe déjà. Reconfigurez plutôt l'entrée existante.",
+            "no_device_to_add": "Aucun nouvel appareil à ajouter : tous les appareils de ce compte ont déjà été ajoutés.",
+            "remove_last_device": "Le dernier appareil ne peut pas être supprimé. Supprimez plutôt l'entrée d'intégration.",
+            "unknown": "Erreur inattendue"
         },
-        "data": {
-          "username": "E-mail de l'utilisateur",
-          "password": "Mot de passe de l'utilisateur"
+        "step": {
+            "reauth_confirm": {
+                "title": "Identifiants EcoFlow rejetés",
+                "description": "EcoFlow n'accepte plus les identifiants enregistrés pour {name}. Saisissez les identifiants actuels pour rétablir la connexion.",
+                "data": {
+                    "api_host": "Hôte API",
+                    "access_key": "Clé d'accès",
+                    "secret_key": "Clé secrète",
+                    "username": "E-mail de l'utilisateur",
+                    "password": "Mot de passe de l'utilisateur"
+                }
+            },
+            "user": {
+                "data": {
+                    "group": "Groupe d'appareils"
+                }
+            },
+            "api": {
+                "menu_options": {
+                    "api_add_device": "Ajouter un appareil",
+                    "remove_device": "Supprimer un appareil",
+                    "finish": "Terminer"
+                },
+                "data": {
+                    "api_host": "Hôte API",
+                    "access_key": "Clé d'accès",
+                    "secret_key": "Clé secrète",
+                    "load_all_devices": "Chargement automatique des appareils"
+                }
+            },
+            "choose_type": {
+                "menu_options": {
+                    "api": "Utiliser l'API publique",
+                    "manual": "Utiliser l'API de l'application"
+                }
+            },
+            "select_device": {
+                "data": {
+                    "select_device": "Sélectionner un appareil"
+                }
+            },
+            "confirm_cloud_device": {
+                "data": {
+                    "device_type": "Type d'appareil",
+                    "device_name": "Nom de l'appareil",
+                    "device_id": "SN de l'appareil"
+                }
+            },
+            "manual": {
+                "menu_options": {
+                    "manual_add_device": "Ajouter un appareil",
+                    "remove_device": "Supprimer un appareil",
+                    "finish": "Terminer"
+                },
+                "data": {
+                    "api_host": "Hôte API",
+                    "username": "E-mail de l'utilisateur",
+                    "password": "Mot de passe de l'utilisateur"
+                }
+            },
+            "manual_device_input": {
+                "data": {
+                    "device_type": "Type d'appareil",
+                    "device_name": "Nom de l'appareil",
+                    "device_id": "SN de l'appareil"
+                }
+            }
         }
-      },
-      "manual_device_input": {
-        "data": {
-          "device_type": "Type d'appareil",
-          "device_name": "Nom de l'appareil",
-          "device_id": "SN de l'appareil"
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "select_device": "Sélectionner un appareil"
+                }
+            },
+            "options": {
+                "data": {
+                    "power_step": "Pas du curseur de puissance de charge",
+                    "refresh_period_sec": "Période de rafraîchissement des données (sec)",
+                    "diagnostic_mode": "Mode diagnostic",
+                    "assume_offline_sec": "Délai avant supposition hors ligne (sec)",
+                    "verbose_status_mode": "Mode de statut détaillé",
+                    "reset_sensors_on_offline": "Réinitialiser les capteurs hors ligne"
+                }
+            }
         }
-      }
     }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "data": {
-          "select_device": "Sélectionner un appareil"
-        }
-      },
-      "options": {
-        "data": {
-          "power_step": "Pas du curseur de puissance de charge",
-          "refresh_period_sec": "Période de rafraîchissement des données (sec)",
-          "diagnostic_mode": "Mode diagnostic"
-        }
-      }
-    }
-  }
 }

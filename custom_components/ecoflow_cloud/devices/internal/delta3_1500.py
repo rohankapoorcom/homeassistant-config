@@ -1,0 +1,349 @@
+from typing import Any
+
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+
+from custom_components.ecoflow_cloud.api import EcoflowApiClient
+from custom_components.ecoflow_cloud.devices import BaseInternalDevice, const
+from custom_components.ecoflow_cloud.number import (
+    BatteryBackupLevel,
+    ChargingPowerEntity,
+    MaxBatteryLevelEntity,
+    MinBatteryLevelEntity,
+)
+from custom_components.ecoflow_cloud.select import DictSelectEntity, TimeoutDictSelectEntity
+from custom_components.ecoflow_cloud.sensor import (
+    CapacitySensorEntity,
+    ChargingStateSensorEntity,
+    CyclesSensorEntity,
+    InMilliVoltSensorEntity,
+    InWattsSensorEntity,
+    LevelSensorEntity,
+    MilliVoltSensorEntity,
+    OutMilliVoltSensorEntity,
+    OutWattsSensorEntity,
+    QuotaStatusSensorEntity,
+    RemainSensorEntity,
+    StateOfHealthSensorEntity,
+    StatusSensorEntity,
+    TempSensorEntity,
+)
+from custom_components.ecoflow_cloud.switch import (
+    BeeperEntity,
+    EnabledEntity,
+)
+
+
+class Delta31500ChargingStateSensorEntity(ChargingStateSensorEntity):
+    """Charging state for DELTA 3 1500.
+
+    The firmware does not send ``bms_emsStatus.chgState`` (the field the
+    generic :class:`ChargingStateSensorEntity` reads), and the values it
+    does emit on ``bms_emsStatus.sysChgDsgState`` use a different mapping
+    than the generic class assumes. MQTT sniffing (bypass toggle test)
+    confirmed:
+
+    * 0 -> discharging (battery supplying loads — this is the normal
+        "bypass ON" state for DELTA 3 1500: the grid is disconnected and
+        loads are fed by the battery)
+    * 1 -> unused (assumed idle; not observed on the wire because the
+        1500 is rarely truly idle — mapping follows the EcoFlow JSON API
+        convention where "1" is the leftover state)
+    * 2 -> charging (AC-IN feeding the battery, verified during bypass
+        OFF test with BMS amp going from -3 A to +3.4 A)
+    """
+
+    def _update_value(self, val: Any) -> bool:
+        if val == 0:
+            return super(ChargingStateSensorEntity, self)._update_value("discharging")
+        elif val == 1:
+            return super(ChargingStateSensorEntity, self)._update_value("unused")
+        elif val == 2:
+            return super(ChargingStateSensorEntity, self)._update_value("charging")
+        return False
+
+class BypassBanSwitch(EnabledEntity):
+    """Grid-bypass switch controlled by the EcoFlow ``bypassBan`` command.
+
+    DELTA 3 1500 does not publish the bypass flag as a scalar in push
+    telemetry; instead it mirrors it as index ``[1]`` of the
+    ``pd.reserved`` array-valued quota field. The second element of
+    the array is interpreted as the bypass state:
+
+      0 -> grid bypass enabled  (battery charges from AC input)
+      1 -> grid bypass disabled (battery runs standalone, no charging)
+
+    When the switch is ON, the grid bypass is disabled (matching the
+    "Disable grid bypass" toggle in the EcoFlow mobile app).
+    """
+
+    def _update_value(self, val: Any) -> bool:
+        if isinstance(val, list) and len(val) >= 2:
+            new_state = val[1] == 1
+            if self._attr_is_on != new_state:
+                self._attr_is_on = new_state
+                return True
+        return False
+
+
+class Delta31500(BaseInternalDevice):
+    def sensors(self, client: EcoflowApiClient) -> list[SensorEntity]:
+        return [
+            LevelSensorEntity(client, self, "bms_bmsStatus.soc", const.MAIN_BATTERY_LEVEL)
+            .attr("bms_bmsStatus.designCap", const.ATTR_DESIGN_CAPACITY, 0)
+            .attr("bms_bmsStatus.fullCap", const.ATTR_FULL_CAPACITY, 0)
+            .attr("bms_bmsStatus.remainCap", const.ATTR_REMAIN_CAPACITY, 0),
+            CapacitySensorEntity(client, self, "bms_bmsStatus.designCap", const.MAIN_DESIGN_CAPACITY, False),
+            CapacitySensorEntity(client, self, "bms_bmsStatus.fullCap", const.MAIN_FULL_CAPACITY, False),
+            CapacitySensorEntity(client, self, "bms_bmsStatus.remainCap", const.MAIN_REMAIN_CAPACITY, False),
+            StateOfHealthSensorEntity(client, self, "bms_bmsStatus.soh", const.SOH),
+            LevelSensorEntity(client, self, "bms_emsStatus.lcdShowSoc", const.COMBINED_BATTERY_LEVEL),
+            Delta31500ChargingStateSensorEntity(
+                client, self, "bms_emsStatus.sysChgDsgState", const.BATTERY_CHARGING_STATE
+            ),
+            InWattsSensorEntity(client, self, "pd.wattsInSum", const.TOTAL_IN_POWER).with_energy(),
+            OutWattsSensorEntity(client, self, "pd.wattsOutSum", const.TOTAL_OUT_POWER).with_energy(),
+            InWattsSensorEntity(client, self, "inv.inputWatts", const.AC_IN_POWER).with_energy(),
+            OutWattsSensorEntity(client, self, "inv.outputWatts", const.AC_OUT_POWER).with_energy(),
+            InMilliVoltSensorEntity(client, self, "inv.acInVol", const.AC_IN_VOLT),
+            OutMilliVoltSensorEntity(client, self, "inv.invOutVol", const.AC_OUT_VOLT),
+            InWattsSensorEntity(client, self, "mppt.inWatts", const.SOLAR_IN_POWER).with_energy(),
+            OutWattsSensorEntity(client, self, "mppt.outWatts", const.DC_OUT_POWER),
+            OutWattsSensorEntity(client, self, "pd.typec1Watts", const.TYPEC_1_OUT_POWER),
+            OutWattsSensorEntity(client, self, "pd.qcUsb1Watts", const.USB_QC_1_OUT_POWER),
+            OutWattsSensorEntity(client, self, "pd.qcUsb2Watts", const.USB_QC_2_OUT_POWER),
+            RemainSensorEntity(client, self, "bms_emsStatus.chgRemainTime", const.CHARGE_REMAINING_TIME),
+            RemainSensorEntity(client, self, "bms_emsStatus.dsgRemainTime", const.DISCHARGE_REMAINING_TIME),
+            RemainSensorEntity(client, self, "pd.remainTime", const.REMAINING_TIME),
+            TempSensorEntity(client, self, "inv.outTemp", "Inv Out Temperature"),
+            CyclesSensorEntity(client, self, "bms_bmsStatus.cycles", const.CYCLES),
+            TempSensorEntity(client, self, "bms_bmsStatus.temp", const.BATTERY_TEMP)
+            .attr("bms_bmsStatus.minCellTemp", const.ATTR_MIN_CELL_TEMP, 0)
+            .attr("bms_bmsStatus.maxCellTemp", const.ATTR_MAX_CELL_TEMP, 0),
+            TempSensorEntity(client, self, "bms_bmsStatus.minCellTemp", const.MIN_CELL_TEMP, False),
+            TempSensorEntity(client, self, "bms_bmsStatus.maxCellTemp", const.MAX_CELL_TEMP, False),
+            MilliVoltSensorEntity(client, self, "bms_bmsStatus.vol", const.BATTERY_VOLT, False)
+            .attr("bms_bmsStatus.minCellVol", const.ATTR_MIN_CELL_VOLT, 0)
+            .attr("bms_bmsStatus.maxCellVol", const.ATTR_MAX_CELL_VOLT, 0),
+            MilliVoltSensorEntity(client, self, "bms_bmsStatus.minCellVol", const.MIN_CELL_VOLT, False),
+            MilliVoltSensorEntity(client, self, "bms_bmsStatus.maxCellVol", const.MAX_CELL_VOLT, False),
+            # Optional Slave Battery
+            LevelSensorEntity(client, self, "bms_slave.soc", const.SLAVE_BATTERY_LEVEL, False, True)
+            .attr("bms_slave.designCap", const.ATTR_DESIGN_CAPACITY, 0)
+            .attr("bms_slave.fullCap", const.ATTR_FULL_CAPACITY, 0)
+            .attr("bms_slave.remainCap", const.ATTR_REMAIN_CAPACITY, 0),
+            CapacitySensorEntity(client, self, "bms_slave.designCap", const.SLAVE_DESIGN_CAPACITY, False),
+            CapacitySensorEntity(client, self, "bms_slave.fullCap", const.SLAVE_FULL_CAPACITY, False),
+            CapacitySensorEntity(client, self, "bms_slave.remainCap", const.SLAVE_REMAIN_CAPACITY, False),
+            StateOfHealthSensorEntity(client, self, "bms_slave.soh", const.SLAVE_SOH),
+            TempSensorEntity(client, self, "bms_slave.temp", const.SLAVE_BATTERY_TEMP, False, True)
+            .attr("bms_slave.minCellTemp", const.ATTR_MIN_CELL_TEMP, 0)
+            .attr("bms_slave.maxCellTemp", const.ATTR_MAX_CELL_TEMP, 0),
+            TempSensorEntity(client, self, "bms_slave.minCellTemp", const.SLAVE_MIN_CELL_TEMP, False),
+            TempSensorEntity(client, self, "bms_slave.maxCellTemp", const.SLAVE_MAX_CELL_TEMP, False),
+            MilliVoltSensorEntity(client, self, "bms_slave.vol", const.SLAVE_BATTERY_VOLT, False)
+            .attr("bms_slave.minCellVol", const.ATTR_MIN_CELL_VOLT, 0)
+            .attr("bms_slave.maxCellVol", const.ATTR_MAX_CELL_VOLT, 0),
+            MilliVoltSensorEntity(client, self, "bms_slave.minCellVol", const.SLAVE_MIN_CELL_VOLT, False),
+            MilliVoltSensorEntity(client, self, "bms_slave.maxCellVol", const.SLAVE_MAX_CELL_VOLT, False),
+            CyclesSensorEntity(client, self, "bms_slave.cycles", const.SLAVE_CYCLES, False, True),
+            InWattsSensorEntity(client, self, "bms_slave.inputWatts", const.SLAVE_IN_POWER, False, True),
+            OutWattsSensorEntity(client, self, "bms_slave.outputWatts", const.SLAVE_OUT_POWER, False, True),
+            self._status_sensor(client),
+        ]
+
+    def numbers(self, client: EcoflowApiClient) -> list[NumberEntity]:
+        return [
+            MaxBatteryLevelEntity(
+                client,
+                self,
+                "bms_emsStatus.maxChargeSoc",
+                const.MAX_CHARGE_LEVEL,
+                50,
+                100,
+                lambda value: {"moduleType": 2, "operateType": "upsConfig", "params": {"maxChgSoc": int(value)}},
+            ),
+            MinBatteryLevelEntity(
+                client,
+                self,
+                "bms_emsStatus.minDsgSoc",
+                const.MIN_DISCHARGE_LEVEL,
+                0,
+                30,
+                lambda value: {"moduleType": 2, "operateType": "dsgCfg", "params": {"minDsgSoc": int(value)}},
+            ),
+            BatteryBackupLevel(
+                client,
+                self,
+                "pd.bpPowerSoc",
+                const.BACKUP_RESERVE_LEVEL,
+                5,
+                100,
+                "bms_emsStatus.minDsgSoc",
+                "bms_emsStatus.maxChargeSoc",
+                5,
+                lambda value: {
+                    "moduleType": 1,
+                    "operateType": "watthConfig",
+                    "params": {"isConfig": 1, "bpPowerSoc": int(value), "minDsgSoc": 0, "minChgSoc": 0},
+                },
+            ),
+            ChargingPowerEntity(
+                client,
+                self,
+                "mppt.cfgChgWatts",
+                const.AC_CHARGING_POWER,
+                200,
+                1500,
+                lambda value: {
+                    "moduleType": 5,
+                    "operateType": "acChgCfg",
+                    "params": {"chgWatts": int(value), "chgPauseFlag": 255},
+                },
+            ),
+        ]
+
+    def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:
+        return [
+            BeeperEntity(
+                client,
+                self,
+                "mppt.beepState",
+                const.BEEPER,
+                lambda value: {"moduleType": 5, "operateType": "quietMode", "params": {"enabled": value}},
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "pd.dcOutState",
+                const.USB_ENABLED,
+                lambda value: {"moduleType": 1, "operateType": "dcOutCfg", "params": {"enabled": value}},
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "pd.acAutoOutConfig",
+                const.AC_ALWAYS_ENABLED,
+                lambda value, params: {
+                    "moduleType": 1,
+                    "operateType": "acAutoOutConfig",
+                    "params": {
+                        "acAutoOutConfig": value,
+                        "minAcOutSoc": int(params.get("bms_emsStatus.minDsgSoc", 0)) + 5,
+                    },
+                },
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "pd.pvChgPrioSet",
+                const.PV_PRIO,
+                lambda value: {"moduleType": 1, "operateType": "pvChangePrio", "params": {"pvChangeSet": value}},
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "mppt.cfgAcEnabled",
+                const.AC_ENABLED,
+                lambda value: {
+                    "moduleType": 5,
+                    "operateType": "acOutCfg",
+                    "params": {"enabled": value, "out_voltage": -1, "out_freq": 255, "xboost": 255},
+                },
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "mppt.cfgAcXboost",
+                const.XBOOST_ENABLED,
+                lambda value: {
+                    "moduleType": 5,
+                    "operateType": "acOutCfg",
+                    "params": {"enabled": 255, "out_voltage": -1, "out_freq": 255, "xboost": value},
+                },
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "pd.carState",
+                const.DC_ENABLED,
+                lambda value: {"moduleType": 5, "operateType": "mpptCar", "params": {"enabled": value}},
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "pd.watchIsConfig",
+                const.BP_ENABLED,
+                lambda value: {
+                    "moduleType": 1,
+                    "operateType": "watthConfig",
+                    "params": {"bpPowerSoc": value * 50, "minChgSoc": 0, "isConfig": value, "minDsgSoc": 0},
+                },
+            ),
+            BypassBanSwitch(
+                client,
+                self,
+                "pd.reserved",
+                const.GRID_BYPASS,
+                lambda value: {
+                    "moduleType": 1,
+                    "operateType": "bypassBan",
+                    "params": {"banBypassEn": int(value)},
+                },
+                enableValue=1,
+                disableValue=0,
+            ),
+        ]
+
+    def selects(self, client: EcoflowApiClient) -> list[SelectEntity]:
+        return [
+            DictSelectEntity(
+                client,
+                self,
+                "mppt.dcChgCurrent",
+                const.DC_CHARGE_CURRENT,
+                const.DC_CHARGE_CURRENT_OPTIONS,
+                lambda value: {"moduleType": 5, "operateType": "dcChgCfg", "params": {"dcChgCfg": value}},
+            ),
+            TimeoutDictSelectEntity(
+                client,
+                self,
+                "pd.lcdOffSec",
+                const.SCREEN_TIMEOUT,
+                const.SCREEN_TIMEOUT_OPTIONS,
+                lambda value: {
+                    "moduleType": 1,
+                    "operateType": "lcdCfg",
+                    "params": {"brighLevel": 255, "delayOff": value},
+                },
+            ),
+            TimeoutDictSelectEntity(
+                client,
+                self,
+                "pd.standbyMin",
+                const.UNIT_TIMEOUT,
+                const.UNIT_TIMEOUT_OPTIONS,
+                lambda value: {"moduleType": 1, "operateType": "standbyTime", "params": {"standbyMin": value}},
+            ),
+            TimeoutDictSelectEntity(
+                client,
+                self,
+                "mppt.acStandbyMins",
+                const.AC_TIMEOUT,
+                const.AC_TIMEOUT_OPTIONS,
+                lambda value: {"moduleType": 5, "operateType": "standbyTime", "params": {"standbyMins": value}},
+            ),
+            TimeoutDictSelectEntity(
+                client,
+                self,
+                "mppt.carStandbyMin",
+                const.DC_TIMEOUT,
+                const.DC_TIMEOUT_OPTIONS,
+                lambda value: {"moduleType": 5, "operateType": "carStandby", "params": {"standbyMins": value}},
+            ),
+        ]
+
+    def _status_sensor(self, client: EcoflowApiClient) -> StatusSensorEntity:
+        return QuotaStatusSensorEntity(client, self)

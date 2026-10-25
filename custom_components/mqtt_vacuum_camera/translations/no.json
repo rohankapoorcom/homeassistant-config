@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Kunne ikke publisere kommandoen til støvsuger via MQTT."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Handlingen «reset_trims» vil slutte å fungere i versjon 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Handlingen «reset_trims» vil slutte å fungere i versjon 2026.8.0",
+            "description": "Handlingen «{domain}.reset_trims» ble utført enten automatisk eller manuelt. Denne funksjonen slutter å fungere i versjon 2026.8.0.\n\nErstatt denne tjenesten med **Camera Update Floor Data** («{domain}.camera_update_floor_data»).\n\nGjør dette før du oppgraderer, og klikk deretter på **Send** for å bekrefte at du har migrert."
+          }
+        }
+      }
+    }
   }
 }

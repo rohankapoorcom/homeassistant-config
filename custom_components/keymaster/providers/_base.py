@@ -5,14 +5,23 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass, field
+import logging
 from typing import TYPE_CHECKING, Any
 
+from custom_components.keymaster.const import (
+    CONF_REDACT_PIN_CODES,
+    CONF_REDACT_SLOT_NAMES,
+    DEFAULT_REDACT_PIN_CODES,
+    DEFAULT_REDACT_SLOT_NAMES,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 if TYPE_CHECKING:
     from custom_components.keymaster.lock import KeymasterLock
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -53,14 +62,10 @@ class BaseLockProvider(ABC):
     _connected: bool = field(default=False, init=False)
     _listeners: list[Callable[[], None]] = field(default_factory=list, init=False)
 
-    # === Required Properties ===
-
     @property
     @abstractmethod
     def domain(self) -> str:
         """Return the integration domain (e.g., 'zwave_js', 'zha')."""
-
-    # === Required Methods ===
 
     @abstractmethod
     async def async_connect(self) -> bool:
@@ -110,14 +115,23 @@ class BaseLockProvider(ABC):
 
         """
 
-    # === Optional Properties (with defaults) ===
-
     @property
     def supports_push_updates(self) -> bool:
         """Whether provider supports real-time event updates.
 
         If True, the provider should call the registered event callback
         when lock events occur (lock/unlock with code).
+        """
+        return False
+
+    @property
+    def lock_event_label_is_authoritative(self) -> bool:
+        """Whether provider event labels should take precedence over entity state.
+
+        Providers that dispatch callbacks from an operation event payload can set
+        this to True when the entity state may still contain the pre-operation
+        value. The default preserves the existing behavior for providers whose
+        labels may be derived from stale state or sensor data.
         """
         return False
 
@@ -133,8 +147,6 @@ class BaseLockProvider(ABC):
     def connected(self) -> bool:
         """Return current connection status."""
         return self._connected
-
-    # === Optional Methods (with defaults) ===
 
     def subscribe_lock_events(
         self, kmlock: KeymasterLock, callback: LockEventCallback
@@ -179,9 +191,20 @@ class BaseLockProvider(ABC):
         Override this to cleanup resources when the lock is removed.
         """
         # Unsubscribe all listeners
-        for unsub in self._listeners:
-            unsub()
+        _LOGGER.debug(
+            "[BaseProvider] async_unload: Unsubscribing %s listeners", len(self._listeners)
+        )
+        for i, unsub in enumerate(self._listeners):
+            _LOGGER.debug(
+                "[BaseProvider] async_unload: Calling unsub %s of type %s", i, type(unsub)
+            )
+            try:
+                unsub()
+            except Exception:
+                _LOGGER.exception("[BaseProvider] async_unload: Error unsubscribing %s", i)
+            _LOGGER.debug("[BaseProvider] async_unload: Finished unsub %s", i)
         self._listeners.clear()
+        _LOGGER.debug("[BaseProvider] async_unload completed")
 
     async def async_get_usercode(self, slot_num: int) -> CodeSlot | None:
         """Get a specific user code from the lock.
@@ -266,3 +289,31 @@ class BaseLockProvider(ABC):
             "lock_entity_id": self.lock_entity_id,
             "connected": self._connected,
         }
+
+    @property
+    def redact_slot_names(self) -> bool:
+        """Return if slot names should be redacted."""
+        return self.keymaster_config_entry.options.get(
+            CONF_REDACT_SLOT_NAMES,
+            self.keymaster_config_entry.data.get(CONF_REDACT_SLOT_NAMES, DEFAULT_REDACT_SLOT_NAMES),
+        )
+
+    @property
+    def redact_pin_codes(self) -> bool:
+        """Return if PINs should be redacted."""
+        return self.keymaster_config_entry.options.get(
+            CONF_REDACT_PIN_CODES,
+            self.keymaster_config_entry.data.get(CONF_REDACT_PIN_CODES, DEFAULT_REDACT_PIN_CODES),
+        )
+
+    def redact_name(self, name: str | None) -> str | None:
+        """Redact name if enabled."""
+        if not name:
+            return name
+        return "[REDACTED]" if self.redact_slot_names else name
+
+    def redact_pin_code(self, pin: str | None) -> str | None:
+        """Redact pin if enabled."""
+        if not pin:
+            return pin
+        return "[REDACTED]" if self.redact_pin_codes else pin

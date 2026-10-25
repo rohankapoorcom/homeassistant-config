@@ -2,7 +2,7 @@
 
 from homeassistant.components.input_text import DOMAIN as INPUT_TEXT_DOMAIN
 
-from .base_input_entity import TextDiscoveryEntity
+from ..helpers.base_input_entity import TextDiscoveryEntity
 
 
 class DiscoveryItem(TextDiscoveryEntity):

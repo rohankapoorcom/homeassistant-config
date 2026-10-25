@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Befehl zum Leeren über MQTT konnte nicht veröffentlicht werden."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Die Aktion „reset_trims“ wird ab Version 2026.8.0 nicht mehr funktionieren",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Die Aktion „reset_trims“ wird ab Version 2026.8.0 nicht mehr funktionieren",
+            "description": "Die Aktion „{domain}.reset_trims“ wurde im Rahmen einer Automatisierung oder manuell ausgeführt. Diese Funktion ist ab Version 2026.8.0 nicht mehr verfügbar.\n\nErsetzen Sie diesen Dienst durch **Camera Update Floor Data** ({domain}.camera_update_floor_data).\n\nBitte führen Sie diese Änderung vor dem Upgrade durch und klicken Sie anschließend auf **Absenden**, um die Migration zu bestätigen."
+          }
+        }
+      }
+    }
   }
 }

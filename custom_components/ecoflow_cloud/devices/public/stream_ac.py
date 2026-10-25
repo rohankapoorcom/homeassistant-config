@@ -1,17 +1,41 @@
-from ...api import EcoflowApiClient
-from ...sensor import StatusSensorEntity
-from .data_bridge import to_plain
+from typing import Any
+
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+
 from custom_components.ecoflow_cloud.api import EcoflowApiClient
-from custom_components.ecoflow_cloud.devices import const, BaseDevice
-from custom_components.ecoflow_cloud.entities import BaseSensorEntity, BaseNumberEntity, BaseSwitchEntity, \
-    BaseSelectEntity
-from custom_components.ecoflow_cloud.sensor import WattsSensorEntity,LevelSensorEntity,CapacitySensorEntity, \
-    InWattsSensorEntity,OutWattsSensorEntity, RemainSensorEntity, MilliVoltSensorEntity, TempSensorEntity, \
-    CyclesSensorEntity, EnergySensorEntity, CumulativeCapacitySensorEntity
+from custom_components.ecoflow_cloud.devices import BaseDevice, const
+from custom_components.ecoflow_cloud.devices.public.data_bridge import to_plain
+from custom_components.ecoflow_cloud.number import BatteryBackupLevel
+from custom_components.ecoflow_cloud.sensor import (
+    AmpSensorEntity,
+    BatteryLimitSensorEntity,
+    CapacitySensorEntity,
+    CumulativeCapacitySensorEntity,
+    CyclesSensorEntity,
+    EnergySensorEntity,
+    InWattsSensorEntity,
+    LevelSensorEntity,
+    MilliVoltSensorEntity,
+    OutWattsSensorEntity,
+    RemainSensorEntity,
+    StateOfHealthSensorEntity,
+    StatusSensorEntity,
+    StoredEnergyFromSocSensorEntity,
+    TempSensorEntity,
+    VoltSensorEntity,
+    WattsSensorEntity,
+)
+from custom_components.ecoflow_cloud.devices.public.stream_pv_helpers import (
+    StreamPvWattsSensorEntity,
+)
+from custom_components.ecoflow_cloud.switch import EnabledEntity
+
 
 class StreamAC(BaseDevice):
-
-    def sensors(self, client: EcoflowApiClient) -> list[BaseSensorEntity]:
+    def sensors(self, client: EcoflowApiClient) -> list[SensorEntity]:
         return [
             # "accuChgCap": 198511,
             CumulativeCapacitySensorEntity(client, self, "accuChgCap", const.ACCU_CHARGE_CAP, False),
@@ -65,6 +89,14 @@ class StreamAC(BaseDevice):
             # "cmsBattPowInMax": 2114,
             # "cmsBattPowOutMax": 2400,
             # "cmsBattSoc": 43.0,
+            # Actual battery state-of-charge. Stream Ultra / Ultra X report SoC
+            # via cmsBattSoc rather than soc/f32ShowSoc, so expose it directly
+            # as a battery-level sensor (auto_enable so it only activates on
+            # firmware that actually sends the field).
+            LevelSensorEntity(client, self, "cmsBattSoc", const.STREAM_BATTERY_LEVEL, False, True),
+            StoredEnergyFromSocSensorEntity(
+                client, self, "cmsBattFullEnergy", "cmsBattSoc", const.STREAM_STORED_ENERGY
+            ),
             # "cmsBattSoh": 100.0,
             # "cmsBmsRunState": 1,
             # "cmsChgDsgState": 2,
@@ -72,13 +104,15 @@ class StreamAC(BaseDevice):
             # "cmsDsgRemTime": 5939,
             # "cmsMaxChgSoc": 100,
             # "cmsMinDsgSoc": 5,
+            BatteryLimitSensorEntity(client, self, "cmsMaxChgSoc", const.MAX_CHARGE_LEVEL),
+            BatteryLimitSensorEntity(client, self, "cmsMinDsgSoc", const.MIN_DISCHARGE_LEVEL),
             # "curSensorNtcNum": 0,
             # "curSensorTemp": [],
             # "cycleSoh": 100.0,
             # "cycles": 1,
             CyclesSensorEntity(client, self, "cycles", const.CYCLES),
             # "designCap": 100000,
-            CapacitySensorEntity(client, self, "designCap", const.STREAM_DESIGN_CAPACITY,False),
+            CapacitySensorEntity(client, self, "designCap", const.STREAM_DESIGN_CAPACITY, False),
             # "devCtrlStatus": 1,
             # "devSleepState": 0,
             # "diffSoc": 0.2050476,
@@ -105,7 +139,7 @@ class StreamAC(BaseDevice):
             WattsSensorEntity(client, self, "gridConnectionPower", const.STREAM_POWER_AC),
             # "gridConnectionSta": "PANEL_GRID_IN",
             # "gridConnectionVol": 235.34576,
-            MilliVoltSensorEntity(client, self, "gridConnectionVol", const.STREAM_POWER_VOL, False),
+            VoltSensorEntity(client, self, "gridConnectionVol", const.STREAM_POWER_VOL, False),
             # "gridSysDeviceCnt": 2,
             # "heatfilmNtcNum": 0,
             # "heatfilmTemp": [],
@@ -159,6 +193,22 @@ class StreamAC(BaseDevice):
             # "powConsumptionMeasurement": 2,
             # "powGetBpCms": 1915.0862,
             WattsSensorEntity(client, self, "powGetBpCms", const.STREAM_POWER_BATTERY),
+            # Per-PV power, voltage, current (Stream Ultra / Ultra X / AC Pro).
+            # Per-PV reporting depends on the firmware version installed:
+            #   - Firmware <  1.0.1.88: powGetPv / powGetPv2..4 emitted, per-PV
+            #     watts are correct, plugInInfoPv*Amp returns 0.
+            #   - Firmware >= 1.0.1.88: powGetPv* returns 0, per-PV data lives
+            #     in plugInInfoPv{,2,3,4}Amp + plugInInfoPv{,2,3,4}Vol instead.
+            # See issues #582, #584. To stay firmware-agnostic we register BOTH
+            # mapping variants with auto_enable=True. HA enables whichever set
+            # first sees a non-zero value.
+            #
+            # New-firmware path (computed amp x vol via StreamPvWattsSensorEntity)
+            StreamPvWattsSensorEntity(client, self, "plugInInfoPvAmp", const.STREAM_POWER_PV_1, False, True),
+            StreamPvWattsSensorEntity(client, self, "plugInInfoPv2Amp", const.STREAM_POWER_PV_2, False, True),
+            StreamPvWattsSensorEntity(client, self, "plugInInfoPv3Amp", const.STREAM_POWER_PV_3, False, True),
+            StreamPvWattsSensorEntity(client, self, "plugInInfoPv4Amp", const.STREAM_POWER_PV_4, False, True),
+            # Legacy-firmware path (powGetPv* keys)
             # "powGetPv": 0.0,
             WattsSensorEntity(client, self, "powGetPv", const.STREAM_POWER_PV_1, False, True),
             # "powGetPv2": 0.0,
@@ -167,6 +217,15 @@ class StreamAC(BaseDevice):
             WattsSensorEntity(client, self, "powGetPv3", const.STREAM_POWER_PV_3, False, True),
             # "powGetPv4": 0.0,
             WattsSensorEntity(client, self, "powGetPv4", const.STREAM_POWER_PV_4, False, True),
+            # Per-PV voltage + current (emitted by all Stream firmware versions)
+            VoltSensorEntity(client, self, "plugInInfoPvVol", const.STREAM_IN_VOL_PV_1, False, True),
+            VoltSensorEntity(client, self, "plugInInfoPv2Vol", const.STREAM_IN_VOL_PV_2, False, True),
+            VoltSensorEntity(client, self, "plugInInfoPv3Vol", const.STREAM_IN_VOL_PV_3, False, True),
+            VoltSensorEntity(client, self, "plugInInfoPv4Vol", const.STREAM_IN_VOL_PV_4, False, True),
+            AmpSensorEntity(client, self, "plugInInfoPvAmp", const.STREAM_IN_AMPS_PV_1, False, True),
+            AmpSensorEntity(client, self, "plugInInfoPv2Amp", const.STREAM_IN_AMPS_PV_2, False, True),
+            AmpSensorEntity(client, self, "plugInInfoPv3Amp", const.STREAM_IN_AMPS_PV_3, False, True),
+            AmpSensorEntity(client, self, "plugInInfoPv4Amp", const.STREAM_IN_AMPS_PV_4, False, True),
             # "powGetPvSum": 2051.3975,
             WattsSensorEntity(client, self, "powGetPvSum", const.STREAM_POWER_PV_SUM),
             # "powGetSchuko1": 0.0,
@@ -188,13 +247,13 @@ class StreamAC(BaseDevice):
             # "productDetail": 5,
             # "productType": 58,
             # "realSoh": 100.0,
-            LevelSensorEntity(client, self, "realSoh", const.REAL_SOH, False),
+            StateOfHealthSensorEntity(client, self, "realSoh", const.REAL_SOH, False),
             # "relay1Onoff": true,
             # "relay2Onoff": true,
             # "relay3Onoff": true,
             # "relay4Onoff": true,
             # "remainCap": 46317,
-            CapacitySensorEntity(client, self, "remainCap", const.STREAM_REMAIN_CAPACITY,False),
+            CapacitySensorEntity(client, self, "remainCap", const.STREAM_REMAIN_CAPACITY, False),
             # "remainTime": 88,
             RemainSensorEntity(client, self, "remainTime", const.REMAINING_TIME),
             # "runtimePropertyFullUploadPeriod": 120000,
@@ -208,7 +267,7 @@ class StreamAC(BaseDevice):
             .attr("remainCap", const.ATTR_REMAIN_CAPACITY, 0),
             # "socketMeasurePower": 0.0,
             # "soh": 100,
-            LevelSensorEntity(client, self, "soh", const.SOH),
+            StateOfHealthSensorEntity(client, self, "soh", const.SOH),
             # "stormPatternEnable": false,
             # "stormPatternEndTime": 0,
             # "stormPatternOpenFlag": false,
@@ -257,24 +316,137 @@ class StreamAC(BaseDevice):
             .attr("minCellVol", const.ATTR_MIN_CELL_VOLT, 0)
             .attr("maxCellVol", const.ATTR_MAX_CELL_VOLT, 0),
             # "waterInFlag": 0,
-
         ]
+
     # moduleWifiRssi
-    def numbers(self, client: EcoflowApiClient) -> list[BaseNumberEntity]:
+    def numbers(self, client: EcoflowApiClient) -> list[NumberEntity]:
+        return [
+            BatteryBackupLevel(
+                client,
+                self,
+                "backupReverseSoc",
+                const.BACKUP_RESERVE_LEVEL,
+                3,
+                95,
+                "cmsMinDsgSoc",
+                "cmsMaxChgSoc",
+                3,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {
+                        "cfgBackupReverseSoc": int(value),
+                    },
+                },
+            ),
+        ]
+
+    def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:
+        return [
+            EnabledEntity(
+                client,
+                self,
+                "relay2Onoff",
+                const.MODE_AC1_ON,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {"cfgRelay2Onoff": value},
+                },
+                enableValue=True,
+                disableValue=False,
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "relay3Onoff",
+                const.MODE_AC2_ON,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {"cfgRelay3Onoff": value},
+                },
+                enableValue=True,
+                disableValue=False,
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "energyStrategyOperateMode.operateSelfPoweredOpen",
+                const.STREAM_OPERATION_MODE_SELF_POWERED,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {"cfgEnergyStrategyOperateMode": {"operateSelfPoweredOpen": value}},
+                },
+                enableValue=True,
+                disableValue=False,
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "energyStrategyOperateMode.operateIntelligentScheduleModeOpen",
+                const.STREAM_OPERATION_MODE_AI_MODE,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {"cfgEnergyStrategyOperateMode": {"operateIntelligentScheduleModeOpen": value}},
+                },
+                enableValue=True,
+                disableValue=False,
+            ),
+            EnabledEntity(
+                client,
+                self,
+                "feedGridMode",
+                const.STREAM_FEED_IN_CONTROL,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {"cfgFeedGridMode": value},
+                },
+                enableValue=2,
+                disableValue=1,
+            ),
+        ]
+
+    def selects(self, client: EcoflowApiClient) -> list[SelectEntity]:
         return []
 
-    def switches(self, client: EcoflowApiClient) -> list[BaseSwitchEntity]:
-        return []
-
-    def selects(self, client: EcoflowApiClient) -> list[BaseSelectEntity]:
-        return []
-
-    def _prepare_data(self, raw_data) -> dict[str, any]:
+    def _prepare_data(self, raw_data) -> dict[str, Any]:
         res = super()._prepare_data(raw_data)
         res = to_plain(res)
         return res
 
     def _status_sensor(self, client: EcoflowApiClient) -> StatusSensorEntity:
         return StatusSensorEntity(client, self)
-
-

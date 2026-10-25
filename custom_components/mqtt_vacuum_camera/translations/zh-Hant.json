@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "通过MQTT向vacuum发布命令失败。"
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "在 2026.8.0 版本中，“reset_trims”操作将停止生效",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "在 2026.8.0 版本中，“reset_trims”操作将停止生效",
+            "description": "操作 `{domain}.reset_trims` 是在自动化流程中或手动执行的。该操作在 2026.8.0 版本中将不再可用。\n\n请将此服务替换为 **相机更新楼层数据**（`{domain}.camera_update_floor_data`）。\n\n请在升级前完成此操作，然后点击 **提交** 以确认已完成迁移。"
+          }
+        }
+      }
+    }
   }
 }

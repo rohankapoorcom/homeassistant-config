@@ -198,7 +198,7 @@
           "aspect_ratio": "Poměr stran obrazu.",
           "robot_size": "Velikost robota v pixelech 8–25.",
           "mop_path_width": "Šířka vakuové dráhy v režimu mopování (1–50 pixelů, musí být menší než velikost robota).",
-          "def_context_type": "Vyberte formát snímků pro fotoaparát (JPEG, PNG nebo PIL). Pro nejlepší kompatibilitu doporučujeme formát JPEG."
+          "def_context_type": "Vyberte formát obrázků pro fotoaparát (JPEG, PNG nebo PIL). Pro nejlepší kompatibilitu doporučujeme formát JPEG."
         },
         "description": "Možnosti obrazu kamery",
         "title": "Možnosti obrázku"
@@ -484,6 +484,19 @@
     },
     "mqtt_publish_failed": {
       "message": "Nepodařilo se publikovat příkaz k vysávání přes MQTT."
+    }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "Akce „reset_trims“ přestane ve verzi 2026.8.0 fungovat",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Akce „reset_trims“ přestane ve verzi 2026.8.0 fungovat",
+            "description": "Akce „{domain}.reset_trims“ byla spuštěna v rámci automatizace nebo ručně. Ve verzi 2026.8.0 již tato akce nefunguje.\n\nNahraďte tuto službu službou **Camera Update Floor Data** ({domain}.camera_update_floor_data).\n\nProveďte tuto změnu před aktualizací a poté klikněte na **Odeslat**, abyste potvrdili, že jste migraci provedli."
+          }
+        }
+      }
     }
   }
 }

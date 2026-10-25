@@ -3,6 +3,7 @@
 import json
 import logging
 
+from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC
 from homeassistant.components.mqtt.vacuum import (
     CONF_FAN_SPEED_LIST,
     CONF_SEND_COMMAND_TOPIC,
@@ -12,12 +13,12 @@ from homeassistant.components.mqtt.vacuum import (
     STRING_TO_SERVICE,
 )
 from homeassistant.components.vacuum import (
-    ATTR_FAN_SPEED,
-    ATTR_FAN_SPEED_LIST,
     ATTR_PARAMS,
     SERVICE_SEND_COMMAND,
     SERVICE_SET_FAN_SPEED,
+    VacuumEntityCapabilityAttribute,
     VacuumEntityFeature,
+    VacuumEntityStateAttribute,
 )
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -28,18 +29,9 @@ from homeassistant.const import (
     Platform,
 )
 
-from ..const import (
-    COMMAND_SEND,
-    COMMAND_SET,
-    COMMAND_SET_FAN_SPEED,
-    CONF_CMD_T,
-)
-from ..utils import (
-    EntityInfo,
-    add_config_command,
-    simple_attribute_add,
-)
-from .base_entity import DiscoveryEntity
+from ..const import COMMAND_SEND, COMMAND_SET, COMMAND_SET_FAN_SPEED
+from ..helpers.base_entity import DiscoveryEntity
+from ..utils import EntityInfo, add_config_command, simple_attribute_add
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,16 +45,18 @@ class DiscoveryItem(DiscoveryEntity):
     def build_config(self, config, entity_info: EntityInfo):
         """Build the config for a vacuum."""
 
-        add_config_command(config, entity_info, CONF_CMD_T, COMMAND_SET)
+        add_config_command(config, entity_info, CONF_COMMAND_TOPIC, COMMAND_SET)
         config[CONF_SUPPORTED_FEATURES] = self._build_supported_features(
             entity_info.attributes[ATTR_SUPPORTED_FEATURES]
         )
 
-        if ATTR_FAN_SPEED_LIST in entity_info.attributes or (
+        if VacuumEntityCapabilityAttribute.FAN_SPEED_LIST in entity_info.attributes or (
             entity_info.attributes[ATTR_SUPPORTED_FEATURES]
             & VacuumEntityFeature.FAN_SPEED
         ):
-            config[CONF_FAN_SPEED_LIST] = entity_info.attributes[ATTR_FAN_SPEED_LIST]
+            config[CONF_FAN_SPEED_LIST] = entity_info.attributes[
+                VacuumEntityCapabilityAttribute.FAN_SPEED_LIST
+            ]
 
             add_config_command(
                 config,
@@ -87,7 +81,7 @@ class DiscoveryItem(DiscoveryEntity):
         attributes = new_state.attributes
         state = {ATTR_STATE: new_state.state}
         simple_attribute_add(state, attributes, ATTR_BATTERY_LEVEL)
-        simple_attribute_add(state, attributes, ATTR_FAN_SPEED)
+        simple_attribute_add(state, attributes, VacuumEntityStateAttribute.FAN_SPEED)
         await self._async_mqtt_publish(ATTR_STATE, state, mybase, encoded=True)
 
     def _build_supported_features(self, feat_list):
@@ -119,9 +113,10 @@ class DiscoveryItem(DiscoveryEntity):
         }
 
         if command == COMMAND_SET:
-            if msg.payload in STRING_TO_SERVICE or msg.payload in [
-                DEFAULT_PAYLOAD_RETURN_TO_BASE
-            ]:
+            if (
+                msg.payload in STRING_TO_SERVICE
+                or msg.payload == DEFAULT_PAYLOAD_RETURN_TO_BASE
+            ):
                 await self._hass.services.async_call(
                     domain, msg.payload, service_payload
                 )
@@ -129,7 +124,7 @@ class DiscoveryItem(DiscoveryEntity):
                 self.command_error(command, msg.payload, entity)
 
         elif command == COMMAND_SET_FAN_SPEED:
-            service_payload[ATTR_FAN_SPEED] = msg.payload
+            service_payload[VacuumEntityStateAttribute.FAN_SPEED] = msg.payload
             await self._hass.services.async_call(
                 domain, SERVICE_SET_FAN_SPEED, service_payload
             )

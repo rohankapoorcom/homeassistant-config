@@ -4,21 +4,17 @@ import json
 import logging
 
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_MODE,
-    ATTR_COLOR_TEMP_KELVIN,
-    ATTR_EFFECT,
-    ATTR_EFFECT_LIST,
-    ATTR_HS_COLOR,
-    ATTR_MAX_COLOR_TEMP_KELVIN,
-    ATTR_MIN_COLOR_TEMP_KELVIN,
-    ATTR_RGB_COLOR,
-    ATTR_SUPPORTED_COLOR_MODES,
     ATTR_TRANSITION,
-    ATTR_XY_COLOR,
+    ColorMode,
+    LightEntityCapabilityAttribute,
     LightEntityFeature,
+    LightEntityStateAttribute,
 )
-from homeassistant.components.mqtt.const import CONF_SCHEMA
+from homeassistant.components.mqtt.const import (
+    CONF_COMMAND_TOPIC,
+    CONF_JSON_ATTRS_TOPIC,
+    CONF_SCHEMA,
+)
 from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_STATE,
@@ -43,13 +39,11 @@ from ..const import (
     ATTR_X,
     ATTR_Y,
     COMMAND_SET_LIGHT,
-    CONF_CMD_T,
-    CONF_JSON_ATTR_T,
     STATE_CAPITAL_OFF,
     STATE_CAPITAL_ON,
 )
+from ..helpers.base_entity import DiscoveryEntity
 from ..utils import EntityInfo, add_config_command
-from .base_entity import DiscoveryEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,30 +53,39 @@ class DiscoveryItem(DiscoveryEntity):
 
     PLATFORM = Platform.LIGHT
 
-    def build_config(self, config, entity_info: EntityInfo):  # noqa: F821
+    def build_config(self, config, entity_info: EntityInfo):
         """Build the config for a light."""
-        del config[CONF_JSON_ATTR_T]
-        add_config_command(config, entity_info, CONF_CMD_T, COMMAND_SET_LIGHT)
+        del config[CONF_JSON_ATTRS_TOPIC]
+        add_config_command(config, entity_info, CONF_COMMAND_TOPIC, COMMAND_SET_LIGHT)
         config[CONF_SCHEMA] = ATTR_JSON
 
         supported_features = get_supported_features(self._hass, entity_info.entity_id)
         if supported_features & LightEntityFeature.EFFECT:
             config[CONF_EFFECT] = True
-            config[ATTR_EFFECT_LIST] = entity_info.attributes[ATTR_EFFECT_LIST]
-        if ATTR_SUPPORTED_COLOR_MODES in entity_info.attributes:
-            config[ATTR_SUPPORTED_COLOR_MODES] = entity_info.attributes[
-                ATTR_SUPPORTED_COLOR_MODES
+            config[LightEntityCapabilityAttribute.EFFECT_LIST] = entity_info.attributes[
+                LightEntityCapabilityAttribute.EFFECT_LIST
             ]
-            config[CONF_BRIGHTNESS] = True
-        else:
-            config[ATTR_COLOR_MODE] = False
-            _LOGGER.warning(
-                "Light '%s' has no '%s' attribute which is mandatory. Please report to owner.",
-                entity_info.entity_id,
-                ATTR_SUPPORTED_COLOR_MODES,
+        if (
+            LightEntityCapabilityAttribute.SUPPORTED_COLOR_MODES
+            in entity_info.attributes
+        ):
+            supported_color_modes = entity_info.attributes[
+                LightEntityCapabilityAttribute.SUPPORTED_COLOR_MODES
+            ]
+            config[LightEntityCapabilityAttribute.SUPPORTED_COLOR_MODES] = (
+                supported_color_modes
             )
-        if ATTR_COLOR_TEMP_KELVIN in entity_info.attributes:
-            config[ATTR_COLOR_TEMP_KELVIN] = True
+            config[CONF_BRIGHTNESS] = True
+            if ColorMode.COLOR_TEMP in supported_color_modes:
+                # MQTT color_temp values are published and consumed as Kelvin.
+                config[LightEntityStateAttribute.COLOR_TEMP_KELVIN] = True
+        else:
+            config[LightEntityStateAttribute.COLOR_MODE] = False
+            _LOGGER.warning(
+                "Light '%s' has no '%s' attribute which is mandatory. Please report to owner",
+                entity_info.entity_id,
+                LightEntityCapabilityAttribute.SUPPORTED_COLOR_MODES,
+            )
 
     async def async_publish_state(self, new_state, mybase):
         """Build the state for a light."""
@@ -91,55 +94,58 @@ class DiscoveryItem(DiscoveryEntity):
             if new_state.state == STATE_ON
             else STATE_CAPITAL_OFF,
         }
-        self._add_attribute(payload, new_state, ATTR_BRIGHTNESS)
-        self._add_attribute(payload, new_state, ATTR_COLOR_MODE)
-        self._add_attribute(payload, new_state, ATTR_MAX_COLOR_TEMP_KELVIN)
-        self._add_attribute(payload, new_state, ATTR_MIN_COLOR_TEMP_KELVIN)
-        self._add_attribute(payload, new_state, CONF_COLOR_TEMP)
-        self._add_attribute(payload, new_state, ATTR_COLOR_TEMP_KELVIN)
-        if (
-            ATTR_COLOR_TEMP_KELVIN in new_state.attributes
-            and new_state.attributes[ATTR_COLOR_TEMP_KELVIN]
-        ):
-            payload[CONF_COLOR_TEMP] = new_state.attributes[ATTR_COLOR_TEMP_KELVIN]
-        self._add_attribute(payload, new_state, ATTR_EFFECT)
+        self._add_attribute(payload, new_state, LightEntityStateAttribute.BRIGHTNESS)
+        self._add_attribute(
+            payload, new_state, LightEntityCapabilityAttribute.MAX_COLOR_TEMP_KELVIN
+        )
+        self._add_attribute(
+            payload, new_state, LightEntityCapabilityAttribute.MIN_COLOR_TEMP_KELVIN
+        )
+        self._add_attribute(payload, new_state, LightEntityStateAttribute.EFFECT)
+
+        # Home Assistant's MQTT JSON light schema requires color_temp whenever
+        # color_mode is color_temp. Source lights may briefly expose the mode
+        # before their temperature value is available, so omit the mode for
+        # that transient state instead of publishing an invalid payload.
+        color_mode = new_state.attributes.get(LightEntityStateAttribute.COLOR_MODE)
+        color_temp_kelvin = new_state.attributes.get(
+            LightEntityStateAttribute.COLOR_TEMP_KELVIN
+        )
+        if color_mode == ColorMode.COLOR_TEMP:
+            if color_temp_kelvin is not None:
+                payload[LightEntityStateAttribute.COLOR_MODE] = color_mode
+                payload[CONF_COLOR_TEMP] = color_temp_kelvin
+        elif color_mode is not None:
+            payload[LightEntityStateAttribute.COLOR_MODE] = color_mode
 
         if color := self._add_colors(new_state):
             payload[ATTR_COLOR] = color
 
         await self._async_mqtt_publish(ATTR_STATE, payload, mybase, encoded=True)
 
-    def _add_attribute(self, payload, new_state, attribute):
-        if attribute in new_state.attributes and new_state.attributes[attribute]:
-            payload[attribute] = new_state.attributes[attribute]
+    def _add_attribute(self, payload, new_state, attribute, alt_attribute=None):
+        save_attribute = alt_attribute or attribute
+        if new_state.attributes.get(attribute):
+            payload[save_attribute] = new_state.attributes[attribute]
 
     def _add_colors(self, new_state):
         color = {}
-        if (
-            ATTR_HS_COLOR in new_state.attributes
-            and new_state.attributes[ATTR_HS_COLOR]
-        ):
-            color[ATTR_H] = new_state.attributes[ATTR_HS_COLOR][0]
-            color[ATTR_S] = new_state.attributes[ATTR_HS_COLOR][1]
-        if (
-            ATTR_XY_COLOR in new_state.attributes
-            and new_state.attributes[ATTR_XY_COLOR]
-        ):
-            color[ATTR_X] = new_state.attributes[ATTR_XY_COLOR][0]
-            color[ATTR_Y] = new_state.attributes[ATTR_XY_COLOR][1]
-        if (
-            ATTR_RGB_COLOR in new_state.attributes
-            and new_state.attributes[ATTR_RGB_COLOR]
-        ):
-            color[ATTR_R] = new_state.attributes[ATTR_RGB_COLOR][0]
-            color[ATTR_G] = new_state.attributes[ATTR_RGB_COLOR][1]
-            color[ATTR_B] = new_state.attributes[ATTR_RGB_COLOR][2]
+        if new_state.attributes.get(LightEntityStateAttribute.HS_COLOR):
+            color[ATTR_H] = new_state.attributes[LightEntityStateAttribute.HS_COLOR][0]
+            color[ATTR_S] = new_state.attributes[LightEntityStateAttribute.HS_COLOR][1]
+        if new_state.attributes.get(LightEntityStateAttribute.XY_COLOR):
+            color[ATTR_X] = new_state.attributes[LightEntityStateAttribute.XY_COLOR][0]
+            color[ATTR_Y] = new_state.attributes[LightEntityStateAttribute.XY_COLOR][1]
+        if new_state.attributes.get(LightEntityStateAttribute.RGB_COLOR):
+            color[ATTR_R] = new_state.attributes[LightEntityStateAttribute.RGB_COLOR][0]
+            color[ATTR_G] = new_state.attributes[LightEntityStateAttribute.RGB_COLOR][1]
+            color[ATTR_B] = new_state.attributes[LightEntityStateAttribute.RGB_COLOR][2]
 
         return color
 
     async def _async_handle_message(self, msg):
         """Handle a message for a light."""
-        valid, domain, entity, command = self.validate_message(  # pylint: disable=unused-variable
+        valid, domain, entity, _command = self.validate_message(  # pylint: disable=unused-variable
             msg,
         )
         if not valid:
@@ -154,29 +160,35 @@ class DiscoveryItem(DiscoveryEntity):
             service_payload[ATTR_TRANSITION] = payload_json[ATTR_TRANSITION]
 
         if payload_json[ATTR_STATE] == STATE_CAPITAL_ON:
-            if ATTR_BRIGHTNESS in payload_json:
-                service_payload[ATTR_BRIGHTNESS] = payload_json[ATTR_BRIGHTNESS]
+            if LightEntityStateAttribute.BRIGHTNESS in payload_json:
+                service_payload[LightEntityStateAttribute.BRIGHTNESS] = payload_json[
+                    LightEntityStateAttribute.BRIGHTNESS
+                ]
             if CONF_COLOR_TEMP in payload_json:
-                service_payload[CONF_COLOR_TEMP] = payload_json[CONF_COLOR_TEMP]
+                service_payload[LightEntityStateAttribute.COLOR_TEMP_KELVIN] = (
+                    payload_json[CONF_COLOR_TEMP]
+                )
             if ATTR_COLOR in payload_json:
                 if ATTR_H in payload_json[ATTR_COLOR]:
-                    service_payload[ATTR_HS_COLOR] = [
+                    service_payload[LightEntityStateAttribute.HS_COLOR] = [
                         payload_json[ATTR_COLOR][ATTR_H],
                         payload_json[ATTR_COLOR][ATTR_S],
                     ]
                 if ATTR_X in payload_json[ATTR_COLOR]:
-                    service_payload[ATTR_XY_COLOR] = [
+                    service_payload[LightEntityStateAttribute.XY_COLOR] = [
                         payload_json[ATTR_COLOR][ATTR_X],
                         payload_json[ATTR_COLOR][ATTR_Y],
                     ]
                 if ATTR_R in payload_json[ATTR_COLOR]:
-                    service_payload[ATTR_RGB_COLOR] = [
+                    service_payload[LightEntityStateAttribute.RGB_COLOR] = [
                         payload_json[ATTR_COLOR][ATTR_R],
                         payload_json[ATTR_COLOR][ATTR_G],
                         payload_json[ATTR_COLOR][ATTR_B],
                     ]
-            if ATTR_EFFECT in payload_json:
-                service_payload[ATTR_EFFECT] = payload_json[ATTR_EFFECT]
+            if LightEntityStateAttribute.EFFECT in payload_json:
+                service_payload[LightEntityStateAttribute.EFFECT] = payload_json[
+                    LightEntityStateAttribute.EFFECT
+                ]
             await self._hass.services.async_call(
                 domain, SERVICE_TURN_ON, service_payload
             )

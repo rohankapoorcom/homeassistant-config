@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "MQTT経由でのvacuumコマンドの公開に失敗しました。"
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "アクション「reset_trims」はバージョン 2026.8.0 以降、動作しなくなります",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "アクション「reset_trims」はバージョン 2026.8.0 以降、動作しなくなります",
+            "description": "アクション「{domain}.reset_trims」は、自動化または手動で実行されていました。このアクションはバージョン 2026.8.0 以降では動作しなくなります。\n\nこのサービスを「**Camera Update Floor Data**」（`{domain}.camera_update_floor_data`）に置き換えてください。\n\nアップグレード前にこの対応を行ってから、**送信**をクリックして移行が完了したことを確認してください。"
+          }
+        }
+      }
+    }
   }
 }

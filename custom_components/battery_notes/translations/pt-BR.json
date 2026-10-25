@@ -10,23 +10,27 @@
                 "data": {
                     "battery_type": "Tipo de bateria",
                     "battery_quantity": "Quantidade de baterias",
-                    "note": "Note",
-                    "battery_low_threshold": "Limite de bateria fraca"
+                    "note": "Nota",
+                    "battery_low_threshold": "Limite de bateria fraca",
+                    "battery_increase_threshold": "Limite de aumento de bateria"
                 },
                 "data_description": {
-                    "battery_low_threshold": "0 irá usar o limite padrão global"
+                    "battery_low_threshold": "0 irá usar o limite padrão global.",
+                    "battery_increase_threshold": "O limite é a diferença de aumento entre o nível anterior e atual da bateria.\n0 usará o limite padrão global."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Configurações avançadas",
+                        "name": "Configurações adicionais",
                         "data": {
                             "battery_percentage_template": "Template de percentual da bateria",
                             "battery_low_template": "Modelo de bateria fraca",
+                            "retain_state": "Manter estado",
                             "filter_outliers": "Filtrar atípicos"
                         },
                         "data_description": {
-                            "battery_percentage_template": "Modelo para criar uma porcentagem de bateria\nnecessário apenas para dispositivos que não possuem uma porcentagem padrão de bateria",
-                            "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca\nNecessário apenas para níveis de bateria fora do padrão",
+                            "battery_percentage_template": "Modelo para criar uma porcentagem de bateria.\nnecessário apenas para dispositivos que não possuem uma porcentagem padrão de bateria.",
+                            "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca.\nNecessário apenas para níveis de bateria fora do padrão.",
+                            "retain_state": "Mantenha o último estado da bateria quando a entidade de origem não estiver disponível.\nÚtil para dispositivos que entram em modo de suspensão e ficam indisponíveis.",
                             "filter_outliers": "Filtre grandes quedas no nível da bateria, reduzindo eventos de disparo falso em dispositivos que ocasionalmente relatam níveis incorretos."
                         }
                     }
@@ -83,23 +87,27 @@
                     "data": {
                         "battery_type": "Tipo de bateria",
                         "battery_quantity": "Quantidade de baterias",
-                        "note": "Note",
-                        "battery_low_threshold": "Limite de bateria fraca"
+                        "note": "Nota",
+                        "battery_low_threshold": "Limite de bateria fraca",
+                        "battery_increase_threshold": "Limite de aumento de bateria"
                     },
                     "data_description": {
-                        "battery_low_threshold": "0 irá usar o limite padrão global"
+                        "battery_low_threshold": "0 irá usar o limite padrão global.",
+                        "battery_increase_threshold": "O limite é a diferença de aumento entre o nível anterior e atual da bateria.\n0 usará o limite padrão global."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Configurações avançadas",
+                            "name": "Configurações adicionais",
                             "data": {
                                 "battery_percentage_template": "Template de percentual da bateria",
                                 "battery_low_template": "Modelo de bateria fraca",
+                                "retain_state": "Manter estado",
                                 "filter_outliers": "Filtrar atípicos"
                             },
                             "data_description": {
-                                "battery_percentage_template": "",
-                                "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca\nNecessário apenas para níveis de bateria fora do padrão",
+                                "battery_percentage_template": "Modelo para criar uma porcentagem de bateria.\nnecessário apenas para dispositivos que não possuem uma porcentagem padrão de bateria.",
+                                "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca.\nNecessário apenas para níveis de bateria fora do padrão.",
+                                "retain_state": "Mantenha o último estado da bateria quando a entidade de origem não estiver disponível.\nÚtil para dispositivos que entram em modo de suspensão e ficam indisponíveis.",
                                 "filter_outliers": "Filtre grandes quedas no nível da bateria, reduzindo eventos de disparo falso em dispositivos que ocasionalmente relatam níveis incorretos."
                             }
                         }
@@ -115,24 +123,28 @@
                         "name": "Nome",
                         "battery_type": "Tipo de bateria",
                         "battery_quantity": "Quantidade de baterias",
-                        "note": "Note",
-                        "battery_low_threshold": "Limite de bateria fraca"
+                        "note": "Nota",
+                        "battery_low_threshold": "Limite de bateria fraca",
+                        "battery_increase_threshold": "Limite de aumento de bateria"
                     },
                     "data_description": {
-                        "name": "Deixar em branco utilizará o nome do dispositivo de origem",
-                        "battery_low_threshold": "0 irá usar o limite padrão global"
+                        "name": "Deixar em branco utilizará o nome do dispositivo de origem.",
+                        "battery_low_threshold": "0 irá usar o limite padrão global.",
+                        "battery_increase_threshold": "O limite é a diferença de aumento entre o nível anterior e atual da bateria.\n0 usará o limite padrão global."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Configurações avançadas",
+                            "name": "Configurações adicionais",
                             "data": {
                                 "battery_percentage_template": "Template de percentual da bateria",
                                 "battery_low_template": "Modelo de bateria fraca",
+                                "retain_state": "Manter estado",
                                 "filter_outliers": "Filtrar atípicos"
                             },
                             "data_description": {
-                                "battery_percentage_template": "Modelo para criar uma porcentagem de bateria\nnecessário apenas para dispositivos que não possuem uma porcentagem padrão de bateria",
-                                "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca\nNecessário apenas para níveis de bateria fora do padrão",
+                                "battery_percentage_template": "Modelo para criar uma porcentagem de bateria.\nnecessário apenas para dispositivos que não possuem uma porcentagem padrão de bateria.",
+                                "battery_low_template": "Modelo para determinar se a bateria está fraca, deve retornar verdadeiro se estiver fraca.\nNecessário apenas para níveis de bateria fora do padrão.",
+                                "retain_state": "Mantenha o último estado da bateria quando a entidade de origem não estiver disponível.\nÚtil para dispositivos que entram em modo de suspensão e ficam indisponíveis.",
                                 "filter_outliers": "Filtre grandes quedas no nível da bateria, reduzindo eventos de disparo falso em dispositivos que ocasionalmente relatam níveis incorretos."
                             }
                         }
@@ -158,26 +170,28 @@
                     "hide_battery": "Ocultar bateria",
                     "round_battery": "Bateria arredondada",
                     "default_battery_low_threshold": "Limite padrão de bateria baixa",
-                    "battery_increase_threshold": "Limite de aumento de bateria"
+                    "battery_increase_threshold": "Limite padrão de aumento de bateria"
                 },
                 "data_description": {
                     "show_all_devices": "Mostrar todos os dispositivos no menu suspenso do dispositivo, caso contrário, apenas aqueles com bateria serão mostrados.",
                     "hide_battery": "Ocultar a bateria padrão ao adicionar bateria+",
                     "round_battery": "Arredondar Bateria+ para porcentagens inteiras",
-                    "default_battery_low_threshold": "",
-                    "battery_increase_threshold": ""
+                    "default_battery_low_threshold": "Este é o limite padrão para o disparo do evento `battery_notes_battery_increased`; utilize-o para automações relacionadas à substituição da bateria. O limite refere-se à diferença de aumento entre o nível anterior e o atual da bateria e pode ser personalizado individualmente nas configurações de cada dispositivo.",
+                    "battery_increase_threshold": "Este é o limite padrão para o disparo do evento `battery_notes_battery_increased`; utilize-o para automações relacionadas à substituição da bateria. O limite refere-se à diferença de aumento entre o nível anterior e o atual da bateria e pode ser personalizado individualmente nas configurações de cada dispositivo."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Configurações avançadas",
+                        "name": "Configurações adicionais",
                         "data": {
                             "enable_autodiscovery": "Descobrir automaticamente",
                             "enable_replaced": "Habilitar botão de substituição de bateria",
+                            "hide_battery_low": "Ocultar bateria fraca",
                             "user_library": "Biblioteca de usuário"
                         },
                         "data_description": {
                             "enable_autodiscovery": "Descobrir automaticamente dispositivos que estão na biblioteca.",
                             "enable_replaced": "Habilitar o botão de substituição de bateria em cada nota de bateria.",
+                            "hide_battery_low": "Ocultar o sensor binário de bateria fraca quando uma porcentagem de bateria está disponível, evitando duplicação em paineis gerados.",
                             "user_library": "Se especificado, um arquivo de biblioteca de usuário será pesquisado antes da biblioteca principal, a biblioteca do usuário deve estar no mesmo formato que a biblioteca e colocada em `config/.storage/battery_notes`."
                         }
                     }
@@ -193,6 +207,9 @@
             "battery_low": {
                 "name": "{device_name}Bateria fraca",
                 "state_attributes": {
+                    "battery_increase_threshold": {
+                        "name": "Limite de aumento de bateria"
+                    },
                     "battery_low_threshold": {
                         "name": "Limite de bateria fraca"
                     }
@@ -218,10 +235,13 @@
                         "name": "Tipo e quantidade de baterias"
                     },
                     "note": {
-                        "name": "Note"
+                        "name": "Nota"
                     },
                     "battery_last_replaced": {
                         "name": "Última substituição da bateria"
+                    },
+                    "battery_increase_threshold": {
+                        "name": "Limite de aumento de bateria"
                     },
                     "battery_low": {
                         "name": "Bateria fraca"
@@ -256,7 +276,7 @@
                         "name": "Quantidade de baterias"
                     },
                     "note": {
-                        "name": "Note"
+                        "name": "Nota"
                     }
                 }
             },
@@ -285,39 +305,39 @@
             "name": "Definir a bateria como substituída"
         },
         "check_battery_last_replaced": {
-            "description": "Get a response or raise events for devices that haven't had their battery replaced.",
+            "description": "Receba uma resposta ou gere eventos para dispositivos que ainda não tiveram a bateria trocada.",
             "fields": {
                 "days_last_reported": {
-                    "description": "Number of days since a device last had its battery replaced.",
+                    "description": "Número de dias desde a última vez em um dispositivo teve sua bateria substituída.",
                     "name": "Dias"
                 },
                 "raise_events": {
-                    "description": "Raise events for use in automation triggers.",
-                    "name": "Raise events"
+                    "description": "Gere eventos para uso em gatilho de automações.",
+                    "name": "Gere eventos"
                 }
             },
-            "name": "Check battery last replaced"
+            "name": "Verificar a última troca de bateria"
         },
         "check_battery_last_reported": {
-            "description": "Get a response or raise events for devices that haven't reported their battery level.",
+            "description": "Receba uma resposta ou gere eventos para dispositivos que ainda não repostaram o nível de bateria.",
             "fields": {
                 "days_last_reported": {
                     "description": "Número de dias desde a última vez que um dispositivo relatou o nível da bateria.",
                     "name": "Dias"
                 },
                 "raise_events": {
-                    "description": "Raise events for use in automation triggers.",
-                    "name": "Raise events"
+                    "description": "Gere eventos para uso em gatilho de automações.",
+                    "name": "Gere eventos"
                 }
             },
             "name": "Verificar a última atualização da bateria"
         },
         "check_battery_low": {
-            "description": "Get a response or raise events for devices that have a low battery.",
+            "description": "Receba uma resposta ou gere eventos para dispositivos que ainda não tiveram registro de bateria baixa.",
             "fields": {
                 "raise_events": {
-                    "description": "Raise events for use in automation triggers.",
-                    "name": "Raise events"
+                    "description": "Gere eventos para uso em gatilho de automações.",
+                    "name": "Gere eventos"
                 }
             },
             "name": "Verificar bateria fraca"
@@ -334,6 +354,29 @@
                     }
                 }
             }
+        },
+        "composite_device_id": {
+            "fix_flow": {
+                "abort": {
+                    "entry_removed": "A entrada de configuração do Battery Note foi removida"
+                },
+                "error": {
+                    "invalid_device": "Selecione um dispositivo existente ou deixe o campo vazio"
+                },
+                "step": {
+                    "select_device": {
+                        "data": {
+                            "device_id": "Dispositivo"
+                        },
+                        "data_description": {
+                            "device_id": "O dispositivo ao qual esta nota de bateria deve estar vinculada."
+                        },
+                        "description": "A nota da bateria {name} estava vinculada a um dispositivo que foi dividido em vários dispositivos.\n\nSelecione o dispositivo ao qual esta nota de bateria deve estar vinculada, ou deixe vazio para remover a nota da bateria.",
+                        "title": "Selecione o dispositivo para {name}"
+                    }
+                }
+            },
+            "title": "O dispositivo para a nota de bateria {name} precisa ser selecionado novamente"
         },
         "deprecated_yaml": {
             "title": "A configuração YAML {integration_title} está sendo removida",

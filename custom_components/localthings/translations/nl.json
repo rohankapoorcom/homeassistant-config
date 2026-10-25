@@ -1,0 +1,2301 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "auto_clean_running": {
+        "name": "Auto clean actief"
+      },
+      "after_run_active": {
+        "name": "Nadraaien actief"
+      },
+      "any_burner_active": {
+        "name": "Een brander actief"
+      },
+      "automatic_operation": {
+        "name": "Automatische werking"
+      },
+      "battery_charging": {
+        "name": "Opladen"
+      },
+      "burner_hot_surface": {
+        "name": "Brander {number} heet oppervlak"
+      },
+      "burner_pan_detected": {
+        "name": "Pan gedetecteerd op brander {number}"
+      },
+      "child_lock": {
+        "name": "Kinderslot"
+      },
+      "cloud_connected": {
+        "name": "Verbonden met cloud"
+      },
+      "dustbag_full": {
+        "name": "Stofzak vol"
+      },
+      "cooktop_power": {
+        "name": "Voeding kookplaat"
+      },
+      "cooktop_safety_shutoff_enabled": {
+        "name": "Automatische uitschakeling heet oppervlak ingeschakeld"
+      },
+      "current_limit_enabled": {
+        "name": "Stroombegrenzing ingeschakeld"
+      },
+      "overload_protection_active": {
+        "name": "Overbelastingsbeveiliging actief"
+      },
+      "odor_controller_active": {
+        "name": "Geurbeheersing actief"
+      },
+      "cycle_active": {
+        "name": "Actief"
+      },
+      "defrost_active": {
+        "name": "Ontdooien actief"
+      },
+      "detergent_low": {
+        "name": "Wasmiddel bijna op"
+      },
+      "device_active": {
+        "name": "Apparaat actief"
+      },
+      "door_open": {
+        "name": "Deur"
+      },
+      "filter_blockage": {
+        "name": "Filterverstopping"
+      },
+      "filter_door_status": {
+        "name": "Filterdeur"
+      },
+      "firmware_update": {
+        "name": "Firmware-update beschikbaar"
+      },
+      "instance_open": {
+        "name": "{instance_name} open"
+      },
+      "paired_hood_connected": {
+        "name": "Gekoppelde afzuigkap verbonden"
+      },
+      "paired_hood_light": {
+        "name": "Verlichting gekoppelde afzuigkap"
+      },
+      "paired_hood_power": {
+        "name": "Gekoppelde afzuigkap actief"
+      },
+      "periodic_air_sensing": {
+        "name": "Periodieke luchtmeting"
+      },
+      "pouring": {
+        "name": "Schenken"
+      },
+      "alarm_in_mute": {
+        "name": "Alarmdemping"
+      },
+      "power_state": {
+        "name": "Voedingsstatus"
+      },
+      "probe_connected": {
+        "name": "Sonde verbonden"
+      },
+      "power_switch": {
+        "name": "Voeding"
+      },
+      "rapid_freezing": {
+        "name": "Snelvriezen"
+      },
+      "rapid_fridge": {
+        "name": "Snelkoelen"
+      },
+      "remote_control": {
+        "name": "Smart Control"
+      },
+      "softener_low": {
+        "name": "Wasverzachter bijna op"
+      },
+      "add_wash_available": {
+        "name": "AddWash toegestaan"
+      },
+      "add_wash_indicator": {
+        "name": "AddWash beschikbaar"
+      },
+      "pre_wash_selected": {
+        "name": "Voorwas gekozen"
+      },
+      "delay_wash_set": {
+        "name": "Uitgestelde start ingesteld"
+      },
+      "stick_ble_connected": {
+        "name": "Steel via BLE verbonden"
+      },
+      "cooktop_burner": {
+        "name": "Brander {number}"
+      },
+      "beep": {
+        "name": "Piep"
+      },
+      "remind_beep": {
+        "name": "Eindsignaal herinnering"
+      },
+      "display_time_auto_sync": {
+        "name": "Tijd automatisch synchroniseren"
+      },
+      "grease_filter_alarm": {
+        "name": "Vetfilteralarm"
+      },
+      "front_vent_open": {
+        "name": "Voorste ventilatie"
+      },
+      "dual_setpoint_enabled": {
+        "name": "Dubbel setpoint ingeschakeld"
+      },
+      "divider": {
+        "name": "Scheidingswand"
+      },
+      "wrinkle_prevent_active": {
+        "name": "Kreukpreventie actief"
+      }
+    },
+    "button": {
+      "after_run_cancel": {
+        "name": "Nadraaien annuleren"
+      },
+      "diagnosis_start": {
+        "name": "Diagnose starten"
+      },
+      "auto_clean_stop": {
+        "name": "Zelfreiniging stoppen"
+      },
+      "air_filter_reset": {
+        "name": "Luchtfilter resetten"
+      },
+      "air_filter_pm1_reset": {
+        "name": "PM1.0-filter resetten"
+      },
+      "hepa_filter_reset": {
+        "name": "HEPA-filter resetten"
+      },
+      "deodor_filter_reset": {
+        "name": "Geurfilter resetten"
+      },
+      "hood_filter_reset": {
+        "name": "Kapfilter resetten"
+      },
+      "filter_reset": {
+        "name": "Waterfilter resetten"
+      },
+      "filter_time_reset": {
+        "name": "Filterteller op nul zetten"
+      },
+      "pause": {
+        "name": "Pauzeren"
+      },
+      "selfcheck_start": {
+        "name": "Zelfcontrole starten"
+      },
+      "start": {
+        "name": "Starten"
+      },
+      "sync_clock": {
+        "name": "Klok synchroniseren"
+      },
+      "stop": {
+        "name": "Stoppen"
+      },
+      "start_cooking": {
+        "name": "Bereiding starten"
+      }
+    },
+    "climate": {
+      "airconditioner": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "turbo": "Turbo",
+              "max": "Max"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "ai_comfort": "AI-comfort",
+              "quiet": "Stil",
+              "smart": "Slim",
+              "speed": "Snel",
+              "nano": "WindFree",
+              "sleep": "Slaap",
+              "nanosleep": "WindFree-slaap",
+              "longwind": "Lange wind",
+              "motionindirect": "Beweging indirect",
+              "motiondirect": "Beweging direct",
+              "drycomfort": "Droog comfort",
+              "dlightcool": "d'light Cool",
+              "2step": "2-Step"
+            }
+          }
+        }
+      },
+      "zone_climate": {
+        "name": "Zone 1"
+      },
+      "zone2_climate": {
+        "name": "Zone 2"
+      }
+    },
+    "fan": {
+      "air_purifier_fan": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "smart": "Slim",
+              "max": "Max",
+              "mid": "Gemiddeld",
+              "windfree": "WindFree",
+              "sleep": "Slaap"
+            }
+          }
+        }
+      }
+    },
+    "light": {
+      "lamp": {
+        "name": "Lamp"
+      }
+    },
+    "number": {
+      "cook_time": {
+        "name": "Bereidingstijd"
+      },
+      "delay_start_hours": {
+        "name": "Uitgestelde start"
+      },
+      "dispense_capacity": {
+        "name": "Schenkhoeveelheid"
+      },
+      "good_sleep": {
+        "name": "Good Sleep"
+      },
+      "instance_setpoint": {
+        "name": "{instance_name} instelpunt"
+      },
+      "oven_setpoint": {
+        "name": "Instelpunt"
+      },
+      "sensing_interval": {
+        "name": "AI Purify-interval"
+      },
+      "setpoint": {
+        "name": "Instelpunt"
+      },
+      "sound_volume": {
+        "name": "Geluidsvolume"
+      },
+      "target_humidity": {
+        "name": "Doelvochtigheid"
+      },
+      "tropical_night_mode": {
+        "name": "Tropische nachtmodus"
+      },
+      "zone_target_temperature": {
+        "name": "Doeltemperatuur zone"
+      }
+    },
+    "select": {
+      "welcome_lighting_proximity": {
+        "name": "Nabijheidsniveau welkomstverlichting",
+        "state": {
+          "nearest": "Dichtstbij",
+          "near": "Dichtbij",
+          "middle": "Gemiddeld",
+          "far": "Ver"
+        }
+      },
+      "ai_energy_level": {
+        "name": "Niveau AI Energy Mode"
+      },
+      "air_filter_threshold": {
+        "name": "Filteralarmdrempel"
+      },
+      "auto_door_timer": {
+        "name": "Timer automatische deuropener"
+      },
+      "auto_door_mode": {
+        "name": "Modus automatische deuropener",
+        "state": {
+          "easy_open": "Makkelijk openen",
+          "wide_open": "Wijd openen"
+        }
+      },
+      "beverage_zone_mode": {
+        "name": "Modus drankenzone",
+        "state": {
+          "sp_ttype_beer_drinks": "Dranken",
+          "sp_ttype_wine_dessert": "Wijn en dessert"
+        }
+      },
+      "brightness_level": {
+        "name": "Nachthelderheid",
+        "state": {
+          "33": "Laag",
+          "66": "Gemiddeld",
+          "100": "Hoog"
+        }
+      },
+      "cooler_temperature_setpoint": {
+        "name": "Koelkasttemperatuur"
+      },
+      "day_brightness": {
+        "name": "Helderheid kast",
+        "state": {
+          "33": "Laag",
+          "66": "Gemiddeld",
+          "100": "Hoog"
+        }
+      },
+      "buzzer_sound": {
+        "name": "Zoemergeluid",
+        "state": {
+          "off": "Uit",
+          "on": "Aan",
+          "volume_off": "Uit",
+          "volume_low": "Laag",
+          "volume_med": "Gemiddeld",
+          "volume_high": "Hoog"
+        }
+      },
+      "discharging_time": {
+        "name": "Leegtijd",
+        "state": {
+          "1": "1 minuut",
+          "3": "3 minuten"
+        }
+      },
+      "cycle": {
+        "name": "Programma"
+      },
+      "detergent_quantity": {
+        "name": "Hoeveelheid wasmiddel",
+        "state": {
+          "00": "Geen",
+          "01": "Laag",
+          "02": "Gemiddeld",
+          "03": "Hoog"
+        }
+      },
+      "detergent_water_hardness": {
+        "name": "Waterhardheid voor wasmiddel",
+        "state": {
+          "01": "Zacht",
+          "02": "Gemiddeld",
+          "03": "Hard"
+        }
+      },
+      "dishwasher_cycle": {
+        "name": "Programma",
+        "state": {
+          "80": "Delicaat",
+          "83": "Normaal",
+          "84": "Intensief",
+          "86": "Express 60",
+          "90": "Zelfreiniging",
+          "0e": "AI Wash",
+          "07": "Voorspoelen",
+          "8d": "Potten en pannen",
+          "8e": "Kunststof",
+          "8f": "Babyverzorging",
+          "82": "Auto",
+          "8a": "Normaal",
+          "a7": "Intensief",
+          "a8": "Express",
+          "8c": "Extra stil",
+          "88": "Zelfreiniging",
+          "85": "Delicaat",
+          "0c": "Express",
+          "0d": "Zelfreiniging",
+          "87": "Alleen spoelen"
+        }
+      },
+      "dispense_type": {
+        "name": "Type dispenser"
+      },
+      "door_alert": {
+        "name": "Deuralarm",
+        "state": {
+          "1": "Alarm 1",
+          "2": "Alarm 2",
+          "3": "Alarm 3",
+          "4": "Alarm 4"
+        }
+      },
+      "dryer_cycle_table_00": {
+        "name": "Programma",
+        "state": {
+          "01": "Normaal",
+          "9c": "Intensief",
+          "a5": "Beddengoed",
+          "9e": "Strijkvrij",
+          "9b": "Stoomhygiëne+",
+          "27": "Opfrissen",
+          "a0": "Luchtdrogen",
+          "a4": "Tijdprogramma",
+          "a6": "Snel drogen",
+          "a3": "Sportkleding",
+          "a2": "Fijne was",
+          "9a": "Katoen",
+          "ca": "Luchtverfrissing",
+          "db": "Super Speed",
+          "99": "Gemengde was",
+          "93": "Strijkdroog",
+          "b5": "Wol",
+          "d7": "Outdoorverzorging",
+          "96": "Koude lucht",
+          "97": "Warme lucht",
+          "7f": "Tijdprogramma",
+          "98": "Snel drogen 35",
+          "eb": "Fijne was",
+          "b6": "Synthetisch"
+        }
+      },
+      "dryer_cycle_table_03": {
+        "name": "Programma",
+        "state": {
+          "01": "Normaal",
+          "06": "Tijdprogramma",
+          "16": "Katoen",
+          "17": "Super Speed",
+          "18": "Synthetisch",
+          "19": "Fijne was",
+          "20": "Strijkdroog",
+          "21": "Hygiënisch drogen",
+          "22": "Stil drogen",
+          "23": "Snel drogen 35'",
+          "24": "Koude lucht",
+          "25": "Warme lucht",
+          "27": "Tijdprogramma",
+          "29": "AI drogen",
+          "1a": "Wol",
+          "1b": "Beddengoed",
+          "1c": "Overhemden",
+          "1d": "Handdoeken",
+          "1e": "Outdoor",
+          "1f": "Gemengde was",
+          "2b": "Zelf trommel drogen",
+          "4c": "Opfrissen",
+          "51": "Eco katoen",
+          "53": "AI drogen+",
+          "4e": "Zelf drogen",
+          "26": "Luchtverfrissing",
+          "2a": "Hygiënische verzorging+",
+          "02": "AI drogen",
+          "03": "Super Speed",
+          "05": "Beddengoed",
+          "07": "Fijne was",
+          "09": "Overhemden",
+          "0b": "Paddingverzorging",
+          "0c": "Waterafstotende outdoorverzorging",
+          "0e": "Handdoeken",
+          "0f": "Wol",
+          "11": "Koude lucht",
+          "28": "Interne desinfectie met hete lucht",
+          "37": "Blouses",
+          "38": "Strijkdroog",
+          "39": "Ruimte ontvochtigen",
+          "3a": "Hygiënisch drogen",
+          "3b": "Beddengoed/Stof verwijderen",
+          "3c": "Sportkleding",
+          "3d": "Spijkergoed",
+          "2f": "Intensief",
+          "30": "Sportkleding",
+          "32": "Strijkvrij",
+          "33": "Stoomhygiëne+",
+          "34": "Opfrissen met stoom",
+          "35": "Kreukvrij",
+          "36": "Luchtdrogen",
+          "3e": "Kleine lading",
+          "2e": "Eco Normaal"
+        }
+      },
+      "dryer_dry_level": {
+        "name": "Droogniveau",
+        "state": {
+          "none": "Uit",
+          "damp": "Vochtig",
+          "less": "Minder",
+          "normal": "Normaal",
+          "more": "Meer",
+          "very": "Zeer"
+        }
+      },
+      "favorite_capacity": {
+        "name": "Favoriete capaciteit"
+      },
+      "favorite_hotwater_temperature": {
+        "name": "Favoriete temperatuur warm water"
+      },
+      "filter_alarm_time": {
+        "name": "Filteralarminterval",
+        "state": {
+          "180": "180 uur",
+          "300": "300 uur",
+          "500": "500 uur",
+          "700": "700 uur"
+        }
+      },
+      "finish_sound": {
+        "name": "Eindgeluid",
+        "state": {
+          "off": "Uit",
+          "on": "Aan"
+        }
+      },
+      "flex_zone_mode": {
+        "name": "Modus FlexZone",
+        "state": {
+          "cv_ttype_rf9000a_fridge": "Koelen",
+          "cv_ttype_rf9000a_freeze": "Vriezen",
+          "cv_ttype_rf9000a_softfreeze": "Zachtvriezen",
+          "cv_ttype_rf9000a_meat_fish": "Vlees/vis",
+          "cv_ttype_rf9000a_fruit_veggies": "Fruit en groenten",
+          "cv_ttype_rf9000a_beverage": "Dranken",
+          "cv_fdr_wine": "Wijn",
+          "cv_fdr_deli": "Delicatessen",
+          "cv_fdr_beverage": "Dranken",
+          "cv_fdr_meat": "Vlees",
+          "cv_fdr_soft_freezer": "Zachtvriezer",
+          "fconvert_freezer": "Vriezen",
+          "fconvert_fridge": "Koelen",
+          "fconvert_off": "Uit"
+        }
+      },
+      "heated_dry": {
+        "name": "Smart Dry",
+        "state": {
+          "off": "Uit",
+          "low": "Laag",
+          "high": "Hoog",
+          "extra_high": "Extra hoog"
+        }
+      },
+      "hot_water_temperature": {
+        "name": "Temperatuur warm water"
+      },
+      "ice_type": {
+        "name": "{instance_name} type",
+        "state": {
+          "off": "Uit",
+          "whiskey_iceball_3": "3 ijsballen per dag",
+          "whiskey_iceball_6": "6 ijsballen per dag",
+          "whiskey_iceball_9": "9 ijsballen per dag"
+        }
+      },
+      "led_brightness": {
+        "name": "Helderheid deur-LED",
+        "state": {
+          "low": "Laag",
+          "high": "Hoog"
+        }
+      },
+      "led_night_brightness": {
+        "name": "Nachtelijke helderheid deur-LED",
+        "state": {
+          "low": "Laag",
+          "high": "Hoog"
+        }
+      },
+      "cooking_mode": {
+        "name": "Bereidingsmodus",
+        "state": {
+          "no_operation": "Niet actief",
+          "micro_wave": "Magnetron",
+          "micro_wave_grill": "Magnetron + grill",
+          "micro_wave_convection": "Magnetron + hetelucht",
+          "convection": "Hetelucht",
+          "air_fryer": "Airfryen",
+          "grill": "Grillen",
+          "autocook": "Automatisch koken",
+          "autocook_custom": "Automatisch koken (aangepast)",
+          "deodorization": "Geurverwijdering",
+          "keep_warm": "Warmhouden"
+        }
+      },
+      "oven_mode": {
+        "name": "Bereidingsmodus",
+        "state": {
+          "no_operation": "Niet actief",
+          "bake": "Bakken",
+          "broil": "Grillen",
+          "convection": "Hetelucht",
+          "convection_bake": "Bakken met hetelucht",
+          "convection_broil": "Grillen met hetelucht",
+          "frozen_pizza_plus": "Frozen Pizza+",
+          "slow_cook": "Langzaam garen",
+          "plate_warm": "Borden warmhouden",
+          "air_fry": "Airfryen",
+          "convection_roast": "Heteluchtbraden",
+          "keep_warm": "Warmhouden",
+          "bread_proof": "Deeg rijzen",
+          "dehydrate": "Drogen",
+          "self_clean": "Zelfreiniging",
+          "air_fryer": "Airfryer",
+          "upper_broil": "Grillen (boven)",
+          "upper_convection_bake": "Bakken met hetelucht (boven)",
+          "upper_convection_roast": "Heteluchtbraden (boven)",
+          "lower_bake": "Bakken (onder)",
+          "lower_convection_bake": "Bakken met hetelucht (onder)",
+          "steam_bake": "Stoombakken",
+          "steam_roast": "Stoombraden",
+          "upper_steam_bake": "Stoombakken (boven)",
+          "descale": "Ontkalken",
+          "drain": "Water aftappen"
+        }
+      },
+      "operating_mode": {
+        "name": "Bedrijfsmodus"
+      },
+      "kimchi_zone_mode": {
+        "name": "{instance_name} opslagmodus",
+        "state": {
+          "off": "Uit",
+          "kimchi_storage_normal": "Kimchi",
+          "kimchi_storage_cold": "Kimchi, sterk",
+          "kimchi_storage_warm": "Kimchi, zwak",
+          "kimchi_storage_low_salt_normal": "Kimchi met weinig zout",
+          "kimchi_storage_low_salt_cold": "Kimchi met weinig zout, sterk",
+          "kimchi_storage_low_salt_warm": "Kimchi met weinig zout, zwak",
+          "kimchi_storage_crunfch": "Knapperige kimchi",
+          "kimchi_storage_buy": "Gekochte kimchi",
+          "storage_fridge_normal": "Koelkast",
+          "storage_fridge": "Koelkast",
+          "storage_fridge_cold": "Koelkast, sterk",
+          "storage_fridge_warm": "Koelkast, zwak",
+          "storage_freezer_normal": "Vriezer",
+          "storage_freezer": "Vriezer",
+          "storage_freezer_cold": "Vriezer, sterk",
+          "storage_freezer_warm": "Vriezer, zwak",
+          "kimchi_ripe_low_temp": "Kimchi rijpen, lage temperatuur",
+          "kimchi_ripe_normal_temp": "Kimchi rijpen, kamertemperatuur",
+          "kimchi_ripe_kkakdugi": "Kkakdugi rijpen",
+          "kimchi_ripe_dongchimi": "Dongchimi rijpen",
+          "meat_ripe_normal": "Vlees rijpen",
+          "storage_meat": "Vlees en vis",
+          "storage_fridge_vegetables_fruit": "Groenten en fruit",
+          "storage_fresh_cereal": "Granen",
+          "storage_fridge_drink": "Dranken",
+          "storage_fresh_wine": "Wijn",
+          "storage_fresh_potato_banana": "Aardappelen en bananen",
+          "newmode_kimchi_0000": "Nieuwe modus"
+        }
+      },
+      "pantry_zone_mode": {
+        "name": "Modus voorraadzone",
+        "state": {
+          "fdr_wine": "Wijn",
+          "fdr_deli": "Delicatessen",
+          "fdr_drinks": "Dranken",
+          "ttype_meat_fish": "Vlees/vis",
+          "ttype_rf9000a_fridge": "Koelen"
+        }
+      },
+      "winecellar_pantry_zone_mode": {
+        "name": "Modus voorraadzone",
+        "state": {
+          "processed_meat": "Vleeswaren",
+          "cheese": "Kaas",
+          "nuts": "Noten",
+          "fruit": "Fruit",
+          "wine": "Wijn"
+        }
+      },
+      "range_burner_power_level": {
+        "name": "Vermogensniveau brander {number}",
+        "state": {
+          "0": "Uit",
+          "boost": "Boost",
+          "simmer": "Sudderen"
+        }
+      },
+      "range_hood_lamp_brightness": {
+        "name": "Helderheid lamp",
+        "state": {
+          "1": "Niveau 1",
+          "2": "Niveau 2"
+        }
+      },
+      "rinse_cycles": {
+        "name": "Spoelcycli"
+      },
+      "laundry_out_time": {
+        "name": "Herinnering was uit de trommel",
+        "state": {
+          "0": "Uit",
+          "30": "Elke 30 min",
+          "60": "Elke 60 min",
+          "90": "Elke 90 min"
+        }
+      },
+      "sensing_mode": {
+        "name": "AI Purify-actie",
+        "state": {
+          "off": "Alleen meten",
+          "airpurify": "Automatisch reinigen",
+          "alarm": "Melding ontvangen"
+        }
+      },
+      "softener_concentration": {
+        "name": "Concentratie wasverzachter",
+        "state": {
+          "01": "1x",
+          "02": "2x",
+          "03": "3x"
+        }
+      },
+      "softener_quantity": {
+        "name": "Hoeveelheid wasverzachter",
+        "state": {
+          "00": "Geen",
+          "01": "Laag",
+          "02": "Gemiddeld",
+          "03": "Hoog"
+        }
+      },
+      "soil_level": {
+        "name": "Vuilgraad",
+        "state": {
+          "none": "Geen",
+          "extra_light": "Extra licht",
+          "light": "Licht",
+          "normal": "Normaal",
+          "heavy": "Zwaar",
+          "extra_heavy": "Extra zwaar"
+        }
+      },
+      "sound_mode": {
+        "name": "Geluidsmodus",
+        "state": {
+          "voice": "Stem",
+          "tone": "Toon",
+          "mute": "Stil"
+        }
+      },
+      "energy_saving_mode": {
+        "name": "Energiebesparingsmodus"
+      },
+      "air_purifier_sound_mode": {
+        "name": "Geluidsmodus",
+        "state": {
+          "mute": "Stil",
+          "buzzer": "Zoemer"
+        }
+      },
+      "water_purifier_sound_mode": {
+        "name": "Geluidsmodus",
+        "state": {
+          "voice": "Stem",
+          "fixedtone": "Vaste toon",
+          "mute": "Stil"
+        }
+      },
+      "spin_speed": {
+        "name": "Centrifugesnelheid",
+        "state": {
+          "rinse_hold": "Spoelstop",
+          "no_spin": "Niet centrifugeren",
+          "low": "Laag",
+          "medium": "Gemiddeld",
+          "high": "Hoog",
+          "extra_low": "Extra laag",
+          "extra_high": "Extra hoog"
+        }
+      },
+      "wash_temperature": {
+        "name": "Wastemperatuur",
+        "state": {
+          "none": "Geen",
+          "cold": "Koud",
+          "cool": "Koel",
+          "warm": "Warm",
+          "hot": "Heet",
+          "extra_hot": "Extra heet",
+          "tap_cold": "Koud leidingwater"
+        }
+      },
+      "washer_cycle_table_00": {
+        "name": "Programma",
+        "state": {
+          "01": "Normaal",
+          "55": "Witte was",
+          "57": "Self Clean+",
+          "5b": "Katoen",
+          "5c": "Extra snel",
+          "5d": "Super Eco",
+          "5e": "Fijne was",
+          "5f": "Babyverzorging",
+          "60": "Outdoor",
+          "61": "Donkere was",
+          "63": "Trommel reinigen",
+          "64": "Spoelen + centrifugeren",
+          "65": "Wol",
+          "66": "Beddengoed",
+          "67": "Synthetisch",
+          "68": "Eco katoen",
+          "6b": "Alleen centrifugeren",
+          "6c": "Spijkergoed",
+          "70": "Intensief",
+          "71": "Beddengoed",
+          "72": "Hygiëne",
+          "73": "Spoelen + centrifugeren",
+          "74": "Sportkleding",
+          "75": "Fijne was",
+          "77": "Strijkvrij",
+          "78": "Snelle was",
+          "ba": "Afpompen/centrifugeren",
+          "d0": "Katoen",
+          "d1": "Eco katoen",
+          "d2": "Synthetisch",
+          "d3": "Fijne was",
+          "d4": "Spoelen + centrifugeren",
+          "d5": "Trommel reinigen",
+          "d6": "Beddengoed",
+          "d7": "Outdoorverzorging",
+          "d8": "Wol",
+          "da": "Super Eco",
+          "db": "Super Speed",
+          "dc": "15' Snelle was",
+          "e4": "Anti-allergie"
+        }
+      },
+      "washer_cycle_table_02": {
+        "name": "Programma",
+        "state": {
+          "01": "Normaal",
+          "02": "Extra intensief",
+          "03": "Super Eco",
+          "04": "Snelle was",
+          "05": "Wol/Lingerie",
+          "06": "Beddengoed",
+          "07": "Outdoor",
+          "08": "Spoelen+centrifugeren",
+          "09": "Trommel reinigen",
+          "0a": "Handdoeken",
+          "0b": "Kookwas",
+          "0c": "Babyverzorging",
+          "0d": "Alleen centrifugeren",
+          "0e": "Bewolkte dag",
+          "0f": "Zuivere was",
+          "10": "Droogcentrifugeren",
+          "11": "Zomer beddengoed",
+          "12": "Katoen",
+          "13": "Zwart katoen",
+          "14": "Fijn ondergoed",
+          "15": "Sportkleding",
+          "16": "Blouses",
+          "17": "Gedownload",
+          "18": "Soft Bubble",
+          "19": "AI Wash",
+          "1a": "Overhemden",
+          "1b": "Katoen",
+          "1c": "Eco 40-60",
+          "1d": "Super Speed",
+          "1e": "15' Snelle was",
+          "1f": "Intensief koud",
+          "20": "Hygiënisch stomen",
+          "21": "Bonte was",
+          "22": "Wol",
+          "23": "Outdoor",
+          "24": "Beddengoed",
+          "25": "Synthetisch",
+          "26": "Fijne was",
+          "27": "Spoelen+centrifugeren",
+          "28": "Afpompen/centrifugeren",
+          "29": "Drum Clean+",
+          "2a": "Spijkerbroek",
+          "2b": "AI Wash",
+          "2d": "Stille was",
+          "2e": "Babyverzorging",
+          "2f": "Sportkleding",
+          "30": "Bewolkte dag",
+          "32": "Overhemden",
+          "33": "Handdoeken",
+          "34": "Gemengd",
+          "35": "Eco katoen",
+          "36": "Wassen+drogen",
+          "37": "Air Wash",
+          "38": "Katoen drogen",
+          "39": "Synthetisch drogen",
+          "3a": "Trommel reinigen",
+          "51": "Super Speed",
+          "52": "Eco koud",
+          "53": "Intensief",
+          "54": "Handdoeken",
+          "55": "Sportkleding",
+          "56": "Beddengoed",
+          "57": "Fijne was",
+          "5a": "Stoomhygiëne",
+          "5b": "Kleine lading",
+          "5e": "Spoelen+centrifugeren",
+          "60": "Self Clean+",
+          "64": "Witte was met stoom",
+          "65": "Bonte was",
+          "66": "Spijkergoed",
+          "69": "AI wassen",
+          "6a": "Wol",
+          "6b": "Spijkergoed",
+          "6c": "Blouses",
+          "6d": "Fijne was",
+          "6e": "Sportkleding",
+          "6f": "Beddengoed",
+          "70": "Handdoeken",
+          "71": "Snelle was",
+          "72": "Overhemden",
+          "73": "Hygiëne",
+          "74": "Trommel reinigen",
+          "75": "Outdoor",
+          "76": "Babyverzorging",
+          "77": "Katoen",
+          "78": "Spoelen + centrifugeren",
+          "79": "Alleen centrifugeren",
+          "7c": "Witte was",
+          "7d": "Beddengoed/waterdicht",
+          "7e": "Self Clean",
+          "7f": "Wol/fijne was",
+          "85": "Normaal met stoom",
+          "86": "Diep wassen",
+          "87": "Gedownload",
+          "88": "Huisdierverzorging",
+          "8b": "Snelle was",
+          "8c": "AI OptiWash",
+          "8f": "Intensief koud",
+          "96": "Minder microvezels",
+          "a0": "15' Snelle was",
+          "b0": "Gemengde was",
+          "58": "Wol",
+          "5c": "Outdoor",
+          "5d": "Power spoelen",
+          "5f": "Alleen centrifugeren",
+          "63": "Power Steam",
+          "67": "Stoom anti-allergie",
+          "68": "Stoom volumineuze was"
+        }
+      },
+      "washer_dry_level": {
+        "name": "Droogniveau",
+        "state": {
+          "30": "30 min",
+          "60": "1 uur",
+          "90": "1 uur 30 min",
+          "120": "2 uur",
+          "180": "3 uur",
+          "240": "4 uur",
+          "none": "Uit",
+          "cupboard": "Kastdroog"
+        }
+      },
+      "zone_mode": {
+        "name": "Zonemodus"
+      },
+      "watertank_light_color": {
+        "name": "Kleur van het waterreservoirlicht",
+        "state": {
+          "warmwhite": "Warm wit",
+          "naturalwhite": "Natuurlijk wit",
+          "coolwhite": "Koel wit",
+          "green": "Groen",
+          "purple": "Paars",
+          "blue": "Blauw",
+          "orange": "Oranje",
+          "pink": "Roze"
+        }
+      },
+      "watertank_light_brightness": {
+        "name": "Helderheid van het waterreservoirlicht"
+      },
+      "air_filter_pm1_threshold": {
+        "name": "PM1-filteralarmdrempel"
+      },
+      "freezer_temperature_setpoint": {
+        "name": "Temperatuur vriesgedeelte"
+      },
+      "edge_lighting_mode": {
+        "name": "Randverlichtingsmodus",
+        "state": {
+          "smart": "Slim",
+          "high": "Hoog",
+          "low": "Laag"
+        }
+      },
+      "edge_lighting_color": {
+        "name": "Randverlichtingskleur",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "indicator_light_mode": {
+        "name": "Indicatorlampjemodus",
+        "state": {
+          "smart": "Slim",
+          "high": "Hoog",
+          "low": "Laag"
+        }
+      },
+      "ventilation_mode": {
+        "name": "Modus",
+        "state": {
+          "purification": "Zuivering",
+          "ventilation": "Ventilatie",
+          "smartventilation": "Slimme ventilatie",
+          "aicomfort": "AI-comfort",
+          "autoventilation": "Automatische ventilatie",
+          "freshairintake": "Verse luchttoevoer",
+          "indoorpurification": "Binnenluchtzuivering",
+          "indoordehumidification": "Binnenluchtontvochtiging"
+        }
+      },
+      "dry_time": {
+        "name": "Droogtijd"
+      },
+      "booster_fan_mode": {
+        "name": "Booster-ventilatormodus",
+        "state": {
+          "off": "Uit",
+          "auto": "Automatisch",
+          "high": "Hoog",
+          "medium": "Gemiddeld"
+        }
+      },
+      "booster_light_color_temperature": {
+        "name": "Kleurtemperatuur boosterlicht",
+        "state": {
+          "3000k": "3000 K",
+          "4000k": "4000 K",
+          "6500k": "6500 K"
+        }
+      },
+      "booster_light_brightness": {
+        "name": "Helderheid boosterlicht",
+        "state": {
+          "smart": "Slim",
+          "high": "Hoog",
+          "low": "Laag"
+        }
+      },
+      "booster_oscillation_angle": {
+        "name": "Booster-oscillatiehoek",
+        "state": {
+          "normal": "Normaal",
+          "circulation": "Circulatie",
+          "right_narrow": "Rechts smal",
+          "right_wide": "Rechts breed",
+          "left_narrow": "Links smal",
+          "left_wide": "Links breed"
+        }
+      },
+      "ai_motion_wind": {
+        "name": "AI-bewegingsluchtstroom",
+        "state": {
+          "off": "Uit",
+          "surround": "Rondom",
+          "longreach": "Groot bereik",
+          "down": "Omlaag",
+          "power": "Krachtig",
+          "windfree": "Wind-Free",
+          "aidirect": "AI direct",
+          "aiindirect": "AI indirect"
+        }
+      },
+      "wash_zone": {
+        "name": "Wasgebied",
+        "state": {
+          "on_on": "Beide korven",
+          "off_on": "Alleen onderkorf",
+          "on_off": "Alleen bovenkorf"
+        }
+      },
+      "lamp_level": {
+        "name": "Lampniveau",
+        "state": {
+          "off": "Uit",
+          "low": "Laag",
+          "high": "Hoog"
+        }
+      }
+    },
+    "sensor": {
+      "welcome_lighting_sense_level": {
+        "name": "Detectieniveau welkomstverlichting",
+        "state": {
+          "nearest": "Dichtstbij",
+          "near": "Dichtbij",
+          "middle": "Gemiddeld",
+          "far": "Ver"
+        }
+      },
+      "auto_clean_progress": {
+        "name": "Auto clean voortgang"
+      },
+      "after_run_progress": {
+        "name": "Voortgang nadraaien"
+      },
+      "air_filter_usage": {
+        "name": "Filterverbruik"
+      },
+      "air_filter_usage_hours": {
+        "name": "Filterverbruik (uren)"
+      },
+      "deodor_filter_usage": {
+        "name": "Filterverbruik"
+      },
+      "air_quality_standard": {
+        "name": "Luchtkwaliteitsnorm"
+      },
+      "air_sensing_state": {
+        "name": "Status luchtmeting"
+      },
+      "alarm_code": {
+        "name": "Alarmcode"
+      },
+      "auto_ventilation_action": {
+        "name": "Actie automatische ventilatie"
+      },
+      "automatic_ventilation_state": {
+        "name": "Status automatische ventilatie"
+      },
+      "battery": {
+        "name": "Batterij"
+      },
+      "burner_state": {
+        "name": "Status brander {number}"
+      },
+      "burner_power_level": {
+        "name": "Vermogensniveau brander {number}"
+      },
+      "clean_level": {
+        "name": "Reinigingsniveau"
+      },
+      "co2": {
+        "name": "CO2"
+      },
+      "coffee_brew_status": {
+        "name": "Koffiezetstatus"
+      },
+      "connection_mode": {
+        "name": "Verbindingsmodus",
+        "state": {
+          "observe": "Push (observeren)",
+          "poll": "Polling"
+        }
+      },
+      "cooktop_running_state": {
+        "name": "Bedrijfsstatus kookplaat"
+      },
+      "cooktop_state": {
+        "name": "Status kookplaat"
+      },
+      "current_limit_level": {
+        "name": "Niveau stroombegrenzing"
+      },
+      "filter_time": {
+        "name": "Filtertijd"
+      },
+      "hepa_filter_usage": {
+        "name": "HEPA-filtergebruik"
+      },
+      "outdoor_temperature": {
+        "name": "Buitentemperatuur"
+      },
+      "odor_controller_progress": {
+        "name": "Voortgang geurbeheersing"
+      },
+      "panel_status": {
+        "name": "Paneelstatus"
+      },
+      "sound_output": {
+        "name": "Geluidsuitvoer"
+      },
+      "dustbag_usage": {
+        "name": "Stofzakgebruik"
+      },
+      "cleanstation_status": {
+        "name": "Status schoonmaakstation"
+      },
+      "stick_status": {
+        "name": "Status steel"
+      },
+      "stick_operation_mode": {
+        "name": "Bedieningsmodus steel"
+      },
+      "stick_cleaning_status": {
+        "name": "Schoonmaakstatus steel"
+      },
+      "uvc_operation_time": {
+        "name": "UV-C-bedrijfstijd"
+      },
+      "uvc_total_operation_time": {
+        "name": "Totale UV-C-bedrijfstijd"
+      },
+      "uvc_finished_time": {
+        "name": "UV-C voltooid op"
+      },
+      "uvc_emitted_time": {
+        "name": "UV-C uitgestraald op"
+      },
+      "overload_protection_mode": {
+        "name": "Modus overbelastingsbeveiliging",
+        "state": {
+          "alarm": "Alarm",
+          "powersaving": "Energiebesparing"
+        }
+      },
+      "absence_power_saving_mode": {
+        "name": "Modus energiebesparing bij afwezigheid",
+        "state": {
+          "eco": "Eco",
+          "normal": "Normaal",
+          "comfort": "Comfort"
+        }
+      },
+      "motion_detect_wind_mode": {
+        "name": "Modus luchtstroomvermijding",
+        "state": {
+          "direct": "Direct",
+          "indirect": "Indirect"
+        }
+      },
+      "energy_saving_state": {
+        "name": "Energiebesparing status"
+      },
+      "energy_saving_operating_status": {
+        "name": "Bedrijfsstatus energiebesparing"
+      },
+      "current_temp_c": {
+        "name": "Temperatuur"
+      },
+      "food_probe_temp": {
+        "name": "Voedselsonde"
+      },
+      "food_probe_setpoint": {
+        "name": "Doeltemperatuur voedselsonde"
+      },
+      "current_temperature_c": {
+        "name": "Temperatuur"
+      },
+      "diagnosis": {
+        "name": "Diagnose",
+        "state": {
+          "ready": "Gereed"
+        }
+      },
+      "diagnosis_status": {
+        "name": "Diagnosestatus",
+        "state": {
+          "ready": "Gereed"
+        }
+      },
+      "drum_clean_cycles_remaining": {
+        "name": "Trommelreiniging over"
+      },
+      "drum_clean_last_cleaned": {
+        "name": "Trommel laatst gereinigd"
+      },
+      "quick_wash": {
+        "name": "Snelwas",
+        "state": {
+          "not_used": "Niet beschikbaar",
+          "off": "Uit",
+          "on": "Aan"
+        }
+      },
+      "dryer_type": {
+        "name": "Type droger",
+        "state": {
+          "electricity": "Elektriciteit",
+          "gas": "Gas"
+        }
+      },
+      "dust": {
+        "name": "Stof"
+      },
+      "energy_kwh": {
+        "name": "Energie"
+      },
+      "usage_runtime_hours": {
+        "name": "Bedrijfstijd"
+      },
+      "energy_last_month_kwh": {
+        "name": "Energie (vorige maand)"
+      },
+      "energy_saved_kwh": {
+        "name": "Bespaarde energie"
+      },
+      "energy_this_month_kwh": {
+        "name": "Energie (deze maand)"
+      },
+      "fan_direction": {
+        "name": "Ventilatorrichting"
+      },
+      "fan_speed_level": {
+        "name": "Ventilatorniveau"
+      },
+      "filter_clean_remain_time": {
+        "name": "Resterende tijd filterreiniging"
+      },
+      "filter_progress": {
+        "name": "Filterverbruik"
+      },
+      "filter_usage": {
+        "name": "Filtergebruik"
+      },
+      "fine_dust": {
+        "name": "Fijnstof"
+      },
+      "finish_time": {
+        "name": "Geschatte eindtijd"
+      },
+      "completion_minutes": {
+        "name": "Resterende tijd"
+      },
+      "freezer_temperature": {
+        "name": "Vriezertemperatuur"
+      },
+      "fridge_temperature": {
+        "name": "Koelkasttemperatuur"
+      },
+      "kimchi_ripening_status": {
+        "name": "{instance_name} rijpingsstatus"
+      },
+      "kimchi_ripening_remaining": {
+        "name": "{instance_name} resterende rijptijd"
+      },
+      "kimchi_rack_count": {
+        "name": "{instance_name} aantal rekken"
+      },
+      "hood_filter_capacity": {
+        "name": "Filtercapaciteit"
+      },
+      "humidity": {
+        "name": "Luchtvochtigheid"
+      },
+      "hood_filter_usage": {
+        "name": "Filterverbruik"
+      },
+      "instance_temperature": {
+        "name": "{instance_name} temperatuur"
+      },
+      "job_beginning_status": {
+        "name": "Status programmastart"
+      },
+      "last_air_sensing_level": {
+        "name": "Laatste luchtmeetniveau"
+      },
+      "last_air_sensing_time": {
+        "name": "Tijdstip laatste luchtmeting"
+      },
+      "main_timer_current": {
+        "name": "Huidige timerwaarde"
+      },
+      "main_timer_state": {
+        "name": "Timerstatus"
+      },
+      "odor": {
+        "name": "Geur"
+      },
+      "operating_mode": {
+        "name": "Werkingsmodus"
+      },
+      "operation_origin": {
+        "name": "Bron laatste bediening"
+      },
+      "operation_time_minutes": {
+        "name": "Werkingsduur"
+      },
+      "oven_state": {
+        "name": "Status ovenruimte"
+      },
+      "cavity_state": {
+        "name": "Status ovenruimte"
+      },
+      "power_level": {
+        "name": "Vermogensniveau"
+      },
+      "paired_hood_fan_speed": {
+        "name": "Ventilatorsnelheid gekoppelde afzuigkap"
+      },
+      "paired_hood_firmware": {
+        "name": "Firmware gekoppelde afzuigkap"
+      },
+      "paired_hood_model": {
+        "name": "Model gekoppelde afzuigkap"
+      },
+      "power_energy_kwh": {
+        "name": "Energieverbruik"
+      },
+      "power_watts": {
+        "name": "Vermogen"
+      },
+      "probe_battery": {
+        "name": "Batterijniveau sonde"
+      },
+      "probe_target_temperature": {
+        "name": "Doeltemperatuur sonde"
+      },
+      "probe_temperature": {
+        "name": "Sondetemperatuur"
+      },
+      "progress": {
+        "name": "Voortgang",
+        "state": {
+          "idle": "Inactief",
+          "delaywash": "Uitgestelde start",
+          "weightsensing": "Beladingsdetectie",
+          "wash": "Wassen",
+          "rinse": "Spoelen",
+          "spin": "Centrifugeren",
+          "finish": "Voltooid",
+          "steaming": "Stomen",
+          "airwashing": "Luchtreiniging",
+          "drying": "Drogen",
+          "dryingwithdooropen": "Ventileren",
+          "cooling": "Koelen",
+          "predrain": "Vooraf afpompen",
+          "prewash": "Voorwas",
+          "sanitizing": "Ontsmetten"
+        }
+      },
+      "progress_percentage": {
+        "name": "Voortgangspercentage"
+      },
+      "selfcheck_error": {
+        "name": "Fout zelfcontrole"
+      },
+      "selfcheck_result": {
+        "name": "Resultaat zelfcontrole"
+      },
+      "selfcheck_status": {
+        "name": "Status zelfcontrole"
+      },
+      "sterilize_last_time": {
+        "name": "Laatste sterilisatie"
+      },
+      "sterilize_period": {
+        "name": "Sterilisatie-interval"
+      },
+      "sterilize_plan_time": {
+        "name": "Geplande sterilisatie"
+      },
+      "sterilize_run_time": {
+        "name": "Sterilisatieduur"
+      },
+      "super_fine_dust": {
+        "name": "Ultrafijnstof"
+      },
+      "warming_center_state": {
+        "name": "Status warmhoudzone"
+      },
+      "water_liters": {
+        "name": "Waterverbruik"
+      },
+      "waterpurifier_status": {
+        "name": "Status"
+      },
+      "cup_state": {
+        "name": "Bekerstatus"
+      },
+      "last_pour_type": {
+        "name": "Laatste schenktype"
+      },
+      "last_pour_capacity": {
+        "name": "Laatste schenkhoeveelheid"
+      },
+      "machine_state": {
+        "name": "Machinestatus",
+        "state": {
+          "idle": "Inactief",
+          "active": "Actief",
+          "pause": "Gepauzeerd"
+        }
+      },
+      "filter_status": {
+        "name": "Filterstatus",
+        "state": {
+          "normal": "Normaal",
+          "wash": "Reinigen",
+          "replace": "Vervangen"
+        }
+      },
+      "ice_making_status": {
+        "name": "{instance_name} ijsmaakstatus",
+        "state": {
+          "icestatus_stop": "Inactief",
+          "icestatus_run": "IJs maken"
+        }
+      },
+      "zone_temperature": {
+        "name": "Zonetemperatuur"
+      },
+      "zone2_temperature": {
+        "name": "Temperatuur zone 2"
+      },
+      "watertank_full_alarm_status": {
+        "name": "Status alarm waterreservoir vol"
+      },
+      "air_filter_pm1_usage": {
+        "name": "PM1-filtergebruik"
+      },
+      "air_filter_pm1_usage_hours": {
+        "name": "PM1-filtergebruik in uren"
+      },
+      "active_burners": {
+        "name": "Actieve branders"
+      },
+      "cooktop_monitoring": {
+        "name": "Kookplaatbewaking"
+      },
+      "booster_angle_location": {
+        "name": "Booster-hoekpositie"
+      },
+      "cooking_mode": {
+        "name": "Bereidingsmodus",
+        "state": {
+          "no_operation": "Niet actief",
+          "micro_wave": "Magnetron",
+          "autocook": "Automatisch koken",
+          "keep_warm": "Warmhouden"
+        }
+      },
+      "cook_time": {
+        "name": "Bereidingstijd"
+      },
+      "cook_time_remaining": {
+        "name": "Resterende bereidingstijd"
+      },
+      "cook_finish_time": {
+        "name": "Eindtijd bereiding"
+      },
+      "sub_operation": {
+        "name": "Deelbewerking"
+      },
+      "hood_fan_speed": {
+        "name": "Ventilatorsnelheid",
+        "state": {
+          "off": "Uit",
+          "low": "Laag",
+          "medium": "Gemiddeld",
+          "high": "Hoog",
+          "boost": "Boost"
+        }
+      },
+      "hood_lamp": {
+        "name": "Lamp",
+        "state": {
+          "off": "Uit",
+          "medium": "Gemiddeld",
+          "on": "Aan"
+        }
+      },
+      "dual_setpoint_cooling": {
+        "name": "Dubbel setpoint koelen"
+      },
+      "dual_setpoint_heating": {
+        "name": "Dubbel setpoint verwarmen"
+      },
+      "auto_changeover_cool_primary_offset": {
+        "name": "Automatisch omschakelen primaire offset koelen"
+      },
+      "auto_changeover_cool_secondary_offset": {
+        "name": "Automatisch omschakelen secundaire offset koelen"
+      },
+      "auto_changeover_heat_primary_offset": {
+        "name": "Automatisch omschakelen primaire offset verwarmen"
+      },
+      "auto_changeover_heat_secondary_offset": {
+        "name": "Automatisch omschakelen secundaire offset verwarmen"
+      }
+    },
+    "switch": {
+      "night_lighting_schedule": {
+        "name": "Schema nachtverlichting"
+      },
+      "ai_energy_level": {
+        "name": "AI Energy Mode"
+      },
+      "air_monitoring": {
+        "name": "Luchtmonitoring"
+      },
+      "air_purify": {
+        "name": "Luchtzuivering"
+      },
+      "auto_clean": {
+        "name": "Automatisch reinigen"
+      },
+      "absence_power_saving_active": {
+        "name": "Energiebesparing bij afwezigheid actief"
+      },
+      "absence_clean": {
+        "name": "Reiniging bij afwezigheid"
+      },
+      "motion_detect_wind_active": {
+        "name": "Bewegingsdetectie luchtstroomvermijding actief"
+      },
+      "beep": {
+        "name": "Piep"
+      },
+      "display": {
+        "name": "Display"
+      },
+      "periodic_air_sensing": {
+        "name": "AI Purify"
+      },
+      "periodic_sensing_skip_status": {
+        "name": "AI Purify meting overslaan"
+      },
+      "pet_filter_activation": {
+        "name": "Huisdierfilter actief"
+      },
+      "auto_empty": {
+        "name": "Automatisch legen"
+      },
+      "dustbin_auto_close": {
+        "name": "Stofreservoir automatisch sluiten"
+      },
+      "spi": {
+        "name": "Ionisatie"
+      },
+      "uvc_intensive_mode": {
+        "name": "Intensieve UV-C-modus"
+      },
+      "auto_door_opener": {
+        "name": "Automatische deuropener"
+      },
+      "auto_door_sound_control": {
+        "name": "Geluid automatische deuropener"
+      },
+      "auto_door_voice_control": {
+        "name": "Spraakbediening automatische deuropener"
+      },
+      "auto_release_dry": {
+        "name": "Auto Release Dry"
+      },
+      "autofill": {
+        "name": "Automatisch gevulde waterkan"
+      },
+      "bubble_soak": {
+        "name": "Bubble Soak"
+      },
+      "buzz_lock": {
+        "name": "Zoemerslot"
+      },
+      "cabinet_light_dim": {
+        "name": "Geleidelijk feller"
+      },
+      "cabinet_light_switch": {
+        "name": "Kastverlichting"
+      },
+      "child_lock": {
+        "name": "Kinderslot"
+      },
+      "coldwater_lock": {
+        "name": "Koudwaterslot"
+      },
+      "cooktop_child_lock": {
+        "name": "Kinderslot"
+      },
+      "defrost_delay": {
+        "name": "Ontdooien uitstellen"
+      },
+      "display_light": {
+        "name": "Displayverlichting"
+      },
+      "dnd": {
+        "name": "Niet storen"
+      },
+      "fast_preheat": {
+        "name": "Snel voorverwarmen"
+      },
+      "favorite_capacity_enabled": {
+        "name": "Favoriete capaciteit"
+      },
+      "favorite_coffee_enabled": {
+        "name": "Favoriete koffie"
+      },
+      "filter_remind": {
+        "name": "Filterherinnering"
+      },
+      "fridge_sound": {
+        "name": "Geluid"
+      },
+      "hotwater_lock": {
+        "name": "Heetwaterslot"
+      },
+      "ice_maker_enabled": {
+        "name": "IJsmaker"
+      },
+      "ice_night_mode": {
+        "name": "Stille nachtmodus ijsmaker"
+      },
+      "ai_precise_cooling": {
+        "name": "AI-precisiekoeling"
+      },
+      "instance_enabled": {
+        "name": "{instance_name} ingeschakeld"
+      },
+      "intensive": {
+        "name": "Intensief"
+      },
+      "add_wash_alarm": {
+        "name": "AddWash-melding"
+      },
+      "add_wash_alarm_rinse": {
+        "name": "AddWash bij spoelen"
+      },
+      "add_wash_alarm_final_rinse": {
+        "name": "AddWash laatste spoeling"
+      },
+      "add_wash_alarm_spin": {
+        "name": "AddWash centrifugeren"
+      },
+      "lamp": {
+        "name": "Lamp"
+      },
+      "led_night_light": {
+        "name": "Nachtverlichting deur-LED"
+      },
+      "mute_once": {
+        "name": "Eenmalig dempen"
+      },
+      "natural_steam": {
+        "name": "Natuurlijke stoom"
+      },
+      "energy_saving": {
+        "name": "Energiebesparing"
+      },
+      "cooktop_on_alert": {
+        "name": "Waarschuwing kookplaat aan"
+      },
+      "power_switch": {
+        "name": "Voeding"
+      },
+      "pre_wash": {
+        "name": "Voorwas"
+      },
+      "rapid_freezing": {
+        "name": "Snelvriezen"
+      },
+      "rapid_fridge": {
+        "name": "Snelkoelen"
+      },
+      "remind_beep": {
+        "name": "Eindsignaal herinnering"
+      },
+      "sabbath_mode": {
+        "name": "Sabbatmodus"
+      },
+      "sanitize": {
+        "name": "Hygiëne"
+      },
+      "sound": {
+        "name": "Geluid"
+      },
+      "station_light": {
+        "name": "Stationslamp"
+      },
+      "storm_wash": {
+        "name": "Storm Wash+"
+      },
+      "welcome_lighting": {
+        "name": "Welkomstverlichting"
+      },
+      "wrinkle_prevent": {
+        "name": "Kreukpreventie"
+      },
+      "zone_power": {
+        "name": "Zonevoeding"
+      },
+      "away_mode": {
+        "name": "Afwezigheidsmodus"
+      },
+      "watertank_light": {
+        "name": "Waterreservoirlicht"
+      },
+      "uv_led": {
+        "name": "Uv-led"
+      },
+      "ventilation_alarm": {
+        "name": "Ventilatiealarm"
+      },
+      "edge_lighting": {
+        "name": "Randverlichting"
+      },
+      "indicator_light": {
+        "name": "Indicatorlampje"
+      },
+      "windfree": {
+        "name": "Wind-Free modus"
+      },
+      "windsleep": {
+        "name": "Slaapmodus"
+      },
+      "auto_detergent": {
+        "name": "Automatisch wasmiddel"
+      },
+      "auto_softener": {
+        "name": "Automatische wasverzachter"
+      },
+      "booster_light": {
+        "name": "Boosterlicht"
+      },
+      "booster_light_manual_brightness": {
+        "name": "Handmatige boosterhelderheid"
+      },
+      "booster_oscillation": {
+        "name": "Booster-oscillatie"
+      },
+      "auto_changeover": {
+        "name": "Automatisch omschakelen"
+      },
+      "interlock": {
+        "name": "Koppeling"
+      },
+      "speed_booster": {
+        "name": "Speed Booster"
+      },
+      "damp_alert": {
+        "name": "Waarschuwing vochtige was"
+      },
+      "extra_rinse": {
+        "name": "Extra spoelen"
+      }
+    },
+    "time": {
+      "delay_finish_at": {
+        "name": "Klaar om"
+      },
+      "dnd_end": {
+        "name": "Einde niet storen"
+      },
+      "dnd_start": {
+        "name": "Start niet storen"
+      },
+      "led_night_end": {
+        "name": "Einde nachtverlichting deur-LED"
+      },
+      "led_night_start": {
+        "name": "Start nachtverlichting deur-LED"
+      },
+      "ice_night_end": {
+        "name": "Einde stille nachtmodus ijsmaker"
+      },
+      "ice_night_start": {
+        "name": "Start stille nachtmodus ijsmaker"
+      },
+      "night_end": {
+        "name": "Einde nachtverlichting"
+      },
+      "night_start": {
+        "name": "Start nachtverlichting"
+      },
+      "sensing_skip_end": {
+        "name": "Einde AI Purify meting overslaan"
+      },
+      "sensing_skip_start": {
+        "name": "Start AI Purify meting overslaan"
+      }
+    },
+    "water_heater": {
+      "dhw": {
+        "name": "Warm water"
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Samsung-apparaat toevoegen",
+        "description": "Voer het IP-adres van je Samsung-apparaat in. LocalThings stelt het automatisch in met een zelfondertekend certificaat; de meeste apparaten hebben verder niets nodig.",
+        "data": {
+          "host": "IP-adres"
+        },
+        "data_description": {
+          "host": "Het lokale IP-adres van je Samsung-apparaat (bijvoorbeeld 192.168.1.50)."
+        }
+      },
+      "user_reuse": {
+        "title": "Samsung-apparaat toevoegen",
+        "description": "Voer het IP-adres van je Samsung-apparaat in. De CA-inloggegevens van een bestaand LocalThings-apparaat worden hergebruikt.",
+        "data": {
+          "host": "IP-adres"
+        },
+        "data_description": {
+          "host": "Het lokale IP-adres van je Samsung-apparaat (bijvoorbeeld 192.168.1.50)."
+        }
+      },
+      "credential": {
+        "title": "Certificaat geweigerd",
+        "description": "{host} heeft het automatische certificaat geweigerd. Sommige apparaten gebruiken een pre-shared key in plaats van een certificaat. LocalThings kan die sleutel niet zelf verkrijgen, dus importeer er een die je al hebt. Er wordt ook een AC14K_M-CA-certificaat aangeboden, maar er is nog geen apparaat gemeld dat het automatische certificaat weigerde en dat wel accepteerde.\n\nApparaten met een pre-shared key proberen we nog te begrijpen, en je loopt er waarschijnlijk tegen problemen aan. Ons plan, wat we tot nu toe hebben ontdekt en een plek om feedback te geven staan in [issue #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Een owner-pre-shared key importeren",
+          "psk_peer": "Een peer-pre-shared key importeren",
+          "fallback_ca": "Een AC14K_M-CA-certificaat proberen"
+        }
+      },
+      "credential_psk": {
+        "title": "Dit apparaat gebruikt waarschijnlijk een pre-shared key",
+        "description": "{host} heeft het automatische certificaat geweigerd, en de onversleutelde beveiligingsgegevens geven aan dat het zich in plaats daarvan met een pre-shared key authenticeert. LocalThings kan die sleutel niet zelf verkrijgen, dus importeer er een die je al hebt. Er wordt ook een AC14K_M-CA-certificaat aangeboden, maar er is nog geen apparaat gemeld dat het automatische certificaat weigerde en dat wel accepteerde.\n\nApparaten met een pre-shared key proberen we nog te begrijpen, en je loopt er waarschijnlijk tegen problemen aan. Ons plan, wat we tot nu toe hebben ontdekt en een plek om feedback te geven staan in [issue #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Een owner-pre-shared key importeren",
+          "psk_peer": "Een peer-pre-shared key importeren",
+          "fallback_ca": "Een AC14K_M-CA-certificaat proberen"
+        }
+      },
+      "ca_rejected": {
+        "title": "Certificaat nog steeds geweigerd",
+        "description": "{host} heeft ook het certificaat geweigerd dat met die CA is ondertekend. Dat klopt met alle meldingen tot nu toe: geen apparaat dat het automatische certificaat weigerde, heeft een AC14K_M-CA geaccepteerd. Mogelijk gebruikt het een pre-shared key. Het Home Assistant-logboek bevat de exacte alert.\n\nApparaten met een pre-shared key proberen we nog te begrijpen, en je loopt er waarschijnlijk tegen problemen aan. Ons plan, wat we tot nu toe hebben ontdekt en een plek om feedback te geven staan in [issue #435]({issue_url}).",
+        "menu_options": {
+          "psk_owner": "Een owner-pre-shared key importeren",
+          "psk_peer": "Een peer-pre-shared key importeren",
+          "fallback_ca": "De CA opnieuw invoeren"
+        }
+      },
+      "fallback_ca": {
+        "title": "AC14K_M-CA-certificaat",
+        "description": "Plak het AC14K_M-CA-certificaat en de privésleutel. LocalThings ondertekent daarmee een apparaatcertificaat voor {host}.",
+        "data": {
+          "ca_cert_pem": "CA-certificaat (PEM)",
+          "ca_key_pem": "Privésleutel van CA (PEM)"
+        },
+        "data_description": {
+          "ca_cert_pem": "De PEM-gecodeerde AC14K_M-CA-certificaatketen. Plak de volledige inhoud van je fullchain-PEM, inclusief alle blokken BEGIN CERTIFICATE en END CERTIFICATE.",
+          "ca_key_pem": "De PEM-gecodeerde AC14K_M-privésleutel. Plak de volledige inhoud, inclusief de kop- en voettekst BEGIN PRIVATE KEY en END PRIVATE KEY."
+        }
+      },
+      "psk_owner": {
+        "title": "Owner-pre-shared key",
+        "description": "Voer de owner-pre-shared key voor {host} in. De identiteit is de OCF-owner-UUID, die wordt ingevuld als het apparaat er een meldt. LocalThings controleert de sleutel bij het apparaat, en legt vast welk apparaat antwoordde, voordat het wordt toegevoegd.\n\nApparaten met een pre-shared key proberen we nog te begrijpen, en je loopt er waarschijnlijk tegen problemen aan. Ons plan, wat we tot nu toe hebben ontdekt en een plek om feedback te geven staan in [issue #435]({issue_url}).",
+        "data": {
+          "psk_identity": "Identiteit (owner-UUID)",
+          "psk_key": "Sleutel"
+        },
+        "data_description": {
+          "psk_key": "32 of 64 hexadecimale tekens."
+        }
+      },
+      "psk_peer": {
+        "title": "Peer-pre-shared key",
+        "description": "Voer de paarsgewijze peer-referentie in die naast Samsungs eigendom op {host} is geïnstalleerd, precies zoals het installatieprogramma die meldde. Identiteit noch sleutel kan van het apparaat worden gelezen. LocalThings controleert de sleutel bij het apparaat, en legt vast welk apparaat antwoordde, voordat het wordt toegevoegd.\n\nApparaten met een pre-shared key proberen we nog te begrijpen, en je loopt er waarschijnlijk tegen problemen aan. Ons plan, wat we tot nu toe hebben ontdekt en een plek om feedback te geven staan in [issue #435]({issue_url}).",
+        "data": {
+          "psk_identity": "Identiteit (peer-UUID)",
+          "psk_key": "Sleutel"
+        },
+        "data_description": {
+          "psk_key": "32 of 64 hexadecimale tekens."
+        }
+      },
+      "reconfigure": {
+        "title": "Apparaatadres wijzigen",
+        "description": "Voer het huidige IP-adres van het apparaat in. De rest blijft ongewijzigd — de entiteiten, geschiedenis en automatiseringen blijven behouden.",
+        "data": {
+          "host": "IP-adres"
+        },
+        "data_description": {
+          "host": "Het lokale IP-adres van je Samsung-apparaat (bijvoorbeeld 192.168.1.50)."
+        }
+      },
+      "confirm_unknown_type": {
+        "title": "Apparaattype niet herkend",
+        "description": "Dit apparaat meldt model \"{model}\", een type dat LocalThings nog niet herkent. Het apparaat wordt toch toegevoegd, maar alleen met algemene mogelijkheden (zoals voeding en alarmen, voor zover aanwezig), in plaats van alle mogelijkheden voor deze apparaatfamilie. Je kunt daarna helpen volledige ondersteuning toe te voegen door diagnostische gegevens voor dit apparaat te downloaden (Instellingen > Apparaten & diensten > dit apparaat > het menu > Diagnostische gegevens downloaden) en deze bij een nieuw issue te voegen. Kies Verzenden om het apparaat toch toe te voegen."
+      },
+      "legacy_token": {
+        "title": "Apparaattoken",
+        "description": "Dit apparaat ({host}) gebruikt Samsungs oudere lokale API, die naast het certificaat ook een apparaattoken nodig heeft.\n\nLaat dit leeg en verstuur het formulier om het apparaat er zelf een te laten afgeven: er wordt om een token gevraagd en het apparaat stuurt dat terug naar Home Assistant op poort 8889. Zet eerst de afstandsbediening (Smart Control) aan op het apparaat, met de deur dicht, anders verdwijnt het binnen enkele minuten van wifi en antwoordt het niet meer. Dit duurt tot anderhalve minuut.\n\nKan het apparaat Home Assistant niet bereiken op poort 8889, haal dan op een andere manier een token op en plak het hier.",
+        "data": {
+          "device_token": "Apparaattoken (leeg laten om er een aan te vragen)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Apparaattoken geweigerd",
+        "description": "{host} accepteert zijn apparaattoken niet meer. Laat dit veld leeg en verstuur om het apparaat een nieuw token te laten uitgeven (afstandsbediening aan, deur dicht en poort 8889 op Home Assistant bereikbaar), of plak een token dat je op een andere manier hebt verkregen.",
+        "data": {
+          "device_token": "Apparaattoken (leeg laten om er een aan te vragen)"
+        }
+      }
+    },
+    "error": {
+      "no_response": "Geen reactie van dat IP-adres — er kwam niets terug op enige poort in het bereik van de lokale API van het apparaat (UDP 49152-49160). Controleer of het IP-adres klopt, of het apparaat aanstaat en op hetzelfde netwerk zit als Home Assistant, en of geen firewall het UDP-verkeer ernaartoe blokkeert.",
+      "ports_closed": "Dat IP-adres is bereikbaar, maar weigerde actief elke poort in het bereik van de lokale API (UDP 49152-49160) en gaf geen enkele reactie op het ontdekkingskanaal. Het is hoogstwaarschijnlijk geen Samsung-apparaat, of een apparaat waarop de lokale API niet is ingeschakeld.",
+      "no_dtls_server": "De poorten in het bereik van de lokale API zijn bereikbaar op dat adres, maar niets daar beantwoordde een DTLS-handshake. Controleer of het IP-adres bij het apparaat hoort en niet bij een ander apparaat in je netwerk.",
+      "appliance_no_dtls": "Dat adres is van een Samsung-apparaat — het heeft zich via het onversleutelde ontdekkingskanaal geïdentificeerd als {model} en {port} als zijn beveiligde poort opgegeven — maar daar is nooit een DTLS-handshake voltooid. Het adres is niet het probleem. Controleer of Afstandsbediening of een vergelijkbare instelling op het bedieningspaneel van het apparaat is uitgeschakeld, en bekijk het Home Assistant-logboek voor de exacte fout.",
+      "non_appliance_stack": "Er antwoordde iets op dat IP-adres, maar het meldde zich als een OCF-dienst die geen apparaat is. Sommige Samsung-apparaten draaien er een naast hun eigen dienst, en LocalThings vindt het apparaat daarachter alleen als Home Assistant in hetzelfde netwerksegment zit. Zet Home Assistant en het apparaat in hetzelfde subnet en VLAN en probeer het opnieuw.",
+      "multiple_appliances": "Op dat IP-adres antwoordt meer dan één Samsung-apparaat, en LocalThings kan nog niet tussen ze kiezen. Meld het in de issuetracker van LocalThings en voeg het Home Assistant-logboek toe.",
+      "handshake_timeout": "Het apparaat antwoordde op zijn lokale API-poort, maar voltooide de DTLS-handshake ook na een nieuwe poging niet. Probeer het opnieuw. Blijft het mislukken, dan maakt een herstart van het apparaat de verbindingen vrij die het nog vasthoudt; de exacte fout staat in het Home Assistant-logboek.",
+      "cert_rejected": "Het apparaat heeft het certificaat geweigerd. Het CA-certificaat en de sleutel zijn waarschijnlijk niet van de AC14K_M-CA die dit apparaat vertrouwt, of ze horen niet bij elkaar. Het Home Assistant-logboek bevat de precieze alert die het apparaat stuurde.",
+      "psk_rejected": "Het apparaat heeft de pre-shared key geweigerd. De identiteit of sleutel is onjuist, of hoort bij een ander apparaat of bij een eigenaar die inmiddels is gewijzigd. Het Home Assistant-logboek bevat de exacte alert.",
+      "identity_unproven": "De sleutel werkte, maar het apparaat meldde zijn OCF-apparaat-ID niet via de versleutelde verbinding. LocalThings kan dus niet bevestigen welk apparaat de sleutel heeft en voegt het niet toe. Probeer het opnieuw terwijl het apparaat wakker is. Blijft dit gebeuren, laat het ons dan weten in [issue #435]({issue_url}) met het Home Assistant-logboek erbij.",
+      "invalid_psk_identity": "Voer de identiteit in als UUID, bijvoorbeeld 12345678-1234-1234-1234-123456789abc.",
+      "psk_identity_zero_byte": "Deze UUID bevat een nulbyte die het geïnstalleerde transport niet kan verzenden. Laat de herstelde identiteit ongewijzigd.",
+      "invalid_psk_key": "Voer de sleutel in als 32 of 64 hexadecimale tekens.",
+      "handshake_failed": "Het apparaat weigerde de DTLS-handshake om een reden die niets met het certificaat te maken heeft, hoogstwaarschijnlijk een protocol- of cipher-mismatch. Het Home Assistant-logboek bevat de precieze alert die het stuurde.",
+      "cloud_unreachable": "Kon de cloudgateway van Samsung niet bereiken om de UUID op te halen die nodig is om het certificaat van dit apparaat aan te maken. Controleer de internettoegang van Home Assistant en probeer het opnieuw.",
+      "unexpected_response": "Verbinding met het apparaat is gelukt, maar het gaf geen bruikbare apparaatbeschrijving terug. Mogelijk is het geen apparaat dat deze integratie ondersteunt. Het Home Assistant-logboek bevat wat het stuurde.",
+      "cannot_connect": "Kan geen verbinding maken met het apparaat. Controleer of het IP-adres klopt en of het apparaat aanstaat en met je netwerk is verbonden.",
+      "invalid_ca": "Het CA-certificaat of de privésleutel kon niet worden geladen. Controleer of de PEM-inhoud juist is en of de sleutel bij het certificaat hoort.",
+      "unknown": "Onverwachte fout. Raadpleeg de Home Assistant-logboeken voor meer informatie.",
+      "wrong_device": "Op dat adres antwoordde een Samsung-apparaat, maar niet dit apparaat — het meldde een andere identiteit. Controleer of het adres bij dit apparaat hoort. Gebruik Apparaat toevoegen om het andere toe te voegen.",
+      "token_not_received": "Er is geen apparaattoken binnengekomen. Controleer of de afstandsbediening op het apparaat aanstaat met de deur dicht en of het Home Assistant kan bereiken op poort 8889 - of plak een token dat je op een andere manier hebt opgehaald.",
+      "invalid_token": "Het apparaat heeft dat token geweigerd. Laat het veld leeg om een nieuw token aan te vragen.",
+      "callback_port_in_use": "Poort 8889 is al in gebruik op Home Assistant, meestal door een tokenaanvraag die nog wacht. Probeer het over anderhalve minuut opnieuw.",
+      "callback_cert_rejected": "Het apparaat belde terug op poort 8889, maar weigerde het zelfondertekende certificaat van Home Assistant. Plak het AC14K_M-CA-certificaat en de sleutel zodat LocalThings er een kan ondertekenen dat wel wordt geaccepteerd; daarna wordt de tokenaanvraag opnieuw uitgevoerd.",
+      "callback_ca_rejected": "Het apparaat belde terug op poort 8889, maar weigerde ook het met AC14K_M ondertekende certificaat. Plak een token dat je op een andere manier hebt verkregen; de handshakefout staat in het Home Assistant-logboek."
+    },
+    "abort": {
+      "already_configured": "Apparaat is al geconfigureerd",
+      "already_in_progress": "De configuratie is al bezig",
+      "reconfigure_successful": "Adres bijgewerkt",
+      "no_entry_for_mac": "Geen enkel geconfigureerd apparaat bewaart dat MAC-adres",
+      "reauth_successful": "Het nieuwe apparaattoken werkt; het apparaat maakt opnieuw verbinding.",
+      "reauth_unsupported": "Dit apparaat heeft hier geen inloggegevens om te vernieuwen. Reageert het niet meer, verwijder het dan en voeg het opnieuw toe."
+    },
+    "progress": {
+      "legacy_token": "Wachten tot {host} een apparaattoken naar Home Assistant stuurt op poort 8889. Dit duurt tot anderhalve minuut."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "LocalThings-opties",
+        "menu_options": {
+          "settings": "Apparaatinstellingen",
+          "cloud_courses": "Gedownloade programma's",
+          "forget_learned_modes": "Onthouden modi vergeten",
+          "debug_write": "Foutopsporing: naar een resource schrijven"
+        }
+      },
+      "settings": {
+        "title": "Apparaatinstellingen",
+        "description": "Sommige apparaten accepteren bepaalde schrijfbewerkingen (bijvoorbeeld de standaarddosering van wasmiddel of wasverzachter op een wasmachine), ook als ze melden dat de afstandsbediening is uitgeschakeld. LocalThings blokkeert standaard elke schrijfbewerking met een duidelijke foutmelding wanneer een apparaat meldt dat de afstandsbediening is uitgeschakeld, in plaats van het apparaat de opdracht stilzwijgend te laten weigeren. Schakel deze optie alleen in als je hebt bevestigd dat schrijfbewerkingen op dit apparaat echt werken wanneer de afstandsbediening is uitgeschakeld. Anders verruil je de duidelijke foutmelding voor een stille mislukking.\n\nDe geschatte eindtijd wordt bij elke poll opnieuw berekend op basis van de resterende tijd die het apparaat opgeeft, wat kan afwijken of met een minuut of wat worden bijgesteld tussen updates. Verhoog de minimale wijziging hieronder om de sensor op zijn laatst gerapporteerde waarde te houden totdat de schatting met minstens dat aantal minuten verandert, wat de ruis in geschiedenis/logboek vermindert. Zet op 0 om elke berekende wijziging te rapporteren.\n\nSommige modellen melden een modus die ze nooit als ondersteund opgeven: bijvoorbeeld een airco die in Quiet staat maar alleen Off/Sleep/Speed aanbiedt. LocalThings onthoudt elke zo waargenomen modus en blijft die aanbieden, zodat hij selecteerbaar blijft zodra het apparaat er minstens één keer in heeft gestaan. Schakel dit uit om alleen aan te bieden wat het apparaat opgeeft; gebruik \"Onthouden modi vergeten\" in het vorige scherm om te wissen wat al is onthouden. Een wasapparaat met uit de cloud gedownloade programma's krijgt hier een herinnering zodra het er een meldt die Home Assistant nog niet kan aanbieden -- sommige apparaten melden er een, ook als je het scherm \"Gedownloade programma's\" in de SmartThings-app zelf nooit hebt geopend. Zet dit uit om die herinnering te stoppen en al benoemde gedownloade programma's uit de programmalijst te verbergen; niets van wat al is ingesteld gaat verloren, en bij opnieuw inschakelen verschijnt het meteen weer.",
+        "data": {
+          "bypass_remote_control_lock": "Schrijfbewerkingen toestaan wanneer afstandsbediening als uitgeschakeld wordt gemeld",
+          "finish_time_hysteresis_minutes": "Geschatte eindtijd -- minimale wijziging (minuten)",
+          "learn_device_modes": "Modi onthouden die het apparaat meldt maar niet als ondersteund opgeeft",
+          "cloud_courses_enabled": "Gedownloade programma's aanbieden"
+        }
+      },
+      "forget_learned_modes": {
+        "title": "Onthouden modi vergeten",
+        "description": "Nu onthouden: {codes}\n\nDit zijn modi waarin dit apparaat zichzelf meldde zonder ze als ondersteund op te geven; ze worden bewaard zodat ze selecteerbaar blijven. Vergeten is de oplossing als er een onterecht tussen staat: alles wat het apparaat echt opnieuw meldt, wordt gewoon opnieuw onthouden, tenzij je ook \"Modi onthouden die het apparaat meldt maar niet als ondersteund opgeeft\" bij Apparaatinstellingen uitzet."
+      },
+      "debug_write": {
+        "title": "Foutopsporing: naar een resource schrijven",
+        "description": "Geavanceerd hulpmiddel om apparaatspecifiek schrijfgedrag te onderzoeken. Kies de resource (href) waarnaar je wilt schrijven, of voer een aangepaste resource in die niet in de lijst staat. Hiermee wordt de blokkering bij een uitgeschakelde afstandsbediening omzeild en worden precies de opgegeven velden verzonden. Dit kan de configuratie van je apparaat verstoren, dus gebruik het bewust.",
+        "data": {
+          "href": "Href van resource"
+        }
+      },
+      "debug_edit": {
+        "title": "Schrijfbewerking voor foutopsporing: {href}",
+        "description": "Huidige waarde van `{href}`:\n```\n{current_value}\n```\nVoer hieronder ALLEEN de velden in die je wilt wijzigen. Wat je invoert, wordt ongewijzigd naar het apparaat verzonden (als gedeeltelijke update). Het wordt NIET samengevoegd met de hierboven getoonde velden, dus plak niet de volledige waarde terug. Let op de typen: een numerieke tekenreeks zoals \"1\" moet tussen aanhalingstekens blijven staan. Een 1 zonder aanhalingstekens wordt als integer verzonden, wat sommige apparaten weigeren.",
+        "data": {
+          "payload": "Te schrijven payload"
+        }
+      },
+      "debug_result": {
+        "title": "Resultaat van schrijfbewerking voor foutopsporing",
+        "description": "Het apparaat heeft CoAP-code {code} geretourneerd. Een code in de 2.xx-klasse betekent dat de schrijfbewerking is geaccepteerd; 4.xx/5.xx betekent dat deze is geweigerd. De resource heeft nu de volgende waarde:\n```\n{new_value}\n```\nAls de waarde ongewijzigd is, heeft het apparaat de schrijfbewerking waarschijnlijk genegeerd. Kies wat je hierna wilt doen:",
+        "menu_options": {
+          "debug_write": "Naar een andere resource schrijven",
+          "finish": "Voltooien"
+        }
+      },
+      "cloud_manual": {
+        "title": "Gedownloade programma's",
+        "description": "Dit apparaat meldt {total} gedownloade programma's; {found} daarvan zijn tot nu toe gezien.\n\nDe instellingen van een gedownload programma zijn alleen zichtbaar zolang dat programma geladen is, en het apparaat meldt nooit de naam ervan. Om de ontbrekende ({pending}) toe te voegen: open in de SmartThings-app (niet op het apparaat zelf) dit apparaat en tik op \"Gedownloade programma's\" -- een aparte regel, los van \"Programma\", verderop op het scherm, en degene die hier telt. Doorloop dan elk gedownload programma na elkaar, pauzeer bij elk een paar seconden zodat LocalThings het kan zien, en kom hierna terug.\n\nGeef elk programma de naam die je in Home Assistant wilt zien. Laat een naam leeg om dat programma buiten de programmalijst te houden. Namen moeten uniek zijn.\n\nHet programma \"Gedownload\" is het programma op dit apparaat dat een gedownload programma uitvoert. Het wordt automatisch gedetecteerd, maar bevestig dit hier voor gebruik: als je een gedownload programma selecteert, wordt deze programmacode naar het apparaat geschreven.",
+        "data": {
+          "download_course": "Programmacode van \"Gedownload\""
+        }
+      },
+      "cloud_courses": {
+        "title": "Gedownloade programma's",
+        "description": "Begeleide installatie loodst je stap voor stap: open in de SmartThings-app (niet op het apparaat zelf) dit apparaat en tik op \"Gedownloade programma's\" -- een aparte regel, los van \"Programma\", verderop op het scherm, en degene die hier telt. Kies daar een programma, kom terug en geef het een naam zodra het gevonden is, één voor één.\n\nNamen bewerken toont in één keer alles wat tot nu toe is gevonden — gebruik dit later om iets te hernoemen of te corrigeren. Namen geven werkt sowieso, maar een benoemd programma wordt alleen als selecteerbaar programma aangeboden zolang \"Gedownloade programma's aanbieden\" aan staat in de apparaatinstellingen.",
+        "menu_options": {
+          "cloud_guided": "Begeleide installatie",
+          "cloud_manual": "Namen bewerken"
+        }
+      },
+      "cloud_wait": {
+        "title": "Gedownloade programma's"
+      },
+      "cloud_name": {
+        "title": "Geef dit programma een naam",
+        "description": "Het vak \"Gedownloade programma's\" van het apparaat bevat nu een nieuw programma (slot {slot}) en meldt nog {remaining} resterend.\n\nGeef het de naam die je in Home Assistant wilt zien en kies daarna in het scherm \"Gedownloade programma's\" van de SmartThings-app het volgende programma dat nog niet als \"Gedownload\" is gemarkeerd. Laat het veld leeg om dit programma buiten de lijst te houden.\n\nTot nu toe benoemd ({named} van {total}): {named_list}\n\nNamen moeten uniek zijn. Je kunt dit venster op elk moment sluiten — namen worden onderweg opgeslagen.",
+        "data": {
+          "name": "Naam",
+          "download_course": "Programmacode van \"Gedownload\""
+        }
+      },
+      "cloud_timeout": {
+        "title": "Geen programma geselecteerd",
+        "description": "Er is niets veranderd op het apparaat. Zorg dat je in de SmartThings-app op \"Gedownloade programma's\" hebt getikt -- een aparte regel, los van \"Programma\", verderop op het scherm -- en een programma hebt gekozen dat nog niet als \"Gedownload\" was gemarkeerd, en daarna op Klaar hebt getikt.\n\nTot nu toe benoemd ({named} van {total}): {named_list}\n\nAlles wat tot nu toe benoemd is, is al opgeslagen.",
+        "menu_options": {
+          "cloud_guided": "Opnieuw wachten",
+          "cloud_finish": "Voltooien"
+        }
+      }
+    },
+    "error": {
+      "empty_payload": "Voer ten minste één veld in om te schrijven.",
+      "write_failed": "De schrijfbewerking is mislukt. Raadpleeg de Home Assistant-logboeken voor meer informatie.",
+      "cloud_course_name_duplicate": "Twee programma's hebben dezelfde naam. Namen moeten uniek zijn.",
+      "cloud_course_unknown_course": "Dat programma biedt dit apparaat niet aan. Kies er een uit de lijst."
+    },
+    "abort": {
+      "not_loaded": "Dit apparaat is nog niet verbonden. Probeer het opnieuw zodra het is geladen."
+    },
+    "progress": {
+      "cloud_wait": "Open in de SmartThings-app (niet op het apparaat zelf) dit apparaat en tik op \"Gedownloade programma's\" -- een aparte regel, los van \"Programma\", verderop op het scherm, die alleen de programma's toont die op deze manier te herkennen zijn. Kies er een die nog niet als \"Gedownload\" is gemarkeerd en tik op Klaar.\n\nHet apparaat hoeft niet in de buurt te zijn of het programma uit te voeren -- het moet alleen aan staan en verbonden zijn.\n\nTot nu toe benoemd ({named} van {total}): {named_list}\n\nJe kunt dit venster op elk moment sluiten — namen worden onderweg opgeslagen."
+    }
+  },
+  "issues": {
+    "device_gap": {
+      "title": "Onvolledige ondersteuning van mogelijkheden voor {device_name}",
+      "description": "Niet alle mogelijkheden van dit apparaat worden ondersteund. Het apparaattype is niet herkend of sommige beschikbare resources zijn nog niet gemodelleerd. Het apparaat blijft werken met de mogelijkheden die al worden ondersteund. Je kunt helpen de ondersteuning uit te breiden: ga naar Instellingen > Apparaten & diensten > {device_name} > het menu (rechtsboven) > Diagnostische gegevens downloaden en voeg het bestand daarna bij via de gekoppelde issue-template."
+    },
+    "cloud_courses_undiscovered": {
+      "title": "Gedownloade programma's niet ingesteld voor {device_name}",
+      "description": "{device_name} heeft {pending} van de {total} gedownloade programma's die Home Assistant nog niet kan aanbieden. Een gedownload programma kan pas worden gebruikt zodra het apparaat ermee geladen is gezien -- in het scherm \"Gedownloade programma's\" van de SmartThings-app, niet in \"Programma\" -- en je het een naam hebt gegeven.\n\nGa om ze in te stellen naar Instellingen > Apparaten & diensten > LocalThings > {device_name} > Configureren > Gedownloade programma's en volg de instructies daar.\n\nGebruik je geen gedownloade programma's? Ga dan naar Configureren > Apparaatinstellingen en zet \"Gedownloade programma's aanbieden\" uit om deze herinnering voorgoed te stoppen."
+    }
+  },
+  "exceptions": {
+    "remote_control_disabled": {
+      "message": "Afstandsbediening is uitgeschakeld op dit apparaat. Raadpleeg de handleiding van je apparaat om afstandsbediening in te schakelen voordat Home Assistant het kan bedienen."
+    },
+    "oven_mode_idle_not_selectable": {
+      "message": "NoOperation is wat de oven meldt als hij niets doet. Het kan niet als stand worden gekozen; annuleer het bakken op het bedieningspaneel van de oven."
+    },
+    "debug_payload_empty": {
+      "message": "De payload voor de schrijfbewerking voor foutopsporing moet een niet-leeg object zijn."
+    },
+    "debug_batch_too_many_elements": {
+      "message": "Een batchpayload moet tussen 1 en {max} elementen bevatten."
+    },
+    "debug_batch_element_invalid": {
+      "message": "Elk batch-element moet een object met href zijn, en een rep die een object is indien aanwezig."
+    },
+    "resource_href_required": {
+      "message": "Een resource-href is vereist."
+    },
+    "bubble_soak_unavailable_for_cycle": {
+      "message": "Bubble Soak is niet beschikbaar voor het geselecteerde programma."
+    },
+    "pre_wash_unavailable_for_cycle": {
+      "message": "Voorwas is niet beschikbaar voor het geselecteerde programma."
+    },
+    "intensive_unavailable_for_cycle": {
+      "message": "Intensief is niet beschikbaar voor het geselecteerde programma."
+    },
+    "command_failed": {
+      "message": "Het commando naar {href} is ook na opnieuw verbinden mislukt: {error}"
+    },
+    "command_refused": {
+      "message": "Het apparaat heeft het commando naar {href} geweigerd: {error}"
+    },
+    "command_not_confirmed": {
+      "message": "Het commando naar {href} is verzonden terwijl afstandsbediening uit staat, maar het apparaat toont het nog niet. Als het niet reageert, schakel dan afstandsbediening in op het apparaat."
+    },
+    "debug_read_failed": {
+      "message": "Het lezen van {href} is mislukt: {error}"
+    },
+    "observe_duration_out_of_range": {
+      "message": "De duur moet groter zijn dan 0 en hoogstens {max} seconden."
+    },
+    "observe_not_supported": {
+      "message": "De interface van dit apparaat ondersteunt het observeren van resources niet."
+    },
+    "observe_query_while_observed": {
+      "message": "{href} wordt al door deze integratie geobserveerd en kan daarom niet opnieuw met een query worden geobserveerd."
+    },
+    "observe_in_progress": {
+      "message": "{href} wordt al door een andere aanroep geobserveerd. Wacht tot die klaar is."
+    },
+    "debug_observe_failed": {
+      "message": "Observeren van {href} is mislukt: {error}"
+    },
+    "debug_too_many_writes": {
+      "message": "Geef tussen de 1 en 10 schrijfacties op."
+    },
+    "debug_settle_out_of_range": {
+      "message": "settle moet tussen 0 en 30 seconden liggen."
+    },
+    "debug_verify_after_out_of_range": {
+      "message": "verify_after moet tussen 0 en 60 seconden liggen."
+    },
+    "service_device_target_invalid": {
+      "message": "Deze service vereist precies één doelapparaat."
+    },
+    "service_device_not_found": {
+      "message": "Er is geen bijpassend apparaat gevonden voor dat doel."
+    },
+    "service_device_not_loaded": {
+      "message": "Dit apparaat is nog niet verbonden. Probeer het opnieuw zodra het is geladen."
+    },
+    "cook_start_not_supported": {
+      "message": "Dit apparaat meldt geen bereidingsstand die op afstand gestart mag worden, dus Home Assistant kan het niet starten."
+    },
+    "cook_start_not_idle": {
+      "message": "Het apparaat is al bezig. Stop het eerst, of wijzig de temperatuur en bereidingstijd terwijl het draait."
+    },
+    "cook_mode_required": {
+      "message": "Kies eerst een bereidingsstand. Dit apparaat kan gestart worden in: {startable}."
+    },
+    "cook_mode_not_startable": {
+      "message": "{mode} kan op dit apparaat niet op afstand gestart worden. Wel mogelijk: {startable}."
+    },
+    "cook_mode_unavailable": {
+      "message": "{mode} is nu niet beschikbaar in deze ovenruimte. Wel te starten: {startable}."
+    },
+    "cook_temperature_not_supported": {
+      "message": "{mode} heeft geen temperatuurinstelling."
+    },
+    "cook_temperature_required": {
+      "message": "{mode} heeft een temperatuur nodig."
+    },
+    "cook_temperature_not_a_choice": {
+      "message": "{mode} accepteert alleen {choices}."
+    },
+    "cook_temperature_out_of_range": {
+      "message": "{mode} accepteert een temperatuur van {min} tot {max}."
+    },
+    "cook_duration_not_supported": {
+      "message": "{mode} heeft geen bereidingstijd."
+    },
+    "cook_duration_required": {
+      "message": "{mode} heeft een bereidingstijd nodig."
+    },
+    "cook_duration_out_of_range": {
+      "message": "{mode} accepteert een bereidingstijd van {min} tot {max}."
+    },
+    "extra_rinse_unavailable_for_cycle": {
+      "message": "Extra Rinse is niet beschikbaar voor het geselecteerde programma."
+    }
+  },
+  "selector": {
+    "instance_name": {
+      "options": {
+        "freezer": "Vriezer",
+        "cooler": "Koelkast",
+        "top": "Bovenste vak",
+        "middle": "Middelste vak",
+        "bottom": "Onderste vak",
+        "onedoor": "Kimchivak",
+        "winecellar_top": "Bovenste wijnzone",
+        "winecellar_bottom": "Onderste wijnzone",
+        "door_freezer": "Vriezerdeur",
+        "door_cooler": "Koelkastdeur",
+        "door_cvroom": "Flexzonedeur",
+        "door_winecellar": "Wijnkoelerdeur",
+        "door_onedoorfreezer": "Hoofddeur",
+        "door_onedoorkimchi": "Hoofddeur",
+        "ice_maker": "IJsmaker",
+        "cubed_ice": "IJsblokjes",
+        "ice_bites": "Ice Bites",
+        "whiskey_ice_ball": "IJsballen"
+      }
+    }
+  }
+}

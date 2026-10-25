@@ -7,10 +7,11 @@ import logging
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_SLOTS, CONF_START, COORDINATOR, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -22,7 +23,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up keymaster button."""
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
     entities: list = []
     entities.append(
         KeymasterButton(
@@ -77,13 +81,14 @@ class KeymasterButton(KeymasterEntity, ButtonEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self._attr_available: bool = True
 
     @callback
     def _handle_coordinator_update(self) -> None:
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if (
@@ -92,11 +97,11 @@ class KeymasterButton(KeymasterEntity, ButtonEntity):
             and self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
 
     async def async_press(self) -> None:
         """Take action when button is pressed."""

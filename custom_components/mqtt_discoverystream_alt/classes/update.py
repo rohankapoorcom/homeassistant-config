@@ -1,5 +1,6 @@
 """Update methods for MQTT Discovery Statestream."""
 
+from homeassistant.components.mqtt.const import CONF_COMMAND_TOPIC
 from homeassistant.components.mqtt.update import (
     CONF_DISPLAY_PRECISION,
     CONF_LATEST_VERSION_TEMPLATE,
@@ -9,15 +10,10 @@ from homeassistant.components.mqtt.update import (
     CONF_RELEASE_URL,
     CONF_TITLE,
 )
-from homeassistant.components.update.const import (
-    ATTR_DISPLAY_PRECISION,
-    ATTR_INSTALLED_VERSION,
-    ATTR_LATEST_VERSION,
-    ATTR_RELEASE_SUMMARY,
-    ATTR_RELEASE_URL,
-    ATTR_TITLE,
+from homeassistant.components.update import (
     SERVICE_INSTALL,
     UpdateEntityFeature,
+    UpdateEntityStateAttribute,
 )
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -28,14 +24,9 @@ from homeassistant.const import (
     Platform,
 )
 
-from ..const import ATTR_INSTALL, COMMAND_INSTALL, CONF_CMD_T
-from ..utils import (
-    EntityInfo,
-    add_config_command,
-    build_topic,
-    simple_attribute_add,
-)
-from .base_entity import DiscoveryEntity
+from ..const import ATTR_INSTALL, COMMAND_INSTALL
+from ..helpers.base_entity import DiscoveryEntity
+from ..utils import EntityInfo, add_config_command, build_topic, simple_attribute_add
 
 
 class DiscoveryItem(DiscoveryEntity):
@@ -51,25 +42,32 @@ class DiscoveryItem(DiscoveryEntity):
             entity_info.attributes[ATTR_SUPPORTED_FEATURES]
             & UpdateEntityFeature.INSTALL
         ):
-            add_config_command(config, entity_info, CONF_CMD_T, ATTR_INSTALL)
+            add_config_command(config, entity_info, CONF_COMMAND_TOPIC, ATTR_INSTALL)
             config[CONF_PAYLOAD_INSTALL] = COMMAND_INSTALL
         config[CONF_LATEST_VERSION_TOPIC] = build_topic(ATTR_STATE)
         config[CONF_LATEST_VERSION_TEMPLATE] = (
-            "{{ value_json['" + ATTR_LATEST_VERSION + "'] }}"
+            "{{ value_json['" + UpdateEntityStateAttribute.LATEST_VERSION + "'] }}"
         )
         config[CONF_VALUE_TEMPLATE] = (
-            "{{ value_json['" + ATTR_INSTALLED_VERSION + "'] }}"
+            "{{ value_json['" + UpdateEntityStateAttribute.INSTALLED_VERSION + "'] }}"
         )
 
         attributes = entity_info.attributes
-        if attributes.get(ATTR_RELEASE_URL):
-            config[CONF_RELEASE_URL] = attributes[ATTR_RELEASE_URL]
-        if attributes.get(ATTR_RELEASE_SUMMARY):
-            config[CONF_RELEASE_SUMMARY] = attributes[ATTR_RELEASE_SUMMARY]
-        if attributes.get(ATTR_TITLE):
-            config[CONF_TITLE] = attributes[ATTR_TITLE]
+        if attributes.get(UpdateEntityStateAttribute.RELEASE_URL):
+            config[CONF_RELEASE_URL] = attributes[
+                UpdateEntityStateAttribute.RELEASE_URL
+            ]
+        if attributes.get(UpdateEntityStateAttribute.RELEASE_SUMMARY):
+            config[CONF_RELEASE_SUMMARY] = attributes[
+                UpdateEntityStateAttribute.RELEASE_SUMMARY
+            ]
+        if attributes.get(UpdateEntityStateAttribute.TITLE):
+            config[CONF_TITLE] = attributes[UpdateEntityStateAttribute.TITLE]
         simple_attribute_add(
-            config, attributes, CONF_DISPLAY_PRECISION, ATTR_DISPLAY_PRECISION
+            config,
+            attributes,
+            CONF_DISPLAY_PRECISION,
+            UpdateEntityStateAttribute.DISPLAY_PRECISION,
         )
 
     async def async_publish_state(self, new_state, mybase):
@@ -77,11 +75,17 @@ class DiscoveryItem(DiscoveryEntity):
         await super().async_publish_state(new_state, mybase)
         attributes = new_state.attributes
         state = {}
-        simple_attribute_add(state, attributes, ATTR_INSTALLED_VERSION)
-        simple_attribute_add(state, attributes, ATTR_LATEST_VERSION)
-        simple_attribute_add(state, attributes, ATTR_TITLE)
-        simple_attribute_add(state, attributes, ATTR_RELEASE_SUMMARY)
-        simple_attribute_add(state, attributes, ATTR_RELEASE_URL)
+        simple_attribute_add(
+            state, attributes, UpdateEntityStateAttribute.INSTALLED_VERSION
+        )
+        simple_attribute_add(
+            state, attributes, UpdateEntityStateAttribute.LATEST_VERSION
+        )
+        simple_attribute_add(state, attributes, UpdateEntityStateAttribute.TITLE)
+        simple_attribute_add(
+            state, attributes, UpdateEntityStateAttribute.RELEASE_SUMMARY
+        )
+        simple_attribute_add(state, attributes, UpdateEntityStateAttribute.RELEASE_URL)
         simple_attribute_add(state, attributes, ATTR_ENTITY_PICTURE)
         await self._async_mqtt_publish(ATTR_STATE, state, mybase, encoded=True)
 

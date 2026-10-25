@@ -2,7 +2,7 @@
 
 from homeassistant.const import Platform
 
-from .base_input_entity import NumberDiscoveryEntity
+from ..helpers.base_input_entity import NumberDiscoveryEntity
 
 
 class DiscoveryItem(NumberDiscoveryEntity):

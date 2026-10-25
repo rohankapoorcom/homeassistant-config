@@ -5,7 +5,11 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from california_midasapi.exception import MidasAuthenticationException, MidasException
+from california_midasapi.exception import (
+    MidasAuthenticationException,
+    MidasException,
+    MidasNotFoundException,
+)
 from california_midasapi.types import RateInfo
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import issue_registry
@@ -54,6 +58,31 @@ class MidasDataUpdateCoordinator(DataUpdateCoordinator[dict[str, RateInfo]]):
                 # Call GetCurrentTariffs to cache parsed start and end times
                 # Makes getting the active tariffs for each sensor much faster
                 tariffs = data[rid].GetCurrentTariffs()
+
+                # If there are no tariffs, repeat the same steps on the historical rates
+                # During rate switches, utilities may move active rates to the
+                #  historical table before they're actually over.
+                if len(tariffs) == 0:
+                    # Deliberately wraps only the historical call. A rate id
+                    # that does not exist 404s on async_get_rate_data above,
+                    # and that must keep failing the update: widening this to
+                    # cover it would turn a mistyped rate id into a repair
+                    # telling the user their utility stopped publishing.
+                    try:
+                        data[rid] = await self._client.async_get_historical_rate_data(
+                            rid
+                        )
+                        tariffs = data[rid].GetCurrentTariffs()
+                    except MidasNotFoundException as exception:
+                        # A rate id with no data in the requested window answers
+                        # 404. That means "no tariffs for this rate id" rather
+                        # than a failed update, so fall through to the repair
+                        # below instead of failing every other rate id too.
+                        # Any other error still propagates.
+                        LOGGER.debug(
+                            f"Historical rates for {rid} unavailable: {exception}"
+                        )
+
                 # Check if there are any tariffs and issue error if not
                 if len(tariffs) == 0:
                     issue_registry.async_create_issue(

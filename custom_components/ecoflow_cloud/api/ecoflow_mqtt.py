@@ -1,24 +1,30 @@
-import json
+from __future__ import annotations
+
 import logging
-import random
 import ssl
-import time
-from _socket import SocketType
+from collections.abc import Callable
 from typing import Any
 
 from homeassistant.core import callback
+from paho.mqtt.client import Client, ConnectFlags, DisconnectFlags, MQTTMessage, PayloadType
+from paho.mqtt.enums import CallbackAPIVersion
+from paho.mqtt.properties import Properties
+from paho.mqtt.reasoncodes import ReasonCode
 
 from ..devices import BaseDevice
 from . import EcoflowMqttInfo
 
 _LOGGER = logging.getLogger(__name__)
 
+# paho maps the v3.1.1 CONNACK codes 4 and 5 onto these names; "Banned" is MQTT 5 only
+AUTH_FAILURE_REASONS = frozenset({"Bad user name or password", "Not authorized", "Banned"})
+
 
 class EcoflowMQTTClient:
     def __init__(self, mqtt_info: EcoflowMqttInfo, devices: dict[str, BaseDevice]):
-        from ..devices import BaseDevice
-
         self.connected = False
+        self.auth_failed = False
+        self.on_auth_failure: Callable[[], None] | None = None
         self.__mqtt_info = mqtt_info
         self.__devices: dict[str, BaseDevice] = devices
 
@@ -28,13 +34,12 @@ class EcoflowMQTTClient:
             client_id=self.__mqtt_info.client_id,
             reconnect_on_failure=True,
             clean_session=True,
+            callback_api_version=CallbackAPIVersion.VERSION2,
         )
 
         # self.__client._connect_timeout = 15.0
         self.__client.setup()
-        self.__client.username_pw_set(
-            self.__mqtt_info.username, self.__mqtt_info.password
-        )
+        self.__client.username_pw_set(self.__mqtt_info.username, self.__mqtt_info.password)
         self.__client.tls_set(certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED)
         self.__client.tls_insecure_set(False)
         self.__client.on_connect = self._on_connect
@@ -45,18 +50,19 @@ class EcoflowMQTTClient:
         _LOGGER.info(
             f"Connecting to MQTT Broker {self.__mqtt_info.url}:{self.__mqtt_info.port} with client id {self.__mqtt_info.client_id} and username {self.__mqtt_info.username}"
         )
-        self.__client.connect(self.__mqtt_info.url, self.__mqtt_info.port, keepalive=15)
-        self.__client.loop_start()
+        try:
+            self.__client.connect(self.__mqtt_info.url, self.__mqtt_info.port, keepalive=15)
+            self.__client.loop_start()
+        except TimeoutError:
+            _LOGGER.exception("Initial EcoFlow MQTT connection timed out; entities will retry reconnect from status updates")
 
     def is_connected(self):
         return self.__client.is_connected()
 
     def reconnect(self) -> bool:
         try:
-            _LOGGER.info(
-                f"Re-connecting to MQTT Broker {self.__mqtt_info.url}:{self.__mqtt_info.port}"
-            )
-            self.__client.loop_stop(True)
+            _LOGGER.info(f"Re-connecting to MQTT Broker {self.__mqtt_info.url}:{self.__mqtt_info.port}")
+            self.__client.loop_stop()
             self.__client.reconnect()
             self.__client.loop_start()
             return True
@@ -65,101 +71,83 @@ class EcoflowMQTTClient:
             return False
 
     @callback
-    def _on_socket_close(self, client, userdata: Any, sock: SocketType) -> None:
-        _LOGGER.error(f"Unexpected MQTT Socket disconnection : {str(sock)}")
+    def _on_socket_close(self, client: Client, userdata: Any, sock: Any) -> None:
+        _LOGGER.info(f"MQTT Socket disconnection : {str(sock)}")
 
     @callback
-    def _on_connect(self, client, userdata, flags, rc):
+    def _on_connect(
+        self, client: Client, userdata: Any, flags: ConnectFlags, rc: ReasonCode, properties: Properties | None = None
+    ):
         if rc == 0:
             self.connected = True
+            self.auth_failed = False
             target_topics = [(topic, 1) for topic in self.__target_topics()]
             self.__client.subscribe(target_topics)
             _LOGGER.info(f"Subscribed to MQTT topics {target_topics}")
+        elif rc.getName() in AUTH_FAILURE_REASONS:
+            self.__handle_auth_failure(client, userdata, rc)
         else:
             self.__log_with_reason("connect", client, userdata, rc)
 
     @callback
-    def _on_disconnect(self, client, userdata, rc):
+    def _on_disconnect(
+        self,
+        client: Client,
+        userdata: Any,
+        disconnect_flags: DisconnectFlags,
+        reason_code: ReasonCode,
+        properties: Properties | None,
+    ) -> None:
         if not self.connected:
             # from homeassistant/components/mqtt/client.py
             # This function is re-entrant and may be called multiple times
             # when there is a broken pipe error.
             return
         self.connected = False
-        if rc != 0:
-            self.__log_with_reason("disconnect", client, userdata, rc)
-            time.sleep(5)
+        if reason_code.is_failure:
+            self.__log_with_reason("disconnect", client, userdata, reason_code)
 
     @callback
-    def _on_message(self, client, userdata, message):
+    def _on_message(self, client, userdata, message: MQTTMessage):
         try:
             for sn, device in self.__devices.items():
                 if device.update_data(message.payload, message.topic):
-                    _LOGGER.debug(f"Message for {sn} and Topic {message.topic} : {message.payload}")
+                    _LOGGER.debug(f"Message for {sn} and Topic {message.topic} : {message.payload.hex()}")
         except UnicodeDecodeError as error:
-            _LOGGER.error(
-                f"UnicodeDecodeError: {error}. Ignoring message and waiting for the next one."
-            )
-
-    def send_get_message(self, device_sn: str, command: dict):
-        payload = self.__prepare_payload(command)
-        self.__send(
-            self.__devices[device_sn].device_info.get_topic, json.dumps(payload)
-        )
-
-    def send_set_message(
-        self, device_sn: str, mqtt_state: dict[str, Any], command: dict
-    ):
-        self.__devices[device_sn].data.update_to_target_state(mqtt_state)
-        payload = self.__prepare_payload(command)
-        self.__send(
-            self.__devices[device_sn].device_info.set_topic, json.dumps(payload)
-        )
+            _LOGGER.error(f"UnicodeDecodeError: {error}. Ignoring message and waiting for the next one.")
+        except Exception:
+            _LOGGER.error("Unexpected error processing MQTT message on topic %s", message.topic, exc_info=True)
 
     def stop(self):
         self.__client.unsubscribe(self.__target_topics())
         self.__client.loop_stop()
         self.__client.disconnect()
 
-    def __log_with_reason(self, action: str, client, userdata, rc):
-        import paho.mqtt.client as mqtt_client
+    def __handle_auth_failure(self, client, userdata, reason_code: ReasonCode) -> None:
+        if self.auth_failed:
+            return
+        self.auth_failed = True
+        # paho would otherwise retry the rejected credentials forever
+        self.__client.loop_stop()
+        self.__log_with_reason("connect", client, userdata, reason_code)
+        if self.on_auth_failure is not None:
+            self.on_auth_failure()
 
-        _LOGGER.error(
-            f"MQTT {action}: {mqtt_client.error_string(rc)} ({self.__mqtt_info.client_id}) - {userdata}"
-        )
+    def __log_with_reason(self, action: str, client, userdata, reason_code: ReasonCode):
+        _LOGGER.error(f"MQTT {action}: {reason_code.getName()} ({self.__mqtt_info.client_id}) - {userdata}")
 
-    message_id = 999900000 + random.randint(10000, 99999)
-
-    def __prepare_payload(self, command: dict):
-        self.message_id += 1
-        payload = {
-            "from": "HomeAssistant",
-            "id": f"{self.message_id}",
-            "version": "1.0",
-        }
-        payload.update(command)
-        return payload
-
-    def __send(self, topic: str, message: str):
+    def publish(self, topic: str, message: PayloadType) -> None:
         try:
             info = self.__client.publish(topic, message, 1)
-            _LOGGER.debug(
-                "Sending "
-                + message
-                + " :"
-                + str(info)
-                + "("
-                + str(info.is_published())
-                + ")"
-            )
+            _LOGGER.debug("Sending " + str(message) + " :" + str(info) + "(" + str(info.is_published()) + ")")
         except RuntimeError as error:
-            _LOGGER.error(error, "Error on topic " + topic + " and message " + message)
+            _LOGGER.error("Error on topic %s and message %s: %s", topic, message, error)
         except Exception as error:
-            _LOGGER.debug(error, "Error on topic " + topic + " and message " + message)
+            _LOGGER.debug("Error on topic %s and message %s: %s", topic, message, error)
 
     def __target_topics(self) -> list[str]:
         topics = []
-        for sn, device in self.__devices.items():
+        for device in self.__devices.values():
             for topic in device.device_info.topics():
                 topics.append(topic)
         # Remove duplicates that can occur when multiple devices have the same topic (for example sub devices)

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import Any
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -11,10 +12,11 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_SLOTS, CONF_START, COORDINATOR, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -26,8 +28,11 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create the keymaster Binary Sensors."""
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
-    kmlock = await coordinator.get_lock_by_config_entry_id(config_entry.entry_id)
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
+    kmlock = await manager.get_lock_by_config_entry_id(config_entry.entry_id)
     entities: list = []
 
     if not kmlock:
@@ -96,6 +101,7 @@ class KeymasterBinarySensor(KeymasterEntity, BinarySensorEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self._attr_is_on: bool = False
         self._attr_available: bool = True
 
@@ -103,4 +109,8 @@ class KeymasterBinarySensor(KeymasterEntity, BinarySensorEntity):
     def _handle_coordinator_update(self) -> None:
         # _LOGGER.debug(f"[Binary Sensor handle_coordinator_update] self.coordinator.data: {self.coordinator.data}")
         self._attr_is_on = self._get_property_value()
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the on/off value."""
+        return (*super()._state_signature(), self._attr_is_on)

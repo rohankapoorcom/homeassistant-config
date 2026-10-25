@@ -3,16 +3,22 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, cast
+
+from awesomeversion import AwesomeVersion
 
 import homeassistant.helpers.device_registry as dr
 from homeassistant.config_entries import SOURCE_IGNORE, SOURCE_INTEGRATION_DISCOVERY
-from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DEVICE_ID, __version__
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import discovery_flow
 from homeassistant.loader import Integration, async_get_integration
 
-from .common import get_device_model_id
+from .common import (
+    get_device_model_id,
+    get_related_device_ids,
+    is_composite_device_id,
+)
 from .const import (
     CONF_BATTERY_QUANTITY,
     CONF_BATTERY_TYPE,
@@ -86,8 +92,9 @@ class DiscoveryManager:
         """Init."""
         self.hass = hass
         self.ha_config = ha_config
+        self.existing_devices: set[str] = set()
 
-    async def start_discovery(self) -> None:
+    async def start_discovery(self) -> None:  # noqa: PLR0912
         """Start the discovery procedure."""
         _LOGGER.debug("Start auto discovering devices")
         device_registry = dr.async_get(self.hass)
@@ -97,7 +104,17 @@ class DiscoveryManager:
             await library.load_libraries()
 
         if library.is_loaded:
-            for device_entry in list(device_registry.devices.values()):
+            await self.initialize_existing_devices()
+
+            # HACK: HA backward compatibility use .devices for HA 2026.9+ where typing is correct, otherwise values
+            if AwesomeVersion(__version__) >= AwesomeVersion("2026.8.9"):
+                device_entries = device_registry.devices
+            else:
+                device_entries: list[dr.DeviceEntry] = list(  # type: ignore[no-redef]
+                    device_registry.devices.values()
+                )
+
+            for device_entry in cast(list[dr.DeviceEntry], device_entries):
                 if not self.should_process_device(device_entry):
                     continue
 
@@ -113,15 +130,20 @@ class DiscoveryManager:
                     model_info
                 )
 
-                if not device_battery_details:
+                if not device_battery_details or device_battery_details.is_manual:
                     continue
 
-                if device_battery_details.is_manual:
-                    continue
-
-                config_entry_id = next(iter(device_entry.config_entries))
+                # HACK: Change to device_entry.config_entry_id when HA 2026.9+ is minimum
+                if AwesomeVersion(__version__) >= AwesomeVersion("2026.8.9"):
+                    config_entry_id = device_entry.config_entry_id  # type: ignore[attr-defined]
+                else:
+                    config_entry_id = next(iter(device_entry.config_entries))
                 config_entry = self.hass.config_entries.async_get_entry(config_entry_id)
+
                 if config_entry:
+                    if library.is_domain_ignored(config_entry.domain):
+                        continue
+
                     integration = await async_get_integration(
                         self.hass, config_entry.domain
                     )
@@ -134,9 +156,55 @@ class DiscoveryManager:
 
         _LOGGER.debug("Done auto discovering devices")
 
+    async def initialize_existing_devices(self) -> None:
+        """Build a list of device id's and related which are already setup, to prevent duplicate discovery flows."""
+        for config_entry in self.hass.config_entries.async_entries(
+            domain=DOMAIN, include_ignore=False, include_disabled=False
+        ):
+            for subentry in config_entry.subentries.values():
+                device_id = subentry.data.get(CONF_DEVICE_ID)
+                if not device_id:
+                    continue
+
+                for related_device_id in get_related_device_ids(
+                    self.hass, str(device_id)
+                ):
+                    self.existing_devices.add(related_device_id)
+
     def should_process_device(self, device_entry: dr.DeviceEntry) -> bool:
         """Do some validations on the registry entry to see if it qualifies for discovery."""
-        return not device_entry.disabled
+
+        # If has a parent device, use that for library search, child devices do not have manufacturer/model info
+        # HACK: Change to use dr.AnyDeviceEntry type and look for isinstance ChildDeviceEntry with 2026.9+
+        if hasattr(device_entry, "parent_device_id"):
+            _LOGGER.debug(
+                "%s: Is a child device, skipping new discovery",
+                device_entry.id,
+            )
+            return False
+
+        if is_composite_device_id(self.hass, device_entry.id):
+            _LOGGER.debug(
+                "%s: Is a composite device, skipping new discovery",
+                device_entry.id,
+            )
+            return False
+
+        if device_entry.id in self.existing_devices:
+            _LOGGER.debug(
+                "%s: Already discovered, skipping new discovery",
+                device_entry.id,
+            )
+            return False
+
+        if device_entry.disabled:
+            _LOGGER.debug(
+                "%s: Device is disabled, skipping new discovery",
+                device_entry.id,
+            )
+            return False
+
+        return True
 
     @callback
     def _init_entity_discovery(
@@ -162,17 +230,6 @@ class DiscoveryManager:
                 )
                 return
 
-        for config_entry in self.hass.config_entries.async_entries(
-            domain=DOMAIN, include_ignore=False, include_disabled=False
-        ):
-            for subentry in config_entry.subentries.values():
-                if subentry.data.get(CONF_DEVICE_ID, "") == device_entry.id:
-                    _LOGGER.debug(
-                        "%s: Already setup, skipping new discovery",
-                        unique_id,
-                    )
-                    return
-
         discovery_data: dict[str, Any] = {
             CONF_DEVICE_ID: device_entry.id,
         }
@@ -191,6 +248,16 @@ class DiscoveryManager:
         )
         discovery_data[CONF_INTEGRATION_NAME] = (
             integration.name if integration else None
+        )
+
+        _LOGGER.info(
+            "Auto discovered device %s in %s (manufacturer=%s, model=%s, model_id=%s, hw_version=%s)",
+            discovery_data[CONF_DEVICE_NAME],
+            discovery_data[CONF_INTEGRATION_NAME],
+            discovery_data[CONF_MANUFACTURER],
+            discovery_data[CONF_MODEL],
+            discovery_data[CONF_MODEL_ID],
+            discovery_data[CONF_HW_VERSION],
         )
 
         discovery_flow.async_create_flow(

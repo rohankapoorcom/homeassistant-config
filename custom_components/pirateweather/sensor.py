@@ -17,7 +17,6 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
-    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     CONF_API_KEY,
     CONF_LATITUDE,
     CONF_LONGITUDE,
@@ -27,6 +26,7 @@ from homeassistant.const import (
     DEGREE,
     PERCENTAGE,
     UV_INDEX,
+    UnitOfDensity,
     UnitOfIrradiance,
     UnitOfLength,
     UnitOfPressure,
@@ -35,6 +35,7 @@ from homeassistant.const import (
     UnitOfVolumetricFlux,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import DiscoveryInfoType, StateType
 from homeassistant.util import dt as dt_util
@@ -44,6 +45,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     ENTRY_WEATHER_COORDINATOR,
+    MANUFACTURER,
     PW_PLATFORM,
     PW_PLATFORMS,
     PW_PREVPLATFORM,
@@ -449,11 +451,11 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         name="Smoke",
         device_class=SensorDeviceClass.PM25,
         state_class=SensorStateClass.MEASUREMENT,
-        si_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        us_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        ca_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        uk_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        uk2_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        si_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        us_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        ca_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        uk_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        uk2_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
         suggested_display_precision=2,
         icon="mdi:smoke",
         forecast_mode=["currently", "hourly"],
@@ -463,11 +465,11 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         name="Smoke Max",
         device_class=SensorDeviceClass.PM25,
         state_class=SensorStateClass.MEASUREMENT,
-        si_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        us_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        ca_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        uk_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-        uk2_unit=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        si_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        us_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        ca_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        uk_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
+        uk2_unit=UnitOfDensity.MICROGRAMS_PER_CUBIC_METER,
         suggested_display_precision=2,
         icon="mdi:smoke",
         forecast_mode=["daily"],
@@ -629,6 +631,15 @@ SENSOR_TYPES: dict[str, PirateWeatherSensorEntityDescription] = {
         uk2_unit=UV_INDEX,
         suggested_display_precision=2,
         icon="mdi:weather-sunny",
+        forecast_mode=["currently", "hourly", "daily"],
+    ),
+    "air_quality_index": PirateWeatherSensorEntityDescription(
+        key="air_quality_index",
+        name="Air Quality Index",
+        device_class=SensorDeviceClass.AQI,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        icon="mdi:air-filter",
         forecast_mode=["currently", "hourly", "daily"],
     ),
     "cape": PirateWeatherSensorEntityDescription(
@@ -1020,24 +1031,25 @@ async def async_setup_entry(
     conditions = domain_data[CONF_MONITORED_CONDITIONS]
     forecast_days = domain_data[CONF_FORECAST]
     forecast_hours = domain_data[CONF_HOURLY_FORECAST]
+    service_id = config_entry.unique_id or config_entry.entry_id
 
     # Round Output
-    outputRound = domain_data[PW_ROUND]
+    output_round = domain_data[PW_ROUND]
 
     sensors: list[PirateWeatherSensor] = []
 
     for condition in conditions:
         # Save units for conversion later
-        requestUnits = domain_data[CONF_UNITS]
+        request_units = domain_data[CONF_UNITS]
 
-        sensorDescription = SENSOR_TYPES[condition]
+        sensor_description = SENSOR_TYPES[condition]
 
         if condition in DEPRECATED_SENSOR_TYPES:
             _LOGGER.warning("Monitored condition %s is deprecated", condition)
 
         if (
-            not sensorDescription.forecast_mode
-            or "currently" in sensorDescription.forecast_mode
+            not sensor_description.forecast_mode
+            or "currently" in sensor_description.forecast_mode
         ):
             unique_id = f"{config_entry.unique_id}-sensor-{condition}"
             sensors.append(
@@ -1048,13 +1060,14 @@ async def async_setup_entry(
                     unique_id,
                     forecast_day=None,
                     forecast_hour=None,
-                    description=sensorDescription,
-                    requestUnits=requestUnits,
-                    outputRound=outputRound,
+                    description=sensor_description,
+                    request_units=request_units,
+                    output_round=output_round,
+                    service_id=service_id,
                 )
             )
 
-        if forecast_days is not None and "daily" in sensorDescription.forecast_mode:
+        if forecast_days is not None and "daily" in sensor_description.forecast_mode:
             for forecast_day in forecast_days:
                 unique_id = (
                     f"{config_entry.unique_id}-sensor-{condition}-daily-{forecast_day}"
@@ -1067,13 +1080,14 @@ async def async_setup_entry(
                         unique_id,
                         forecast_day=int(forecast_day),
                         forecast_hour=None,
-                        description=sensorDescription,
-                        requestUnits=requestUnits,
-                        outputRound=outputRound,
+                        description=sensor_description,
+                        request_units=request_units,
+                        output_round=output_round,
+                        service_id=service_id,
                     )
                 )
 
-        if forecast_hours is not None and "hourly" in sensorDescription.forecast_mode:
+        if forecast_hours is not None and "hourly" in sensor_description.forecast_mode:
             for forecast_h in forecast_hours:
                 unique_id = (
                     f"{config_entry.unique_id}-sensor-{condition}-hourly-{forecast_h}"
@@ -1086,9 +1100,10 @@ async def async_setup_entry(
                         unique_id,
                         forecast_day=None,
                         forecast_hour=int(forecast_h),
-                        description=sensorDescription,
-                        requestUnits=requestUnits,
-                        outputRound=outputRound,
+                        description=sensor_description,
+                        request_units=request_units,
+                        output_round=output_round,
+                        service_id=service_id,
                     )
                 )
 
@@ -1102,7 +1117,7 @@ class PirateWeatherSensor(SensorEntity):
     _attr_attribution = ATTRIBUTION
     entity_description: PirateWeatherSensorEntityDescription
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         weather_coordinator: WeatherUpdateCoordinator,
         condition: str,
@@ -1111,8 +1126,9 @@ class PirateWeatherSensor(SensorEntity):
         forecast_day: int,
         forecast_hour: int,
         description: PirateWeatherSensorEntityDescription,
-        requestUnits: str,
-        outputRound: str,
+        request_units: str,
+        output_round: str,
+        service_id: str,
     ) -> None:
         """Initialize the sensor."""
         self.client_name = name
@@ -1124,18 +1140,17 @@ class PirateWeatherSensor(SensorEntity):
 
         self._attr_unique_id = unique_id
         self._attr_name = name
-
-        # self._attr_device_info = DeviceInfo(
-        #    entry_type=DeviceEntryType.SERVICE,
-        #    identifiers={(DOMAIN, unique_id)},
-        #    manufacturer=MANUFACTURER,
-        #    name=DEFAULT_NAME,
-        # )
+        self._attr_device_info = DeviceInfo(
+            entry_type=DeviceEntryType.SERVICE,
+            identifiers={(DOMAIN, service_id)},
+            manufacturer=MANUFACTURER,
+            name=name,
+        )
 
         self.forecast_day = forecast_day
         self.forecast_hour = forecast_hour
-        self.requestUnits = requestUnits
-        self.outputRound = outputRound
+        self.request_units = request_units
+        self.output_round = output_round
         self.type = condition
         self._icon = None
         self._alerts = None
@@ -1173,7 +1188,7 @@ class PirateWeatherSensor(SensorEntity):
     @property
     def unit_system(self):
         """Return the unit system of this entity."""
-        return self.requestUnits
+        return self.request_units
 
     @property
     def entity_picture(self) -> str | None:
@@ -1208,11 +1223,11 @@ class PirateWeatherSensor(SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         if self.type == "alerts":
-            extraATTR = self._alerts
-            extraATTR[ATTR_ATTRIBUTION] = ATTRIBUTION
+            extra_attr = self._alerts
+            extra_attr[ATTR_ATTRIBUTION] = ATTRIBUTION
         else:
-            extraATTR = {ATTR_ATTRIBUTION: ATTRIBUTION}
-        return extraATTR
+            extra_attr = {ATTR_ATTRIBUTION: ATTRIBUTION}
+        return extra_attr
 
     @property
     def native_value(self) -> StateType:
@@ -1234,15 +1249,15 @@ class PirateWeatherSensor(SensorEntity):
                         dkey = f"{attr}_{i!s}"
                     else:
                         dkey = attr
-                    alertsAttr = getattr(alert, attr)
+                    alerts_attr = getattr(alert, attr)
 
                     # Convert time to string using dt_util
-                    if isinstance(alertsAttr, int):
-                        alertsAttr = dt_util.as_local(
-                            dt_util.utc_from_timestamp(alertsAttr)
+                    if isinstance(alerts_attr, int):
+                        alerts_attr = dt_util.as_local(
+                            dt_util.utc_from_timestamp(alerts_attr)
                         ).isoformat()
 
-                    alerts[dkey] = alertsAttr
+                    alerts[dkey] = alerts_attr
 
             self._alerts = alerts
             native_val = len(data)
@@ -1327,12 +1342,12 @@ class PirateWeatherSensor(SensorEntity):
             self._icon = getattr(data, "icon", "")
 
         # If output rounding is requested, round to nearest integer
-        if self.outputRound == "Yes":
-            roundingVal = 0
-            roundingPrecip = 2
+        if self.output_round == "Yes":
+            rounding_val = 0
+            rounding_precip = 2
         else:
-            roundingVal = 2
-            roundingPrecip = 4
+            rounding_val = 2
+            rounding_precip = 4
 
         # Some state data needs to be rounded to whole values or converted to
         # percentages
@@ -1349,10 +1364,10 @@ class PirateWeatherSensor(SensorEntity):
             "sunset_time",
             "time",
         ]:
-            outState = datetime.datetime.fromtimestamp(state, datetime.UTC)
+            out_state = datetime.datetime.fromtimestamp(state, datetime.UTC)
 
         elif self.type == "fire_risk_level":
-            outState = fire_index(state)
+            out_state = fire_index(state)
         elif self.type in [
             "dew_point",
             "temperature",
@@ -1370,6 +1385,7 @@ class PirateWeatherSensor(SensorEntity):
             "fire_index",
             "fire_index_max",
             "uv_index",
+            "air_quality_index",
             "wind_speed",
             "wind_gust",
             "visibility",
@@ -1379,10 +1395,10 @@ class PirateWeatherSensor(SensorEntity):
             "solar",
             "solar_max",
         ]:
-            if roundingVal == 0:
-                outState = int(round(state, roundingVal))
+            if rounding_val == 0:
+                out_state = int(round(state, rounding_val))
             else:
-                outState = round(state, roundingVal)
+                out_state = round(state, rounding_val)
 
         elif self.type in [
             "precip_accumulation",
@@ -1407,12 +1423,12 @@ class PirateWeatherSensor(SensorEntity):
                 and self.unit_system != "us"
             ):
                 state = state * 10
-            outState = round(state, roundingPrecip)
+            out_state = round(state, rounding_precip)
 
         else:
-            outState = state
+            out_state = state
 
-        return outState
+        return out_state
 
     async def async_added_to_hass(self) -> None:
         """Connect to dispatcher listening for entity data notifications."""
@@ -1439,16 +1455,16 @@ def fire_index(fire_index):
     """Convert numeric fire index to a textual value."""
 
     if fire_index == -999:
-        outState = "N/A"
+        out_state = "N/A"
     elif fire_index >= 30:
-        outState = "Extreme"
+        out_state = "Extreme"
     elif fire_index >= 20:
-        outState = "Very High"
+        out_state = "Very High"
     elif fire_index >= 10:
-        outState = "High"
+        out_state = "High"
     elif fire_index >= 5:
-        outState = "Moderate"
+        out_state = "Moderate"
     else:
-        outState = "Low"
+        out_state = "Low"
 
-    return outState
+    return out_state

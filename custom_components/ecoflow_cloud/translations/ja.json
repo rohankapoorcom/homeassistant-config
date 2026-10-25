@@ -1,0 +1,103 @@
+{
+    "title": "EcoFlow-Cloud",
+    "config": {
+        "error": {
+            "invalid_access_key": "EcoFlowがアクセスキーを拒否しました（エラー8513）。アクセスキーとシークレットキーに入力ミスがないか確認し、APIホストが開発者アカウントのリージョンと一致しているか確認してください。ヨーロッパはapi-e.ecoflow.com、南北アメリカはapi-a.ecoflow.comです。"
+        },
+        "abort": {
+            "reauth_successful": "再認証に成功しました",
+            "reconfigure_successful": "再構成は成功しました",
+            "do_reconfigure_existing": "この名前のデバイスグループはすでに存在します。既存のエントリを再構成してください。",
+            "no_device_to_add": "追加できる新しいデバイスはありません。このアカウントのすべてのデバイスは追加済みです。",
+            "remove_last_device": "最後のデバイスは削除できません。代わりに統合のエントリを削除してください。",
+            "unknown": "予期しないエラー"
+        },
+        "step": {
+            "reauth_confirm": {
+                "title": "EcoFlowの認証情報が拒否されました",
+                "description": "EcoFlowは{name}に保存されている認証情報を受け付けなくなりました。再接続するには現在の認証情報を入力してください。",
+                "data": {
+                    "api_host": "APIホスト",
+                    "access_key": "アクセスキー",
+                    "secret_key": "シークレットキー",
+                    "username": "ユーザーメールアドレス",
+                    "password": "ユーザーパスワード"
+                }
+            },
+            "user": {
+                "data": {
+                    "group": "デバイスグループ"
+                }
+            },
+            "api": {
+                "menu_options": {
+                    "api_add_device": "デバイスを追加",
+                    "remove_device": "デバイスを削除",
+                    "finish": "完了"
+                },
+                "data": {
+                    "api_host": "APIホスト",
+                    "access_key": "アクセスキー",
+                    "secret_key": "シークレットキー",
+                    "load_all_devices": "自動デバイス読み込み"
+                }
+            },
+            "choose_type": {
+                "menu_options": {
+                    "api": "パブリックAPIを使用",
+                    "manual": "Ecoflowアカウントを使用"
+                }
+            },
+            "select_device": {
+                "data": {
+                    "select_device": "デバイスを選択"
+                }
+            },
+            "confirm_cloud_device": {
+                "data": {
+                    "device_type": "デバイスタイプ",
+                    "device_name": "デバイス名",
+                    "device_id": "デバイスSN"
+                }
+            },
+            "manual": {
+                "menu_options": {
+                    "manual_add_device": "デバイスを追加",
+                    "remove_device": "デバイスを削除",
+                    "finish": "完了"
+                },
+                "data": {
+                    "api_host": "APIホスト",
+                    "username": "ユーザーメールアドレス",
+                    "password": "ユーザーパスワード"
+                }
+            },
+            "manual_device_input": {
+                "data": {
+                    "device_type": "デバイスタイプ",
+                    "device_name": "デバイス名",
+                    "device_id": "デバイスSN"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "select_device": "デバイスを選択"
+                }
+            },
+            "options": {
+                "data": {
+                    "power_step": "充電電力スライダーのステップ",
+                    "refresh_period_sec": "データ更新間隔（秒）",
+                    "diagnostic_mode": "診断モード",
+                    "assume_offline_sec": "オフラインとみなす待機時間（秒）",
+                    "verbose_status_mode": "ステータス詳細モード",
+                    "reset_sensors_on_offline": "オフライン時にセンサーをリセット"
+                }
+            }
+        }
+    }
+}

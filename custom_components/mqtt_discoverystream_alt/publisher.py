@@ -16,16 +16,18 @@ from homeassistant.const import (
     EVENT_HOMEASSISTANT_STOP,
     STATE_UNAVAILABLE,
 )
-from homeassistant.helpers import entity_registry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entityfilter import convert_include_exclude_filter
 from homeassistant.helpers.event import async_call_later
 from homeassistant.setup import async_when_setup
+from homeassistant.util import dt as dt_util
 
 from .const import (
     CONF_BASE_TOPIC,
     CONF_ONLINE_STATUS,
     CONF_REMOTE_STATUS,
     CONF_REPUBLISH_TIME,
+    CONF_STALE_AFTER,
     DEFAULT_STATE_SLEEP,
 )
 from .discovery import Discovery
@@ -36,13 +38,14 @@ _LOGGER = logging.getLogger(__name__)
 class Publisher:
     """Manage publication for MQTT Discovery Statestream."""
 
-    def __init__(self, hass, conf, base_topic, publish_retain):
+    def __init__(self, hass: HomeAssistant, conf, base_topic, publish_retain) -> None:
         """Initiate publishing."""
         self._hass = hass
         self._base_topic = base_topic
         self._publish_retain = publish_retain
         self._conf = conf
         self._remote_status, self._remote_status_topic = self._set_remote_status()
+        self._stale_after = self._conf.get(CONF_STALE_AFTER)
         self.discovery = Discovery(self._hass, self._conf)
         self._entity_states = {}
         self._publish_filter = convert_include_exclude_filter(self._conf)
@@ -64,7 +67,7 @@ class Publisher:
         if not valid:
             return
 
-        if new_state.state in (STATE_UNAVAILABLE, None):
+        if new_state.state in (STATE_UNAVAILABLE, None) or self._state_is_stale(new_state):
             await self._async_mqtt_publish(
                 mybase, CONF_AVAILABILITY, DEFAULT_PAYLOAD_NOT_AVAILABLE
             )
@@ -77,7 +80,7 @@ class Publisher:
             mybase, CONF_AVAILABILITY, DEFAULT_PAYLOAD_AVAILABLE
         )
 
-    async def _async_birth_subscribe(self, hass, component):  # pylint: disable=unused-argument
+    async def _async_birth_subscribe(self, hass: HomeAssistant, component):  # pylint: disable=unused-argument
         """Subscribe birth messages."""
         await mqtt.async_subscribe(
             self._hass,
@@ -111,28 +114,27 @@ class Publisher:
     async def async_publish_discovery_state(self, call=None):  # pylint: disable=unused-argument
         """Publish discovery and state for this MQTTUnit."""
         self.discovery.subscribe_possible = True
-        ent_reg = entity_registry.async_get(self._hass)
         self._entity_states = {}
         _LOGGER.debug("Discovery/State publishing - start")
         async with asyncio.TaskGroup() as group:
-            for entity_id in list(ent_reg.entities):
-                group.create_task(self._publish_entity_discovery(entity_id))
+            for entity_state in self._hass.states.async_all():
+                group.create_task(self._publish_entity_discovery(entity_state))
         await asyncio.sleep(DEFAULT_STATE_SLEEP)
         async with asyncio.TaskGroup() as group:
             for entity_id in self._entity_states:
                 group.create_task(self._publish_entity_state(entity_id))
         _LOGGER.debug("Discovery/State publishing - finish")
 
-    async def _publish_entity_discovery(self, entity_id):
+    async def _publish_entity_discovery(self, current_state):
+        entity_id = current_state.entity_id
         if self._publish_filter(entity_id):
-            if current_state := self._hass.states.get(entity_id):
-                _LOGGER.debug("Discovery/State publishing - %s - discovery", entity_id)
-                mybase = f"{self._base_topic}{entity_id.replace('.', '/')}/"
-                valid = await self.discovery.async_discovery_publish(
-                    entity_id, current_state.attributes, mybase
-                )
-                if valid:
-                    self._entity_states[entity_id] = current_state
+            _LOGGER.debug("Discovery/State publishing - %s - discovery", entity_id)
+            mybase = f"{self._base_topic}{entity_id.replace('.', '/')}/"
+            valid = await self.discovery.async_discovery_publish(
+                entity_id, current_state.attributes, mybase
+            )
+            if valid:
+                self._entity_states[entity_id] = current_state
 
     async def _publish_entity_state(self, entity_id):
         _LOGGER.debug("Discovery/State publishing - %s - state", entity_id)
@@ -161,6 +163,17 @@ class Publisher:
             self._conf.get(CONF_REPUBLISH_TIME),
             self._async_schedule_publish,
         )
+
+    def _state_is_stale(self, state):
+        if self._stale_after is None:
+            return False
+
+        last_reported = getattr(state, "last_reported", None)
+
+        if last_reported is None:
+            return False
+
+        return dt_util.utcnow() - last_reported > self._stale_after
 
     def _set_remote_status(self):
         remote_status = self._conf.get(CONF_REMOTE_STATUS)

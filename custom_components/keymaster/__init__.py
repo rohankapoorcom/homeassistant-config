@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import MutableMapping
 from datetime import datetime as dt, timedelta
 import functools
 import logging
 from pathlib import Path
+import sys
+from typing import TYPE_CHECKING
 
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
@@ -16,7 +17,6 @@ from homeassistant.core_config import Config
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.event import async_call_later
-from homeassistant.util import slugify
 
 from .const import (
     CONF_ADVANCED_DATE_RANGE,
@@ -26,42 +26,63 @@ from .const import (
     CONF_ALARM_TYPE,
     CONF_ALARM_TYPE_OR_ACCESS_CONTROL_ENTITY_ID,
     CONF_CHILD_LOCKS_FILE,
-    CONF_DOOR_SENSOR_ENTITY_ID,
     CONF_ENTITY_ID,
     CONF_HIDE_PINS,
     CONF_LOCK_ENTITY_ID,
     CONF_LOCK_NAME,
-    CONF_NOTIFY_SCRIPT_NAME,
-    CONF_PARENT,
-    CONF_PARENT_ENTRY_ID,
-    CONF_SLOTS,
-    CONF_START,
     COORDINATOR,
-    DAY_NAMES,
     DEFAULT_ADVANCED_DATE_RANGE,
     DEFAULT_ADVANCED_DAY_OF_WEEK,
     DEFAULT_HIDE_PINS,
     DOMAIN,
-    NONE_TEXT,
+    LOCK_COORDINATORS,
     PLATFORMS,
     STRATEGY_FILENAME,
     STRATEGY_PATH,
 )
 from .coordinator import KeymasterCoordinator
-from .lock import KeymasterCodeSlot, KeymasterCodeSlotDayOfWeek, KeymasterLock
-from .lovelace import async_generate_lovelace
+from .entry_setup import async_get_or_create_device, build_kmlock, normalize_config_data
+from .large_lock_repairs import (
+    async_clear_large_lock_ack,
+    async_delete_large_lock_repair_issue,
+    async_load_large_lock_ack_store,
+    async_update_all_large_lock_repair_issues,
+    async_update_large_lock_repair_issue,
+)
+from .lovelace import KeymasterLovelaceSpec, async_generate_lovelace
 from .migrate import migrate_2to3
 from .resources import async_cleanup_strategy_resource, async_register_strategy_resource
 from .services import async_setup_services
 from .websocket import async_setup as async_websocket_setup
 
+if TYPE_CHECKING:
+    from .lock import KeymasterLock
+
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+_LARGE_LOCK_REPAIR_SWEEP_DONE = "large_lock_repair_sweep_done"
+
+
+async def _flush_pending_save_after_setup(
+    coordinator: KeymasterCoordinator,
+    entry_id: str,
+    *,
+    setup_failed: bool,
+) -> None:
+    """Flush deferred setup save work without masking setup failures."""
+    if not setup_failed:
+        await coordinator.async_flush_pending_save_data_if_setup_complete(entry_id)
+        return
+
+    try:
+        await coordinator.async_flush_pending_save_data_if_setup_complete(entry_id)
+    except Exception:
+        _LOGGER.exception("Failed to flush pending keymaster save data after setup error")
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
     """Set up integration."""
-    hass.data.setdefault(DOMAIN, {"resources": False})
+    hass.data.setdefault(DOMAIN, {})
 
     # Expose strategy javascript
     await hass.http.async_register_static_paths(
@@ -77,146 +98,129 @@ async def async_setup(hass: HomeAssistant, config: Config) -> bool:
 
     await async_register_strategy_resource(hass)
 
-    # Set up websocket API
     await async_websocket_setup(hass)
     _LOGGER.debug("Finished setting up websocket API")
 
     return True
 
 
+async def _async_get_or_create_coordinator(hass: HomeAssistant) -> KeymasterCoordinator:
+    """Create or retrieve the shared keymaster coordinator."""
+    if COORDINATOR in hass.data[DOMAIN]:
+        return hass.data[DOMAIN][COORDINATOR]
+
+    coordinator: KeymasterCoordinator = KeymasterCoordinator(hass)
+    hass.data[DOMAIN][COORDINATOR] = coordinator
+    setup_success = True
+    try:
+        await coordinator.initial_setup()
+        await coordinator.async_refresh()
+        setup_success = coordinator.last_update_success
+    except Exception as err:
+        hass.data[DOMAIN].pop(COORDINATOR, None)
+        if isinstance(err, ConfigEntryNotReady | TypeError | AttributeError):
+            raise
+        raise ConfigEntryNotReady(f"Error during initial setup: {err}") from err
+
+    if not setup_success:
+        hass.data[DOMAIN].pop(COORDINATOR, None)
+        raise ConfigEntryNotReady from coordinator.last_exception
+
+    return coordinator
+
+
+async def _async_apply_large_lock_repairs(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    kmlock: KeymasterLock,
+) -> None:
+    """Update large-lock repair issues for a keymaster lock setup."""
+    try:
+        await async_load_large_lock_ack_store(hass)
+        supports_connection_status = True
+        if kmlock.provider:
+            supports_connection_status = kmlock.provider.supports_connection_status
+        await async_update_large_lock_repair_issue(
+            hass,
+            config_entry,
+            supports_connection_status=supports_connection_status,
+        )
+    except Exception:
+        _LOGGER.exception(
+            "Failed to update large-lock repair issue for %s",
+            config_entry.entry_id,
+        )
+
+    if not hass.data[DOMAIN].get(_LARGE_LOCK_REPAIR_SWEEP_DONE):
+        hass.data[DOMAIN][_LARGE_LOCK_REPAIR_SWEEP_DONE] = True
+        try:
+            await async_update_all_large_lock_repair_issues(hass)
+        except Exception:
+            _LOGGER.exception("Failed to update large-lock repair issues during setup sweep")
+
+
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up is called when Home Assistant is loading our component."""
-    updated_config = config_entry.data.copy()
-
-    for prop in (
-        CONF_PARENT,
-        CONF_NOTIFY_SCRIPT_NAME,
-        CONF_DOOR_SENSOR_ENTITY_ID,
-        CONF_ALARM_LEVEL_OR_USER_CODE_ENTITY_ID,
-        CONF_ALARM_TYPE_OR_ACCESS_CONTROL_ENTITY_ID,
-    ):
-        if config_entry.data.get(prop) in {
-            NONE_TEXT,
-            "sensor.fake",
-            "binary_sensor.fake",
-        }:
-            updated_config[prop] = None
-
-    if config_entry.data.get(CONF_PARENT_ENTRY_ID) == config_entry.entry_id:
-        updated_config[CONF_PARENT_ENTRY_ID] = None
-
-    if updated_config.get(CONF_PARENT) is None:
-        updated_config[CONF_PARENT_ENTRY_ID] = None
-    elif updated_config.get(CONF_PARENT_ENTRY_ID) is None:
-        for entry in hass.config_entries.async_entries(DOMAIN):
-            if updated_config.get(CONF_PARENT) == entry.data.get(CONF_LOCK_NAME):
-                updated_config[CONF_PARENT_ENTRY_ID] = entry.entry_id
-                break
-
-    if not updated_config.get(CONF_NOTIFY_SCRIPT_NAME):
-        updated_config[CONF_NOTIFY_SCRIPT_NAME] = (
-            f"keymaster_{slugify(updated_config.get(CONF_LOCK_NAME, ''))}_manual_notify"
-        )
-    elif isinstance(updated_config.get(CONF_NOTIFY_SCRIPT_NAME), str) and updated_config[
-        CONF_NOTIFY_SCRIPT_NAME
-    ].startswith("script."):
-        updated_config[CONF_NOTIFY_SCRIPT_NAME] = updated_config[CONF_NOTIFY_SCRIPT_NAME].split(
-            ".", maxsplit=1
-        )[1]
-
+    updated_config = normalize_config_data(hass, config_entry)
     if updated_config != config_entry.data:
         hass.config_entries.async_update_entry(config_entry, data=updated_config)
 
     # _LOGGER.debug(f"[init async_setup_entry] updated config_entry.data: {config_entry.data}")
 
     await async_setup_services(hass)
+    await async_register_strategy_resource(hass)
 
-    if COORDINATOR not in hass.data[DOMAIN]:
-        coordinator: KeymasterCoordinator = KeymasterCoordinator(hass)
-        hass.data[DOMAIN][COORDINATOR] = coordinator
-        await coordinator.initial_setup()
-        await coordinator.async_refresh()
-        if not coordinator.last_update_success:
-            raise ConfigEntryNotReady from coordinator.last_exception
-    else:
-        coordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator = await _async_get_or_create_coordinator(hass)
 
     device_registry = dr.async_get(hass)
-
-    via_device: tuple[str, str] | None = None
-    if parent_entry_id := config_entry.data.get(CONF_PARENT_ENTRY_ID):
-        via_device = (DOMAIN, parent_entry_id)
-
-    # _LOGGER.debug(
-    #     f"[init async_setup_entry] name: {config_entry.data.get(CONF_LOCK_NAME)}, "
-    #     f"parent_name: {config_entry.data.get(CONF_PARENT)}, "
-    #     f"parent_entry_id: {config_entry.data.get(CONF_PARENT_ENTRY_ID)}, "
-    #     f"via_device: {via_device}"
-    # )
-
-    device_registry.async_get_or_create(
-        config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, config_entry.entry_id)},
-        name=config_entry.data.get(CONF_LOCK_NAME),
-        configuration_url="https://github.com/FutureTense/keymaster",
-        via_device=via_device,
-    )
+    async_get_or_create_device(device_registry, config_entry)
 
     # _LOGGER.debug(f"[init async_setup_entry] device: {device}")
 
-    code_slots: MutableMapping[int, KeymasterCodeSlot] = {}
-    for x in range(
-        config_entry.data[CONF_START],
-        config_entry.data[CONF_START] + config_entry.data[CONF_SLOTS],
-    ):
-        dow_slots: MutableMapping[int, KeymasterCodeSlotDayOfWeek] = {}
-        for i, dow in enumerate(DAY_NAMES):
-            dow_slots[i] = KeymasterCodeSlotDayOfWeek(day_of_week_num=i, day_of_week_name=dow)
-        code_slots[x] = KeymasterCodeSlot(number=x, accesslimit_day_of_week=dow_slots)
+    kmlock = build_kmlock(config_entry)
 
-    kmlock = KeymasterLock(
-        lock_name=config_entry.data[CONF_LOCK_NAME],
-        lock_entity_id=config_entry.data[CONF_LOCK_ENTITY_ID],
-        keymaster_config_entry_id=config_entry.entry_id,
-        alarm_level_or_user_code_entity_id=config_entry.data.get(
-            CONF_ALARM_LEVEL_OR_USER_CODE_ENTITY_ID
-        ),
-        alarm_type_or_access_control_entity_id=config_entry.data.get(
-            CONF_ALARM_TYPE_OR_ACCESS_CONTROL_ENTITY_ID
-        ),
-        door_sensor_entity_id=config_entry.data.get(CONF_DOOR_SENSOR_ENTITY_ID),
-        number_of_code_slots=config_entry.data[CONF_SLOTS],
-        starting_code_slot=config_entry.data[CONF_START],
-        code_slots=code_slots,
-        parent_name=config_entry.data.get(CONF_PARENT),
-        parent_config_entry_id=config_entry.data.get(CONF_PARENT_ENTRY_ID),
-        notify_script_name=config_entry.data.get(CONF_NOTIFY_SCRIPT_NAME),
-    )
-
+    needs_update = config_entry.entry_id in coordinator.kmlocks
     try:
-        await coordinator.add_lock(kmlock=kmlock)
+        await coordinator.add_lock(kmlock=kmlock, update=needs_update)
     except asyncio.exceptions.CancelledError as e:
         _LOGGER.error("Timeout on add_lock. %s: %s", e.__class__.__qualname__, e)
 
-    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
-    await async_generate_lovelace(
-        hass=hass,
-        kmlock_name=config_entry.data[CONF_LOCK_NAME],
-        keymaster_config_entry_id=config_entry.entry_id,
-        parent_config_entry_id=config_entry.data.get(CONF_PARENT_ENTRY_ID),
-        code_slot_start=config_entry.data[CONF_START],
-        code_slots=config_entry.data[CONF_SLOTS],
-        lock_entity=config_entry.data[CONF_LOCK_ENTITY_ID],
-        advanced_date_range=config_entry.data[CONF_ADVANCED_DATE_RANGE],
-        advanced_day_of_week=config_entry.data[CONF_ADVANCED_DAY_OF_WEEK],
-        door_sensor=config_entry.data.get(CONF_DOOR_SENSOR_ENTITY_ID),
-    )
+    setup_failed = False
+    try:
+        lock_coordinator = coordinator.async_get_lock_coordinator(config_entry.entry_id)
+        hass.data[DOMAIN].setdefault(LOCK_COORDINATORS, {})[config_entry.entry_id] = (
+            lock_coordinator
+        )
+        await _async_apply_large_lock_repairs(hass, config_entry, kmlock)
+
+        await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
+        await async_generate_lovelace(
+            hass=hass,
+            kmlock_name=config_entry.data[CONF_LOCK_NAME],
+            spec=KeymasterLovelaceSpec.from_config_entry(config_entry),
+        )
+
+        config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
+    except BaseException:
+        setup_failed = True
+        raise
+    finally:
+        await _flush_pending_save_after_setup(
+            coordinator,
+            config_entry.entry_id,
+            setup_failed=setup_failed,
+        )
 
     return True
 
 
+async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    """Handle options update."""
+    await hass.config_entries.async_reload(config_entry.entry_id)
+
+
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Handle removal of an entry."""
+    """Handle unloading of an entry."""
     lockname: str = config_entry.data[CONF_LOCK_NAME]
     _LOGGER.info("Unloading %s", lockname)
     unload_ok: bool = all(
@@ -230,17 +234,21 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 
     if unload_ok and DOMAIN in hass.data and COORDINATOR in hass.data[DOMAIN]:
         coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
-        await coordinator.delete_lock_by_config_entry_id(config_entry.entry_id)
+        kmlock = coordinator.sync_get_lock_by_config_entry_id(config_entry.entry_id)
+        if kmlock:
+            coordinator._cancel_pending_keypad_lock_notification(kmlock)  # noqa: SLF001
+            coordinator._cancel_pending_keypad_unlock_notification(kmlock)  # noqa: SLF001
+            await KeymasterCoordinator._unsubscribe_listeners(kmlock)  # noqa: SLF001
+            if kmlock.provider:
+                await kmlock.provider.async_unload()
 
-        if coordinator.count_locks_not_pending_delete == 0:
-            _LOGGER.debug(
-                "[async_unload_entry] Possibly empty coordinator. Will evaluate for removal at %s",
-                dt.now().astimezone() + timedelta(seconds=20),
-            )
-            async_call_later(
-                hass=hass,
-                delay=20,
-                action=functools.partial(delete_coordinator, hass),
+    if config_entry.disabled_by is not None:
+        try:
+            async_delete_large_lock_repair_issue(hass, config_entry.entry_id)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to delete large-lock repair issue for disabled entry %s",
+                config_entry.entry_id,
             )
 
     # Clean up strategy resource if no other keymaster entries need it
@@ -253,13 +261,42 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
         _LOGGER.debug(
             "[async_unload_entry] Last keymaster entry unloaded, cleaning up strategy resource"
         )
-        hass_data = hass.data.get(DOMAIN, {})
-        await async_cleanup_strategy_resource(hass, hass_data)
+        await async_cleanup_strategy_resource(hass)
 
     return unload_ok
 
 
-async def delete_coordinator(hass: HomeAssistant, _: dt) -> None:
+async def async_remove_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    """Handle removal of an entry."""
+    try:
+        async_delete_large_lock_repair_issue(hass, config_entry.entry_id)
+        await async_clear_large_lock_ack(hass, config_entry.entry_id)
+    except Exception:
+        _LOGGER.exception(
+            "Failed to clean up large-lock repair state for %s",
+            config_entry.entry_id,
+        )
+
+    if DOMAIN in hass.data and COORDINATOR in hass.data[DOMAIN]:
+        coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+        await coordinator.delete_lock_by_config_entry_id(config_entry.entry_id, immediate=True)
+        coordinator.async_remove_lock_coordinator(config_entry.entry_id)
+        hass.data[DOMAIN].get(LOCK_COORDINATORS, {}).pop(config_entry.entry_id, None)
+
+        if coordinator.count_locks_not_pending_delete == 0:
+            delay = 0 if "pytest" in sys.modules else 20
+            _LOGGER.debug(
+                "[async_remove_entry] Possibly empty coordinator. Will evaluate for removal at %s",
+                dt.now().astimezone() + timedelta(seconds=delay),
+            )
+            async_call_later(
+                hass=hass,
+                delay=delay,
+                action=functools.partial(delete_coordinator, hass, config_entry.entry_id),
+            )
+
+
+async def delete_coordinator(hass: HomeAssistant, unloaded_entry_id: str, _: dt) -> None:
     """Delete the coordinator if no more kmlock entities exist."""
     # _LOGGER.debug("[delete_coordinator] Triggered")
     hass_data = hass.data.get(DOMAIN, {})
@@ -267,7 +304,9 @@ async def delete_coordinator(hass: HomeAssistant, _: dt) -> None:
     if coordinator is None:
         return
 
-    if len(coordinator.data) == 0:
+    if (coordinator.data is None or len(coordinator.data) == 0) and not any(
+        entry.entry_id != unloaded_entry_id for entry in hass.config_entries.async_entries(DOMAIN)
+    ):
         _LOGGER.debug("[delete_coordinator] All locks removed, removing coordinator")
         await coordinator.async_remove_data()
         await coordinator.async_shutdown()

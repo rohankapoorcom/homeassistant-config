@@ -9,6 +9,8 @@ from homeassistant.helpers import llm
 DOMAIN = "local_openai"
 LOGGER = logging.getLogger(__package__)
 
+PLACEHOLDER_API_KEY = "local-openai"
+
 CONF_RECOMMENDED = "recommended"
 CONF_BASE_URL = "base_url"
 CONF_SERVER_NAME = "server_name"
@@ -18,12 +20,53 @@ CONF_TEMPERATURE = "temperature"
 CONF_PARALLEL_TOOL_CALLS = "parallel_tool_calls"
 CONF_CHAT_TEMPLATE_OPTS = "chat_template_opts"
 CONF_CHAT_TEMPLATE_KWARGS = "chat_template_kwargs"
+CONF_REQUEST_BODY_OPTS = "request_body_opts"
+CONF_REQUEST_BODY_PARAMETERS = "request_body_parameters"
+CONF_PASS_SESSION_ID = "pass_session_id"  # noqa: S105
+CONF_SERVER_OPTIONS = "server_options"
+CONF_SERVER_TYPE = "server_type"
+CONF_GENERIC_CONFIG = "generic_config"
+CONF_LLAMACPP_CONFIG = "llamacpp_config"
+CONF_LLAMACPP_ENABLE_THINKING = "llamacpp_enable_thinking"
+CONF_LLAMACPP_INCLUDE_PRIOR_THINKING = "llamacpp_include_prior_thinking"
+CONF_LLAMACPP_ID_SLOT = "llamacpp_id_slot"
+CONF_LLAMACPP_TOP_P = "llamacpp_top_p"
+CONF_LLAMACPP_TOP_K = "llamacpp_top_k"
+CONF_LLAMACPP_MIN_P = "llamacpp_min_p"
+CONF_LLAMACPP_REPEAT_PENALTY = "llamacpp_repeat_penalty"
+CONF_LLAMACPP_PRESENCE_PENALTY = "llamacpp_presence_penalty"
+CONF_VLLM_CONFIG = "vllm_config"
+CONF_VLLM_THINKING_TOKEN_BUDGET = "vllm_thinking_token_budget"  # noqa: S105
+CONF_DEEPSEEK_CONFIG = "deepseek_config"
+CONF_DEEPSEEK_REASONING_EFFORT = "deepseek_reasoning_effort"
+CONF_LOCALAI_CONFIG = "localai_config"
+CONF_GOOGLE_GEMINI_CONFIG = "google_gemini_config"
+
+SERVER_TYPE_GENERIC = "generic"
+SERVER_TYPE_LLAMACPP = "llama_cpp"
+SERVER_TYPE_VLLM = "vllm"
+SERVER_TYPE_DEEPSEEK = "deepseek"
+SERVER_TYPE_LOCALAI = "localai"
+SERVER_TYPE_GOOGLE_GEMINI = "google_gemini"
+
+
+SERVER_TYPE_OPTIONS = {
+    SERVER_TYPE_GENERIC: "Generic OpenAI-Compatible",
+    SERVER_TYPE_LLAMACPP: "llama.cpp",
+    SERVER_TYPE_VLLM: "vLLM",
+    SERVER_TYPE_DEEPSEEK: "DeepSeek Cloud",
+    SERVER_TYPE_LOCALAI: "LocalAI",
+    SERVER_TYPE_GOOGLE_GEMINI: "Google (Gemini)",
+}
+CONF_ALWAYS_CONTINUE_CONVERSATION = "always_continue_conversation"
+CONF_ALWAYS_CONTINUE_CONVERSATION_DEFAULT = False
 
 CONF_AI_TASK_SUPPORTED_ATTRIBUTES = "supported_attributes"
 CONF_AI_TASK_SUPPORTED_ATTRIBUTE_OPTIONS = {
     "generate_data": ai_task.AITaskEntityFeature.GENERATE_DATA
     | ai_task.AITaskEntityFeature.SUPPORT_ATTACHMENTS,
-    "generate_image": ai_task.AITaskEntityFeature.GENERATE_IMAGE,
+    "generate_image": ai_task.AITaskEntityFeature.GENERATE_IMAGE
+    | ai_task.AITaskEntityFeature.SUPPORT_ATTACHMENTS,
 }
 
 CONF_AI_TASK_TOOLS_SECTION = "tooling"
@@ -40,6 +83,8 @@ CONF_CONTENT_INJECTION_METHODS = [
     CONF_CONTENT_INJECTION_METHOD_USER,
 ]
 
+CONF_CUSTOM_HEADERS = "custom_headers"
+CONF_SERVER_HEADERS = "server_headers"
 CONF_WEAVIATE_OPTIONS = "weaviate_options"
 CONF_WEAVIATE_HOST = "weaviate_host"
 CONF_WEAVIATE_API_KEY = "weaviate_api_key"

@@ -8,10 +8,11 @@ from typing import Any
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_SLOTS, CONF_START, COORDINATOR, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
@@ -24,8 +25,11 @@ async def async_setup_entry(
 ) -> None:
     """Create keymaster Sensor entities."""
 
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
-    kmlock = await coordinator.get_lock_by_config_entry_id(config_entry.entry_id)
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
+    kmlock = await manager.get_lock_by_config_entry_id(config_entry.entry_id)
     entities: list = []
 
     entities.append(
@@ -112,6 +116,7 @@ class KeymasterSensor(KeymasterEntity, SensorEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self._attr_native_value: Any | None = None
 
     @callback
@@ -119,19 +124,23 @@ class KeymasterSensor(KeymasterEntity, SensorEntity):
         # _LOGGER.debug(f"[Sensor handle_coordinator_update] self.coordinator.data: {self.coordinator.data}")
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if ".code_slots" in self._property and (
             not self._kmlock.code_slots or self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
         self._attr_native_value = self._get_property_value()
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the native value."""
+        return (*super()._state_signature(), self._attr_native_value)
 
 
 class KeymasterAutoLockSensor(KeymasterEntity, SensorEntity):
@@ -147,6 +156,7 @@ class KeymasterAutoLockSensor(KeymasterEntity, SensorEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
         self._attr_native_value: dt | None = None
 
@@ -164,12 +174,7 @@ class KeymasterAutoLockSensor(KeymasterEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
-            return
-
-        if not self._kmlock.autolock_enabled:
-            self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         self._attr_available = True
@@ -203,4 +208,8 @@ class KeymasterAutoLockSensor(KeymasterEntity, SensorEntity):
                 "finishes_at": None,
                 "is_running": False,
             }
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the native value."""
+        return (*super()._state_signature(), self._attr_native_value)

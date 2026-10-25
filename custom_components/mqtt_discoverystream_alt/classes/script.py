@@ -2,7 +2,7 @@
 
 from homeassistant.components.script import DOMAIN as SCRIPT_DOMAIN
 
-from .base_input_entity import ScriptDiscoveryEntity
+from ..helpers.base_input_entity import ScriptDiscoveryEntity
 
 
 class DiscoveryItem(ScriptDiscoveryEntity):

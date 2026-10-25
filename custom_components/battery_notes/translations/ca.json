@@ -11,22 +11,26 @@
                     "battery_type": "Tipus de bateria",
                     "battery_quantity": "Quantitat de bateries",
                     "note": "Note",
-                    "battery_low_threshold": "Llindar baix de la bateria"
+                    "battery_low_threshold": "Llindar baix de la bateria",
+                    "battery_increase_threshold": "Battery increase threshold"
                 },
                 "data_description": {
-                    "battery_low_threshold": "0 utilitzarà el llindar predeterminat global"
+                    "battery_low_threshold": "0 utilitzarà el llindar predeterminat global.",
+                    "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Advanced settings",
+                        "name": "Additional settings",
                         "data": {
                             "battery_percentage_template": "Battery percentage template",
                             "battery_low_template": "Plantilla de bateria baixa",
+                            "retain_state": "Retain state",
                             "filter_outliers": "iltrar valors atípics"
                         },
                         "data_description": {
-                            "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
-                            "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa\nNomés és necessari per a nivells de bateria no estàndard",
+                            "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage.",
+                            "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa.\nNomés és necessari per a nivells de bateria no estàndard.",
+                            "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
                             "filter_outliers": "Filtra les grans caigudes del nivell de bateria, reduint els esdeveniments que es disparen falsament en els dispositius que informen erròniament dels nivells de manera ocasional."
                         }
                     }
@@ -84,22 +88,26 @@
                         "battery_type": "Tipus de bateria",
                         "battery_quantity": "Quantitat de bateries",
                         "note": "Note",
-                        "battery_low_threshold": "Llindar baix de la bateria"
+                        "battery_low_threshold": "Llindar baix de la bateria",
+                        "battery_increase_threshold": "Battery increase threshold"
                     },
                     "data_description": {
-                        "battery_low_threshold": "0 utilitzarà el llindar predeterminat global"
+                        "battery_low_threshold": "0 utilitzarà el llindar predeterminat global.",
+                        "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Advanced settings",
+                            "name": "Additional settings",
                             "data": {
                                 "battery_percentage_template": "Battery percentage template",
                                 "battery_low_template": "Plantilla de bateria baixa",
+                                "retain_state": "Retain state",
                                 "filter_outliers": "iltrar valors atípics"
                             },
                             "data_description": {
-                                "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
-                                "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa\nNomés és necessari per a nivells de bateria no estàndard",
+                                "battery_percentage_template": "Template to create a battery percentage.\nOnly needed for devices that do not have a standard battery percentage.",
+                                "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa.\nNomés és necessari per a nivells de bateria no estàndard.",
+                                "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
                                 "filter_outliers": "Filtra les grans caigudes del nivell de bateria, reduint els esdeveniments que es disparen falsament en els dispositius que informen erròniament dels nivells de manera ocasional."
                             }
                         }
@@ -116,23 +124,27 @@
                         "battery_type": "Tipus de bateria",
                         "battery_quantity": "Quantitat de bateries",
                         "note": "Note",
-                        "battery_low_threshold": "Llindar baix de la bateria"
+                        "battery_low_threshold": "Llindar baix de la bateria",
+                        "battery_increase_threshold": "Battery increase threshold"
                     },
                     "data_description": {
-                        "name": "Si ho deixes en blanc, agafarà el nom del dispositiu d'origen",
-                        "battery_low_threshold": "0 utilitzarà el llindar predeterminat global"
+                        "name": "Si ho deixes en blanc, agafarà el nom del dispositiu d'origen.",
+                        "battery_low_threshold": "0 utilitzarà el llindar predeterminat global.",
+                        "battery_increase_threshold": "The threshold is the difference in increase between previous and current battery level.\n0 will use the global default threshold."
                     },
                     "sections": {
                         "advanced_settings": {
-                            "name": "Advanced settings",
+                            "name": "Additional settings",
                             "data": {
                                 "battery_percentage_template": "Battery percentage template",
                                 "battery_low_template": "Plantilla de bateria baixa",
+                                "retain_state": "Retain state",
                                 "filter_outliers": "iltrar valors atípics"
                             },
                             "data_description": {
-                                "battery_percentage_template": "Template to create a battery percentage\nOnly needed for devices that do not have a standard battery percentage",
-                                "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa\nNomés és necessari per a nivells de bateria no estàndard",
+                                "battery_percentage_template": "Template to create a battery percentage.\nOnly needed for devices that do not have a standard battery percentage.",
+                                "battery_low_template": "La plantilla per determinar que la bateria és baixa, hauria de tornar correcte si és baixa.\nNomés és necessari per a nivells de bateria no estàndard.",
+                                "retain_state": "Retain the last battery state when the source entity is unavailable.\nUseful for devices that sleep and become unavailable.",
                                 "filter_outliers": "Filtra les grans caigudes del nivell de bateria, reduint els esdeveniments que es disparen falsament en els dispositius que informen erròniament dels nivells de manera ocasional."
                             }
                         }
@@ -158,26 +170,28 @@
                     "hide_battery": "Hide battery",
                     "round_battery": "Round battery",
                     "default_battery_low_threshold": "Default battery low threshold",
-                    "battery_increase_threshold": "Battery increase threshold"
+                    "battery_increase_threshold": "Default battery increase threshold"
                 },
                 "data_description": {
                     "show_all_devices": "Show all devices in the device dropdown, otherwise only those with batteries will be shown.",
                     "hide_battery": "Hide the standard battery when adding Battery+.",
                     "round_battery": "Round Battery+ to whole percentages.",
                     "default_battery_low_threshold": "The default threshold where a devices battery_low entity is set to true and the battery_notes_battery_threshold event is fired if the battery is below this threshold, can be overriden per device in device configuration.",
-                    "battery_increase_threshold": "The threshold where the battery_notes_battery_increased event is fired, use this event for battery replaced automations. The threshold is the difference in increase between previous and current battery level."
+                    "battery_increase_threshold": "The default threshold where the battery_notes_battery_increased event is fired, use this event for battery replaced automations. The threshold is the difference in increase between previous and current battery level, can be overriden per device in device configuration."
                 },
                 "sections": {
                     "advanced_settings": {
-                        "name": "Advanced settings",
+                        "name": "Additional settings",
                         "data": {
                             "enable_autodiscovery": "Auto discovery",
                             "enable_replaced": "Enable battery replaced",
+                            "hide_battery_low": "Hide battery low",
                             "user_library": "User library"
                         },
                         "data_description": {
                             "enable_autodiscovery": "Auto discovery of devices that are in the library.",
                             "enable_replaced": "Enable the battery replaced button on each battery note.",
+                            "hide_battery_low": "Hide the battery low binary sensor when a battery percentage is available, avoiding duplication on generated dashboards.",
                             "user_library": "If specified then a user library file will be searched prior to the main library, the user library must be in the same format as the library and placed in `config/.storage/battery_notes`."
                         }
                     }
@@ -193,6 +207,9 @@
             "battery_low": {
                 "name": "{device_name}Bateria baixa",
                 "state_attributes": {
+                    "battery_increase_threshold": {
+                        "name": "Battery increase threshold"
+                    },
                     "battery_low_threshold": {
                         "name": "Llindar baix de la bateria"
                     }
@@ -222,6 +239,9 @@
                     },
                     "battery_last_replaced": {
                         "name": "Últim cop que es va canviar la bateria"
+                    },
+                    "battery_increase_threshold": {
+                        "name": "Battery increase threshold"
                     },
                     "battery_low": {
                         "name": "Bateria baixa"
@@ -334,6 +354,29 @@
                     }
                 }
             }
+        },
+        "composite_device_id": {
+            "fix_flow": {
+                "abort": {
+                    "entry_removed": "The Battery Note configuration entry has been removed"
+                },
+                "error": {
+                    "invalid_device": "Select an existing device or leave the field empty"
+                },
+                "step": {
+                    "select_device": {
+                        "data": {
+                            "device_id": "Device"
+                        },
+                        "data_description": {
+                            "device_id": "The device this battery note should be linked to."
+                        },
+                        "description": "The battery note {name} was linked to a device which has been split into multiple devices.\n\nSelect the device this battery note should be linked to, or leave empty to remove the battery note.",
+                        "title": "Select device for {name}"
+                    }
+                }
+            },
+            "title": "Device for battery note {name} needs to be selected again"
         },
         "deprecated_yaml": {
             "title": "The {integration_title} YAML configuration is being removed",

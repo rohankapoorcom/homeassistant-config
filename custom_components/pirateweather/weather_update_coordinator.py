@@ -1,8 +1,8 @@
 """Weather data coordinator for the Pirate Weather service."""
 
+import asyncio
 import logging
 
-import async_timeout
 from aiohttp import ClientError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -21,7 +21,7 @@ ATTRIBUTION = "Powered by Pirate Weather"
 class WeatherUpdateCoordinator(DataUpdateCoordinator):
     """Weather data update coordinator."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         api_key,
         latitude,
@@ -61,7 +61,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update the data."""
         data = {}
-        async with async_timeout.timeout(60):
+        async with asyncio.timeout(60):
             try:
                 data = await self._get_pw_weather()
             except ClientError as err:
@@ -72,23 +72,27 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         """Poll weather data from PW."""
 
         if self.latitude == 0.0:
-            requestLatitude = self.hass.config.latitude
+            request_latitude = self.hass.config.latitude
         else:
-            requestLatitude = self.latitude
+            request_latitude = self.latitude
 
         if self.longitude == 0.0:
-            requestLongitude = self.hass.config.longitude
+            request_longitude = self.hass.config.longitude
         else:
-            requestLongitude = self.longitude
+            request_longitude = self.longitude
 
-        forecastString = (
+        _LOGGER.debug(
+            "Request coordinates: %s, %s", request_latitude, request_longitude
+        )
+
+        forecast_string = (
             self.endpoint
             + "/forecast/"
             + self._api_key
             + "/"
-            + str(requestLatitude)
+            + str(request_latitude)
             + ","
-            + str(requestLongitude)
+            + str(request_longitude)
             + "?units="
             + self.requested_units
             + "&extend=hourly"
@@ -102,12 +106,12 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 m.strip() for m in self.models.split(",") if m.strip()
             )
             if exclusions:
-                forecastString += "&exclude=" + exclusions
+                forecast_string += "&exclude=" + exclusions
 
         session = async_get_clientsession(self.hass)
-        async with session.get(forecastString) as resp:
+        async with session.get(forecast_string) as resp:
             resp.raise_for_status()
-            jsonText = await resp.json()
+            json_text = await resp.json()
             headers = resp.headers
             _LOGGER.debug("Pirate Weather data update from: %s", self.endpoint)
-            return Forecast(jsonText, resp, headers)
+            return Forecast(json_text, resp, headers)

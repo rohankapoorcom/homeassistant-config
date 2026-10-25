@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 import functools
 import logging
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from custom_components.keymaster.const import CONF_SLOTS, CONF_START
 from homeassistant.core import Event
@@ -46,17 +46,25 @@ _DEFAULT_SCHEDULE_IDS = "1001"  # "Always" schedule on Akuvox devices
 _DEFAULT_LIFT_FLOOR_NUM = "1"
 
 # Akuvox firmware varies in how it marks local vs cloud users:
-#   A08S / E18C: source_type "1" = local, "2" = cloud, user_type "0" for both
+#   A08S / E18C: source_type "1" or "local" = local, "2" or "cloud" = cloud
 #   X916:        source_type None for all, user_type "-1" = local, "0" = cloud
-_LOCAL_SOURCE_TYPE = "1"
+# Strategy: tagged [KM:XX] users always pass; for untagged users, exclude
+# known cloud source_types (case-insensitive) when present, else fall back
+# to user_type.
+_CLOUD_SOURCE_TYPES = {"2", "cloud"}
 _LOCAL_USER_TYPE = "-1"
 
 
 def _is_local_user(user: dict[str, Any]) -> bool:
-    """Return True if *user* was created locally on the device."""
+    """Return True if *user* appears manageable via the local API."""
+    # Tagged users are always managed by Keymaster regardless of source/type.
+    name = str(user.get("name") or "")
+    if _parse_tag(name)[0] is not None:
+        return True
+    # If source_type is present, exclude known cloud values (case-insensitive).
     source_type = user.get("source_type")
     if source_type is not None:
-        return str(source_type) == _LOCAL_SOURCE_TYPE
+        return str(source_type).lower() not in _CLOUD_SOURCE_TYPES
     # source_type absent — fall back to user_type (X916 pattern)
     return str(user.get("user_type", "")) == _LOCAL_USER_TYPE
 
@@ -105,9 +113,10 @@ class AkuvoxLockProvider(BaseLockProvider):
         """Whether provider supports real-time event updates."""
         return True
 
-    # ------------------------------------------------------------------
-    # Connection
-    # ------------------------------------------------------------------
+    @property
+    def lock_event_label_is_authoritative(self) -> bool:
+        """Akuvox webhook events describe the operation before entity state updates."""
+        return True
 
     async def async_connect(self) -> bool:
         """Connect to the Akuvox lock."""
@@ -145,7 +154,6 @@ class AkuvoxLockProvider(BaseLockProvider):
             )
             return False
 
-        # Get the device identifier from the device registry.
         device_entry = None
         if lock_entry.device_id:
             device_entry = self.device_registry.async_get(lock_entry.device_id)
@@ -203,10 +211,6 @@ class AkuvoxLockProvider(BaseLockProvider):
 
         self._connected = connected
         return connected
-
-    # ------------------------------------------------------------------
-    # Event subscription
-    # ------------------------------------------------------------------
 
     def subscribe_lock_events(
         self, kmlock: KeymasterLock, callback: LockEventCallback
@@ -302,10 +306,6 @@ class AkuvoxLockProvider(BaseLockProvider):
 
         return unsubscribe_all
 
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
     async def _async_list_users(self) -> list[dict[str, Any]]:
         """Call ``local_akuvox.list_users`` and return the user list.
 
@@ -334,7 +334,7 @@ class AkuvoxLockProvider(BaseLockProvider):
         # Platform entity services wrap the response per entity_id.
         entity_response = response.get(self.lock_entity_id, response)
         if isinstance(entity_response, dict):
-            return entity_response.get("users", [])
+            return cast(list[dict[str, Any]], entity_response.get("users", []))
         return []
 
     async def _async_add_user(self, name: str, pin: str) -> None:
@@ -382,10 +382,6 @@ class AkuvoxLockProvider(BaseLockProvider):
             target={"entity_id": self.lock_entity_id},
             blocking=True,
         )
-
-    # ------------------------------------------------------------------
-    # Code slot operations
-    # ------------------------------------------------------------------
 
     async def async_get_usercodes(self) -> list[CodeSlot]:
         """Get all user codes from the Akuvox lock.
@@ -457,7 +453,7 @@ class AkuvoxLockProvider(BaseLockProvider):
                 _LOGGER.debug(
                     "[AkuvoxProvider] No managed slot available for untagged user '%s'; "
                     "leaving untouched",
-                    original_name,
+                    self.redact_name(original_name),
                 )
                 continue
             slot_num = next_slot
@@ -469,15 +465,15 @@ class AkuvoxLockProvider(BaseLockProvider):
                 await self._async_modify_user(device_id, name=tagged_name)
                 _LOGGER.debug(
                     "[AkuvoxProvider] Tagged user '%s' (id=%s) as slot %d: '%s'",
-                    original_name,
+                    self.redact_name(original_name),
                     device_id,
                     slot_num,
-                    tagged_name,
+                    self.redact_name(tagged_name),
                 )
             except HomeAssistantError as err:
                 _LOGGER.error(
                     "[AkuvoxProvider] Failed to tag user '%s' for slot %d: %s: %s",
-                    original_name,
+                    self.redact_name(original_name),
                     slot_num,
                     err.__class__.__qualname__,
                     err,
@@ -588,10 +584,6 @@ class AkuvoxLockProvider(BaseLockProvider):
 
         _LOGGER.debug("[AkuvoxProvider] Cleared usercode from slot %s", slot_num)
         return True
-
-    # ------------------------------------------------------------------
-    # Diagnostics
-    # ------------------------------------------------------------------
 
     def get_platform_data(self) -> dict[str, Any]:
         """Get Akuvox-specific diagnostic data."""

@@ -485,5 +485,18 @@
     "mqtt_publish_failed": {
       "message": "Het is niet gelukt om het commando voor vacuüm via MQTT te publiceren."
     }
+  },
+  "issues": {
+    "reset_trims_deprecated": {
+      "title": "De actie 'reset_trims' werkt niet meer vanaf versie 2026.8.0",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "De actie 'reset_trims' werkt niet meer vanaf versie 2026.8.0",
+            "description": "De actie `{domain}.reset_trims` werd uitgevoerd via een automatisering of handmatig. Deze werkt niet meer in versie 2026.8.0.\n\nVervang deze service door **Camera Update Floor Data** (`{domain}.camera_update_floor_data`).\n\nZorg ervoor dat u dit aanpast voordat u de upgrade uitvoert, en klik vervolgens op **Verzenden** om te bevestigen dat u de migratie hebt voltooid."
+          }
+        }
+      }
+    }
   }
 }

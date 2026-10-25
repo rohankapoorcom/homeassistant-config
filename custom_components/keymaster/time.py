@@ -4,14 +4,16 @@ from collections.abc import MutableMapping
 from dataclasses import dataclass
 from datetime import time as dt_time
 import logging
+from typing import Any
 
 from homeassistant.components.time import TimeEntity, TimeEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_ADVANCED_DAY_OF_WEEK, CONF_SLOTS, CONF_START, COORDINATOR, DAY_NAMES, DOMAIN
-from .coordinator import KeymasterCoordinator
+from .coordinator import KeymasterCoordinator, KeymasterLockCoordinator
 from .entity import KeymasterEntity, KeymasterEntityDescription
 from .lock import KeymasterCodeSlotDayOfWeek
 
@@ -24,7 +26,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Create keymaster Time entities."""
-    coordinator: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    manager: KeymasterCoordinator = hass.data[DOMAIN][COORDINATOR]
+    coordinator: KeymasterLockCoordinator = manager.async_get_lock_coordinator(
+        config_entry.entry_id
+    )
     entities: list = []
 
     if not config_entry.data[CONF_ADVANCED_DAY_OF_WEEK]:
@@ -88,6 +93,7 @@ class KeymasterTime(KeymasterEntity, TimeEntity):
         super().__init__(
             entity_description=entity_description,
         )
+        self._attr_entity_category = EntityCategory.CONFIG
         self._attr_native_value: dt_time | None = None
 
     @callback
@@ -95,7 +101,7 @@ class KeymasterTime(KeymasterEntity, TimeEntity):
         # _LOGGER.debug(f"[Time handle_coordinator_update] self.coordinator.data: {self.coordinator.data}")
         if not self._kmlock or not self._kmlock.connected:
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if (
@@ -108,23 +114,14 @@ class KeymasterTime(KeymasterEntity, TimeEntity):
             )
         ):
             self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if ".code_slots" in self._property and (
             not self._kmlock.code_slots or self._code_slot not in self._kmlock.code_slots
         ):
             self._attr_available = False
-            self.async_write_ha_state()
-            return
-
-        if ".accesslimit_day_of_week" in self._property and (
-            not self._kmlock.code_slots
-            or not self._code_slot
-            or not self._kmlock.code_slots[self._code_slot].accesslimit_day_of_week_enabled
-        ):
-            self._attr_available = False
-            self.async_write_ha_state()
+            self.async_write_ha_state_if_changed()
             return
 
         if self._property.endswith(".time_start") or self._property.endswith(".time_end"):
@@ -141,35 +138,16 @@ class KeymasterTime(KeymasterEntity, TimeEntity):
                 or self._day_of_week_num not in accesslimit_day_of_week
             ):
                 self._attr_available = False
-                self.async_write_ha_state()
+                self.async_write_ha_state_if_changed()
                 return
-
-            day_of_week: KeymasterCodeSlotDayOfWeek | None = accesslimit_day_of_week[
-                self._day_of_week_num
-            ]
-            if day_of_week is None or not day_of_week.dow_enabled or not day_of_week.limit_by_time:
-                self._attr_available = False
-                self.async_write_ha_state()
-                return
-
-        # if (
-        #     self._property.endswith(".time_start")
-        #     or self._property.endswith(".time_end")
-        # ) and (
-        #     not self._kmlock.code_slots[self._code_slot]
-        #     .accesslimit_day_of_week[self._day_of_week_num]
-        #     .dow_enabled
-        #     or not self._kmlock.code_slots[self._code_slot]
-        #     .accesslimit_day_of_week[self._day_of_week_num]
-        #     .limit_by_time
-        # ):
-        #     self._attr_available = False
-        #     self.async_write_ha_state()
-        #     return
 
         self._attr_available = True
         self._attr_native_value = self._get_property_value()
-        self.async_write_ha_state()
+        self.async_write_ha_state_if_changed()
+
+    def _state_signature(self) -> tuple[Any, ...]:
+        """Return a comparable snapshot including the native value."""
+        return (*super()._state_signature(), self._attr_native_value)
 
     async def async_set_value(self, value: dt_time) -> None:
         """Update value for a time entity."""
@@ -196,4 +174,4 @@ class KeymasterTime(KeymasterEntity, TimeEntity):
             return
         if self._set_property_value(value):
             self._attr_native_value = value
-            await self.coordinator.async_refresh()
+            await self.coordinator.async_request_debounced_refresh()
