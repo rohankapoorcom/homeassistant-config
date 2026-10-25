@@ -39,11 +39,6 @@ lovelace:
 
 lovelace_gen:
 
-http:
-  ip_ban_enabled: false
-  use_x_forwarded_for: true
-  trusted_proxies: !secret http.trusted_proxies
-
 recorder:
   db_url: !secret recorder.db_url
   auto_purge: false
