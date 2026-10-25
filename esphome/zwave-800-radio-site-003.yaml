@@ -26,14 +26,7 @@ api:
   encryption:
     !remove key
 
-usb_host:
-  devices:
-    - id: device_0
-      vid: 0x303A 
-      pid: 0x4001
-
 usb_uart:
-  # - type: esp_jtag
   - type: CDC_ACM
     vid: 0x303A 
     pid: 0x4001
