@@ -15,9 +15,6 @@ psram:
   mode: octal
   speed: 80MHz
 
-# external_components:
-#   - source: github://oxan/esphome-stream-server
-
 logger:
   
 api:
@@ -25,14 +22,7 @@ api:
   encryption:
     !remove key
 
-usb_host:
-  devices:
-    - id: device_0
-      vid: 0x303A 
-      pid: 0x4001
-
 usb_uart:
-  # - type: esp_jtag
   - type: CDC_ACM
     vid: 0x303A 
     pid: 0x4001
@@ -44,14 +34,3 @@ usb_uart:
 zwave_proxy:
   id: zwave
   uart_id: uch_1
-
-# stream_server:
-#   uart_id: uch_1
-#   id: ss
-#   port: 6638 # optional, default is 6638
-
-# binary_sensor:
-#   - platform: stream_server
-#     stream_server: ss
-#     connected:
-#       name: "Serial Connected"
