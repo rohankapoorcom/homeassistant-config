@@ -342,7 +342,7 @@ def _resolve_model_name(server_type: str, model: object) -> str:
 class LocalAiConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Local OpenAI LLM."""
 
-    VERSION = 2
+    VERSION = 4
 
     @classmethod
     @callback
@@ -417,7 +417,7 @@ class LocalAiConfigFlow(ConfigFlow, domain=DOMAIN):
                                             "required": True,
                                         },
                                         "Value": {
-                                            "selector": {"text": None},
+                                            "selector": {"template": None},
                                             "required": True,
                                         },
                                     },
@@ -623,7 +623,11 @@ class ConversationFlowHandler(LocalAiSubentryFlowHandler):
             vol.Optional(
                 CONF_LLM_HASS_API,
                 default=RECOMMENDED_CONVERSATION_OPTIONS[CONF_LLM_HASS_API],
-            ): SelectSelector(SelectSelectorConfig(options=llm_apis, multiple=True)),
+            ): SelectSelector(
+                SelectSelectorConfig(
+                    options=llm_apis, multiple=True, mode=SelectSelectorMode.DROPDOWN
+                )
+            ),
             vol.Required(
                 CONF_PARALLEL_TOOL_CALLS,
                 default=True,
@@ -636,9 +640,8 @@ class ConversationFlowHandler(LocalAiSubentryFlowHandler):
                 CONF_ALWAYS_CONTINUE_CONVERSATION,
                 default=CONF_ALWAYS_CONTINUE_CONVERSATION_DEFAULT,
             ): bool,
-            vol.Required(
+            vol.Optional(
                 CONF_TEMPERATURE,
-                default=0.6,
             ): NumberSelector(
                 NumberSelectorConfig(
                     min=0,
@@ -647,13 +650,9 @@ class ConversationFlowHandler(LocalAiSubentryFlowHandler):
                     mode=NumberSelectorMode.BOX,
                 ),
             ),
-            vol.Optional(
-                CONF_MAX_MESSAGE_HISTORY,
-                default=0,
-            ): NumberSelector(
+            vol.Optional(CONF_MAX_MESSAGE_HISTORY): NumberSelector(
                 NumberSelectorConfig(
                     min=0,
-                    max=50,
                     step=1,
                     mode=NumberSelectorMode.BOX,
                 ),
@@ -885,6 +884,16 @@ class AITaskDataFlowHandler(LocalAiSubentryFlowHandler):
                     ],
                     multiple=True,
                     mode=SelectSelectorMode.LIST,
+                ),
+            ),
+            vol.Optional(
+                CONF_TEMPERATURE,
+            ): NumberSelector(
+                NumberSelectorConfig(
+                    min=0,
+                    max=1,
+                    step=0.01,
+                    mode=NumberSelectorMode.BOX,
                 ),
             ),
             vol.Required(CONF_AI_TASK_TOOLS_SECTION): section(
