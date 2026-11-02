@@ -16,11 +16,6 @@ psram:
   speed: 80MHz
 
 logger:
-  
-api:
-  reboot_timeout: 0s
-  encryption:
-    !remove key
 
 usb_uart:
   - type: CDC_ACM
