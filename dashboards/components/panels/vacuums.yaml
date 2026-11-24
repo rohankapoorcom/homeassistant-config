@@ -20,6 +20,12 @@ cards:
         vacuum_platform: Hypfer/Valetudo
         map_modes:
           - template: vacuum_clean_segment
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_segments
+              service_data:
+                entity_id: "[[entity_id]]"
+                segments: "[[selection]]"
+                repeats: "[[repeats]]"
             predefined_selections:
               - id: '1'
                 icon:
@@ -198,7 +204,19 @@ cards:
                   - - 3240
                     - 4555
           - template: vacuum_clean_zone
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_zone
+              service_data:
+                entity_id: "[[entity_id]]"
+                zone: "[[selection]]"
+                repeats: "[[repeats]]"
           - template: vacuum_goto
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_go_to
+              service_data:
+                entity_id: "[[entity_id]]"
+                x_coord: "[[point_x]]"
+                y_coord: "[[point_y]]"
         map_locked: true
         two_finger_pan: true
         internal_variables:
@@ -387,6 +405,12 @@ cards:
         vacuum_platform: Hypfer/Valetudo
         map_modes:
           - template: vacuum_clean_segment
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_segments
+              service_data:
+                entity_id: "[[entity_id]]"
+                segments: "[[selection]]"
+                repeats: "[[repeats]]"
             predefined_selections:
               - id: '1'
                 icon:
@@ -481,7 +505,19 @@ cards:
                   - - 3210
                     - 3500
           - template: vacuum_clean_zone
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_zone
+              service_data:
+                entity_id: "[[entity_id]]"
+                zone: "[[selection]]"
+                repeats: "[[repeats]]"
           - template: vacuum_goto
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_go_to
+              service_data:
+                entity_id: "[[entity_id]]"
+                x_coord: "[[point_x]]"
+                y_coord: "[[point_y]]"
         map_locked: true
         two_finger_pan: true
         internal_variables:
@@ -656,6 +692,12 @@ cards:
         vacuum_platform: Hypfer/Valetudo
         map_modes:
           - template: vacuum_clean_segment
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_segments
+              service_data:
+                entity_id: "[[entity_id]]"
+                segments: "[[selection]]"
+                repeats: "[[repeats]]"
             predefined_selections:
               - id: "1"
                 icon:
@@ -677,7 +719,19 @@ cards:
                   - - 3170
                     - 3370
           - template: vacuum_clean_zone
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_clean_zone
+              service_data:
+                entity_id: "[[entity_id]]"
+                zone: "[[selection]]"
+                repeats: "[[repeats]]"
           - template: vacuum_goto
+            service_call_schema:
+              service: mqtt_vacuum_camera.vacuum_go_to
+              service_data:
+                entity_id: "[[entity_id]]"
+                x_coord: "[[point_x]]"
+                y_coord: "[[point_y]]"
         map_locked: true
         two_finger_pan: true
         internal_variables:
